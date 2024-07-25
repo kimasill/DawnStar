@@ -118,6 +118,8 @@
 -define:CSHARP_7_OR_LATER
 -define:CSHARP_7_3_OR_NEWER
 -define:UNITY_EDITOR_ONLY_COMPILATION
+-r:"Assets/Libs/Google.Protobuf.dll"
+-r:"Assets/Libs/System.Runtime.CompilerServices.Unsafe.dll"
 -r:"D:/2022.3.38f1/Editor/Data/Managed/UnityEditor.Graphs.dll"
 -r:"D:/2022.3.38f1/Editor/Data/Managed/UnityEngine/UnityEditor.CoreModule.dll"
 -r:"D:/2022.3.38f1/Editor/Data/Managed/UnityEngine/UnityEditor.DeviceSimulatorModule.dll"
@@ -363,6 +365,7 @@
 -analyzer:"D:/2022.3.38f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"D:/2022.3.38f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 "Assets/Editor/MapEditor.cs"
+"Assets/Editor/MulitPlayersBuildAndRun.cs"
 -langversion:9.0
 /deterministic
 /optimize-

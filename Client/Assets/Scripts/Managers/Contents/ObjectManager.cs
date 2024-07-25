@@ -1,3 +1,4 @@
+﻿using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,50 +6,96 @@ using UnityEngine;
 
 public class ObjectManager
 {
-    List<GameObject> _objects = new List<GameObject>();
+	public MyPlayerController MyPlayer { get; set; }
+	//id 에따라 관리
+	Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
+	
+	public void Add(PlayerInfo info, bool myPlayer = false) 
+	{ 
+		if (myPlayer)
+		{
+			GameObject go = Managers.Resource.Instantiate("Creature/MyPlayer");
+			go.name = info.Name;
+			_objects.Add(info.PlayerId, go);
 
-    public void AddObject(GameObject go)
+			MyPlayer = go.GetComponent<MyPlayerController>();
+			MyPlayer.Id = info.PlayerId;
+			MyPlayer.PosInfo = info.Position;
+			MyPlayer.SyncPos();
+		}
+		else
+		{
+            GameObject go = Managers.Resource.Instantiate("Creature/Player");
+            go.name = info.Name;
+            _objects.Add(info.PlayerId, go);
+
+			PlayerController pc = go.GetComponent<PlayerController>();
+			pc.Id = info.PlayerId;
+			pc.PosInfo = info.Position;
+			pc.SyncPos();
+        }
+	}
+
+	public void Remove(int id)
+	{
+		GameObject go = FindById(id);
+		if (go == null)
+            return;
+
+		_objects.Remove(id);
+		Managers.Resource.Destroy(go);
+	}
+
+	public void RemoveMyPlayer()
+	{
+		if (MyPlayer == null)
+		{
+			return;
+		}
+            Remove(MyPlayer.Id);
+            MyPlayer = null;
+        
+	}
+
+	public GameObject Find(Vector3Int cellPos)
+	{
+		foreach (GameObject obj in _objects.Values)
+		{
+			CreatureController cc = obj.GetComponent<CreatureController>();
+			if (cc == null)
+				continue;
+
+			if (cc.CellPos == cellPos)
+				return obj;
+		}
+
+		return null;
+	}
+
+	public GameObject FindById(int id)
     {
-        _objects.Add(go);
+        GameObject go = null;
+        _objects.TryGetValue(id, out go);
+        return go;
     }
 
-    public void RemoveObject(GameObject go)
-    {
-        if (_objects.Contains(go))
-        {
-            _objects.Remove(go);
-        }
-    }
-    public GameObject Find(Vector3Int cellPos)
-    {
-        foreach (GameObject go in _objects)
-        {
-            CreatureController cc = go.GetComponent<CreatureController>();
-            if (cc == null)
-            {
-                continue;
-            }
-            if (cc.CellPos == cellPos)
-            {
-                return go;
-            }
-        }
-        return null;
-    }
-    public void Clear()
-    {
-        _objects.Clear();
-    }
+	public GameObject Find(Func<GameObject, bool> condition)
+	{
+		foreach (GameObject obj in _objects.Values)
+		{
+			if (condition.Invoke(obj))
+				return obj;
+		}
 
-    internal GameObject Find(Func<GameObject, bool> condition)
-    {
-        foreach (GameObject go in _objects)
-        {
-            if(condition.Invoke(go))
-            {
-                return go;
-            }
-        }
-        return null;
-    }
+		return null;
+	}
+
+	public void Clear()
+	{
+		foreach (GameObject obj in _objects.Values)
+		{
+			Managers.Resource.Destroy(obj);
+		}
+            _objects.Clear();
+	}
 }

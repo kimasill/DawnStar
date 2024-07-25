@@ -6,19 +6,46 @@ using System.Threading;
 using System.Threading.Tasks;
 using ServerCore;
 using System.Net;
+using Google.Protobuf.Protocol;
+using Google.Protobuf;
+using Server.Game;
 
 namespace Server
 {
-	class ClientSession : PacketSession
+	public class ClientSession : PacketSession
 	{
+		public Player MyPlayer { get; set; }
 		public int SessionId { get; set; }
-		public GameRoom Room { get; set; }
+		public void Send(IMessage packet)
+        {
+            string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
+            MsgId msgId = (MsgId)Enum.Parse(typeof(MsgId), msgName);
 
+            ushort size = (ushort)packet.CalculateSize();
+            byte[] sendBuffer = new byte[size + 4];
+            Array.Copy(BitConverter.GetBytes(size + 4), 0, sendBuffer, 0, sizeof(ushort));
+            ushort protocolId = (ushort)msgId;
+            Array.Copy(BitConverter.GetBytes(protocolId), 0, sendBuffer, 2, sizeof(ushort));
+            Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
+
+            Send(new ArraySegment<byte>(sendBuffer));
+        }
 		public override void OnConnected(EndPoint endPoint)
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");
 
-			Program.Room.Push(() => Program.Room.Enter(this));
+			MyPlayer = PlayerManager.Instance.Add();
+			{
+				MyPlayer.Info.Name = $"Player_{MyPlayer.Info.PlayerId}";
+				MyPlayer.Info.Position.State = CreatureState.Idle;
+				MyPlayer.Info.Position.MoveDir = MoveDir.None;
+				MyPlayer.Info.Position.PosX = 0;
+				MyPlayer.Info.Position.PosY = 0;
+
+				MyPlayer.Session = this;
+			}
+			RoomManager.Instance.Find(1).EnterGame(MyPlayer);
+			// PROTO Test
 		}
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)
@@ -28,13 +55,9 @@ namespace Server
 
 		public override void OnDisconnected(EndPoint endPoint)
 		{
+			RoomManager.Instance.Find(1).LeaveGame(MyPlayer.Info.PlayerId);
+
 			SessionManager.Instance.Remove(this);
-			if (Room != null)
-			{
-				GameRoom room = Room;
-				room.Push(() => room.Leave(this));
-				Room = null;
-			}
 
 			Console.WriteLine($"OnDisconnected : {endPoint}");
 		}
