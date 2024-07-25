@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package Protocol;
+import "google/protobuf/timestamp.proto";
+option csharp_namespace = "Google.Protobuf.Protocol";
+
+enum MsgId {
+  S_ENTER_GAME = 0;
+  S_LEAVE_GAME = 1;
+  S_SPAWN = 2;
+  S_DESPAWN = 3;
+  C_MOVE = 4;
+  S_MOVE = 5;
+  C_SKILL = 6;
+  S_SKILL = 7;
+}
+enum CreatureState{
+  IDLE = 0;
+  MOVING = 1;
+  SKILL = 2;
+  DEAD = 3;
+}
+
+enum MoveDir{
+  NONE = 0;
+  UP = 1;
+  DOWN = 2;
+  LEFT = 3;
+  RIGHT = 4;
+}
+
+message S_EnterGame {
+  PlayerInfo player = 1;
+}
+
+message S_LeaveGame {
+  
+}
+
+message S_Spawn {
+  repeated PlayerInfo player = 1;
+}
+
+message S_Despawn {
+  repeated int32 playerId = 1;
+}
+
+message C_Move {
+  PositionInfo position = 1;
+}
+
+message S_Move {
+  int32 playerId = 1;
+  PositionInfo position = 2;
+}
+
+message C_Skill {
+  SkillInfo info = 1;
+}
+
+message S_Skill {
+  int32 playerId = 1;
+  SkillInfo info = 2;  
+}
+
+message PlayerInfo {
+  int32 playerId = 1;
+  string name = 2;
+  PositionInfo position = 3;
+}
+
+message PositionInfo{
+  CreatureState state = 1;
+  MoveDir MoveDir = 2;
+  int32 posX = 3;
+  int32 posY = 4;
+}
+
+message SkillInfo{
+  int32 skillId = 1;
+}
+
+
+
