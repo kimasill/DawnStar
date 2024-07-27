@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
-using Server.Game;
+using Server.Data;
+using Server.Game.Room;
 using ServerCore;
 
 namespace Server
 {
-	class Program
+    class Program
 	{
 		static Listener _listener = new Listener();
 
@@ -25,7 +26,10 @@ namespace Server
 
 		static void Main(string[] args)
 		{
-			RoomManager.Instance.Add();
+			ConfigManager.LoadConfig();
+			DataManager.LoadData();
+
+			RoomManager.Instance.Add(1);
 			// DNS (Domain Name System)
 			string host = Dns.GetHostName();
 			IPHostEntry ipHost = Dns.GetHostEntry(host);
@@ -36,11 +40,13 @@ namespace Server
 			Console.WriteLine("Listening...");
 
 			//FlushRoom();
-			JobTimer.Instance.Push(FlushRoom);
+			//JobTimer.Instance.Push(FlushRoom);
 
 			while (true)
 			{
-				JobTimer.Instance.Flush();
+				//JobTimer.Instance.Flush();
+				RoomManager.Instance.Find(1).Update();
+				//Thread.Sleep(100);
 			}
 		}
 	}

@@ -16,9 +16,13 @@ public class PlayerController : CreatureController
 
 	protected override void UpdateAnimation()
 	{
+		if(_animator == null || _sprite == null)
+        {
+			return;
+        }
 		if (State == CreatureState.Idle)
 		{
-			switch (_lastDir)
+			switch (Dir)
 			{
 				case MoveDir.Up:
 					_animator.Play("IDLE_BACK");
@@ -62,7 +66,7 @@ public class PlayerController : CreatureController
 		}
 		else if (State == CreatureState.Skill)
 		{
-			switch (_lastDir)
+			switch (Dir)
 			{
 				case MoveDir.Up:
 					_animator.Play(_rangedSkill ? "ATTACK_WEAPON_BACK" : "ATTACK_BACK");
@@ -92,27 +96,22 @@ public class PlayerController : CreatureController
 	{
 		base.UpdateController();
 	}
-
-	
-
-	protected override void UpdateIdle()
-	{
-		// 이동 상태로 갈지 확인
-		if (Dir != MoveDir.None)
-		{
-			State = CreatureState.Moving;
-			return;
-		}
-	}
-
 	// 키보드 입력
 	
-	public void UseSkill(int skillId)
+	public override void UseSkill(int skillId)
 	{
 		if (skillId == 1)
 		{
 			_coSkill = StartCoroutine("CoStartPunch");
 		}
+		else if (skillId == 2)
+        {
+            _coSkill = StartCoroutine("CoStartShootArrow");
+        }
+        else
+        {
+            Debug.Log("Invalid skill ID");
+        }
 	}
 
 	IEnumerator CoStartPunch()
@@ -128,16 +127,13 @@ public class PlayerController : CreatureController
     }
 	IEnumerator CoStartShootArrow()
 	{
-		GameObject go = Managers.Resource.Instantiate("Creature/Arrow");
-		ArrowController ac = go.GetComponent<ArrowController>();
-		ac.Dir = _lastDir;
-		ac.CellPos = CellPos;
-
 		// 대기 시간
 		_rangedSkill = true;
+		State = CreatureState.Skill;
 		yield return new WaitForSeconds(0.3f);
 		State = CreatureState.Idle;
 		_coSkill = null;
+		CheckUpdatedFlag();
 	}
 	protected virtual void CheckUpdatedFlag(){ }
 	public override void OnDamaged()

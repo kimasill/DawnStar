@@ -8,11 +8,13 @@ using ServerCore;
 using System.Net;
 using Google.Protobuf.Protocol;
 using Google.Protobuf;
+using Server.Game.Room;
 using Server.Game;
+using Server.Data;
 
 namespace Server
 {
-	public class ClientSession : PacketSession
+    public class ClientSession : PacketSession
 	{
 		public Player MyPlayer { get; set; }
 		public int SessionId { get; set; }
@@ -34,14 +36,17 @@ namespace Server
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");
 
-			MyPlayer = PlayerManager.Instance.Add();
+			MyPlayer = ObjectManager.Instance.Add<Player>();
 			{
-				MyPlayer.Info.Name = $"Player_{MyPlayer.Info.PlayerId}";
+				MyPlayer.Info.Name = $"Player_{MyPlayer.Info.ObjectId}";
 				MyPlayer.Info.Position.State = CreatureState.Idle;
-				MyPlayer.Info.Position.MoveDir = MoveDir.None;
+				MyPlayer.Info.Position.MoveDir = MoveDir.Down;
 				MyPlayer.Info.Position.PosX = 0;
 				MyPlayer.Info.Position.PosY = 0;
 
+				StatInfo stat = null;
+				DataManager.StatDict.TryGetValue(1, out stat);
+				MyPlayer.Stat.MergeFrom(stat);
 				MyPlayer.Session = this;
 			}
 			RoomManager.Instance.Find(1).EnterGame(MyPlayer);
@@ -55,7 +60,7 @@ namespace Server
 
 		public override void OnDisconnected(EndPoint endPoint)
 		{
-			RoomManager.Instance.Find(1).LeaveGame(MyPlayer.Info.PlayerId);
+			RoomManager.Instance.Find(1).LeaveGame(MyPlayer.Info.ObjectId);
 
 			SessionManager.Instance.Remove(this);
 
