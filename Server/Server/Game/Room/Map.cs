@@ -110,6 +110,11 @@ namespace Server.Game.Room
         }
         public bool ApplyLeave(GameObject gameObject)
         {
+            if(gameObject.Room == null)
+                return false;
+            if(gameObject.Room.Map != this)
+                return false;
+
             PositionInfo posInfo = gameObject.Info.Position;
             if (posInfo.PosX < MinX && posInfo.PosX > MaxX)
                 return false;
@@ -127,6 +132,12 @@ namespace Server.Game.Room
         public bool ApplyMove(GameObject gameObject, Vector2Int dest)
         {
             ApplyLeave(gameObject);
+
+            if (gameObject.Room == null)
+                return false;
+            if (gameObject.Room.Map != this)
+                return false;
+
             PositionInfo posInfo = gameObject.Info.Position;
             
             if (CanGo(dest, true) == false)

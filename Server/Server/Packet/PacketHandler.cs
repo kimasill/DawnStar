@@ -17,7 +17,7 @@ class PacketHandler
 		C_Move movePacket = packet as C_Move;
 		ClientSession clientSession = session as ClientSession;
 
-        Console.WriteLine($"C_Move ({movePacket.Position.PosX}, {movePacket.Position.PosY}"); ;
+        //Console.WriteLine($"C_Move ({movePacket.Position.PosX}, {movePacket.Position.PosY}"); ;
 
 		Player player = clientSession.MyPlayer;
 		if (player == null)
@@ -27,7 +27,7 @@ class PacketHandler
 		if(room == null)
 			return;
 
-		room.HandleMove(player, movePacket);
+		room.Push(room.HandleMove, player, movePacket);
 		//검증
 		//좌표이동
 		
@@ -46,6 +46,6 @@ class PacketHandler
         if (room == null)
             return;
 
-        room.HandleSkill(player, skillPacket);
+        room.Push(room.HandleSkill, player, skillPacket);
     }
 }

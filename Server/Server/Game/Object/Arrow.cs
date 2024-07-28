@@ -40,7 +40,7 @@ namespace Server.Game
                 {
                     target.OnDamaged(this, Data.damage + Owner.Stat.Attack); //피격판정                    
                 }
-                Room.LeaveGame(Id);
+                Room.Push(Room.LeaveGame, Id);
             }
         }
     }
