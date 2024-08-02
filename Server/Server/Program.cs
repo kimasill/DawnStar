@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +12,8 @@ using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
 using Server.Data;
+using Server.DB;
+using Server.Game;
 using Server.Game.Job;
 using Server.Game.Room;
 using ServerCore;
@@ -36,7 +40,45 @@ namespace Server
 			ConfigManager.LoadConfig();
 			DataManager.LoadData();
 
-			GameRoom room = RoomManager.Instance.Add(1);
+			using (AppDbContext db = new AppDbContext())
+			{
+				PlayerDb player = db.Players.FirstOrDefault();
+				if(player != null)
+				{
+					db.Items.Add(new ItemDb()
+					{
+						TemplateId = 1,
+						Count = 1,
+						Slot = 0,
+						Owner = player
+					});
+                    db.Items.Add(new ItemDb()
+                    {
+                        TemplateId = 100,
+                        Count = 1,
+                        Slot = 1,
+                        Owner = player
+                    });
+                    db.Items.Add(new ItemDb()
+                    {
+                        TemplateId = 101,
+                        Count = 1,
+                        Slot = 2,
+                        Owner = player
+                    });
+                    db.Items.Add(new ItemDb()
+                    {
+                        TemplateId = 200,
+                        Count = 10,
+                        Slot = 3,
+                        Owner = player
+                    });
+					db.SaveChanges();
+                }
+			}
+        
+
+            GameRoom room = RoomManager.Instance.Add(1);
 			TickRoom(room, 50);
 			
 			// DNS (Domain Name System)
@@ -53,7 +95,7 @@ namespace Server
 
 			while (true)
 			{
-				Thread.Sleep(100);
+				DbTransaction.Instance.Flush();
 			}
 		}
 	}

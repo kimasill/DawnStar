@@ -49,7 +49,7 @@ namespace ServerCore
 			}
 			else
 			{
-                Console.WriteLine($"OnConnectCompleted Fail: {args.SocketError}");
+				Console.WriteLine($"OnConnectCompleted Fail: {args.SocketError}");
 			}
 		}
 	}

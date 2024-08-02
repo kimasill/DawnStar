@@ -1,25 +1,34 @@
 ﻿using Google.Protobuf.Protocol;
 using Server.Data;
+using Server.DB;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DbTransaction = Server.DB.DbTransaction;
 
 namespace Server.Game
 {
     public class Monster : GameObject
     {
+        public int TemplateId { get; private set; }
         public Monster()
         {
             ObjectType = GameObjectType.Monster;
+        }
 
-            Stat.Level = 1;
-            Stat.Hp = 100;
-            Stat.MaxHp = 100;
-            Stat.Speed = 5.0f;
-            State = CreatureState.Idle;            
+        public void Init(int templateId)
+        {
+            TemplateId = templateId;
+
+            MonsterData monsterData = null;
+            DataManager.MonsterDict.TryGetValue(TemplateId, out monsterData);
+            Stat.MergeFrom(monsterData.stat);
+            Stat.Hp = monsterData.stat.MaxHp;
+            State = CreatureState.Idle;
         }
         //FSM (Finite State Machine)
         public override void Update()
@@ -118,7 +127,7 @@ namespace Server.Game
             S_Move movePacket = new S_Move();
             movePacket.ObjectId = Id;
             movePacket.Position = PosInfo;
-            Room.BroadCast(movePacket);
+            Room.Broadcast(movePacket);
         }
         long _coolTick = 0;
         protected virtual void UpdateSkill() 
@@ -159,7 +168,7 @@ namespace Server.Game
                 S_Skill skillPacket = new S_Skill() { Info = new SkillInfo()};
                 skillPacket.ObjectId = Id;
                 skillPacket.Info.SkillId = skillData.id;
-                Room.BroadCast(skillPacket);
+                Room.Broadcast(skillPacket);
 
                 //쿨타임
                 int coolTick = (int)(skillData.coolTime * 1000);
@@ -171,5 +180,38 @@ namespace Server.Game
         }
         protected virtual void UpdateDead() { }
 
+        public override void Ondead(GameObject attacker)
+        {
+            base.Ondead(attacker);
+            //Todo : 경험치, 아이템 드랍
+            GameObject owner = attacker.GetOwner();
+            if (owner.ObjectType == GameObjectType.Player)
+            {
+                RewardData rewardData = GetRandomReward();
+                if (rewardData != null)
+                {
+                    Player player = (Player)owner;
+                    DbTransaction.RewardPlayer(player, rewardData, Room);
+                }
+            }   
+        }
+
+        RewardData GetRandomReward()
+        {
+            MonsterData monsterData = null;
+            DataManager.MonsterDict.TryGetValue(TemplateId, out monsterData);
+
+            int rand = new Random().Next(0, 101);
+            int sum = 0;
+            foreach(RewardData rewardData in monsterData.rewards)
+            {
+                sum+=rewardData.probability;
+                if(rand <= sum)
+                {
+                    return rewardData;
+                }
+            }
+            return null;
+        }
     }
 }

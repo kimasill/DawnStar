@@ -17,7 +17,7 @@ namespace Server.Game
         {
             if (Data == null || Data.projectile == null || Owner == null || Room == null)
                 return;
-            if(_nextMoveTick >= Environment.TickCount64)            
+            if (_nextMoveTick >= Environment.TickCount64)
                 return;
 
             long tick = (long)(1000 / Data.projectile.speed); //1초에 몇번 이동할 것인가
@@ -30,18 +30,23 @@ namespace Server.Game
                 S_Move movePacket = new S_Move();
                 movePacket.ObjectId = Id;
                 movePacket.Position = PosInfo;
-                Room.BroadCast(movePacket);
+                Room.Broadcast(movePacket);
                 Console.WriteLine("move arrow");
             }
             else
             {
                 GameObject target = Room.Map.Find(destPos);
-                if(target != null)
+                if (target != null)
                 {
                     target.OnDamaged(this, Data.damage + Owner.Stat.Attack); //피격판정                    
                 }
                 Room.Push(Room.LeaveGame, Id);
             }
         }
-    }
+
+        public override GameObject GetOwner()
+        {
+            return Owner;
+        }
+    }    
 }
