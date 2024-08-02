@@ -5,6 +5,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
 
 class PacketHandler
 {
@@ -115,5 +117,87 @@ class PacketHandler
         }
         cc.Hp = 0;
         cc.OnDead();
+    }
+
+    public static void S_ConnectedHandler(PacketSession session, IMessage packet)
+    {
+        Debug.Log("S_ConnectedHandler");
+        C_Login loginPacket = new C_Login();
+        loginPacket.UniqueId = SystemInfo.deviceUniqueIdentifier;
+
+        Managers.Network.Send(loginPacket);
+    }
+
+    //로그인 결과 + 캐릭터 목록
+    public static void S_LoginHandler(PacketSession session, IMessage packet)
+    {
+        S_Login loginPacket = (S_Login)packet;
+        Debug.Log($"S_LoginHandler {loginPacket.LoginOk}");
+
+        //TODO: 로비 UI 에서 캐릭터 선택하도록 만들기
+        if(loginPacket.Players == null || loginPacket.Players.Count == 0)
+        {
+            C_CreatePlayer createPlayerPacket = new C_CreatePlayer();
+            createPlayerPacket.Name = $"Player_{Random.Range(0 , 1000).ToString("0000")}";
+            Managers.Network.Send(createPlayerPacket);
+        }
+        else
+        {
+            //일단 첫번째로 로그인
+            LobbyPlayerInfo info = loginPacket.Players[0];
+            C_EnterGame enterGamePacket = new C_EnterGame();
+            enterGamePacket.Name = info.Name;
+            Managers.Network.Send(enterGamePacket);
+        }
+    }
+
+    public static void S_CreatePlayerHandler(PacketSession session, IMessage packet)
+    {
+        S_CreatePlayer createOkPacket = (S_CreatePlayer)packet;
+        if (createOkPacket.Player == null)
+        {
+            C_CreatePlayer createPlayerPacket = new C_CreatePlayer();
+            createPlayerPacket.Name = $"Player_{Random.Range(0, 1000).ToString("0000")}";
+            Managers.Network.Send(createPlayerPacket);
+        }
+        else
+        {
+            C_EnterGame enterGamePacket = new C_EnterGame();
+            enterGamePacket.Name = createOkPacket.Player.Name;
+            Managers.Network.Send(enterGamePacket);
+        }
+    }
+
+    public static void S_ItemListHandler(PacketSession session, IMessage packet)
+    {
+
+        S_ItemList itemPacket = packet as S_ItemList;
+        Managers.Inventory.Clear();
+
+        //메모리에 아이템 정보 저장
+        foreach (ItemInfo itemInfo in itemPacket.Items)
+        {
+            Item item = Item.MakeItem(itemInfo);
+            Managers.Inventory.Add(item);
+        }
+
+        //invenUI.gameObject.SetActive(true);
+        //invenUI.RefreshUI();
+    }
+
+    public static void S_AddItemHandler(PacketSession session, IMessage packet)
+    {
+
+        S_AddItem itemList = packet as S_AddItem;
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        UI_Inventory invenUI = gameSceneUI.InvenUI;
+        //메모리에 아이템 정보 저장
+        foreach (ItemInfo itemInfo in itemList.Items)
+        {
+            Item item = Item.MakeItem(itemInfo);
+            Managers.Inventory.Add(item);
+        }
+
+        Debug.Log("S_AddItem");
     }
 }

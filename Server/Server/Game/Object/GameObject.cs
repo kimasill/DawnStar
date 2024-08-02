@@ -112,7 +112,7 @@ namespace Server.Game
             S_ChangeHp changePacket = new S_ChangeHp();
             changePacket.ObjectId = Id;
             changePacket.Hp = Stat.Hp;
-            Room.BroadCast(changePacket);
+            Room.Broadcast(changePacket);
 
             if (Stat.Hp <= 0)
             {
@@ -128,7 +128,7 @@ namespace Server.Game
             S_Die diePacket = new S_Die();
             diePacket.ObjectId = Id;
             diePacket.AttackerId = attacker.Id;            
-            Room.BroadCast(diePacket);
+            Room.Broadcast(diePacket);
 
             GameRoom room = Room;//Room이 null이 될 수 있으므로 미리 저장  
             room.LeaveGame(Id);
@@ -139,6 +139,11 @@ namespace Server.Game
             PosInfo.PosY = 0;
 
             room.EnterGame(this);
+        }
+
+        public virtual GameObject GetOwner()
+        {
+            return this;
         }
     }
 }

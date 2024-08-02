@@ -14,11 +14,14 @@ using Server.Data;
 
 namespace Server
 {
-    public class ClientSession : PacketSession
+    public partial class ClientSession : PacketSession
 	{
-		public Player MyPlayer { get; set; }
+        public PlayerServerState ServerState { get; private set; } = PlayerServerState.ServerStateLogin;
+        public Player MyPlayer { get; set; }
 		public int SessionId { get; set; }
-		public void Send(IMessage packet)
+		
+        #region Network
+        public void Send(IMessage packet)
         {
             string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
             MsgId msgId = (MsgId)Enum.Parse(typeof(MsgId), msgName);
@@ -36,22 +39,11 @@ namespace Server
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");
 
-			MyPlayer = ObjectManager.Instance.Add<Player>();
+			//연결시 클라이언트에게 Connected 패킷을 보낸다.
 			{
-				MyPlayer.Info.Name = $"Player_{MyPlayer.Info.ObjectId}";
-				MyPlayer.Info.Position.State = CreatureState.Idle;
-				MyPlayer.Info.Position.MoveDir = MoveDir.Down;
-				MyPlayer.Info.Position.PosX = 0;
-				MyPlayer.Info.Position.PosY = 0;
-
-				StatInfo stat = null;
-				DataManager.StatDict.TryGetValue(1, out stat);
-				MyPlayer.Stat.MergeFrom(stat);
-				MyPlayer.Session = this;
+				S_Connected connectedPacket = new S_Connected();
+				Send(connectedPacket);
 			}
-			GameRoom room = RoomManager.Instance.Find(1);
-			room.Push(room.EnterGame, MyPlayer);
-			// PROTO Test
 		}
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)
@@ -73,5 +65,7 @@ namespace Server
 		{
 			//Console.WriteLine($"Transferred bytes: {numOfBytes}");
 		}
-	}
+
+        #endregion
+    }
 }
