@@ -22,10 +22,15 @@ public class UI_Inventory : UI_Base
             UI_Inventory_Item item = go.GetOrAddComponent<UI_Inventory_Item>();
             Items.Add(item);
         }
+        RefreshUI();
     }
-
+    //문제 : Init 타이밍 이슈. UI_GameScene에서 Stat_UI, Inven_UI를 false로 바꾸기 때문에 해당 클래스 Init이 호출되지 않음
     public void RefreshUI()
     {
+        if(Items.Count == 0)
+        {
+            return;
+        }
         List<Item> items = Managers.Inventory.Items.Values.ToList();
         items.Sort((left, right) => { return left.Slot - right.Slot; });
 
@@ -33,7 +38,7 @@ public class UI_Inventory : UI_Base
         {
             if (item.Slot < 0 || item.Slot >= 20 )
                 continue;
-            Items[item.Slot].SetItem(item.TemplateId, item.Count);
+            Items[item.Slot].SetItem(item);
         }
     }
 }

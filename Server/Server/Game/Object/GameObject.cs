@@ -20,6 +20,9 @@ namespace Server.Game
         }
         public PositionInfo PosInfo { get; private set;} = new PositionInfo();
         public StatInfo Stat { get; private set; } = new StatInfo();
+
+        public virtual int TotalAttack { get { return Stat.Attack; } }
+        public virtual int TotalDefense { get { return 0; } }
         public int Hp
         {
             get { return Stat.Hp; }
@@ -106,6 +109,7 @@ namespace Server.Game
             if (Room == null)
                 return;
 
+            damage = Math.Max(damage - TotalDefense, 0);
             Stat.Hp = Math.Max(Stat.Hp - damage, 0);
             Stat.Hp -= damage;
 

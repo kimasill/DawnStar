@@ -34,6 +34,7 @@ public class CreatureController : BaseController
 		go.transform.localPosition = new Vector3(0, 0.5f, 0);
 		go.name = "HpBar";
 		_hpBar = go.GetComponent<HpBar>();
+		UpdateHpBar();
 	}
 
 	void UpdateHpBar()

@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.DB;
+using Server.Game.Job;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,7 @@ namespace Server.Game
             State = CreatureState.Idle;
         }
         //FSM (Finite State Machine)
+        IJob _job;
         public override void Update()
         {
             switch (State)
@@ -47,6 +49,11 @@ namespace Server.Game
                 case CreatureState.Dead:
                     UpdateDead();
                     break;
+            }
+
+            if(Room != null)
+            {
+                _job = Room.PushAfter(200, Update);
             }
         }
         Player _target;
@@ -162,7 +169,7 @@ namespace Server.Game
                 Skill skillData = null;
                 DataManager.SkillDict.TryGetValue(1, out skillData);
                 //데미지 판정
-                _target.OnDamaged(this, skillData.damage + Stat.Attack);
+                _target.OnDamaged(this, skillData.damage + TotalAttack);
 
                 //스킬 사용
                 S_Skill skillPacket = new S_Skill() { Info = new SkillInfo()};
@@ -182,6 +189,13 @@ namespace Server.Game
 
         public override void Ondead(GameObject attacker)
         {
+            //죽은 상태로 변경 : job 취소
+            if (_job != null)
+            {
+                _job.Cancel = true;
+                _job = null;
+            }
+
             base.Ondead(attacker);
             //Todo : 경험치, 아이템 드랍
             GameObject owner = attacker.GetOwner();

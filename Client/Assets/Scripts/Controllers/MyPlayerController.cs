@@ -1,15 +1,21 @@
 using Google.Protobuf.Protocol;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
+using static Item;
 
 public class MyPlayerController : PlayerController
 {
     bool _moveKeyPressed = false;
+
+    public int WeaponDamage { get; private set; }
+    public int ArmorDef { get; private set; }
     protected override void Init()
     {
         base.Init();
+        RefreshAdditionalStat();
     }
 
     protected override void UpdateController()
@@ -30,12 +36,12 @@ public class MyPlayerController : PlayerController
 
     void GetUIKeyInput()
     {
-        if(Input.GetKeyDown(KeyCode.I))
+        if (Input.GetKeyDown(KeyCode.I))
         {
             UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
             UI_Inventory invenUI = gameSceneUI.InvenUI;
 
-            if(invenUI.gameObject.activeSelf)
+            if (invenUI.gameObject.activeSelf)
             {
                 invenUI.gameObject.SetActive(false);
             }
@@ -43,6 +49,22 @@ public class MyPlayerController : PlayerController
             {
                 invenUI.gameObject.SetActive(true);
                 invenUI.RefreshUI();
+            }
+
+        }
+        else if (Input.GetKeyDown(KeyCode.C))
+        {
+            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+            UI_Stat statUI = gameSceneUI.StatUI;
+
+            if (statUI.gameObject.activeSelf)
+            {
+                statUI.gameObject.SetActive(false);
+            }
+            else
+            {
+                statUI.gameObject.SetActive(true);
+                statUI.RefreshUI();
             }
         }
     }
@@ -149,6 +171,29 @@ public class MyPlayerController : PlayerController
             movePacket.Position = PosInfo;
             Managers.Network.Send(movePacket);
             _updated = false;
+        }
+    }
+
+    public void RefreshAdditionalStat()
+    {
+        WeaponDamage = 0;
+        ArmorDef = 0;
+
+        foreach (Item item in Managers.Inventory.Items.Values)
+        {
+            if (item.Equipped == false)
+                continue;
+
+            switch (item.ItemType)
+            {
+                case ItemType.Weapon:
+                    WeaponDamage += ((Weapon)item).Damage;
+                    break;
+                case ItemType.Armor:
+                    ArmorDef += ((Armor)item).Defense;
+                    break;
+            }
+
         }
     }
 }
