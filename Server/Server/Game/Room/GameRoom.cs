@@ -165,6 +165,7 @@ namespace Server.Game
 
         public void Broadcast(IMessage packet)
         {
+            //보내는 부분 다른 쓰레드에 넘김
             foreach (Player p in _players.Values)
             {
                 p.Session.Send(packet);

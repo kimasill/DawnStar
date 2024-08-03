@@ -19,7 +19,9 @@ namespace Server
         public PlayerServerState ServerState { get; private set; } = PlayerServerState.ServerStateLogin;
         public Player MyPlayer { get; set; }
 		public int SessionId { get; set; }
-		
+        object _lock = new object();
+        List<ArraySegment<byte>> _reserverQueue = new List<ArraySegment<byte>>();
+
         #region Network
         public void Send(IMessage packet)
         {
@@ -33,7 +35,24 @@ namespace Server
             Array.Copy(BitConverter.GetBytes(protocolId), 0, sendBuffer, 2, sizeof(ushort));
             Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
 
-            Send(new ArraySegment<byte>(sendBuffer));
+            lock(_lock)
+            {
+                _reserverQueue.Add(sendBuffer);
+            }
+            //Send(new ArraySegment<byte>(sendBuffer));
+        }
+        //Queue에 있는 패킷을 보낸다.
+        public void FlushSend()
+        {
+            List<ArraySegment<byte>> sendList = null;
+            lock (_lock)
+            {
+                if(_reserverQueue.Count == 0)
+                    return;
+                sendList = _reserverQueue;
+                _reserverQueue = new List<ArraySegment<byte>>();
+            }
+            Send(sendList);
         }
 		public override void OnConnected(EndPoint endPoint)
 		{
@@ -53,10 +72,13 @@ namespace Server
 
 		public override void OnDisconnected(EndPoint endPoint)
 		{
-			GameRoom room = RoomManager.Instance.Find(1);
-			room.Push(room.LeaveGame, MyPlayer.Info.ObjectId);
+            GameLogic.Instance.Push(() =>
+            {
+                GameRoom room = GameLogic.Instance.Find(1);
+                room.Push(room.LeaveGame, MyPlayer.Info.ObjectId);
+            });
 
-			SessionManager.Instance.Remove(this);
+            SessionManager.Instance.Remove(this);
 
 			Console.WriteLine($"OnDisconnected : {endPoint}");
 		}
