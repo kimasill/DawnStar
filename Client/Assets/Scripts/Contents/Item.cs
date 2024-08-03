@@ -1,5 +1,6 @@
 using Data;
 using Google.Protobuf.Protocol;
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,6 +33,13 @@ public class Item
         get { return Info.Slot; }
         set { Info.Slot = value; }
     }
+
+    public bool Equipped
+    {
+        get { return Info.Equipped; }
+        set { Info.Equipped = value; }
+    }
+
 
     public ItemType ItemType { get; private set; }
     public bool Stackable { get; protected set; }
@@ -68,6 +76,7 @@ public class Item
             item.ItemDbId = itemInfo.ItemDbId;
             item.Count = itemInfo.Count;
             item.Slot = itemInfo.Slot;
+            item.Equipped = itemInfo.Equipped;
         }
 
         return item;

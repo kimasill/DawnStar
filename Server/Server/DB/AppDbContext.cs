@@ -17,7 +17,7 @@ namespace Server.DB
         static readonly ILoggerFactory _logger
             = LoggerFactory.Create(builder => { builder.AddConsole(); });
 
-        string _connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=GameDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+        string _connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=GameDB;Integrated Security=True";
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
