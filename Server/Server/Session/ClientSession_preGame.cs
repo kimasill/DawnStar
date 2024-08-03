@@ -136,8 +136,12 @@ namespace Server
 
             ServerState = PlayerServerState.ServerStateGame;
 
-            GameRoom room = RoomManager.Instance.Find(1);
-            room.Push(room.EnterGame, MyPlayer);
+            //GameLogic 담당 스레드에 등록
+            GameLogic.Instance.Push(() =>
+            { 
+                GameRoom room = GameLogic.Instance.Find(1);
+                room.Push(room.EnterGame, MyPlayer);
+            });
         }
 
         public void HandleCreatePlayer(C_CreatePlayer createPacket)
