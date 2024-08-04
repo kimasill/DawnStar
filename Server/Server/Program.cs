@@ -76,18 +76,21 @@ namespace Server
 
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			Console.WriteLine("Listening...");
-            //GameLogic Task
+            //Db Task
 			{
-				Task gameLogicTask = new Task(GameLogicTask, TaskCreationOptions.LongRunning);
-				gameLogicTask.Start();
+                Thread t = new Thread(DbTask);
+                t.Name = "DB";
+                t.Start();
 			}
             //Network Task
             {
-                Task networkTask = new Task(NetworkTask, TaskCreationOptions.LongRunning);
-                networkTask.Start();
+                Thread t = new Thread(DbTask);
+                t.Name = "Network Send";
+                t.Start();
             }
-            //Db Task
-            DbTask();
+            //GameLogic Task : 메인 스레드에서 실행
+            Thread.CurrentThread.Name = "Game Logic";
+            GameLogicTask();
 
 			//FlushRoom();
 			//JobTimer.Instance.Push(FlushRoom);
