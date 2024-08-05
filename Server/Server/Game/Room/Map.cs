@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using Server.DB;
 using Server.Game;
 using ServerCore;
 using System;
@@ -146,6 +147,11 @@ namespace Server.Game.Room
                 return false;
             if (posInfo.PosY < MinY && posInfo.PosY > MaxY)
                 return false;
+
+            //Zone
+            Zone zone = gameObject.Room.GetZone(gameObject.CellPos);
+            zone.Remove(gameObject);
+
             {
                 int x = posInfo.PosX - MinX;
                 int y = MaxY - posInfo.PosY;
@@ -155,9 +161,8 @@ namespace Server.Game.Room
             return true;
         }
 
-        public bool ApplyMove(GameObject gameObject, Vector2Int dest)
+        public bool ApplyMove(GameObject gameObject, Vector2Int dest, bool checkObjects = true, bool collision = true)
         {
-            ApplyLeave(gameObject);
 
             if (gameObject.Room == null)
                 return false;
@@ -168,17 +173,67 @@ namespace Server.Game.Room
             
             if (CanGo(dest, true) == false)
                 return false;
+            if(collision)
             {
-                int x = dest.x - MinX;
-                int y = MaxY - dest.y;
-                _objects[y, x] = gameObject;
+                {
+                    int x = posInfo.PosX - MinX;
+                    int y = MaxY - posInfo.PosY;
+                    if (_objects[y, x] == gameObject)
+                        _objects[y, x] = null;
+                }
+                {
+                    int x = dest.x - MinX;
+                    int y = MaxY - dest.y;
+                    _objects[y, x] = gameObject;
+                }                
             }
+            // Zone 이동
+            GameObjectType type = ObjectManager.GetObjectType(gameObject.Id);
+            if (type == GameObjectType.Player)
+            {
+                Player player = (Player)gameObject;
+
+                Zone now = gameObject.Room.GetZone(gameObject.CellPos);
+                Zone next = gameObject.Room.GetZone(dest);
+                if (now != next)
+                {
+                    now.Players.Remove(player);
+                    next.Players.Add(player);
+                }
+            }
+            else if (type == GameObjectType.Monster)
+            {
+                Monster monster = (Monster)gameObject;
+                Zone now = gameObject.Room.GetZone(gameObject.CellPos);
+                Zone next = gameObject.Room.GetZone(dest);
+                if (now != next)
+                {
+                    now.Monsters.Remove(monster);
+                    next.Monsters.Add(monster);
+                }
+            }
+            else if (type == GameObjectType.Projectile)
+            { 
+                Projectile projectile = (Projectile)gameObject;
+                Zone now = gameObject.Room.GetZone(gameObject.CellPos);
+                Zone next = gameObject.Room.GetZone(dest);
+                if (now != next)
+                {
+                    now.Projectiles.Remove(projectile);
+                    next.Projectiles.Add(projectile);
+                }
+            }
+
+
+            
+            
+
             posInfo.PosX = dest.x;
             posInfo.PosY = dest.y;
             return true;
         }
         
-
+        
         public void LoadMap(int mapId, string pathPrefix = "../../../../../Common/MapData")
         {
             string mapName = "Map_" + mapId.ToString("000");
@@ -211,7 +266,7 @@ namespace Server.Game.Room
         int[] _deltaX = new int[] { 0, 0, -1, 1 };
         int[] _cost = new int[] { 10, 10, 10, 10 };
 
-        public List<Vector2Int> FindPath(Vector2Int startCellPos, Vector2Int destCellPos, bool checkObjects = false)
+        public List<Vector2Int> FindPath(Vector2Int startCellPos, Vector2Int destCellPos, bool checkObjects = false, int maxDist = 10)
         {
             List<Pos> path = new List<Pos>();
 
@@ -265,6 +320,9 @@ namespace Server.Game.Room
                 {
                     Pos next = new Pos(node.Y + _deltaY[i], node.X + _deltaX[i]);
 
+                    //너무 멀면 스킵
+                    if(Math.Abs(pos.Y - next.Y) + Math.Abs(pos.X - next.X) > maxDist)
+                        continue;
                     // 유효 범위를 벗어났으면 스킵
                     // 벽으로 막혀서 갈 수 없으면 스킵
                     if (next.Y != dest.Y || next.X != dest.X)
@@ -308,15 +366,32 @@ namespace Server.Game.Room
         List<Vector2Int> CalcCellPathFromParent(Dictionary<Pos, Pos> parent, Pos dest)
         {
             List<Vector2Int> cells = new List<Vector2Int>();
-
-            Pos pos = dest;
-            while (parent[pos]!= pos)
+            if(parent.ContainsKey(dest) == false)//길 없음
             {
-                cells.Add(Pos2Cell(pos));
-                pos = parent[pos];
+                Pos best = new Pos();
+                int bestDist = Int32.MaxValue;
+
+                foreach (Pos p in parent.Keys)
+                {
+                    int dist = Math.Abs(dest.Y - p.Y) + Math.Abs(dest.X - p.X);
+                    if (dist < bestDist)
+                    {
+                        best = p;
+                        bestDist = dist;
+                    }
+                }
+                dest = best;
             }
-            cells.Add(Pos2Cell(pos));
-            cells.Reverse();
+            {
+                Pos pos = dest;
+                while (parent[pos] != pos)
+                {
+                    cells.Add(Pos2Cell(pos));
+                    pos = parent[pos];
+                }
+                cells.Add(Pos2Cell(pos));
+                cells.Reverse();
+            }           
 
             return cells;
         }

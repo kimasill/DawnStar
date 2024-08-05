@@ -104,7 +104,7 @@ namespace Server.Game
                 BroadcastMove();
                 return;
             }
-            List<Vector2Int> path = Room.Map.FindPath(CellPos, _target.CellPos, checkObjects: false);
+            List<Vector2Int> path = Room.Map.FindPath(CellPos, _target.CellPos, checkObjects: true);
             if (path.Count < 2 || path.Count > _chaseRange)
             {
                 _target = null;
@@ -134,7 +134,7 @@ namespace Server.Game
             S_Move movePacket = new S_Move();
             movePacket.ObjectId = Id;
             movePacket.Position = PosInfo;
-            Room.Broadcast(movePacket);
+            Room.Broadcast(CellPos, movePacket);
         }
         long _coolTick = 0;
         protected virtual void UpdateSkill() 
@@ -175,7 +175,7 @@ namespace Server.Game
                 S_Skill skillPacket = new S_Skill() { Info = new SkillInfo()};
                 skillPacket.ObjectId = Id;
                 skillPacket.Info.SkillId = skillData.id;
-                Room.Broadcast(skillPacket);
+                Room.Broadcast(CellPos, skillPacket);
 
                 //쿨타임
                 int coolTick = (int)(skillData.coolTime * 1000);

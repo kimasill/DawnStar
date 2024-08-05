@@ -4,6 +4,7 @@ using ServerCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -123,7 +124,9 @@ class PacketHandler
     {
         Debug.Log("S_ConnectedHandler");
         C_Login loginPacket = new C_Login();
-        loginPacket.UniqueId = SystemInfo.deviceUniqueIdentifier;
+
+        string path = Application.dataPath;
+        loginPacket.UniqueId = path.GetHashCode().ToString();
 
         Managers.Network.Send(loginPacket);
     }
@@ -230,5 +233,12 @@ class PacketHandler
 
         S_ChangeStat itemList = (S_ChangeStat)packet;
         
+    }
+
+    public static void S_PingHandler(PacketSession session, IMessage packet)
+    {
+        C_Pong pongPacket = new C_Pong();
+        Debug.Log("S_PingHandler");
+        Managers.Network.Send(pongPacket);
     }
 }

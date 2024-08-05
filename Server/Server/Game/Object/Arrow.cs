@@ -20,13 +20,13 @@ namespace Server.Game
             Room.PushAfter(tick, Update);
 
             Vector2Int destPos = GetFrontCellPos();
-            if (Room.Map.CanGo(destPos))
+            if (Room.Map.ApplyMove(this, destPos, collision:false))
             {
                 CellPos = destPos;
                 S_Move movePacket = new S_Move();
                 movePacket.ObjectId = Id;
                 movePacket.Position = PosInfo;
-                Room.Broadcast(movePacket);
+                Room.Broadcast(CellPos, movePacket);
                 Console.WriteLine("move arrow");
             }
             else
