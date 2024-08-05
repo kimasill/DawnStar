@@ -65,7 +65,7 @@ namespace Server
 
             GameLogic.Instance.Push(() =>
             {
-                GameRoom room = GameLogic.Instance.Add(1);
+                GameLogic.Instance.Add(1);
             });
 
             // DNS (Domain Name System)
@@ -84,7 +84,7 @@ namespace Server
 			}
             //Network Task
             {
-                Thread t = new Thread(DbTask);
+                Thread t = new Thread(NetworkTask);
                 t.Name = "Network Send";
                 t.Start();
             }

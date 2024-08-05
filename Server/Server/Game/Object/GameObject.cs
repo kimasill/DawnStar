@@ -116,7 +116,7 @@ namespace Server.Game
             S_ChangeHp changePacket = new S_ChangeHp();
             changePacket.ObjectId = Id;
             changePacket.Hp = Stat.Hp;
-            Room.Broadcast(changePacket);
+            Room.Broadcast(CellPos, changePacket);
 
             if (Stat.Hp <= 0)
             {
@@ -132,17 +132,15 @@ namespace Server.Game
             S_Die diePacket = new S_Die();
             diePacket.ObjectId = Id;
             diePacket.AttackerId = attacker.Id;            
-            Room.Broadcast(diePacket);
+            Room.Broadcast(CellPos, diePacket);
 
             GameRoom room = Room;//Room이 null이 될 수 있으므로 미리 저장  
             room.LeaveGame(Id);
             Stat.Hp = Stat.MaxHp;
             PosInfo.State = CreatureState.Idle;
             PosInfo.MoveDir = MoveDir.Down;
-            PosInfo.PosX = 0;
-            PosInfo.PosY = 0;
 
-            room.EnterGame(this);
+            room.EnterGame(this, randPos : true);
         }
 
         public virtual GameObject GetOwner()
