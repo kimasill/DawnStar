@@ -22,8 +22,8 @@ namespace Server.DB
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             options
-                .UseSqlServer(ConfigManager.Config == null? _connectionString : ConfigManager.Config.connectionString)
-                .UseLoggerFactory(_logger);
+                .UseSqlServer(ConfigManager.Config == null ? _connectionString : ConfigManager.Config.connectionString);
+                //.UseLoggerFactory(_logger);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
