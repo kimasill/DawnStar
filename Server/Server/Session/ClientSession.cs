@@ -107,9 +107,7 @@ namespace Server
                 room.Push(room.LeaveGame, MyPlayer.Info.ObjectId);
             });
 
-            SessionManager.Instance.Remove(this);
-
-			Console.WriteLine($"OnDisconnected : {endPoint}");
+            SessionManager.Instance.Remove(this);			
 		}
 
 		public override void OnSend(int numOfBytes)

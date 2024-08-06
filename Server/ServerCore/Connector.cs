@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace ServerCore
 {
@@ -25,32 +26,47 @@ namespace ServerCore
 				args.UserToken = socket;
 
 				RegisterConnect(args);
+
+				Thread.Sleep(10);
 			}
 		}
 
 		void RegisterConnect(SocketAsyncEventArgs args)
 		{
-			Socket socket = args.UserToken as Socket;
-			if (socket == null)
-				return;
-
-			bool pending = socket.ConnectAsync(args);
-			if (pending == false)
-				OnConnectCompleted(null, args);
+            Socket socket = args.UserToken as Socket;
+            if (socket == null)
+                return;
+            try
+			{
+                bool pending = socket.ConnectAsync(args);
+                if (pending == false)
+                    OnConnectCompleted(null, args);
+            }
+			catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
 		}
 
 		void OnConnectCompleted(object sender, SocketAsyncEventArgs args)
 		{
-			if (args.SocketError == SocketError.Success)
+			try
 			{
-				Session session = _sessionFactory.Invoke();
-				session.Start(args.ConnectSocket);
-				session.OnConnected(args.RemoteEndPoint);
-			}
-			else
-			{
-				Console.WriteLine($"OnConnectCompleted Fail: {args.SocketError}");
-			}
+                if (args.SocketError == SocketError.Success)
+                {
+                    Session session = _sessionFactory.Invoke();
+                    session.Start(args.ConnectSocket);
+                    session.OnConnected(args.RemoteEndPoint);
+                }
+                else
+                {
+                    Console.WriteLine($"OnConnectCompleted Fail: {args.SocketError}");
+                }
+            }
+			catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
 		}
 	}
 }
