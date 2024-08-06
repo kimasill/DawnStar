@@ -68,11 +68,8 @@ namespace Server.Game
                 return;
             _nextSearchTick = Environment.TickCount64 + 1000;
 
-            Player target = Room.FindPlayer(p =>
-            {
-                Vector2Int dir =  p.CellPos - CellPos;
-                return dir.cellDistanceFromZero <= _searchRange;                
-            });
+            Player target = Room.FindCloesetPlayer(CellPos, _searchRange);
+            
 
             if (target == null)
                 return;
