@@ -35,7 +35,7 @@ namespace Server.DB
                     bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
                     if(success)
                     {
-                        room.Push(() => Console.WriteLine($"Hp Saved{playerDb.Hp}"));
+                        //room.Push(() => Console.WriteLine($"Hp Saved{playerDb.Hp}"));
                     }
                 }
             });
@@ -72,7 +72,7 @@ namespace Server.DB
 
         public static void SavePlayerStatus_Step3(int hp)
         {
-            Console.WriteLine($"save hp{hp}");
+            //Console.WriteLine($"save hp{hp}");
         }
 
         public static void RewardPlayer(Player player, RewardData rewardData, GameRoom room)

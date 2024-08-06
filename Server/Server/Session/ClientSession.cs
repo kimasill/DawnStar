@@ -21,6 +21,9 @@ namespace Server
 		public int SessionId { get; set; }
         object _lock = new object();
         List<ArraySegment<byte>> _reserverQueue = new List<ArraySegment<byte>>();
+        int _reservedSentByte = 0;
+        long _lastSendTick = 0;
+
 
         long _pingpongTime = 0;
 
@@ -63,6 +66,7 @@ namespace Server
             lock(_lock)
             {
                 _reserverQueue.Add(sendBuffer);
+                _reservedSentByte += sendBuffer.Length;//지금 까지 보낸 패킷의 크기
             }
             //Send(new ArraySegment<byte>(sendBuffer));
         }
@@ -72,8 +76,13 @@ namespace Server
             List<ArraySegment<byte>> sendList = null;
             lock (_lock)
             {
-                if(_reserverQueue.Count == 0)
+                long delta =(System.Environment.TickCount64 - _lastSendTick);
+                if (delta < 100 && _reservedSentByte < 10240)//10KB
                     return;
+                //패킷이 많이 모일 때 한번에 보내기 위해 Queue에 넣어둔다.
+
+                _reservedSentByte = 0;
+                _lastSendTick = System.Environment.TickCount64;
                 sendList = _reserverQueue;
                 _reserverQueue = new List<ArraySegment<byte>>();
             }
@@ -81,7 +90,7 @@ namespace Server
         }
 		public override void OnConnected(EndPoint endPoint)
 		{
-			Console.WriteLine($"OnConnected : {endPoint}");
+			//Console.WriteLine($"OnConnected : {endPoint}");
 
 			//연결시 클라이언트에게 Connected 패킷을 보낸다.
 			{
