@@ -294,7 +294,7 @@ namespace Server.Game
                     if (zone == null)
                         continue;
 
-                    Zones.Add(zone);
+                    zones.Add(zone);
                 } 
             }
 
