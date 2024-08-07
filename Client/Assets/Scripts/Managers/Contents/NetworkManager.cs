@@ -10,18 +10,19 @@ public class NetworkManager
 {
 	ServerSession _session = new ServerSession();
 
+	public int AccountId { get; set; }
+	public int Token { get; set; }
+
 	public void Send(IMessage packet)
 	{
 		_session.Send(packet);
 	}
 
-	public void Init()
+	public void ConnectToGame(ServerInfo info)
 	{
-		// DNS (Domain Name System)
-		string host = Dns.GetHostName();
-		IPHostEntry ipHost = Dns.GetHostEntry(host);
-		IPAddress ipAddr = ipHost.AddressList[0];
-		IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
+		// DNS (Domain Name System)		
+		IPAddress ipAddr = IPAddress.Parse(info.IPAddress);
+		IPEndPoint endPoint = new IPEndPoint(ipAddr, info.Port);
 
 		Connector connector = new Connector();
 

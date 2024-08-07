@@ -16,7 +16,9 @@ using Server.DB;
 using Server.Game;
 using Server.Game.Job;
 using Server.Game.Room;
+using Server.Utils;
 using ServerCore;
+using SharedDB;
 
 namespace Server
 {
@@ -53,13 +55,50 @@ namespace Server
                 Thread.Sleep(0); //cpu 낭비를 막기위해
             }
         }
-        // Thread				
-        //1.Recv (N개)
-        //2. Logic (1개)
-        //3. Send (1개)
-        //4. DB (1개)
+
+        static void StartServerInfoTask()
+        {
+            var t = new System.Timers.Timer();
+            t.AutoReset = true;
+            t.Elapsed += new System.Timers.ElapsedEventHandler((s, e) =>
+            { 
+                using(SharedDbContext shared = new SharedDbContext())
+                {
+                    ServerDb serverDb = shared.Servers.Where(s => s.Name == Name).FirstOrDefault();
+                    if(serverDb != null)
+                    {
+                        serverDb.IpAdress = IpAddress;
+                        serverDb.Port = Port;
+                        serverDb.BusyScore = SessionManager.Instance.GetBusyScore();
+                        shared.SaveChangesEx();
+                    }
+                    else
+                    {
+                        serverDb = new ServerDb()
+                        {
+                            Name = Program.Name,
+                            IpAdress = IpAddress,
+                            Port = Program.Port,
+                            BusyScore = SessionManager.Instance.GetBusyScore()
+                        };
+                        shared.Servers.Add(serverDb);
+                        shared.SaveChangesEx();
+                    }
+                }
+            } );
+            t.Interval = 10 *1000;
+            t.Start();
+        }
+
+        public static string Name { get; } = "카단";
+        public static int Port { get; } = 7777;
+        public static string IpAddress { get; set; }
 		static void Main(string[] args)
 		{
+            using (SharedDbContext shared = new SharedDbContext())
+            {
+
+            }
 			ConfigManager.LoadConfig();
 			DataManager.LoadData();
 
@@ -71,11 +110,16 @@ namespace Server
             // DNS (Domain Name System)
             string host = Dns.GetHostName();
 			IPHostEntry ipHost = Dns.GetHostEntry(host);
-			IPAddress ipAddr = ipHost.AddressList[0];
+			IPAddress ipAddr = ipHost.AddressList[1];
 			IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
+
+            IpAddress = ipAddr.ToString();
 
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			Console.WriteLine("Listening...");
+
+            StartServerInfoTask();
+
             //Db Task
 			{
                 Thread t = new Thread(DbTask);
