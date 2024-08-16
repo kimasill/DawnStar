@@ -224,10 +224,6 @@ namespace Server.Game.Room
                 }
             }
 
-
-            
-            
-
             posInfo.PosX = dest.x;
             posInfo.PosY = dest.y;
             return true;

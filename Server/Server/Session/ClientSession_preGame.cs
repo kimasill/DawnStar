@@ -105,6 +105,7 @@ namespace Server
                 MyPlayer.Info.Name = playerInfo.Name;
                 MyPlayer.Info.Position.State = CreatureState.Idle;
                 MyPlayer.Info.Position.MoveDir = MoveDir.Down;
+                MyPlayer.Info.Position.LookDir = LookDir.LookRight;
                 MyPlayer.Info.Position.PosX = 0;
                 MyPlayer.Info.Position.PosY = 0;
                 MyPlayer.Stat.MergeFrom(playerInfo.StatInfo);

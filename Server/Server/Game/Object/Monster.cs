@@ -115,12 +115,19 @@ namespace Server.Game
                 State = CreatureState.Skill;
                 return;
             }
-            {
-
-            }
 
             //이동
             Dir = GetDirFromVec(path[1] - CellPos);
+
+            if (Dir == MoveDir.Left)
+            {
+                LookDir = LookDir.LookLeft;
+            }
+            else if (Dir == MoveDir.Right)
+            {
+                LookDir = LookDir.LookRight;
+            }
+
             Room.Map.ApplyMove(this, path[1]);
 
             BroadcastMove();
@@ -161,6 +168,14 @@ namespace Server.Game
                 if (Dir != lookDir)
                 {
                     Dir = lookDir;
+                    if(Dir == MoveDir.Left)
+                    {
+                        LookDir = LookDir.LookLeft;
+                    }
+                    else if(Dir == MoveDir.Right)
+                    {
+                        LookDir = LookDir.LookRight;
+                    }
                     BroadcastMove();
                 }
                 Skill skillData = null;

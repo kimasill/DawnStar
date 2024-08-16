@@ -44,6 +44,7 @@ public class BaseController : MonoBehaviour
             CellPos = new Vector3Int(value.PosX, value.PosY, 0);
             State = value.State;
             Dir = value.MoveDir;
+            LookDir = value.LookDir;
         }
     }
     public void SyncPos()
@@ -81,6 +82,21 @@ public class BaseController : MonoBehaviour
                 return;
 
             PosInfo.State = value;
+            UpdateAnimation();
+            _updated = true;
+        }
+    }
+
+    public LookDir LookDir
+    {
+        get { return PosInfo.LookDir; }
+        set
+        {
+            if (PosInfo.LookDir == value)
+                return;           
+
+            PosInfo.LookDir = value;
+
             UpdateAnimation();
             _updated = true;
         }
@@ -137,73 +153,49 @@ public class BaseController : MonoBehaviour
     }
 
     protected virtual void UpdateAnimation()
-    { 
+    {
         if (_animator == null || _sprite == null)
         {
             return;
         }
         if (State == CreatureState.Idle)
         {
-            switch (Dir)
+            switch (LookDir)
             {
-                case MoveDir.Up:
-                    _animator.Play("IDLE_BACK");
-                    _sprite.flipX = false;
-                    break;
-                case MoveDir.Down:
-                    _animator.Play("IDLE_FRONT");
-                    _sprite.flipX = false;
-                    break;
-                case MoveDir.Left:
-                    _animator.Play("IDLE_RIGHT");
+                case LookDir.LookLeft:
+                    _animator.Play("IDLE");
                     _sprite.flipX = true;
                     break;
-                case MoveDir.Right:
-                    _animator.Play("IDLE_RIGHT");
+                case LookDir.LookRight:
+                    _animator.Play("IDLE");
                     _sprite.flipX = false;
                     break;
             }
         }
         else if (State == CreatureState.Moving)
         {
-            switch (Dir)
+            switch (LookDir)
             {
-                case MoveDir.Up:
-                    _animator.Play("WALK_BACK");
-                    _sprite.flipX = false;
-                    break;
-                case MoveDir.Down:
-                    _animator.Play("WALK_FRONT");
-                    _sprite.flipX = false;
-                    break;
-                case MoveDir.Left:
-                    _animator.Play("WALK_RIGHT");
+                case LookDir.LookLeft:
+                    _animator.Play("WALK");
                     _sprite.flipX = true;
                     break;
-                case MoveDir.Right:
-                    _animator.Play("WALK_RIGHT");
+                case LookDir.LookRight:
+                    _animator.Play("WALK");
                     _sprite.flipX = false;
                     break;
             }
         }
         else if (State == CreatureState.Skill)
         {
-            switch (Dir)
+            switch (LookDir)
             {
-                case MoveDir.Up:
-                    _animator.Play("ATTACK_BACK");
-                    _sprite.flipX = false;
-                    break;
-                case MoveDir.Down:
-                    _animator.Play("ATTACK_FRONT");
-                    _sprite.flipX = false;
-                    break;
-                case MoveDir.Left:
-                    _animator.Play("ATTACK_RIGHT");
+                case LookDir.LookLeft:
+                    _animator.Play("ATTACK");
                     _sprite.flipX = true;
                     break;
-                case MoveDir.Right:
-                    _animator.Play("ATTACK_RIGHT");
+                case LookDir.LookRight:
+                    _animator.Play("ATTACK");
                     _sprite.flipX = false;
                     break;
             }

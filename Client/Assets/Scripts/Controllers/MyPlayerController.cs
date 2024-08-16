@@ -18,6 +18,8 @@ public class MyPlayerController : PlayerController
         RefreshAdditionalStat();
     }
 
+    
+
     protected override void UpdateController()
     {
         GetUIKeyInput();
@@ -82,10 +84,12 @@ public class MyPlayerController : PlayerController
         else if (Input.GetKey(KeyCode.A))
         {
             Dir = MoveDir.Left;
+            LookDir = LookDir.LookLeft;
         }
         else if (Input.GetKey(KeyCode.D))
         {
             Dir = MoveDir.Right;
+            LookDir = LookDir.LookRight;
         }
         else
         {
@@ -105,9 +109,9 @@ public class MyPlayerController : PlayerController
         // 스킬 상태로 갈지 확인
         if (Input.GetKey(KeyCode.Space))
         {
-            Debug.Log("스킬 사용");
+            Debug.Log("기본공격");
             C_Skill skill = new C_Skill() { Info = new SkillInfo()};
-            skill.Info.SkillId = 2;//화살
+            skill.Info.SkillId = 1;//화살
             Managers.Network.Send(skill); 
             
             _coInputCooltime = StartCoroutine(CoInputCooltime(0.2f));

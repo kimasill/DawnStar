@@ -43,6 +43,11 @@ enum MoveDir{
   RIGHT = 3;
 }
 
+enum LookDir{
+	LOOK_LEFT = 0;
+	LOOK_RIGHT = 1;
+}
+
 enum GameObjectType{
 	NONE = 0;
 	PLAYER = 1;
@@ -200,8 +205,9 @@ message ObjectInfo {
 message PositionInfo{
   CreatureState state = 1;
   MoveDir MoveDir = 2;
-  int32 posX = 3;
-  int32 posY = 4;
+  LookDir LookDir = 3;
+  int32 posX = 4;
+  int32 posY = 5;
 }
 
 message StatInfo{
