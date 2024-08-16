@@ -67,7 +67,23 @@ namespace Server.Game
                         GameObject target = Map.Find(skillPos);
                         if (target != null)
                         {
-                            Console.WriteLine("Hit GameObject !");
+                            // LookDir에 따라 공격 방향 처리
+                            // TODO : 데미지 계산
+                            // TODO : MoveDir 방향에도 공격 처리
+                            if (info.Position.LookDir == LookDir.LookLeft)
+                            {
+                                   skillPos = player.GetFrontCellPos(MoveDir.Left);
+                            }
+                            else if (info.Position.LookDir == LookDir.LookRight)
+                            {
+                                   skillPos = player.GetFrontCellPos(MoveDir.Right);
+                            }                           
+
+                            target = Map.Find(skillPos);
+                            if (target != null)
+                            {
+                                Console.WriteLine("Hit GameObject !");
+                            }
                         }
                     }
                     break;

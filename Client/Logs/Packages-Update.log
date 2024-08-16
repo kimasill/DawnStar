@@ -9,3 +9,34 @@ The following packages were 추가됨:
   com.unity.ai.navigation@1.1.5
 The following packages were 업데이트됨:
   com.unity.collab-proxy 1.2.16 버전에서 2.4.3버전으로  com.unity.ide.rider 1.1.4 버전에서 3.0.31버전으로  com.unity.ide.vscode 1.2.0 버전에서 1.2.5버전으로  com.unity.test-framework 1.1.14 버전에서 1.1.33버전으로  com.unity.textmeshpro 2.0.1 버전에서 3.0.6버전으로  com.unity.timeline 1.2.10 버전에서 1.7.6버전으로
+=== Fri Aug 16 15:49:58 2024
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were 업데이트됨:
+  com.unity.2d.animation 7.0.11 버전에서 9.1.1버전으로  com.unity.2d.aseprite 1.0.1 버전에서 1.1.4버전으로  com.unity.2d.common 6.0.6 버전에서 8.0.2버전으로  com.unity.2d.psdimporter 6.0.7 버전에서 8.0.5버전으로  com.unity.2d.spriteshape 7.0.7 버전에서 9.0.3버전으로  com.unity.2d.tilemap.extras 2.2.6 버전에서 3.1.2버전으로  com.unity.burst 1.6.6 버전에서 1.8.16버전으로  com.unity.collab-proxy 2.1.0 버전에서 2.4.3버전으로  com.unity.feature.2d 2.0.0 버전에서 2.0.1버전으로  com.unity.ide.rider 3.0.25 버전에서 3.0.31버전으로  com.unity.ide.visualstudio 2.0.21 버전에서 2.0.22버전으로  com.unity.services.core 1.11.0 버전에서 1.12.5버전으로  com.unity.timeline 1.6.5 버전에서 1.7.6버전으로  com.unity.visualscripting 1.9.1 버전에서 1.9.4버전으로The following packages were 삭제됨:
+  com.unity.2d.path@5.0.2
+
+=== Fri Aug 16 15:49:58 2024
+
+Packages were changed.
+Update Mode: mergeDefaultDependencies
+
+The following packages were 추가됨:
+  com.unity.2d.animation@9.1.1
+  com.unity.2d.aseprite@1.1.4
+  com.unity.2d.common@8.0.2
+  com.unity.2d.pixel-perfect@5.0.3
+  com.unity.2d.psdimporter@8.0.5
+  com.unity.2d.spriteshape@9.0.3
+  com.unity.2d.tilemap.extras@3.1.2
+  com.unity.burst@1.8.16
+  com.unity.ext.nunit@1.0.6
+  com.unity.feature.2d@2.0.1
+  com.unity.mathematics@1.2.6
+  com.unity.nuget.newtonsoft-json@3.2.1
+  com.unity.services.core@1.12.5
+  com.unity.visualscripting@1.9.4
+  com.unity.modules.subsystems@1.0.0
+  com.unity.modules.uielementsnative@1.0.0

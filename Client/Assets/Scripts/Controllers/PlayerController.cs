@@ -14,85 +14,61 @@ public class PlayerController : CreatureController
 		base.Init();
 	}
 
-	protected override void UpdateAnimation()
-	{
-		if(_animator == null || _sprite == null)
+    protected override void UpdateAnimation()
+    {
+        if (_animator == null || _sprite == null)
         {
-			return;
+            return;
         }
-		if (State == CreatureState.Idle)
-		{
-			switch (Dir)
-			{
-				case MoveDir.Up:
-					_animator.Play("IDLE_BACK");
-					_sprite.flipX = false;
-					break;
-				case MoveDir.Down:
-					_animator.Play("IDLE_FRONT");
-					_sprite.flipX = false;
-					break;
-				case MoveDir.Left:
-					_animator.Play("IDLE_RIGHT");
-					_sprite.flipX = true;
-					break;
-				case MoveDir.Right:
-					_animator.Play("IDLE_RIGHT");
-					_sprite.flipX = false;
-					break;
-			}
-		}
-		else if (State == CreatureState.Moving)
-		{
-			switch (Dir)
-			{
-				case MoveDir.Up:
-					_animator.Play("WALK_BACK");
-					_sprite.flipX = false;
-					break;
-				case MoveDir.Down:
-					_animator.Play("WALK_FRONT");
-					_sprite.flipX = false;
-					break;
-				case MoveDir.Left:
-					_animator.Play("WALK_RIGHT");
-					_sprite.flipX = true;
-					break;
-				case MoveDir.Right:
-					_animator.Play("WALK_RIGHT");
-					_sprite.flipX = false;
-					break;
-			}
-		}
-		else if (State == CreatureState.Skill)
-		{
-			switch (Dir)
-			{
-				case MoveDir.Up:
-					_animator.Play(_rangedSkill ? "ATTACK_WEAPON_BACK" : "ATTACK_BACK");
-					_sprite.flipX = false;
-					break;
-				case MoveDir.Down:
-					_animator.Play(_rangedSkill ? "ATTACK_WEAPON_FRONT" : "ATTACK_FRONT");
-					_sprite.flipX = false;
-					break;
-				case MoveDir.Left:
-					_animator.Play(_rangedSkill ? "ATTACK_WEAPON_RIGHT" : "ATTACK_RIGHT");
-					_sprite.flipX = true;
-					break;
-				case MoveDir.Right:
-					_animator.Play(_rangedSkill ? "ATTACK_WEAPON_RIGHT" : "ATTACK_RIGHT");
-					_sprite.flipX = false;
-					break;
-			}
-		}
-		else
-		{
+        if (State == CreatureState.Idle)
+        {
+            switch (LookDir)
+            {
+                case LookDir.LookLeft:
+                    _animator.Play("IDLE");
+                    _sprite.flipX = true;
+                    break;
+                case LookDir.LookRight:
+                    _animator.Play("IDLE");
+                    _sprite.flipX = false;
+                    break;
+            }
+        }
+        else if (State == CreatureState.Moving)
+        {
+            switch (LookDir)
+            {
+                case LookDir.LookLeft:
+                    _animator.Play("WALK");
+                    _sprite.flipX = true;
+                    break;
+                case LookDir.LookRight:
+                    _animator.Play("WALK");
+                    _sprite.flipX = false;
+                    break;
+            }
+        }
+        else if (State == CreatureState.Skill)
+        {
+            switch (LookDir)
+            {
+                case LookDir.LookLeft:
+                    _animator.Play(_rangedSkill ? "ATTACK_WEAPON_RIGHT" : "ATTACK");
+                    _sprite.flipX = true;
+                    break;
+                case LookDir.LookRight:
+                    _animator.Play(_rangedSkill ? "ATTACK_WEAPON_RIGHT" : "ATTACK");
+                    _sprite.flipX = false;
+                    break;
+            }
+        }
+        else
+        {
 
-		}
-	}
+        }
+    }
 
-	protected override void UpdateController()
+    protected override void UpdateController()
 	{
 		base.UpdateController();
 	}

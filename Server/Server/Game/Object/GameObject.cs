@@ -33,6 +33,13 @@ namespace Server.Game
             get { return PosInfo.MoveDir; }
             set { PosInfo.MoveDir = value; }
         }
+
+        public LookDir LookDir
+        {
+            get { return PosInfo.LookDir; }
+            set { PosInfo.LookDir = value; }
+        }
+
         public float Speed
         {
             get { return Stat.Speed; }
@@ -56,6 +63,7 @@ namespace Server.Game
                 PosInfo.PosY = value.y;
             }
         }
+        
         public GameObject()
         {
             Info.Position = PosInfo;

@@ -27,7 +27,7 @@ public class ObjectManager
         {
             if (myPlayer)
             {
-                GameObject go = Managers.Resource.Instantiate("Creature/MyPlayer");
+                GameObject go = Managers.Resource.Instantiate("Creature/Warrior");
                 go.name = info.Name;
                 _objects.Add(info.ObjectId, go);
 
@@ -39,7 +39,7 @@ public class ObjectManager
             }
             else
             {
-                GameObject go = Managers.Resource.Instantiate("Creature/Player");
+                GameObject go = Managers.Resource.Instantiate("Creature/PlayerWarrior");
                 go.name = info.Name;
                 _objects.Add(info.ObjectId, go);
 
@@ -52,7 +52,7 @@ public class ObjectManager
         }
         else if(type == GameObjectType.Monster)
         {
-            GameObject go = Managers.Resource.Instantiate("Creature/Monster");
+            GameObject go = Managers.Resource.Instantiate("Creature/NormalSkeleton");
             go.name = info.Name;
             _objects.Add(info.ObjectId, go);
 

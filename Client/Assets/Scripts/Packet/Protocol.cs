@@ -52,42 +52,43 @@ namespace Google.Protobuf.Protocol {
             "U3RhdEluZm8ifAoKT2JqZWN0SW5mbxIQCghvYmplY3RJZBgBIAEoBRIMCgRu",
             "YW1lGAIgASgJEigKCHBvc2l0aW9uGAMgASgLMhYuUHJvdG9jb2wuUG9zaXRp",
             "b25JbmZvEiQKCHN0YXRJbmZvGAQgASgLMhIuUHJvdG9jb2wuU3RhdEluZm8i",
-            "dgoMUG9zaXRpb25JbmZvEiYKBXN0YXRlGAEgASgOMhcuUHJvdG9jb2wuQ3Jl",
-            "YXR1cmVTdGF0ZRIiCgdNb3ZlRGlyGAIgASgOMhEuUHJvdG9jb2wuTW92ZURp",
-            "chIMCgRwb3NYGAMgASgFEgwKBHBvc1kYBCABKAUiZQoIU3RhdEluZm8SDQoF",
-            "bGV2ZWwYASABKAUSCgoCaHAYAiABKAUSDQoFbWF4SHAYAyABKAUSDgoGYXR0",
-            "YWNrGAQgASgFEg0KBXNwZWVkGAUgASgCEhAKCHRvdGFsRXhwGAYgASgFIhwK",
-            "CVNraWxsSW5mbxIPCgdza2lsbElkGAEgASgFIl8KCEl0ZW1JbmZvEhAKCEl0",
-            "ZW1EYklkGAEgASgFEhIKCnRlbXBsYXRlSWQYAiABKAUSDQoFY291bnQYAyAB",
-            "KAUSDAoEc2xvdBgEIAEoBRIQCghlcXVpcHBlZBgFIAEoCCrsAgoFTXNnSWQS",
-            "EAoMU19FTlRFUl9HQU1FEAASEAoMU19MRUFWRV9HQU1FEAESCwoHU19TUEFX",
-            "ThACEg0KCVNfREVTUEFXThADEgoKBkNfTU9WRRAEEgoKBlNfTU9WRRAFEgsK",
-            "B0NfU0tJTEwQBhILCgdTX1NLSUxMEAcSDwoLU19DSEFOR0VfSFAQCBIJCgVT",
-            "X0RJRRAJEg8KC1NfQ09OTkVDVEVEEAoSCwoHQ19MT0dJThALEgsKB1NfTE9H",
-            "SU4QDBIQCgxDX0VOVEVSX0dBTUUQDRITCg9DX0NSRUFURV9QTEFZRVIQDhIT",
-            "Cg9TX0NSRUFURV9QTEFZRVIQDxIPCgtTX0lURU1fTElTVBAQEg4KClNfQURE",
-            "X0lURU0QERIQCgxDX0VRVUlQX0lURU0QEhIQCgxTX0VRVUlQX0lURU0QExIR",
-            "Cg1TX0NIQU5HRV9TVEFUEBQSCgoGU19QSU5HEBUSCgoGQ19QT05HEBYqOgoN",
-            "Q3JlYXR1cmVTdGF0ZRIICgRJRExFEAASCgoGTU9WSU5HEAESCQoFU0tJTEwQ",
-            "AhIICgRERUFEEAMqMAoHTW92ZURpchIGCgJVUBAAEggKBERPV04QARIICgRM",
-            "RUZUEAISCQoFUklHSFQQAypDCg5HYW1lT2JqZWN0VHlwZRIICgROT05FEAAS",
-            "CgoGUExBWUVSEAESCwoHTU9OU1RFUhACEg4KClBST0pFQ1RJTEUQAypDCglT",
-            "a2lsbFR5cGUSDgoKU0tJTExfTk9ORRAAEhAKDFNLSUxMX0FUVEFDSxABEhQK",
-            "EFNLSUxMX1BST0pFQ1RJTEUQAipaChFQbGF5ZXJTZXJ2ZXJTdGF0ZRIWChJT",
-            "RVJWRVJfU1RBVEVfTE9HSU4QABIWChJTRVJWRVJfU1RBVEVfTE9CQlkQARIV",
-            "ChFTRVJWRVJfU1RBVEVfR0FNRRACKmMKCEl0ZW1UeXBlEhIKDklURU1fVFlQ",
-            "RV9OT05FEAASFAoQSVRFTV9UWVBFX1dFQVBPThABEhMKD0lURU1fVFlQRV9B",
-            "Uk1PUhACEhgKFElURU1fVFlQRV9DT05TVU1BQkxFEAMqTgoKV2VhcG9uVHlw",
-            "ZRIUChBXRUFQT05fVFlQRV9OT05FEAASFQoRV0VBUE9OX1RZUEVfU1dPUkQQ",
-            "ARITCg9XRUFQT05fVFlQRV9CT1cQAipjCglBcm1vclR5cGUSEwoPQVJNT1Jf",
-            "VFlQRV9OT05FEAASFQoRQVJNT1JfVFlQRV9IRUxNRVQQARIUChBBUk1PUl9U",
-            "WVBFX0FSTU9SEAISFAoQQVJNT1JfVFlQRV9CT09UUxADKkYKDkNvbnN1bWFi",
-            "bGVUeXBlEhgKFENPTlNVTUFCTEVfVFlQRV9OT05FEAASGgoWQ09OU1VNQUJM",
-            "RV9UWVBFX1BPVElPThABQhuqAhhHb29nbGUuUHJvdG9idWYuUHJvdG9jb2xi",
-            "BnByb3RvMw=="));
+            "mgEKDFBvc2l0aW9uSW5mbxImCgVzdGF0ZRgBIAEoDjIXLlByb3RvY29sLkNy",
+            "ZWF0dXJlU3RhdGUSIgoHTW92ZURpchgCIAEoDjIRLlByb3RvY29sLk1vdmVE",
+            "aXISIgoHTG9va0RpchgDIAEoDjIRLlByb3RvY29sLkxvb2tEaXISDAoEcG9z",
+            "WBgEIAEoBRIMCgRwb3NZGAUgASgFImUKCFN0YXRJbmZvEg0KBWxldmVsGAEg",
+            "ASgFEgoKAmhwGAIgASgFEg0KBW1heEhwGAMgASgFEg4KBmF0dGFjaxgEIAEo",
+            "BRINCgVzcGVlZBgFIAEoAhIQCgh0b3RhbEV4cBgGIAEoBSIcCglTa2lsbElu",
+            "Zm8SDwoHc2tpbGxJZBgBIAEoBSJfCghJdGVtSW5mbxIQCghJdGVtRGJJZBgB",
+            "IAEoBRISCgp0ZW1wbGF0ZUlkGAIgASgFEg0KBWNvdW50GAMgASgFEgwKBHNs",
+            "b3QYBCABKAUSEAoIZXF1aXBwZWQYBSABKAgq7AIKBU1zZ0lkEhAKDFNfRU5U",
+            "RVJfR0FNRRAAEhAKDFNfTEVBVkVfR0FNRRABEgsKB1NfU1BBV04QAhINCglT",
+            "X0RFU1BBV04QAxIKCgZDX01PVkUQBBIKCgZTX01PVkUQBRILCgdDX1NLSUxM",
+            "EAYSCwoHU19TS0lMTBAHEg8KC1NfQ0hBTkdFX0hQEAgSCQoFU19ESUUQCRIP",
+            "CgtTX0NPTk5FQ1RFRBAKEgsKB0NfTE9HSU4QCxILCgdTX0xPR0lOEAwSEAoM",
+            "Q19FTlRFUl9HQU1FEA0SEwoPQ19DUkVBVEVfUExBWUVSEA4SEwoPU19DUkVB",
+            "VEVfUExBWUVSEA8SDwoLU19JVEVNX0xJU1QQEBIOCgpTX0FERF9JVEVNEBES",
+            "EAoMQ19FUVVJUF9JVEVNEBISEAoMU19FUVVJUF9JVEVNEBMSEQoNU19DSEFO",
+            "R0VfU1RBVBAUEgoKBlNfUElORxAVEgoKBkNfUE9ORxAWKjoKDUNyZWF0dXJl",
+            "U3RhdGUSCAoESURMRRAAEgoKBk1PVklORxABEgkKBVNLSUxMEAISCAoEREVB",
+            "RBADKjAKB01vdmVEaXISBgoCVVAQABIICgRET1dOEAESCAoETEVGVBACEgkK",
+            "BVJJR0hUEAMqKAoHTG9va0RpchINCglMT09LX0xFRlQQABIOCgpMT09LX1JJ",
+            "R0hUEAEqQwoOR2FtZU9iamVjdFR5cGUSCAoETk9ORRAAEgoKBlBMQVlFUhAB",
+            "EgsKB01PTlNURVIQAhIOCgpQUk9KRUNUSUxFEAMqQwoJU2tpbGxUeXBlEg4K",
+            "ClNLSUxMX05PTkUQABIQCgxTS0lMTF9BVFRBQ0sQARIUChBTS0lMTF9QUk9K",
+            "RUNUSUxFEAIqWgoRUGxheWVyU2VydmVyU3RhdGUSFgoSU0VSVkVSX1NUQVRF",
+            "X0xPR0lOEAASFgoSU0VSVkVSX1NUQVRFX0xPQkJZEAESFQoRU0VSVkVSX1NU",
+            "QVRFX0dBTUUQAipjCghJdGVtVHlwZRISCg5JVEVNX1RZUEVfTk9ORRAAEhQK",
+            "EElURU1fVFlQRV9XRUFQT04QARITCg9JVEVNX1RZUEVfQVJNT1IQAhIYChRJ",
+            "VEVNX1RZUEVfQ09OU1VNQUJMRRADKk4KCldlYXBvblR5cGUSFAoQV0VBUE9O",
+            "X1RZUEVfTk9ORRAAEhUKEVdFQVBPTl9UWVBFX1NXT1JEEAESEwoPV0VBUE9O",
+            "X1RZUEVfQk9XEAIqYwoJQXJtb3JUeXBlEhMKD0FSTU9SX1RZUEVfTk9ORRAA",
+            "EhUKEUFSTU9SX1RZUEVfSEVMTUVUEAESFAoQQVJNT1JfVFlQRV9BUk1PUhAC",
+            "EhQKEEFSTU9SX1RZUEVfQk9PVFMQAypGCg5Db25zdW1hYmxlVHlwZRIYChRD",
+            "T05TVU1BQkxFX1RZUEVfTk9ORRAAEhoKFkNPTlNVTUFCTEVfVFlQRV9QT1RJ",
+            "T04QAUIbqgIYR29vZ2xlLlByb3RvYnVmLlByb3RvY29sYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.MoveDir), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.PlayerServerState), typeof(global::Google.Protobuf.Protocol.ItemType), typeof(global::Google.Protobuf.Protocol.WeaponType), typeof(global::Google.Protobuf.Protocol.ArmorType), typeof(global::Google.Protobuf.Protocol.ConsumableType), }, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.MoveDir), typeof(global::Google.Protobuf.Protocol.LookDir), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.PlayerServerState), typeof(global::Google.Protobuf.Protocol.ItemType), typeof(global::Google.Protobuf.Protocol.WeaponType), typeof(global::Google.Protobuf.Protocol.ArmorType), typeof(global::Google.Protobuf.Protocol.ConsumableType), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_EnterGame), global::Google.Protobuf.Protocol.S_EnterGame.Parser, new[]{ "Player" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_LeaveGame), global::Google.Protobuf.Protocol.S_LeaveGame.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Spawn), global::Google.Protobuf.Protocol.S_Spawn.Parser, new[]{ "Objects" }, null, null, null, null),
@@ -113,7 +114,7 @@ namespace Google.Protobuf.Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_ChangeStat), global::Google.Protobuf.Protocol.S_ChangeStat.Parser, new[]{ "StatInfo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.LobbyPlayerInfo), global::Google.Protobuf.Protocol.LobbyPlayerInfo.Parser, new[]{ "PlayerDbId", "Name", "StatInfo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.ObjectInfo), global::Google.Protobuf.Protocol.ObjectInfo.Parser, new[]{ "ObjectId", "Name", "Position", "StatInfo" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.PositionInfo), global::Google.Protobuf.Protocol.PositionInfo.Parser, new[]{ "State", "MoveDir", "PosX", "PosY" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.PositionInfo), global::Google.Protobuf.Protocol.PositionInfo.Parser, new[]{ "State", "MoveDir", "LookDir", "PosX", "PosY" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.StatInfo), global::Google.Protobuf.Protocol.StatInfo.Parser, new[]{ "Level", "Hp", "MaxHp", "Attack", "Speed", "TotalExp" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.SkillInfo), global::Google.Protobuf.Protocol.SkillInfo.Parser, new[]{ "SkillId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.ItemInfo), global::Google.Protobuf.Protocol.ItemInfo.Parser, new[]{ "ItemDbId", "TemplateId", "Count", "Slot", "Equipped" }, null, null, null, null)
@@ -161,6 +162,11 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("DOWN")] Down = 1,
     [pbr::OriginalName("LEFT")] Left = 2,
     [pbr::OriginalName("RIGHT")] Right = 3,
+  }
+
+  public enum LookDir {
+    [pbr::OriginalName("LOOK_LEFT")] LookLeft = 0,
+    [pbr::OriginalName("LOOK_RIGHT")] LookRight = 1,
   }
 
   public enum GameObjectType {
@@ -5530,6 +5536,7 @@ namespace Google.Protobuf.Protocol {
     public PositionInfo(PositionInfo other) : this() {
       state_ = other.state_;
       moveDir_ = other.moveDir_;
+      lookDir_ = other.lookDir_;
       posX_ = other.posX_;
       posY_ = other.posY_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -5565,8 +5572,20 @@ namespace Google.Protobuf.Protocol {
       }
     }
 
+    /// <summary>Field number for the "LookDir" field.</summary>
+    public const int LookDirFieldNumber = 3;
+    private global::Google.Protobuf.Protocol.LookDir lookDir_ = global::Google.Protobuf.Protocol.LookDir.LookLeft;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.Protocol.LookDir LookDir {
+      get { return lookDir_; }
+      set {
+        lookDir_ = value;
+      }
+    }
+
     /// <summary>Field number for the "posX" field.</summary>
-    public const int PosXFieldNumber = 3;
+    public const int PosXFieldNumber = 4;
     private int posX_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -5578,7 +5597,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "posY" field.</summary>
-    public const int PosYFieldNumber = 4;
+    public const int PosYFieldNumber = 5;
     private int posY_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -5606,6 +5625,7 @@ namespace Google.Protobuf.Protocol {
       }
       if (State != other.State) return false;
       if (MoveDir != other.MoveDir) return false;
+      if (LookDir != other.LookDir) return false;
       if (PosX != other.PosX) return false;
       if (PosY != other.PosY) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -5617,6 +5637,7 @@ namespace Google.Protobuf.Protocol {
       int hash = 1;
       if (State != global::Google.Protobuf.Protocol.CreatureState.Idle) hash ^= State.GetHashCode();
       if (MoveDir != global::Google.Protobuf.Protocol.MoveDir.Up) hash ^= MoveDir.GetHashCode();
+      if (LookDir != global::Google.Protobuf.Protocol.LookDir.LookLeft) hash ^= LookDir.GetHashCode();
       if (PosX != 0) hash ^= PosX.GetHashCode();
       if (PosY != 0) hash ^= PosY.GetHashCode();
       if (_unknownFields != null) {
@@ -5645,12 +5666,16 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(16);
         output.WriteEnum((int) MoveDir);
       }
-      if (PosX != 0) {
+      if (LookDir != global::Google.Protobuf.Protocol.LookDir.LookLeft) {
         output.WriteRawTag(24);
+        output.WriteEnum((int) LookDir);
+      }
+      if (PosX != 0) {
+        output.WriteRawTag(32);
         output.WriteInt32(PosX);
       }
       if (PosY != 0) {
-        output.WriteRawTag(32);
+        output.WriteRawTag(40);
         output.WriteInt32(PosY);
       }
       if (_unknownFields != null) {
@@ -5671,12 +5696,16 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(16);
         output.WriteEnum((int) MoveDir);
       }
-      if (PosX != 0) {
+      if (LookDir != global::Google.Protobuf.Protocol.LookDir.LookLeft) {
         output.WriteRawTag(24);
+        output.WriteEnum((int) LookDir);
+      }
+      if (PosX != 0) {
+        output.WriteRawTag(32);
         output.WriteInt32(PosX);
       }
       if (PosY != 0) {
-        output.WriteRawTag(32);
+        output.WriteRawTag(40);
         output.WriteInt32(PosY);
       }
       if (_unknownFields != null) {
@@ -5694,6 +5723,9 @@ namespace Google.Protobuf.Protocol {
       }
       if (MoveDir != global::Google.Protobuf.Protocol.MoveDir.Up) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) MoveDir);
+      }
+      if (LookDir != global::Google.Protobuf.Protocol.LookDir.LookLeft) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) LookDir);
       }
       if (PosX != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(PosX);
@@ -5718,6 +5750,9 @@ namespace Google.Protobuf.Protocol {
       }
       if (other.MoveDir != global::Google.Protobuf.Protocol.MoveDir.Up) {
         MoveDir = other.MoveDir;
+      }
+      if (other.LookDir != global::Google.Protobuf.Protocol.LookDir.LookLeft) {
+        LookDir = other.LookDir;
       }
       if (other.PosX != 0) {
         PosX = other.PosX;
@@ -5753,10 +5788,14 @@ namespace Google.Protobuf.Protocol {
             break;
           }
           case 24: {
-            PosX = input.ReadInt32();
+            LookDir = (global::Google.Protobuf.Protocol.LookDir) input.ReadEnum();
             break;
           }
           case 32: {
+            PosX = input.ReadInt32();
+            break;
+          }
+          case 40: {
             PosY = input.ReadInt32();
             break;
           }
@@ -5788,10 +5827,14 @@ namespace Google.Protobuf.Protocol {
             break;
           }
           case 24: {
-            PosX = input.ReadInt32();
+            LookDir = (global::Google.Protobuf.Protocol.LookDir) input.ReadEnum();
             break;
           }
           case 32: {
+            PosX = input.ReadInt32();
+            break;
+          }
+          case 40: {
             PosY = input.ReadInt32();
             break;
           }
