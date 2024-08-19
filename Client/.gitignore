@@ -4,8 +4,7 @@
 #
 [Ll]ibrary/ArtifactDB
 [Ll]ibrary/SourceAssetDB
-[Ll]ibrary/PackageCache
-[Ll]ibrary
+[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
 /[Bb]uild/
