@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/ThirdParty/RafaelMatos/Scenes/Standard/StandardSceneSw.unity
+- path: Assets/Scenes/DungeonUncharted.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0
