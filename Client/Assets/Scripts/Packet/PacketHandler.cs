@@ -13,8 +13,7 @@ class PacketHandler
 {
 	public static void S_EnterGameHandler(PacketSession session, IMessage packet)
 	{
-		S_EnterGame enterGamePacket = packet as S_EnterGame;
-
+		S_EnterGame enterGamePacket = packet as S_EnterGame;   
         Managers.Object.Add(enterGamePacket.Player, myPlayer: true);
 	}
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)
@@ -152,6 +151,18 @@ class PacketHandler
             enterGamePacket.Name = info.Name;
             Managers.Network.Send(enterGamePacket);
         }
+    }
+
+    public static void S_TutorialHandler(PacketSession session, IMessage packet)
+    {
+        S_Tutorial tutorialPacket = (S_Tutorial)packet;
+        Debug.Log($"Tutorial : {tutorialPacket.TutorialInfo}");
+        //Managers.Object.Add(enterGamePacket.Player, myPlayer: true);
+    }
+
+    public static void S_MapChangeHandler(PacketSession session, IMessage packet)
+    {
+        S_MapChange mapPacket = (S_MapChange)packet;        
     }
 
     public static void S_CreatePlayerHandler(PacketSession session, IMessage packet)

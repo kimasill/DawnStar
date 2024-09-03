@@ -42,13 +42,15 @@ public class MapManager
 
 	public bool CanGo(Vector3Int cellPos)
 	{
-		if (cellPos.x < MinX || cellPos.x > MaxX)
+        Vector3Int adjustedPos = new Vector3Int(cellPos.x + 1, cellPos.y + 1, 0);
+
+        if (adjustedPos.x < MinX || adjustedPos.x > MaxX)
 			return false;
-		if (cellPos.y < MinY || cellPos.y > MaxY)
+		if (adjustedPos.y < MinY || adjustedPos.y > MaxY)
 			return false;
 
-		int x = cellPos.x - MinX;
-		int y = MaxY - cellPos.y;
+		int x = adjustedPos.x - MinX;
+		int y = MaxY - adjustedPos.y;
 		return !_collision[y, x];
 	}
 

@@ -39,7 +39,7 @@ namespace Server.Migrations
                         .IsUnique()
                         .HasFilter("[AccountName] IS NOT NULL");
 
-                    b.ToTable("Account");
+                    b.ToTable("Account", (string)null);
                 });
 
             modelBuilder.Entity("Server.DB.ItemDb", b =>
@@ -69,7 +69,7 @@ namespace Server.Migrations
 
                     b.HasIndex("OwnerDbId");
 
-                    b.ToTable("Item");
+                    b.ToTable("Item", (string)null);
                 });
 
             modelBuilder.Entity("Server.DB.PlayerDb", b =>
@@ -112,7 +112,7 @@ namespace Server.Migrations
                         .IsUnique()
                         .HasFilter("[PlayerName] IS NOT NULL");
 
-                    b.ToTable("Player");
+                    b.ToTable("Player", (string)null);
                 });
 
             modelBuilder.Entity("Server.DB.ItemDb", b =>

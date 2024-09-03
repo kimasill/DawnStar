@@ -154,7 +154,7 @@ public class BaseController : MonoBehaviour
 
     protected virtual void UpdateAnimation()
     {
-        if (_animator == null || _sprite == null)
+        if (_animator == null)
         {
             return;
         }
@@ -162,7 +162,7 @@ public class BaseController : MonoBehaviour
         {
             switch (LookDir)
             {
-                case LookDir.LookLeft:
+                case LookDir.LookLeft:                    
                     _animator.Play("IDLE");
                     _sprite.flipX = true;
                     break;

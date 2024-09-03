@@ -130,4 +130,14 @@ class PacketHandler
     {
         C_Pong pongPacket = new C_Pong();
     }
+
+    public static void S_TutorialHandler(PacketSession session, IMessage packet)
+    {
+        S_Tutorial tutorialPacket = packet as S_Tutorial;
+    }
+
+    public static void S_MapChangeHandler(PacketSession session, IMessage packet)
+    {
+        S_MapChange mapChangePacket = packet as S_MapChange;
+    }
 }

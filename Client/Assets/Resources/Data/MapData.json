@@ -1,0 +1,31 @@
+{
+  "maps": [
+    {
+      "id": "001",
+      "name": "DawnTownExt",
+      "portals": [
+        {
+          "id": "100",
+          "name": "Tutorial01",
+          "location": "DawnTownExt",
+          "posX": "-25",
+          "posY":  "-16"
+        },
+        {
+          "id": "101",
+          "name": "DawnChurch",
+          "location": "DawnChurch",
+          "posX": "0",
+          "posY": "0"
+        },
+        {
+          "id": "102",
+          "name": "USCDawnBranch",
+          "location": "USCDawnBranch",
+          "posX": "0",
+          "posY": "0"
+        }
+      ]
+    }
+  ]
+} 

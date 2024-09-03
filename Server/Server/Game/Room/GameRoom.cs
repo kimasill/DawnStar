@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
+using Server.Data;
 using Server.Game.Job;
 using Server.Game.Room;
 using System;
@@ -79,6 +80,54 @@ namespace Server.Game
         }
 
         Random _rand = new Random();
+        // ...
+
+        public void EnterSingleGame(GameObject gameObject, bool isFirst = false)
+        {
+            if (gameObject == null)
+                return;
+
+            MapData mapData;
+
+            if (isFirst)
+            {
+                if (DataManager.MapDict.TryGetValue(001, out mapData) && mapData != null)
+                {
+                    foreach (PortalData portal in mapData.portals)
+                    {
+                        if (portal == null) continue;
+                        if (portal.id == 100)
+                        {
+                            Vector2Int respawnPos = new Vector2Int((int)(portal.posX * 3.2), (int)(portal.posY * 3.2));
+                            gameObject.CellPos = respawnPos;
+                        }
+                    }
+                }
+                else
+                {
+                    // mapData가 null인 경우 처리
+                    // 예를 들어, 오류를 기록하거나 기본값을 설정
+                }
+            }
+            else
+            {
+                //TODO: Single Map Pos Load
+            }
+
+            Player player = gameObject as Player;
+            player.RefreshAdditionalStat();
+
+            Map.ApplyMove(player, new Vector2Int(player.CellPos.x, player.CellPos.y), true);
+
+            {
+                S_EnterGame enterPacket = new S_EnterGame();
+                enterPacket.Player = player.Info;
+                player.Session.Send(enterPacket);
+
+                player.Vision.Update();
+            }
+
+        }
         public void EnterGame(GameObject gameObject, bool randPos)
         {
             if (gameObject == null)
