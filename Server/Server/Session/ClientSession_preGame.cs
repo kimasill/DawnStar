@@ -113,12 +113,12 @@ namespace Server
                 MyPlayer.Session = this;
                 S_ItemList itemListPacket = new S_ItemList();
 
-                using(AppDbContext db = new AppDbContext())
+                using (AppDbContext db = new AppDbContext())
                 {
                     List<ItemDb> items = db.Items
                         .Where(i => i.OwnerDbId == playerInfo.PlayerDbId)
                         .ToList();
-                    foreach(ItemDb itemDb in items)
+                    foreach (ItemDb itemDb in items)
                     {
                         Item item = Item.MakeItem(itemDb);
                         if (item != null)
@@ -133,18 +133,36 @@ namespace Server
                     //클라한테 아이템 전달
                 }
                 Send(itemListPacket);
+                bool isFirstLogin = false;
+                using (AppDbContext db = new AppDbContext())
+                {
+                    isFirstLogin = db.Players
+                        .Where(p => p.PlayerDbId == playerInfo.PlayerDbId && p.Level == 1 && p.Exp == 0)
+                        .Any();
+                }
+
+                if (isFirstLogin)
+                {
+                    ServerState = PlayerServerState.ServerStateSingle;
+                    GameLogic.Instance.Push(() =>
+                    {
+                        GameRoom room = GameLogic.Instance.Find(1);
+                        room.Push(room.EnterSingleGame, MyPlayer, true);
+                    });
+                }
+                else
+                {
+                    ServerState = PlayerServerState.ServerStateGame;
+
+                    //GameLogic 담당 스레드에 등록
+                    GameLogic.Instance.Push(() =>
+                    {
+                        GameRoom room = GameLogic.Instance.Find(1);
+                        room.Push(room.EnterGame, MyPlayer, true);
+                    });
+                }                
             }
-
-            ServerState = PlayerServerState.ServerStateGame;
-
-            //GameLogic 담당 스레드에 등록
-            GameLogic.Instance.Push(() =>
-            { 
-                GameRoom room = GameLogic.Instance.Find(1);
-                room.Push(room.EnterGame, MyPlayer, true);
-            });
         }
-
         public void HandleCreatePlayer(C_CreatePlayer createPacket)
         {
             // TODO : 이런 저런 보안 체크

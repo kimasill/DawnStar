@@ -161,7 +161,7 @@ namespace Server.Game.Room
             return true;
         }
 
-        public bool ApplyMove(GameObject gameObject, Vector2Int dest, bool checkObjects = true, bool collision = true)
+        public bool ApplyMove(GameObject gameObject, Vector2Int dest, bool checkObjects = true, bool collision = true, bool isSingle = false)
         {
 
             if (gameObject.Room == null)
@@ -187,6 +187,17 @@ namespace Server.Game.Room
                     _objects[y, x] = gameObject;
                 }                
             }
+
+            MoveZone(gameObject, dest);
+
+            posInfo.PosX = dest.x;
+            posInfo.PosY = dest.y;
+            return true;
+        }
+
+
+        public void MoveZone(GameObject gameObject, Vector2Int dest)
+        {
             // Zone 이동
             GameObjectType type = ObjectManager.GetObjectType(gameObject.Id);
             if (type == GameObjectType.Player)
@@ -213,7 +224,7 @@ namespace Server.Game.Room
                 }
             }
             else if (type == GameObjectType.Projectile)
-            { 
+            {
                 Projectile projectile = (Projectile)gameObject;
                 Zone now = gameObject.Room.GetZone(gameObject.CellPos);
                 Zone next = gameObject.Room.GetZone(dest);
@@ -223,12 +234,7 @@ namespace Server.Game.Room
                     next.Projectiles.Add(projectile);
                 }
             }
-
-            posInfo.PosX = dest.x;
-            posInfo.PosY = dest.y;
-            return true;
         }
-        
         
         public void LoadMap(int mapId, string pathPrefix = "../../../../../Common/MapData")
         {

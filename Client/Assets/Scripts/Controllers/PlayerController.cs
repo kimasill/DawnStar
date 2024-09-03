@@ -16,7 +16,7 @@ public class PlayerController : CreatureController
 
     protected override void UpdateAnimation()
     {
-        if (_animator == null || _sprite == null)
+        if (_animator == null)
         {
             return;
         }
@@ -26,11 +26,11 @@ public class PlayerController : CreatureController
             {
                 case LookDir.LookLeft:
                     _animator.Play("IDLE");
-                    _sprite.flipX = true;
+                    gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
                     break;
                 case LookDir.LookRight:
                     _animator.Play("IDLE");
-                    _sprite.flipX = false;
+                    gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
                     break;
             }
         }
@@ -40,11 +40,11 @@ public class PlayerController : CreatureController
             {
                 case LookDir.LookLeft:
                     _animator.Play("WALK");
-                    _sprite.flipX = true;
+                    gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
                     break;
                 case LookDir.LookRight:
                     _animator.Play("WALK");
-                    _sprite.flipX = false;
+                    gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
                     break;
             }
         }

@@ -27,7 +27,7 @@ public class ObjectManager
         {
             if (myPlayer)
             {
-                GameObject go = Managers.Resource.Instantiate("Creature/Warrior");
+                GameObject go = Managers.Resource.Instantiate("Creature/MyPlayer");
                 go.name = info.Name;
                 _objects.Add(info.ObjectId, go);
 

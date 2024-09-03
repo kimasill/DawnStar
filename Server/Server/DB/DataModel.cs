@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Server.Data;
+using Server.Game.Room;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -15,6 +17,7 @@ namespace Server.DB
         public string AccountName { get; set; }
         public ICollection<PlayerDb> Players { get; set; }
     }
+
     [Table("Player")]
     public class PlayerDb
     {

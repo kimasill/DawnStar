@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UnityEditor.PackageManager.Requests;
-using UnityEditor.Playables;
 using UnityEngine;
 using UnityEngine.Networking;
 public class WebManager
@@ -34,7 +31,7 @@ public class WebManager
             uwr.certificateHandler = new BypassCertificate();
             yield return uwr.SendWebRequest();
 
-            if (uwr.isNetworkError || uwr.isHttpError)
+            if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.Log(uwr.error);
             }

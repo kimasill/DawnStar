@@ -28,6 +28,8 @@ enum MsgId {
   S_CHANGE_STAT = 20;
   S_PING = 21;
   C_PONG = 22;
+  S_TUTORIAL = 23; 
+  S_MAP_CHANGE = 24;
 }
 enum CreatureState{
   IDLE = 0;
@@ -64,7 +66,8 @@ enum SkillType{
 enum PlayerServerState{
 	SERVER_STATE_LOGIN = 0;
 	SERVER_STATE_LOBBY = 1;
-	SERVER_STATE_GAME = 2;
+	SERVER_STATE_SINGLE = 2;
+	SERVER_STATE_GAME = 3;
 }
 
 enum ItemType
@@ -95,6 +98,7 @@ enum ConsumableType{
 
 message S_EnterGame {
   ObjectInfo player = 1;
+  PlayerServerState serverState = 2;
 }
 
 message S_LeaveGame {
@@ -189,6 +193,14 @@ message S_ChangeStat{
 	StatInfo statInfo = 1;
 }
 
+message S_Tutorial {
+  TutorialInfo tutorialInfo = 1;
+}
+
+message S_MapChange{
+	int32 mapId = 1;
+}
+
 message LobbyPlayerInfo{
 	int32 playerDbId = 1;
 	string name = 2;
@@ -229,6 +241,10 @@ message ItemInfo{
 	int32 count = 3;
 	int32 slot = 4;
 	bool equipped = 5;
+}
+
+message TutorialInfo {
+  int32 tutorialId = 1;  
 }
 
 

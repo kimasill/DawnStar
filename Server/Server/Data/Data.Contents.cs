@@ -149,4 +149,43 @@ namespace Server.Data
         }
     }
     #endregion
+
+    #region Map
+
+    [Serializable]
+    public class PortalData
+    {
+        public int id;
+        public string name;
+        public string location;
+        public int posX;
+        public int posY;
+    }
+
+    [Serializable]
+    public class MapData
+    {
+        public int id;
+        public string name;     
+        public List<PortalData> portals;
+    }
+
+    
+
+    [Serializable]
+    public class MapLoader : ILoader<int, MapData>
+    {
+        public List<MapData> maps = new List<MapData>(); 
+
+        public Dictionary<int, MapData> MakeDict()
+        {
+            Dictionary<int, MapData> dict = new Dictionary<int, MapData>();
+            foreach (MapData item in maps)
+            {
+                dict.Add(item.id, item);
+            }
+            return dict;
+        }
+    }
+    #endregion
 }

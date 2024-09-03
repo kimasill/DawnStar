@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Data
-{ 
+{  
     #region Skill
     [Serializable]
     public class Skill
@@ -40,6 +40,7 @@ namespace Data
         }
     }
     #endregion
+
     #region Item
     [Serializable]
     public class ItemData
@@ -47,21 +48,19 @@ namespace Data
         public int id;
         public string name;
         public ItemType itemType;
-        public string iconPath;
     }
-    [Serializable]
+
     public class WeaponData : ItemData
     {
         public WeaponType weaponType;
         public int damage;
     }
-    [Serializable]
+
     public class ArmorData : ItemData
     {
         public ArmorType armorType;
         public int defence;
     }
-    [Serializable]
     public class ConsumableData : ItemData
     {
         public ConsumableType consumableType;
@@ -97,15 +96,22 @@ namespace Data
         }
     }
     #endregion
+
     #region Monster
-    
+    [Serializable]
+    public class RewardData
+    {
+        public int probability; //100분율
+        public int itemId;
+        public int count;
+    }
     [Serializable]
     public class MonsterData
     {
         public int id;
         public string name;
         public StatInfo stat;
-        public string prefabPath;
+        public List<RewardData> rewards;
     }
     [Serializable]
     public class MonsterLoader : ILoader<int, MonsterData>
@@ -118,6 +124,71 @@ namespace Data
             foreach (MonsterData monster in monsters)
             {
                 dict.Add(monster.id, monster);
+            }
+            return dict;
+        }
+    }
+    #endregion
+
+    #region Map
+
+    [Serializable]
+    public class PortalData
+    {
+        public int id;
+        public string name;
+        public string location;
+        public int posX;
+        public int posY;
+    }
+
+    [Serializable]
+    public class MapData
+    {
+        public int id;
+        public string name;
+        public List<PortalData> portals;
+    }
+
+
+
+    [Serializable]
+    public class MapLoader : ILoader<int, MapData>
+    {
+        public List<MapData> maps = new List<MapData>();
+
+        public Dictionary<int, MapData> MakeDict()
+        {
+            Dictionary<int, MapData> dict = new Dictionary<int, MapData>();
+            foreach (MapData item in maps)
+            {
+                dict.Add(item.id, item);
+            }
+            return dict;
+        }
+    }
+    #endregion
+
+    #region Script
+
+    [Serializable]
+    public class ScriptData
+    {
+        public int id;
+        public string name;
+        public string script;
+    }
+    [Serializable]
+    public class ScriptLoader : ILoader<int, ScriptData>
+    {
+        public List<ScriptData> scripts = new List<ScriptData>();
+
+        public Dictionary<int, ScriptData> MakeDict()
+        {
+            Dictionary<int, ScriptData> dict = new Dictionary<int, ScriptData>();
+            foreach (ScriptData item in scripts)
+            {
+                dict.Add(item.id, item);
             }
             return dict;
         }
