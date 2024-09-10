@@ -19,5 +19,8 @@ public abstract class BaseScene : MonoBehaviour
             Managers.Resource.Instantiate("UI/EventSystem").name = "@EventSystem";
     }
 
+    public virtual void ShowDescriptionUI(List<string> description)
+    {        
+    }
     public abstract void Clear();
 }

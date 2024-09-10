@@ -9,16 +9,26 @@ namespace Server.Data
 {
     #region Stat 
     [Serializable]
-    public class StatData : ILoader<int, StatInfo>
+    public class StatData
     {
-        public List<StatInfo> stats = new List<StatInfo>();
+        public int Level;
+        public int MaxHp;
+        public int Attack;
+        public int Defence;
+        public float Speed;
+        public int TotalExp;        
+    }
 
-        public Dictionary<int, StatInfo> MakeDict()
+    [Serializable]
+    public class StatLoader : ILoader<int, StatData>
+    {
+        public List<StatData> stats = new List<StatData>();
+
+        public Dictionary<int, StatData> MakeDict()
         {
-            Dictionary<int, StatInfo> dict = new Dictionary<int, StatInfo>();
-            foreach (StatInfo stat in stats)
-            {
-                stat.Hp = stat.MaxHp;
+            Dictionary<int, StatData> dict = new Dictionary<int, StatData>();
+            foreach (StatData stat in stats)
+            {                
                 dict.Add(stat.Level, stat);
             }
             return dict;
@@ -187,5 +197,34 @@ namespace Server.Data
             return dict;
         }
     }
+    #endregion
+
+    #region Quest
+    [Serializable]
+    public class QuestData
+    {
+        public int id;
+        public string title;        
+        public int exp;
+        public int connection;        
+        public string questType;
+    }
+
+    [Serializable]
+    public class QuestLoader : ILoader<int, QuestData>
+    {
+        public List<QuestData> quests = new List<QuestData>();
+
+        public Dictionary<int, QuestData> MakeDict()
+        {
+            Dictionary<int, QuestData> dict = new Dictionary<int, QuestData>();
+            foreach (QuestData item in quests)
+            {
+                dict.Add(item.id, item);
+            }
+            return dict;
+        }
+    }
+
     #endregion
 }

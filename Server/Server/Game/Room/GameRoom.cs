@@ -64,13 +64,13 @@ namespace Server.Game
                     Zones[y, x] = new Zone(y, x);
                 }
             }
-            // TEMP
-            for (int i = 0; i < 500; i++)
-            {
-                Monster monster = ObjectManager.Instance.Add<Monster>();
-                monster.Init(1);
-                EnterGame(monster, randPos: true);
-            }
+            //// TEMP
+            //for (int i = 0; i < 500; i++)
+            //{
+            //    Monster monster = ObjectManager.Instance.Add<Monster>();
+            //    monster.Init(1);
+            //    EnterGame(monster, randPos: true);
+            //}
         }
 
         // 누군가 주기적으로 호출해줘야 한다
@@ -115,6 +115,7 @@ namespace Server.Game
             }
 
             Player player = gameObject as Player;
+            player.Room = this;
             player.RefreshAdditionalStat();
 
             Map.ApplyMove(player, new Vector2Int(player.CellPos.x, player.CellPos.y), true);
@@ -123,8 +124,6 @@ namespace Server.Game
                 S_EnterGame enterPacket = new S_EnterGame();
                 enterPacket.Player = player.Info;
                 player.Session.Send(enterPacket);
-
-                player.Vision.Update();
             }
 
         }

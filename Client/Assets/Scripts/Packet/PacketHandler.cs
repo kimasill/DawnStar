@@ -242,8 +242,8 @@ class PacketHandler
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
     {
 
-        S_ChangeStat itemList = (S_ChangeStat)packet;
-        
+        S_ChangeStat statPacket = (S_ChangeStat)packet;
+        Managers.Object.MyPlayer.Stat.MergeFrom(statPacket.StatInfo);        
     }
 
     public static void S_PingHandler(PacketSession session, IMessage packet)
@@ -251,5 +251,19 @@ class PacketHandler
         C_Pong pongPacket = new C_Pong();
         Debug.Log("S_PingHandler");
         Managers.Network.Send(pongPacket);
+    }
+
+    public static void S_StartQuestHandler(PacketSession session, IMessage packet)
+    {
+        S_StartQuest questPacket = (S_StartQuest)packet;
+        int questId = Managers.Quest.Add(questPacket.Quest);
+
+        Managers.Quest.StartQuest(questId);
+    }
+
+    public static void S_QuestCompleteHandler(PacketSession session, IMessage packet)
+    {
+        S_QuestComplete questPacket = (S_QuestComplete)packet;
+        Managers.Quest.UpdateQuest(questPacket.Quest);
     }
 }

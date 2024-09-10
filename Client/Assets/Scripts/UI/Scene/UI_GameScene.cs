@@ -4,15 +4,31 @@ using UnityEngine;
 
 public class UI_GameScene : UI_Scene
 {
-   public UI_Stat StatUI { get; private set; }
+    public UI_Stat StatUI { get; private set; }
     public UI_Inventory InvenUI { get; private set; }
+    public UI_GameWindow GameWindow { get; private set; }
+    public UI_Map MapUI { get; private set; }
     public override void Init()
     {
         base.Init();
+        GameWindow = GetComponentInChildren<UI_GameWindow>();    
         StatUI = GetComponentInChildren<UI_Stat>();
-        InvenUI = GetComponentInChildren<UI_Inventory>();
+        InvenUI = GetComponentInChildren<UI_Inventory>();        
 
+        GameWindow.gameObject.SetActive(false);
         StatUI.gameObject.SetActive(false);
-        InvenUI.gameObject.SetActive(false);
+        InvenUI.gameObject.SetActive(false);       
+    }
+
+    public void GetMap(string id)
+    {
+        Managers.Resource.Instantiate($"UI/UI_Map_{id}", transform);
+        MapUI = GetComponentInChildren<UI_Map>();
+        MapUI.gameObject.SetActive(false);
+    }
+
+    public void SetActive<T>(T ui, bool trigger) where T : UI_Base
+    {
+        ui.gameObject.SetActive(trigger);
     }
 }

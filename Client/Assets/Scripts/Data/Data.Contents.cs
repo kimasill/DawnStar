@@ -48,6 +48,7 @@ namespace Data
         public int id;
         public string name;
         public ItemType itemType;
+        public string iconPath;
     }
 
     public class WeaponData : ItemData
@@ -176,7 +177,7 @@ namespace Data
     {
         public int id;
         public string name;
-        public string script;
+        public List<string> script;
     }
     [Serializable]
     public class ScriptLoader : ILoader<int, ScriptData>

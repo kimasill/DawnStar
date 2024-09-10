@@ -57,7 +57,11 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.STutorial, MakePacket<S_Tutorial>);
 		_handler.Add((ushort)MsgId.STutorial, PacketHandler.S_TutorialHandler);		
 		_onRecv.Add((ushort)MsgId.SMapChange, MakePacket<S_MapChange>);
-		_handler.Add((ushort)MsgId.SMapChange, PacketHandler.S_MapChangeHandler);
+		_handler.Add((ushort)MsgId.SMapChange, PacketHandler.S_MapChangeHandler);		
+		_onRecv.Add((ushort)MsgId.SStartQuest, MakePacket<S_StartQuest>);
+		_handler.Add((ushort)MsgId.SStartQuest, PacketHandler.S_StartQuestHandler);		
+		_onRecv.Add((ushort)MsgId.SQuestComplete, MakePacket<S_QuestComplete>);
+		_handler.Add((ushort)MsgId.SQuestComplete, PacketHandler.S_QuestCompleteHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

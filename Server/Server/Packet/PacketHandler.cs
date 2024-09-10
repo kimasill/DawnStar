@@ -89,6 +89,38 @@ class PacketHandler
         room.Push(room.HandleEquipItem, player, equipPacket);
     }
 
+    public static void C_QuestCompleteHandler(PacketSession session, IMessage packet)
+    {
+        C_QuestComplete completeQuestPacket = (C_QuestComplete)packet;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleQuestComplete, player, completeQuestPacket.QuestDbId);
+    }
+
+    public static void C_StartQuestHandler(PacketSession session, IMessage packet)
+    {
+        C_StartQuest startQuestPacket = (C_StartQuest)packet;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleStartQuest, player, startQuestPacket.TemplateId);
+    }
+
     public static void C_PongHandler(PacketSession session, IMessage packet)
     {
         ClientSession clientSession = session as ClientSession;
