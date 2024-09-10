@@ -140,4 +140,14 @@ class PacketHandler
     {
         S_MapChange mapChangePacket = packet as S_MapChange;
     }
+
+    public static void S_StartQuestHandler(PacketSession session, IMessage packet)
+    {
+        S_StartQuest startQuest = packet as S_StartQuest;
+    }
+
+    public static void S_QuestCompleteHandler(PacketSession session, IMessage packet)
+    {
+        S_QuestComplete QuestComplete = packet as S_QuestComplete;
+    }
 }

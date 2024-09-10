@@ -39,7 +39,7 @@ namespace Server.Migrations
                         .IsUnique()
                         .HasFilter("[AccountName] IS NOT NULL");
 
-                    b.ToTable("Account", (string)null);
+                    b.ToTable("Account");
                 });
 
             modelBuilder.Entity("Server.DB.ItemDb", b =>
@@ -69,7 +69,32 @@ namespace Server.Migrations
 
                     b.HasIndex("OwnerDbId");
 
-                    b.ToTable("Item", (string)null);
+                    b.ToTable("Item");
+                });
+
+            modelBuilder.Entity("Server.DB.MapDb", b =>
+                {
+                    b.Property<int>("MapDbId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MapDbId"));
+
+                    b.Property<string>("MapName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PlayerDbId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Scene")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TemplateId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MapDbId");
+
+                    b.ToTable("Map");
                 });
 
             modelBuilder.Entity("Server.DB.PlayerDb", b =>
@@ -101,6 +126,12 @@ namespace Server.Migrations
                     b.Property<string>("PlayerName")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("PosX")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PosY")
+                        .HasColumnType("int");
+
                     b.Property<float>("Speed")
                         .HasColumnType("real");
 
@@ -112,7 +143,34 @@ namespace Server.Migrations
                         .IsUnique()
                         .HasFilter("[PlayerName] IS NOT NULL");
 
-                    b.ToTable("Player", (string)null);
+                    b.ToTable("Player");
+                });
+
+            modelBuilder.Entity("Server.DB.QuestDb", b =>
+                {
+                    b.Property<int>("QuestDbId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("QuestDbId"));
+
+                    b.Property<bool>("Completed")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("OwnerDbId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Progress")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TemplateId")
+                        .HasColumnType("int");
+
+                    b.HasKey("QuestDbId");
+
+                    b.HasIndex("OwnerDbId");
+
+                    b.ToTable("Quest");
                 });
 
             modelBuilder.Entity("Server.DB.ItemDb", b =>
@@ -135,6 +193,15 @@ namespace Server.Migrations
                     b.Navigation("Account");
                 });
 
+            modelBuilder.Entity("Server.DB.QuestDb", b =>
+                {
+                    b.HasOne("Server.DB.PlayerDb", "Owner")
+                        .WithMany("Quests")
+                        .HasForeignKey("OwnerDbId");
+
+                    b.Navigation("Owner");
+                });
+
             modelBuilder.Entity("Server.DB.AccountDb", b =>
                 {
                     b.Navigation("Players");
@@ -143,6 +210,8 @@ namespace Server.Migrations
             modelBuilder.Entity("Server.DB.PlayerDb", b =>
                 {
                     b.Navigation("Items");
+
+                    b.Navigation("Quests");
                 });
 #pragma warning restore 612, 618
         }

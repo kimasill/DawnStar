@@ -4,6 +4,7 @@
       "level": "1",
       "maxHp": "200",
       "attack": "20",
+      "deffense": "10",
       "speed":  "5.0",
       "totalExp": "0"
     },
@@ -11,13 +12,15 @@
       "level": "2",
       "maxHp": "250",
       "attack": "25",
+      "deffense": "15",
       "speed": "5.0",
-      "totalExp": "10"
+      "totalExp": "100"
     },
     {
       "level": "3",
       "maxHp": "300",
       "attack": "30",
+      "deffense": "20",
       "speed": "5.0",
       "totalExp": "20"
     }

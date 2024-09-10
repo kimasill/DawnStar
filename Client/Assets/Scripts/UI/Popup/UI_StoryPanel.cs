@@ -1,35 +1,36 @@
-using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_Description : UI_Base
+public class UI_StoryPanel : UI_Popup
 {
-    public TextMeshPro descriptionText;
-    public CanvasGroup canvasGroup;
+    enum Texts
+    {
+        UI_Conversation_Text
+    }
+
+    private TMP_Text _storyText;
+    private CanvasGroup _canvas;
     private Queue<string> scriptQueue = new Queue<string>();
     private Coroutine typingCoroutine;
     private bool isTyping = false;
-
-    enum Buttons
-    {
-        Panel
-    }
+    private bool isEndOfScript = false;
 
     public override void Init()
     {
-        descriptionText = Get<TextMeshPro>(0);
-        canvasGroup.alpha = 0;
+        Bind<TMP_Text>(typeof(Texts));
+        _canvas = GetComponent<CanvasGroup>();
+        _canvas.alpha = 0;
 
-        Bind<Button>(typeof(Buttons));
-
-        // 패널 클릭 이벤트 추가
-        GetButton((int)Buttons.Panel).onClick.AddListener(OnPanelClick);        
+        _storyText = GetTextMeshPro((int)Texts.UI_Conversation_Text);
+        gameObject.BindEvent(OnPanelClick);
     }
 
-    public void SetTexts(List<string> scripts)
+    public void SetStoryTexts(List<string> scripts)
     {
         scriptQueue.Clear();
         foreach (var script in scripts)
@@ -52,58 +53,69 @@ public class UI_Description : UI_Base
         }
         else
         {
-            StartCoroutine(FadeOut());
+            isEndOfScript = true;
         }
     }
 
     private IEnumerator TypeText(string text)
     {
         isTyping = true;
-        descriptionText.text = "";
+        _storyText.text = "";
         foreach (char letter in text.ToCharArray())
         {
-            descriptionText.text += letter;
+            _storyText.text += letter;
             yield return new WaitForSeconds(0.05f); // 한 글자씩 출력되는 속도 조절
         }
         isTyping = false;
-        yield return new WaitForSeconds(1f); // 텍스트가 모두 출력된 후 대기 시간
-        ShowNextScript();
     }
 
     private IEnumerator FadeIn()
     {
-        while (canvasGroup.alpha < 1)
+        float alpha = 0;
+        while (alpha < 1)
         {
-            canvasGroup.alpha += Time.deltaTime;
+            alpha += Time.deltaTime;
+            _canvas.alpha = alpha;
             yield return null;
         }
     }
 
     private IEnumerator FadeOut()
     {
-        while (canvasGroup.alpha > 0)
+        float alpha = 1;
+        while (alpha > 0)
         {
-            canvasGroup.alpha -= Time.deltaTime;
+            alpha -= Time.deltaTime;
+            _canvas.alpha = alpha;
             yield return null;
         }
         gameObject.SetActive(false);
+        Managers.Quest.EndQuest();
     }
 
-    public void ShowDescription(List<string> scripts)
+    public void ShowStoryPanel(List<string> scripts)
     {
         gameObject.SetActive(true);
         StartCoroutine(FadeIn());
-        SetTexts(scripts);
+        SetStoryTexts(scripts);
     }
 
-    private void OnPanelClick()
+    private void OnPanelClick(PointerEventData evt)
     {
         if (isTyping)
         {
             // 현재 타이핑 중인 텍스트를 모두 출력
-            StopCoroutine(typingCoroutine);
-            descriptionText.text = scriptQueue.Peek();
-            isTyping = false;
+            if (typingCoroutine != null)
+            {
+                StopCoroutine(typingCoroutine);
+                _storyText.text = scriptQueue.Peek();
+                isTyping = false;
+            }
+        }
+        else if (isEndOfScript)
+        {
+            // 스크립트가 끝났을 때 패널을 닫음
+            StartCoroutine(FadeOut());
         }
         else
         {

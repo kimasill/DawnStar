@@ -30,6 +30,10 @@ enum MsgId {
   C_PONG = 22;
   S_TUTORIAL = 23; 
   S_MAP_CHANGE = 24;
+  S_START_QUEST = 25;
+  C_START_QUEST = 26;
+  S_QUEST_COMPLETE = 27;
+  C_QUEST_COMPLETE = 28;
 }
 enum CreatureState{
   IDLE = 0;
@@ -201,6 +205,26 @@ message S_MapChange{
 	int32 mapId = 1;
 }
 
+message C_StartQuest{
+	int32 templateId = 1;
+}
+
+message C_QuestComplete{
+	int32 questDbId = 1;
+}
+
+message S_QuestList{
+	repeated QuestInfo quests = 1;
+}
+
+message S_StartQuest{
+	QuestInfo quest = 1;
+}
+
+message S_QuestComplete{
+	QuestInfo quest = 1;
+}
+
 message LobbyPlayerInfo{
 	int32 playerDbId = 1;
 	string name = 2;
@@ -229,6 +253,17 @@ message StatInfo{
   int32 attack = 4;
   float speed = 5;
   int32 totalExp = 6;
+}
+
+message QuestInfo
+{
+  int32 questDbId = 1;
+  int32 templateId = 2;
+  int32 exp = 3;
+  int32 progress = 4;
+  int32 connection = 5;
+  bool completed = 6;
+  string questType = 7;
 }
 
 message SkillInfo{

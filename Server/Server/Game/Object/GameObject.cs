@@ -20,9 +20,15 @@ namespace Server.Game
         }
         public PositionInfo PosInfo { get; private set;} = new PositionInfo();
         public StatInfo Stat { get; private set; } = new StatInfo();
-
+        
+        public virtual int Level
+        {
+            get { return Stat.Level; }
+            set { Stat.Level = value; }
+        }
         public virtual int TotalAttack { get { return Stat.Attack; } }
         public virtual int TotalDefense { get { return 0; } }
+
         public int Hp
         {
             get { return Stat.Hp; }

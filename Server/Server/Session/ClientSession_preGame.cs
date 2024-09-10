@@ -4,6 +4,7 @@ using Server.Data;
 using Server.DB;
 using Server.Game;
 using Server.Game.Room;
+using Server.Migrations;
 using Server.Utils;
 using ServerCore;
 using System;
@@ -106,8 +107,15 @@ namespace Server
                 MyPlayer.Info.Position.State = CreatureState.Idle;
                 MyPlayer.Info.Position.MoveDir = MoveDir.Down;
                 MyPlayer.Info.Position.LookDir = LookDir.LookRight;
-                MyPlayer.Info.Position.PosX = 0;
-                MyPlayer.Info.Position.PosY = 0;
+                using (AppDbContext db = new AppDbContext())
+                {
+                    PlayerDb player = db.Players.FirstOrDefault(p => p.PlayerDbId == playerInfo.PlayerDbId);
+                    if (player != null)
+                    {
+                        MyPlayer.Info.Position.PosX = player.PosX;
+                        MyPlayer.Info.Position.PosY = player.PosY;
+                    }
+                }
                 MyPlayer.Stat.MergeFrom(playerInfo.StatInfo);
                 //MyPlayer.Stat.Hp = playerInfo.StatInfo.MaxHp;
                 MyPlayer.Session = this;
@@ -132,35 +140,69 @@ namespace Server
                     }
                     //클라한테 아이템 전달
                 }
-                Send(itemListPacket);
+                Send(itemListPacket);                
                 bool isFirstLogin = false;
+                S_StartQuest questPacket = new S_StartQuest();
                 using (AppDbContext db = new AppDbContext())
                 {
-                    isFirstLogin = db.Players
-                        .Where(p => p.PlayerDbId == playerInfo.PlayerDbId && p.Level == 1 && p.Exp == 0)
-                        .Any();
-                }
+                    List<QuestDb> quests = db.Quests
+                       .Where(q => q.OwnerDbId == playerInfo.PlayerDbId)
+                       .OrderByDescending(q => q.QuestDbId) // 퀘스트 ID를 기준으로 내림차순 정렬
+                       .Take(1) // 가장 마지막 퀘스트만 선택
+                       .ToList();
 
-                if (isFirstLogin)
+                    if (quests == null || quests.Count == 0)
+                    {
+                        // 처음 접속한 것으로 간주하고 QuestDb 정보 할당
+                        QuestDb newQuest = new QuestDb()
+                        {
+                            OwnerDbId = playerInfo.PlayerDbId,
+                            TemplateId = 1, // 초기 퀘스트 ID 설정
+                            Progress = 0,                                
+                            Completed = false,                                
+                        };
+                        db.Quests.Add(newQuest);
+                        db.SaveChanges();
+                        quests.Add(newQuest);
+                        isFirstLogin = true;
+                    }
+                    
+                    foreach (QuestDb questDb in quests)
+                    {
+                        QuestInfo questInfo = new QuestInfo()
+                        {
+                            QuestDbId = questDb.QuestDbId,
+                            TemplateId = questDb.TemplateId,
+                            Progress = questDb.Progress,
+                            Completed = questDb.Completed,
+                            QuestType = DataManager.QuestDict[questDb.TemplateId].questType
+                        };
+                        MyPlayer.Quest = questInfo;
+                        questPacket.Quest = questInfo;
+                        Send(questPacket);
+                    }
+                }  
+
+                //if (isFirstLogin)
                 {
-                    ServerState = PlayerServerState.ServerStateSingle;
+                    ServerState = PlayerServerState.ServerStateSingle;                    
                     GameLogic.Instance.Push(() =>
                     {
                         GameRoom room = GameLogic.Instance.Find(1);
                         room.Push(room.EnterSingleGame, MyPlayer, true);
                     });
                 }
-                else
-                {
-                    ServerState = PlayerServerState.ServerStateGame;
+                //else
+                //{
+                //    ServerState = PlayerServerState.ServerStateGame;
 
-                    //GameLogic 담당 스레드에 등록
-                    GameLogic.Instance.Push(() =>
-                    {
-                        GameRoom room = GameLogic.Instance.Find(1);
-                        room.Push(room.EnterGame, MyPlayer, true);
-                    });
-                }                
+                //    //GameLogic 담당 스레드에 등록
+                //    GameLogic.Instance.Push(() =>
+                //    {
+                //        GameRoom room = GameLogic.Instance.Find(1);
+                //        room.Push(room.EnterGame, MyPlayer, true);
+                //    });
+                //}                
             }
         }
         public void HandleCreatePlayer(C_CreatePlayer createPacket)
@@ -182,7 +224,7 @@ namespace Server
                 else
                 {
                     // 1레벨 스탯 정보 추출
-                    StatInfo stat = null;
+                    StatData stat = null;
                     DataManager.StatDict.TryGetValue(1, out stat);
 
                     // DB에 플레이어 만들어줘야 함
@@ -190,9 +232,9 @@ namespace Server
                     {
                         PlayerName = createPacket.Name,
                         Level = stat.Level,
-                        Hp = stat.Hp,
+                        Hp = stat.MaxHp,
                         MaxHp = stat.MaxHp,
-                        Attack = stat.Attack,
+                        Attack = stat.Attack,                        
                         Speed = stat.Speed,
                         Exp = 0,
                         AccountDbId = AccountDbId
@@ -211,7 +253,7 @@ namespace Server
                         StatInfo = new StatInfo()
                         {
                             Level = stat.Level,
-                            Hp = stat.Hp,
+                            Hp = stat.MaxHp,
                             MaxHp = stat.MaxHp,
                             Attack = stat.Attack,
                             Speed = stat.Speed,

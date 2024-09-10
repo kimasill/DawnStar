@@ -2,6 +2,7 @@ using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static Define;
 using static Item;
@@ -12,13 +13,23 @@ public class MyPlayerController : PlayerController
 
     public int WeaponDamage { get; private set; }
     public int ArmorDef { get; private set; }
+    //public QuestInfo Quest 
+    //{
+    //    get
+    //    { 
+    //        return Quest; 
+    //    }
+    //    set
+    //    {
+    //        Quest = value;
+    //        RefreshQuests();
+    //    } 
+    //}
     protected override void Init()
     {
         base.Init();
-        RefreshAdditionalStat();
+        RefreshAdditionalStat();        
     }
-
-    
 
     protected override void UpdateController()
     {
@@ -67,6 +78,33 @@ public class MyPlayerController : PlayerController
             {
                 statUI.gameObject.SetActive(true);
                 statUI.RefreshUI();
+            }
+        }
+
+        else if (Input.GetKeyDown(KeyCode.M))
+        {
+            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+            UI_Map mapUI = gameSceneUI.MapUI;
+
+            if (mapUI.gameObject.activeSelf)
+            {
+                mapUI.gameObject.SetActive(false);
+                mapUI.ResetMapSize();
+            }
+            else
+            {
+                mapUI.gameObject.SetActive(true);
+            }
+        }
+
+        if (Input.mouseScrollDelta.y != 0)
+        {
+            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+            UI_Map mapUI = gameSceneUI.MapUI;
+
+            if (mapUI.gameObject.activeSelf)
+            {
+                mapUI.ZoomMap(Input.mouseScrollDelta.y * 10); // 스크롤에 따라 지도 크기 조절
             }
         }
     }
@@ -199,5 +237,9 @@ public class MyPlayerController : PlayerController
             }
 
         }
+    }
+
+    public void RefreshQuests()
+    {
     }
 }

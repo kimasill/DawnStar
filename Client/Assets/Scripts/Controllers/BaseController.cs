@@ -17,6 +17,18 @@ public class BaseController : MonoBehaviour
             _stat.MergeFrom(value);
         }
     }
+
+    public int Exp
+    {
+        get { return Stat.TotalExp; }
+        set { Stat.TotalExp = value; }
+    }
+
+    public int Level
+    {
+        get { return Stat.Level; }
+        set { Stat.Level = value; }
+    }
     public float Speed
     {
         get { return Stat.Speed; }
