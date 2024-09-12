@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using Server.Data;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace Server.Game
         }
         public PositionInfo PosInfo { get; private set;} = new PositionInfo();
         public StatInfo Stat { get; private set; } = new StatInfo();
+        public MapInfo MapInfo { get; set; } = new MapInfo();
         
         public virtual int Level
         {

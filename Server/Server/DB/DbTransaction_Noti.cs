@@ -46,5 +46,26 @@ namespace Server.DB
                 }
             });
         }
+        public static void SavePlayerPositionAndMap(Player player, int newMapId)
+        {
+            if (player == null)
+                return;
+
+            Instance.Push(() =>
+            {
+                using (AppDbContext db = new AppDbContext())
+                {
+                    PlayerDb playerDb = db.Players.FirstOrDefault(p => p.PlayerDbId == player.PlayerDbId);
+                    if (playerDb != null)
+                    {
+                        playerDb.PosX = player.CellPos.x;
+                        playerDb.PosY = player.CellPos.y;
+                        playerDb.MapDbId = newMapId;
+                        db.SaveChangesEx();
+                    }
+                }
+            });
+        }
+
     }
 }

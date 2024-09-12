@@ -126,4 +126,17 @@ class PacketHandler
         ClientSession clientSession = session as ClientSession;
         clientSession.HandlePong();
     }
+
+    public static void C_MapChangeHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_MapChange mapChangePacket = packet as C_MapChange;
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+        room.Push(room.HandleMapChanged, player, mapChangePacket.MapId);
+    }
 }

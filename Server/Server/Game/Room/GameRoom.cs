@@ -1,10 +1,12 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
+using Server.DB;
 using Server.Game.Job;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 
 namespace Server.Game
@@ -86,7 +88,7 @@ namespace Server.Game
         {
             if (gameObject == null)
                 return;
-
+            Player player = gameObject as Player;
             MapData mapData;
 
             if (isFirst)
@@ -100,6 +102,10 @@ namespace Server.Game
                         {
                             Vector2Int respawnPos = new Vector2Int((int)(portal.posX * 3.2), (int)(portal.posY * 3.2));
                             gameObject.CellPos = respawnPos;
+                            player.MapInfo.TemplateId = mapData.id;
+                            player.MapInfo.PortalId = portal.id;
+                            player.MapInfo.MapName = mapData.name;
+                            DB.DbTransaction.SavePlayerPositionAndMap(gameObject as Player, portal.id);
                         }
                     }
                 }
@@ -114,7 +120,7 @@ namespace Server.Game
                 //TODO: Single Map Pos Load
             }
 
-            Player player = gameObject as Player;
+            
             player.Room = this;
             player.RefreshAdditionalStat();
 

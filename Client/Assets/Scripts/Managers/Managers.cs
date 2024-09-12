@@ -12,11 +12,13 @@ public class Managers : MonoBehaviour
     ObjectManager _obj = new ObjectManager();
     NetworkManager _network = new NetworkManager();
     InventoryManager _inventory = new InventoryManager();
+    ShopManager _shop = new ShopManager();
     QuestManager _quest = new QuestManager();
     public static MapManager Map { get { return Instance._map; } }
     public static ObjectManager Object { get { return Instance._obj; } }
     public static NetworkManager Network { get { return Instance._network; } }
     public static InventoryManager Inventory { get { return Instance._inventory; } }
+    public static ShopManager Shop { get { return Instance._shop; } }
     public static QuestManager Quest { get { return Instance._quest; } }
 	#endregion
 

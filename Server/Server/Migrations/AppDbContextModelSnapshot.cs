@@ -120,6 +120,9 @@ namespace Server.Migrations
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
+                    b.Property<int>("MapDbId")
+                        .HasColumnType("int");
+
                     b.Property<int>("MaxHp")
                         .HasColumnType("int");
 

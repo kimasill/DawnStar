@@ -1,3 +1,4 @@
+using Data;
 using Google.Protobuf.Protocol;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,20 +10,21 @@ public class QuestManager
     public int Add(QuestInfo questInfo)
     {
         int questId = questInfo.TemplateId;
-        if (Managers.Data.ScriptDict.TryGetValue(questId, out Data.ScriptData scriptData))
+        Quest quest = new Quest { };
+        if (Managers.Data.ScriptDict.TryGetValue(questId, out ScriptData scriptData))
         {
-            Quest quest = new Quest
-            {
-                Id = questId,
-                Description = scriptData.script,
-                Type = questInfo.QuestType
-            };
-            _quests.Add(quest.Id, quest);
+            quest.Description = scriptData.scripts.ToDictionary(s => s.id, s => s);
         }
         else
         {
-            Debug.LogWarning($"퀘스트 ID {questId}를 찾을 수 없습니다.");
+            Debug.LogWarning($"퀘스트 Script {questId}를 찾을 수 없습니다.");
         }
+
+        quest.Id = questId;
+        quest.Type = questInfo.QuestType;
+
+        _quests.Add(quest.Id, quest);
+
         return questId;
     }
 
@@ -35,14 +37,14 @@ public class QuestManager
             switch (quest.Type)
             {
 
-                case "epic":                    
-                    currentScene.ShowDescriptionUI(quest.Description);
+                case "epic":
+                    currentScene.ShowDescriptionUI(quest.Description.Values.First().script);
                     break;
-                case "story":                    
+                case "story":
                     if (gameSceneUI != null)
                     {
                         UI_GameWindow gameWindow = gameSceneUI.GameWindow;
-                        if(!gameWindow.isActiveAndEnabled)
+                        if (!gameWindow.isActiveAndEnabled)
                             gameSceneUI.SetActive<UI_GameWindow>(gameWindow, true);
                         if (gameWindow != null)
                         {
@@ -59,7 +61,6 @@ public class QuestManager
                     }
                     break;
             }
-            
         }
         else
         {
@@ -108,7 +109,7 @@ public class QuestManager
         if (questInfo.Connection != 0)
         {
             // 다음 퀘스트 요청
-            C_StartQuest startQuest= new C_StartQuest();
+            C_StartQuest startQuest = new C_StartQuest();
             startQuest.TemplateId = questInfo.Connection;
             Managers.Network.Send(startQuest);
         }
@@ -122,6 +123,6 @@ public class QuestManager
 public class Quest
 {
     public int Id { get; set; }
-    public List<string> Description { get; set; }
+    public Dictionary<int, Script> Description { get; set; }
     public string Type { get; set; }
 }

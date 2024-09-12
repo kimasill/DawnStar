@@ -20,6 +20,13 @@
       "exp": "50",
       "connection": "4",
       "questType": "interaction"
+    },
+    {
+      "id": "4",
+      "title": "tutorial03",
+      "exp": "50",
+      "connection": "5",
+      "questType": "story"
     }
   ]
 } 

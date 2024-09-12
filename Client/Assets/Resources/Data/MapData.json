@@ -2,28 +2,48 @@
   "maps": [
     {
       "id": "001",
-      "name": "DawnTownExt",
+      "name": "DawnTown",
       "portals": [
         {
           "id": "100",
           "name": "Tutorial01",
-          "location": "DawnTownExt",
+          "location": "DawnTown",
           "posX": "-25",
-          "posY":  "-16"
+          "posY": "-16"
         },
         {
           "id": "101",
           "name": "DawnChurch",
-          "location": "DawnChurch",
+          "location": "DawnTown",
           "posX": "0",
           "posY": "0"
         },
         {
           "id": "102",
           "name": "USCDawnBranch",
-          "location": "USCDawnBranch",
+          "location": "DawnTown",
           "posX": "0",
           "posY": "0"
+        },
+        {
+          "id": "103",
+          "name": "DawnTownStore",
+          "location": "DawnTown",
+          "posX": "0",
+          "posY": "0"
+        }
+      ]
+    },
+    {
+      "id": "002",
+      "name": "DawnTownStore",
+      "portals": [
+        {
+          "id": "200",
+          "name": "DawnTown",
+          "location": "DawnTownStore",
+          "posX": "-14",
+          "posY": "-4"
         }
       ]
     }

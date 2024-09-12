@@ -1,16 +1,15 @@
-﻿using System.Collections;
+﻿using Data;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class DawnTown : BaseScene
 {
-    private UI_GameScene _sceneUi;
-    private UI_Description _description;
-
+    protected UI_GameScene _sceneUi;
+    protected UI_Description _description;
     public override void Clear()
     {
-        throw new System.NotImplementedException();
     }
 
     protected override void Init()
@@ -34,4 +33,19 @@ public class DawnTown : BaseScene
         _description.gameObject.SetActive(true);      
         _description.ShowDescription(description);
     }
+    protected override void InitializeNPCs()
+    {
+        NPCController[] npcControllers = Managers.Map.CurrentGrid.gameObject.GetComponentsInChildren<NPCController>();
+        Dictionary<string, NPCData> npcDict = Managers.Data.NPCDict;
+        foreach (NPCController npc in npcControllers)
+        {
+            string npcName = npc.gameObject.name;
+            if (npcDict.TryGetValue(npcName, out NPCData npcData))
+            {
+                npc.TemplateId = npcData.id;
+                AddNPC(npcData.id, npc.gameObject);
+            }
+        }
+    }
+
 }

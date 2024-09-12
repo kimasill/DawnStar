@@ -9,6 +9,12 @@ EditorBuildSettings:
     path: Assets/Scenes/Game.unity
     guid: 73ed7a8d5df364a4f880b6b12f7f36de
   - enabled: 1
+    path: Assets/Scenes/Login.unity
+    guid: ec419121301f3b2409d54ddbf4855b2d
+  - enabled: 1
     path: Assets/Scenes/DawnTown.unity
     guid: 96baf853444e538428f0702f0b8ff092
+  - enabled: 1
+    path: Assets/Scenes/DawnTown_Store.unity
+    guid: d1b854d338e5542429bd0b40b431e3d5
   m_configObjects: {}

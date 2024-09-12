@@ -1,26 +1,33 @@
+using Data;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class UI_GameWindow : UI_Base
-{           
+{
     UI_StateBar StateUI { get; set; }
     UI_StoryPanel StoryPanel { get; set; }
 
     public override void Init()
-    {        
-        StateUI = GetComponentInChildren<UI_StateBar>();        
+    {
+        StateUI = GetComponentInChildren<UI_StateBar>();
         StoryPanel = GetComponentInChildren<UI_StoryPanel>();
 
         StateUI.gameObject.SetActive(false);
         StoryPanel.gameObject.SetActive(false);
     }
 
-    public void ShowStoryPanel(List<string> storyText)
+    public void ShowStoryPanel(Dictionary<int, Script> storyDict)
     {
         if (StoryPanel != null)
         {
-            StoryPanel.ShowStoryPanel(storyText);
+
+            foreach (var script in storyDict.Values)
+            {
+                //TODO : 여러개의 스토리를 보여주기 위한 처리. 지금은 조건을 따지지않고 순서대로 다보여줌
+                StoryPanel.ShowStoryPanel(script.script);
+            }
             StoryPanel.gameObject.SetActive(true);
         }
         else
@@ -29,6 +36,17 @@ public class UI_GameWindow : UI_Base
         }
     }
 
+    public void ShowStoryPanel(List<NPCScript> scriptList)
+    {
+        if (StoryPanel != null)
+        {
+            StoryPanel.ShowInteraction(scriptList);
+        }
+        else
+        {
+            Debug.LogWarning("StoryPanel을 찾을 수 없습니다.");
+        }
+    }        
     public void HideStoryPanel()
     {
         if (StoryPanel != null)

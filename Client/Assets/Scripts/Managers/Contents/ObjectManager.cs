@@ -8,7 +8,7 @@ public class ObjectManager
 {
 	public MyPlayerController MyPlayer { get; set; }
 	//id 에따라 관리
-	Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
+	Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();      
 	
 	public static GameObjectType GetObjectType(int id)
     {
@@ -19,10 +19,10 @@ public class ObjectManager
 	{ 
 		if(MyPlayer != null && MyPlayer.Id == info.ObjectId) 
             return;
-		if(_objects.ContainsKey(info.ObjectId)) 
+        if (_objects.ContainsKey(info.ObjectId))
             return;
 
-		GameObjectType type = GetObjectType(info.ObjectId);
+        GameObjectType type = GetObjectType(info.ObjectId);
 		if(type == GameObjectType.Player)
         {
             if (myPlayer)

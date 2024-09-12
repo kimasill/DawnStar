@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Data;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using static SoonsoonData;
 
 public struct Pos
 {
@@ -39,8 +41,8 @@ public class MapManager
 	public int SizeY { get { return MaxY - MinY + 1; } }
 
 	bool[,] _collision;
-
-	public bool CanGo(Vector3Int cellPos)
+    private Dictionary<Vector3Int, GameObject> _doorDictionary = new Dictionary<Vector3Int, GameObject>(); // 문 객체들을 저장할 Dictionary
+    public bool CanGo(Vector3Int cellPos)
 	{
         Vector3Int adjustedPos = new Vector3Int(cellPos.x + 1, cellPos.y + 1, 0);
 
@@ -54,7 +56,18 @@ public class MapManager
 		return !_collision[y, x];
 	}
 
-	public void LoadMap(int mapId)
+    public string IsPlayerAtDoor(Vector3Int cellPos)
+    {
+        // 디버깅을 위해 좌표 출력
+        Debug.Log($"Checking door at cell position: {cellPos}");
+
+        Vector3Int adjustedPos = new Vector3Int(cellPos.x + 1, cellPos.y + 1, 0);
+        if(_doorDictionary.TryGetValue(adjustedPos, out var result))
+			return result.name;
+		return null;		
+    }
+
+    public void LoadMap(int mapId)
 	{
 		DestroyMap();
 
@@ -89,6 +102,7 @@ public class MapManager
 				_collision[y, x] = (line[x] == '1' ? true : false);
 			}
 		}
+		FindDoors(go);
 	}
 
 	public void DestroyMap()
@@ -101,10 +115,41 @@ public class MapManager
 		}
 	}
 
-	#region A* PathFinding
+    private void FindDoors(GameObject map)
+    {        
+        if (map != null)
+        {
+            Transform envTransform = map.transform.Find("Tilemap_Env");
+            if (envTransform != null)
+            {
+                foreach (Transform child in envTransform)
+                {
+                    if (child.gameObject.layer == LayerMask.NameToLayer("Door"))
+                    {
+                        Vector3Int doorCellPos = CurrentGrid.WorldToCell(child.position);
+                        _doorDictionary[doorCellPos] = child.gameObject;
+                    }
+                }
+            }
+        }
+    }
 
-	// U D L R
-	int[] _deltaY = new int[] { 1, -1, 0, 0 };
+    public int GetDoorId(string name)
+    {
+		foreach (var mapData in Managers.Data.MapDict)
+        {			
+            if (mapData.Value.name == name)
+            {
+                return mapData.Value.id;
+            }
+        }
+        return 0;
+    }
+
+    #region A* PathFinding
+
+    // U D L R
+    int[] _deltaY = new int[] { 1, -1, 0, 0 };
 	int[] _deltaX = new int[] { 0, 0, -1, 1 };
 	int[] _cost = new int[] { 10, 10, 10, 10 };
 

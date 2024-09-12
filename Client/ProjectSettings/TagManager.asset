@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Monster
   - Icon
+  - MapIcon
+  - NPC
   layers:
   - Default
   - TransparentFX
@@ -18,7 +20,7 @@ TagManager:
   - Monster
   - Ground
   - Block
-  - 
+  - Door
   - 
   - 
   - 
