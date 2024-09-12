@@ -1,3 +1,4 @@
+using Data;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,38 +11,75 @@ public class UI_StoryPanel : UI_Popup
 {
     enum Texts
     {
-        UI_Conversation_Text
+        UI_Conversation_Text,
     }
 
     private TMP_Text _storyText;
+    private GridLayoutGroup _interaction;
     private CanvasGroup _canvas;
     private Queue<string> scriptQueue = new Queue<string>();
+    private List<string> interactionList = new List<string>();
     private Coroutine typingCoroutine;
     private bool isTyping = false;
     private bool isEndOfScript = false;
 
     public override void Init()
     {
-        Bind<TMP_Text>(typeof(Texts));
         _canvas = GetComponent<CanvasGroup>();
         _canvas.alpha = 0;
-
+        Bind<TMP_Text>(typeof(Texts));
         _storyText = GetTextMeshPro((int)Texts.UI_Conversation_Text);
         gameObject.BindEvent(OnPanelClick);
     }
 
     public void SetStoryTexts(List<string> scripts)
     {
-        scriptQueue.Clear();
         foreach (var script in scripts)
         {
             scriptQueue.Enqueue(script);
         }
-        ShowNextScript();
+        if (!isTyping)
+        {
+            ShowNextScript();
+        }
+    }
+
+    public void ShowStoryPanelAll(List<string> scripts)
+    {
+        interactionList.AddRange(scripts);
+    }
+
+    private void CreateInteractionText(List<string> texts)
+    {
+        _interaction.gameObject.SetActive(true); // 인터랙션 활성화
+        foreach (var text in texts)
+        {
+            TMP_Text tmpText = GetTextMeshPro((int)Texts.InteractionText);
+            if (tmpText == null)
+            {
+                // Create InteractionText prefab
+                GameObject interactionText = Managers.Resource.Instantiate("UI/Scene/InteractionText");
+                tmpText = interactionText.GetComponent<TMP_Text>();
+            }
+            tmpText.text = text;
+            tmpText.fontSize = 24;
+            tmpText.color = Color.blue;
+
+            Button button = tmpText.gameObject.GetOrAddComponent<Button>();
+            button.onClick.AddListener(() => OnInteractionTextClick(text));
+        }
+    }
+
+    public void ShowScript(List<NPCScript> scripts)
+    {
+        foreach (var script in scripts)
+        {
+        }
     }
 
     private void ShowNextScript()
     {
+        _interaction.gameObject.SetActive(false); // 다음 스크립트를 출력할 때 인터랙션 비활성화
         if (scriptQueue.Count > 0)
         {
             string nextScript = scriptQueue.Dequeue();
@@ -50,6 +88,11 @@ public class UI_StoryPanel : UI_Popup
                 StopCoroutine(typingCoroutine);
             }
             typingCoroutine = StartCoroutine(TypeText(nextScript));
+        }
+        else if (interactionList.Count > 0)
+        {
+            CreateInteractionText(interactionList);
+            interactionList.Clear();
         }
         else
         {
@@ -67,6 +110,7 @@ public class UI_StoryPanel : UI_Popup
             yield return new WaitForSeconds(0.05f); // 한 글자씩 출력되는 속도 조절
         }
         isTyping = false;
+        ShowNextScript();
     }
 
     private IEnumerator FadeIn()
@@ -90,7 +134,7 @@ public class UI_StoryPanel : UI_Popup
             yield return null;
         }
         gameObject.SetActive(false);
-        Managers.Quest.EndQuest();
+        //Managers.Quest.EndQuest();
     }
 
     public void ShowStoryPanel(List<string> scripts)

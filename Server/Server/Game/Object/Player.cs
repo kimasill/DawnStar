@@ -23,6 +23,7 @@ namespace Server.Game
         public Inventory Inven { get; private set; } = new Inventory();
         public QuestInfo Quest { get; set; } = new QuestInfo();
 
+
         public int Exp { get; set; }
         public int WeaponDamage { get; private set; }
         public int ArmorDef { get; private set; }

@@ -168,8 +168,8 @@ namespace Server.Data
         public int id;
         public string name;
         public string location;
-        public int posX;
-        public int posY;
+        public float posX;
+        public float posY;
     }
 
     [Serializable]

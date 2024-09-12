@@ -13,6 +13,8 @@ public class MyPlayerController : PlayerController
 
     public int WeaponDamage { get; private set; }
     public int ArmorDef { get; private set; }
+    private NPCController _nearbyNPC;
+
     //public QuestInfo Quest 
     //{
     //    get
@@ -80,7 +82,6 @@ public class MyPlayerController : PlayerController
                 statUI.RefreshUI();
             }
         }
-
         else if (Input.GetKeyDown(KeyCode.M))
         {
             UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
@@ -96,12 +97,19 @@ public class MyPlayerController : PlayerController
                 mapUI.gameObject.SetActive(true);
             }
         }
+        else if (Input.GetKeyDown(KeyCode.G) && _nearbyNPC != null)
+        {
+            _nearbyNPC.StartInteraction();
+        }
 
         if (Input.mouseScrollDelta.y != 0)
         {
             UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
             UI_Map mapUI = gameSceneUI.MapUI;
-
+            if(mapUI == null)
+            {
+                return;
+            }
             if (mapUI.gameObject.activeSelf)
             {
                 mapUI.ZoomMap(Input.mouseScrollDelta.y * 10); // 스크롤에 따라 지도 크기 조절
@@ -198,10 +206,47 @@ public class MyPlayerController : PlayerController
             if (Managers.Object.FindCreature(destPos) == null)
             {
                 CellPos = destPos;
+                CheckIfPlayerAtDoor(destPos);
+                DetectNearbyNPCs();
             }
         }
-
         CheckUpdatedFlag();
+    }
+
+    private void CheckIfPlayerAtDoor(Vector3Int playerCellPosition)
+    {
+        string door = Managers.Map.IsPlayerAtDoor(playerCellPosition);
+        if (door != null)
+        {
+            int id = Managers.Map.GetDoorId(door);
+            C_MapChange mapPacket = new C_MapChange { MapId = id };
+            Managers.Network.Send(mapPacket);
+        }
+    }
+
+    private void DetectNearbyNPCs()
+    {
+        BaseScene currentScene = Managers.Scene.CurrentScene as BaseScene;
+        if (currentScene == null)
+            return;
+
+        Dictionary<int, GameObject> npcs = currentScene.GetNPCs();
+        foreach (var npc in npcs.Values)
+        {
+            Vector3Int npcCellPos = Managers.Map.CurrentGrid.WorldToCell(npc.transform.position);
+            float distance = Vector3Int.Distance(CellPos, npcCellPos);
+            NPCController npcController = npc.GetComponent<NPCController>();
+            if (distance <= 5.0f)
+            {
+                npcController.ActivateNotification();
+                _nearbyNPC = npcController;
+            }
+            else
+            {
+                npcController.DeactivateNotification();
+                _nearbyNPC = null;
+            }
+        }
     }
 
     //Dirty Flag Check

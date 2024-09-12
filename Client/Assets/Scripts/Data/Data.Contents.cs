@@ -139,8 +139,8 @@ namespace Data
         public int id;
         public string name;
         public string location;
-        public int posX;
-        public int posY;
+        public float posX;
+        public float posY;
     }
 
     [Serializable]
@@ -173,23 +173,65 @@ namespace Data
     #region Script
 
     [Serializable]
-    public class ScriptData
+    public class Script
     {
         public int id;
         public string name;
         public List<string> script;
     }
+
+    [Serializable]
+    public class ScriptData
+    {
+        public int id;
+        public string title;
+        public List<Script> scripts;
+    }
+
     [Serializable]
     public class ScriptLoader : ILoader<int, ScriptData>
     {
-        public List<ScriptData> scripts = new List<ScriptData>();
+        public List<ScriptData> scriptdatas = new List<ScriptData>();
 
         public Dictionary<int, ScriptData> MakeDict()
         {
             Dictionary<int, ScriptData> dict = new Dictionary<int, ScriptData>();
-            foreach (ScriptData item in scripts)
+            foreach (ScriptData scriptData in scriptdatas)
             {
-                dict.Add(item.id, item);
+                dict.Add(scriptData.id, scriptData);
+            }
+            return dict;
+        }
+    }
+    #endregion
+    #region NPC
+    [Serializable]
+    public class NPCScript
+    {
+        public int id;
+        public string name;
+        public List<string> script;
+    }
+
+    [Serializable]
+    public class NPCData
+    {
+        public int id;
+        public string name;
+        public List<NPCScript> scripts;
+    }
+
+    [Serializable]
+    public class NPCLoader : ILoader<string, NPCData>
+    {
+        public List<NPCData> npcs = new List<NPCData>();
+
+        public Dictionary<string, NPCData> MakeDict()
+        {
+            Dictionary<string, NPCData> dict = new Dictionary<string, NPCData>();
+            foreach (NPCData npc in npcs)
+            {
+                dict.Add(npc.name, npc);
             }
             return dict;
         }

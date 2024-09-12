@@ -1,0 +1,38 @@
+{
+  "npcs": [
+    {
+      "id": "1",
+      "name": "Lucy",
+      "scripts": [
+        {
+          "id": "10001",
+          "name": "home",
+          "script": [
+            "또! 누워있지!"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Rollang",
+      "scripts": [
+        {
+          "id": "20001",
+          "name": "welcome",
+          "script": [
+            "어서오세요."
+          ]
+        },
+        {
+          "id": "20002",
+          "name": "home",
+          "script": [
+            "상점보기",
+            "나가기"
+          ]
+        }
+      ]
+    }
+  ]
+} 

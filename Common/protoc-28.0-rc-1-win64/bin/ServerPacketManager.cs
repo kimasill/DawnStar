@@ -36,10 +36,14 @@ class PacketManager
 		_handler.Add((ushort)MsgId.CEquipItem, PacketHandler.C_EquipItemHandler);		
 		_onRecv.Add((ushort)MsgId.CPong, MakePacket<C_Pong>);
 		_handler.Add((ushort)MsgId.CPong, PacketHandler.C_PongHandler);		
+		_onRecv.Add((ushort)MsgId.CMapChange, MakePacket<C_MapChange>);
+		_handler.Add((ushort)MsgId.CMapChange, PacketHandler.C_MapChangeHandler);		
 		_onRecv.Add((ushort)MsgId.CStartQuest, MakePacket<C_StartQuest>);
 		_handler.Add((ushort)MsgId.CStartQuest, PacketHandler.C_StartQuestHandler);		
 		_onRecv.Add((ushort)MsgId.CQuestComplete, MakePacket<C_QuestComplete>);
-		_handler.Add((ushort)MsgId.CQuestComplete, PacketHandler.C_QuestCompleteHandler);
+		_handler.Add((ushort)MsgId.CQuestComplete, PacketHandler.C_QuestCompleteHandler);		
+		_onRecv.Add((ushort)MsgId.CBuyItem, MakePacket<C_BuyItem>);
+		_handler.Add((ushort)MsgId.CBuyItem, PacketHandler.C_BuyItemHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

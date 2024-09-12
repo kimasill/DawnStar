@@ -22,4 +22,9 @@ public class GameScene : BaseScene
     {
         
     }
+
+    protected override void InitializeNPCs()
+    {
+        throw new System.NotImplementedException();
+    }
 }

@@ -29,11 +29,13 @@ enum MsgId {
   S_PING = 21;
   C_PONG = 22;
   S_TUTORIAL = 23; 
-  S_MAP_CHANGE = 24;
-  S_START_QUEST = 25;
-  C_START_QUEST = 26;
-  S_QUEST_COMPLETE = 27;
-  C_QUEST_COMPLETE = 28;
+  C_MAP_CHANGE = 24;
+  S_MAP_CHANGE = 25;
+  S_START_QUEST = 26;
+  C_START_QUEST = 27;
+  S_QUEST_COMPLETE = 28;
+  C_QUEST_COMPLETE = 29;
+  C_BUY_ITEM = 30;
 }
 enum CreatureState{
   IDLE = 0;
@@ -59,6 +61,7 @@ enum GameObjectType{
 	PLAYER = 1;
 	MONSTER = 2;
 	PROJECTILE = 3;
+	NPC = 4;
 }
 
 enum SkillType{
@@ -193,6 +196,10 @@ message S_EquipItem{
 	bool equipped = 2;
 }
 
+message C_BuyItem{
+	int32 templateId = 1;
+}
+
 message S_ChangeStat{
 	StatInfo statInfo = 1;
 }
@@ -201,8 +208,13 @@ message S_Tutorial {
   TutorialInfo tutorialInfo = 1;
 }
 
+message C_MapChange{
+	int32 mapId = 1;
+}
+
 message S_MapChange{
 	int32 mapId = 1;
+	ObjectInfo objectInfo = 2;
 }
 
 message C_StartQuest{
@@ -276,6 +288,13 @@ message ItemInfo{
 	int32 count = 3;
 	int32 slot = 4;
 	bool equipped = 5;
+}
+
+message MapInfo{
+	int32 mapDbId = 1;
+	int32 templateId = 2;
+	string mapName = 3;
+	int32 portalId = 4;
 }
 
 message TutorialInfo {

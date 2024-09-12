@@ -10,6 +10,7 @@ public class Define
         Login,
         Lobby,
         DawnTown,
+        DawnTown_Store,
         Game,
     }
 

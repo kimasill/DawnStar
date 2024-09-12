@@ -1,4 +1,5 @@
-﻿using Google.Protobuf;
+﻿using Data;
+using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
 using System;
@@ -6,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 
@@ -162,7 +164,26 @@ class PacketHandler
 
     public static void S_MapChangeHandler(PacketSession session, IMessage packet)
     {
-        S_MapChange mapPacket = (S_MapChange)packet;        
+        S_MapChange mapChangePacket = (S_MapChange)packet;        
+        Debug.Log($"S_MapChangeHandler: Changing to map {mapChangePacket.MapId}");
+        if (Managers.Object.MyPlayer != null)
+        {
+            MyPlayerController mc = Managers.Object.MyPlayer;
+            int id = mc.Id;
+            mc.gameObject.SetActive(false);
+            Managers.Object.MyPlayer = null;
+            Managers.Object.Remove(id);
+        }
+        Managers.Data.MapDict.TryGetValue(mapChangePacket.MapId, out MapData map);
+
+        SceneManager.sceneLoaded += (scene, mode) => OnSceneLoaded(scene, mode, mapChangePacket.ObjectInfo);
+        Managers.Scene.LoadScene(map.name);
+    }
+
+    private static void OnSceneLoaded(Scene scene, LoadSceneMode mode, ObjectInfo playerInfo)
+    {        
+        Managers.Object.Add(playerInfo, myPlayer: true);
+        SceneManager.sceneLoaded -= (s, m) => OnSceneLoaded(s, m, playerInfo);
     }
 
     public static void S_CreatePlayerHandler(PacketSession session, IMessage packet)
