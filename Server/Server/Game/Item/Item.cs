@@ -71,6 +71,9 @@ namespace Server.Game
                 case ItemType.Consumable:
                     item = new Consumable(itemDb.TemplateId);
                     break;
+                case ItemType.Material:
+                    item = new Material(itemDb.TemplateId);
+                    break;
             }
 
             if (item != null)
@@ -165,6 +168,35 @@ namespace Server.Game
                     Count = 1;
                     MaxCount = data.maxCount;
                     ConsumableType = data.consumableType;
+                    Stackable = (data.maxCount > 1);
+                }
+            }
+        }
+
+        public class Material : Item
+        {
+            public MaterialType MaterialType { get; private set; }
+            public int MaxCount { get; private set; }
+            public Material(int templateId) : base(ItemType.Material)
+            {
+                Init(templateId);
+            }
+
+            void Init(int templateId)
+            {
+                ItemData itemData = null;
+                DataManager.ItemDict.TryGetValue(templateId, out itemData);
+                if (itemData.itemType != ItemType.Material)
+                {
+                    return;
+                }
+
+                MaterialData data = (MaterialData)itemData;
+                {
+                    TemplateId = data.id;
+                    Count = 1;
+                    MaxCount = data.maxCount;
+                    MaterialType = data.materialType;
                     Stackable = (data.maxCount > 1);
                 }
             }

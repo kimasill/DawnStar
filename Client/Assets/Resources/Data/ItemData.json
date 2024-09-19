@@ -5,6 +5,7 @@
       "name": "견습생의 검",
       "weaponType": "Sword",
       "damage": "10",
+      "price": "100",
       "iconPath": "Textures/Item/sword"
     },
     {
@@ -12,6 +13,7 @@
       "name": "견습생의 활",
       "weaponType": "Bow",
       "damage": "5",
+      "price": "50",
       "iconPath": "Textures/Item/bow"
     }
   ],
@@ -21,6 +23,7 @@
       "name": "뼈 갑옷",
       "armorType": "armor",
       "defence": "15",
+      "price": "200",
       "iconPath": "Textures/Item/armor"
     },
     {
@@ -28,6 +31,7 @@
       "name": "뼈 투구",
       "armorType": "Helmet",
       "defence": "5",
+      "price": "50",
       "iconPath": "Textures/Item/helmets"
     }
   ],
@@ -35,9 +39,28 @@
     {
       "id": "200",
       "name": "HP 물약",
-      "weaponType": "Potion",
+      "consumableType": "Potion",
       "maxCount": "5",
+      "price" : "20",
       "iconPath": "Textures/Item/hp"
+    }
+  ],
+  "materials": [
+    {
+      "id": "1001",
+      "name": "치즈",
+      "maxCount": "99",
+      "materialType": "Food",
+      "price" :  "1",
+      "iconPath": "Textures/Item/cheese"
+    },
+    {
+      "id": "1002",
+      "name": "사과",
+      "maxCount": "99",
+      "materialType": "Food",
+      "price": "1",
+      "iconPath": "Textures/Item/apple"
     }
   ]
 } 

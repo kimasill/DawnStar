@@ -1,0 +1,22 @@
+{
+  "shops": [
+    {
+      "id": "1",
+      "mapId": "2",
+      "name": "DawnTownStore",
+      "itemList": [
+        {
+          "id": "1001",
+          "count": "1",
+          "price": "1"
+
+        },
+        {
+          "id": "1002",
+          "count": "1",
+          "price": "1"
+        }
+      ]
+    }
+  ]
+} 

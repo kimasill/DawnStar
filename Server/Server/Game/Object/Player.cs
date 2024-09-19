@@ -22,9 +22,41 @@ namespace Server.Game
         public VIsionCube Vision { get; private set; }
         public Inventory Inven { get; private set; } = new Inventory();
         public QuestInfo Quest { get; set; } = new QuestInfo();
+        public int Exp {
+            get { return Stat.TotalExp; }
+            set {
+                if (value >= 0)
+                {
+                    Stat.TotalExp = value;
+                }                
+                
+                StatData stat = DataManager.StatDict.GetValueOrDefault(Level);
+                if (stat != null && Stat.TotalExp >= stat.TotalExp)
+                    Level += 1;
+            } 
+        }
+        public override int Level {
+            get { return base.Level; } 
+            set { 
+                if(value <= Level)
+                {
+                    return;
+                }
+                base.Level = value;
+                OnlevelUp();
+            }  
+        }
 
-
-        public int Exp { get; set; }
+        public int Gold { 
+            get { return Stat.Gold; }
+            set
+            {
+                if (value >= 0)
+                {
+                    Stat.Gold = value;
+                }
+            }
+        }
         public int WeaponDamage { get; private set; }
         public int ArmorDef { get; private set; }
 
@@ -46,6 +78,16 @@ namespace Server.Game
         public override void Ondead(GameObject attacker)
         {
             base.Ondead(attacker);
+        }
+
+        public void OnlevelUp()
+        {
+            StatData stat = DataManager.StatDict.GetValueOrDefault(Level);
+            Stat.MaxHp = stat.MaxHp;
+            Hp = stat.MaxHp;
+            Stat.Attack = stat.Attack;
+            Stat.Speed = stat.Speed;            
+            Room.HandleStatChange(this);
         }
 
         public void OnLeaveGame()
@@ -120,7 +162,7 @@ namespace Server.Game
         {
             // 퀘스트 완료 처리
             QuestInfo quest = Quest; // 현재 퀘스트 정보 가져오기
-            if (quest == null || quest.QuestDbId != id)
+            if (quest == null || quest.TemplateId != id)
                 return;
 
             // 퀘스트 완료 상태로 변경
@@ -157,52 +199,6 @@ namespace Server.Game
                 Quest = quest
             };
             Session.Send(startQuestPacket);
-        }
-
-        public int HandleLevel(int exp)
-        {
-            Exp += exp;
-
-            // 레벨업 처리
-            bool levelUp = false;
-            
-            StatData stat = DataManager.StatDict.GetValueOrDefault(Level);
-            if (stat == null || Exp < stat.TotalExp)
-                return Level;
-
-            // 레벨업
-            Level++;
-            levelUp = true;
-
-
-            // 현재 레벨에 해당하는 StatData 가져오기
-            StatData nextStat = DataManager.StatDict.GetValueOrDefault(Stat.Level);
-            if (nextStat != null)
-            {
-                Stat.MaxHp = nextStat.MaxHp;                
-                Stat.Attack = nextStat.Attack;
-                //Stat.Defense = nextStat.Defense;
-                Stat.Speed = nextStat.Speed;
-                // 스탯 업데이트
-
-
-                // 현재 HP와 MP를 최대치로 설정
-                Stat.Hp = Stat.MaxHp;
-                //Stat.Mp = Stat.MaxMp;
-            }
-            S_ChangeStat statInfoPacket = new S_ChangeStat();
-            StatInfo statInfo = new StatInfo() 
-            {
-                Level = Stat.Level,
-                Hp = Stat.MaxHp,
-                MaxHp = Stat.MaxHp,
-                Attack = Stat.Attack,
-                Speed = Stat.Speed
-            };
-            
-            Session.Send(statInfoPacket);
-
-            return Level;
         }
 
 

@@ -150,4 +150,9 @@ class PacketHandler
     {
         S_QuestComplete QuestComplete = packet as S_QuestComplete;
     }
+
+    public static void S_ShopListHandler(PacketSession session, IMessage packet)
+    {
+        S_ShopList shopList = packet as S_ShopList;
+    }
 }

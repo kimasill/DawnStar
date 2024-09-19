@@ -22,6 +22,7 @@ public class QuestManager
 
         quest.Id = questId;
         quest.Type = questInfo.QuestType;
+        quest.IsCompleted = false;
 
         _quests.Add(quest.Id, quest);
 
@@ -60,6 +61,10 @@ public class QuestManager
                         Debug.LogWarning("GameSceneUI를 찾을 수 없습니다.");
                     }
                     break;
+                case "scene":
+                    currentScene.ShowDescriptionUI(quest.Description.Values.First().script);
+                    break;
+
             }
         }
         else
@@ -73,7 +78,7 @@ public class QuestManager
         int questId = questInfo.TemplateId;
         if (_quests.ContainsKey(questId))
         {
-            _quests.Remove(questId);
+            _quests[questId].IsCompleted = true;
             CheckNextQuest(questInfo);
         }
         else
@@ -118,6 +123,32 @@ public class QuestManager
             Debug.Log("다음 퀘스트가 없습니다.");
         }
     }
+
+    public int GetCurrentQuestId()
+    {
+        // 현재 진행 중인 퀘스트 ID를 반환하는 로직을 구현
+        // 예시: 진행 중인 퀘스트 ID를 반환
+        return _quests.FirstOrDefault(q => !q.Value.IsCompleted).Key;
+    }
+
+    public bool IsQuestInProgress(int questId)
+    {
+        // 퀘스트 진행 상태를 확인하는 로직을 구현
+        // 예시: 현재 진행 중인 퀘스트 목록에서 questId를 찾음
+        return _quests.TryGetValue(questId, out Quest quest) && !quest.IsCompleted;
+    }
+    public List<string> GetQuestScripts(int questId, int scriptListId)
+    {
+        // 퀘스트 스크립트 데이터를 가져오는 로직을 구현
+        // 예시: questId와 scriptListId에 맞는 스크립트를 반환
+        if (!_quests.TryGetValue(questId, out Quest quest))
+        {
+            Debug.LogWarning($"퀘스트 ID {questId}를 찾을 수 없습니다.");
+            return null;
+        }
+        Managers.Data.ScriptDict.TryGetValue(questId, out ScriptData scriptData);
+        return scriptData.scripts[scriptListId-1].script;
+    }
 }
 
 public class Quest
@@ -125,4 +156,5 @@ public class Quest
     public int Id { get; set; }
     public Dictionary<int, Script> Description { get; set; }
     public string Type { get; set; }
+    public bool IsCompleted { get; set; }
 }

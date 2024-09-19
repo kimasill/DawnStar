@@ -7,7 +7,7 @@ using UnityEngine;
 public class UI_GameWindow : UI_Base
 {
     UI_StateBar StateUI { get; set; }
-    UI_StoryPanel StoryPanel { get; set; }
+    public UI_StoryPanel StoryPanel { get; set; }
 
     public override void Init()
     {
@@ -40,7 +40,7 @@ public class UI_GameWindow : UI_Base
     {
         if (StoryPanel != null)
         {
-            StoryPanel.ShowInteraction(scriptList);
+            StoryPanel.ShowScript(scriptList);
         }
         else
         {

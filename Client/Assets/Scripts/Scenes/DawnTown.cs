@@ -1,4 +1,5 @@
 ﻿using Data;
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,7 +22,6 @@ public class DawnTown : BaseScene
         Managers.Map.LoadMap(1);
 
         Screen.SetResolution(640, 480, false);
-
         _sceneUi = Managers.UI.ShowSceneUI<UI_GameScene>();
         _sceneUi.GetMap("001");
         _description = Managers.UI.ShowPopupUI<UI_Description>();
@@ -33,7 +33,7 @@ public class DawnTown : BaseScene
         _description.gameObject.SetActive(true);      
         _description.ShowDescription(description);
     }
-    protected override void InitializeNPCs()
+    protected void InitializeNPCs()
     {
         NPCController[] npcControllers = Managers.Map.CurrentGrid.gameObject.GetComponentsInChildren<NPCController>();
         Dictionary<string, NPCData> npcDict = Managers.Data.NPCDict;
@@ -48,4 +48,7 @@ public class DawnTown : BaseScene
         }
     }
 
+    protected void InitializeShop()
+    {        
+    }
 }

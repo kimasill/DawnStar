@@ -4,10 +4,12 @@ using Server.Data;
 using Server.Game;
 using Server.Game.Job;
 using Server.Game.Room;
+using Server.Migrations;
 using Server.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -55,6 +57,7 @@ namespace Server.DB
             playerDb.Exp = player.Exp;
             playerDb.PosX = player.CellPos.x;
             playerDb.PosY = player.CellPos.y;
+            playerDb.Gold = player.Gold;
             Instance.Push<PlayerDb, GameRoom>(SavePlayerStatus_Step2, playerDb, room);
         }
 
@@ -77,7 +80,7 @@ namespace Server.DB
             //Console.WriteLine($"save hp{hp}");
         }
 
-        public static void RewardPlayer(Player player, RewardData rewardData, GameRoom room)
+        public static void RewardPlayer(Player player, ItemRewardData rewardData, GameRoom room)
         {
             if (player == null || rewardData == null || room == null)
             {
@@ -95,7 +98,11 @@ namespace Server.DB
                 OwnerDbId = player.PlayerDbId,
                 Slot = slot.Value
             };
+            SaveItemDB(player, itemDb, room);
+        }
 
+        public static void SaveItemDB(Player player, ItemDb itemDb, GameRoom room)
+        {
             Instance.Push(() =>
             {
                 using (AppDbContext db = new AppDbContext())
@@ -123,6 +130,7 @@ namespace Server.DB
                 }
             });
         }
+            
         public static void SaveCompleteQuest(Player player, QuestInfo questInfo)
         {
             if (player == null || questInfo == null)
@@ -133,9 +141,10 @@ namespace Server.DB
             if (questData == null)
                 return;
 
-            // 경험치와 연계 정보 가져오기
-            int exp = questData.exp;
+            // 연계 정보 가져오기
+            int exp = questData.rewards.FirstOrDefault(r => r.type == RewardType.RewardExp)?.amount ?? 0;
             int connection = questData.connection;
+            int gold = questData.rewards.FirstOrDefault(r => r.type == RewardType.RewardGold)?.amount ?? 0;
 
             // 퀘스트 완료 처리
             Instance.Push(() =>
@@ -152,18 +161,26 @@ namespace Server.DB
                         bool success = db.SaveChangesEx(); // 저장할 때 예외 처리를 해준다.
                         if (success)
                         {
-                            player.HandleLevel(exp);
-                            SavePlayerStatus_Step1(player, player.Room);
+                            player.Gold += gold;
+                            player.Exp += exp;                            
+                            RewardInfo rewardInfo = new RewardInfo();
+                            foreach(RewardData rewardData in questData.rewards)
+                            {
+                                rewardInfo.RewardType = rewardData.type;
+                                rewardInfo.RewardValue = rewardData.amount;
+                            }
                             QuestInfo questInfo = new QuestInfo()
                             {
                                 QuestDbId = questDb.QuestDbId,
                                 TemplateId = questDb.TemplateId,
-                                Exp = exp,
-                                Connection = connection
+                                Connection = connection,
+                                Rewards = rewardInfo,
                             };
-                        S_QuestComplete questCompletePacket = new S_QuestComplete();
-                        questCompletePacket.Quest = questInfo;
-                        player.Session.Send(questCompletePacket);                        
+                            S_QuestComplete questCompletePacket = new S_QuestComplete();
+                            questCompletePacket.Quest = questInfo;
+                            player.Session.Send(questCompletePacket);
+
+                            SavePlayerStatus_Step1(player, player.Room);
                         }
                     }
                 }

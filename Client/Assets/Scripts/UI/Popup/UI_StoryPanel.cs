@@ -1,4 +1,5 @@
 using Data;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +15,13 @@ public class UI_StoryPanel : UI_Popup
         UI_Conversation_Text,
     }
 
-    private TMP_Text _storyText;
-    private GridLayoutGroup _interaction;
+    private TMP_Text _storyText;    
     private CanvasGroup _canvas;
-    private Queue<string> scriptQueue = new Queue<string>();
-    private List<string> interactionList = new List<string>();
+    private Queue<string> scriptQueue = new Queue<string>();    
     private Coroutine typingCoroutine;
     private bool isTyping = false;
     private bool isEndOfScript = false;
+    private Action onCloseAction;
 
     public override void Init()
     {
@@ -43,43 +43,43 @@ public class UI_StoryPanel : UI_Popup
             ShowNextScript();
         }
     }
-
-    public void ShowStoryPanelAll(List<string> scripts)
-    {
-        interactionList.AddRange(scripts);
-    }
-
-    private void CreateInteractionText(List<string> texts)
-    {
-        _interaction.gameObject.SetActive(true); // 인터랙션 활성화
-        foreach (var text in texts)
-        {
-            TMP_Text tmpText = GetTextMeshPro((int)Texts.InteractionText);
-            if (tmpText == null)
-            {
-                // Create InteractionText prefab
-                GameObject interactionText = Managers.Resource.Instantiate("UI/Scene/InteractionText");
-                tmpText = interactionText.GetComponent<TMP_Text>();
-            }
-            tmpText.text = text;
-            tmpText.fontSize = 24;
-            tmpText.color = Color.blue;
-
-            Button button = tmpText.gameObject.GetOrAddComponent<Button>();
-            button.onClick.AddListener(() => OnInteractionTextClick(text));
-        }
-    }
-
     public void ShowScript(List<NPCScript> scripts)
     {
+        gameObject.SetActive(true);
+        StartCoroutine(FadeIn());
         foreach (var script in scripts)
         {
+            if (script.type == "UI_Shop")
+            {
+                onCloseAction = () =>
+                {
+                    UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+                    if (gameSceneUI != null && gameSceneUI.ShopUI != null)
+                    {
+                        gameSceneUI.ShopUI.OpenShop(script.name, ""); // 타이틀을 script.name으로 설정
+                    }
+                };
+            }
+            SetStoryTexts(script.script);
         }
+    }
+
+    public void ShowStoryPanel(List<string> scripts, bool IsQuestEnd = false)
+    {
+        if (IsQuestEnd)
+        {
+            onCloseAction = () =>
+            {
+                Managers.Quest.EndQuest();
+            };
+        }
+        gameObject.SetActive(true);
+        StartCoroutine(FadeIn());
+        SetStoryTexts(scripts);
     }
 
     private void ShowNextScript()
-    {
-        _interaction.gameObject.SetActive(false); // 다음 스크립트를 출력할 때 인터랙션 비활성화
+    {        
         if (scriptQueue.Count > 0)
         {
             string nextScript = scriptQueue.Dequeue();
@@ -88,11 +88,6 @@ public class UI_StoryPanel : UI_Popup
                 StopCoroutine(typingCoroutine);
             }
             typingCoroutine = StartCoroutine(TypeText(nextScript));
-        }
-        else if (interactionList.Count > 0)
-        {
-            CreateInteractionText(interactionList);
-            interactionList.Clear();
         }
         else
         {
@@ -134,15 +129,11 @@ public class UI_StoryPanel : UI_Popup
             yield return null;
         }
         gameObject.SetActive(false);
-        //Managers.Quest.EndQuest();
+        onCloseAction?.Invoke();
+        onCloseAction = null;
     }
 
-    public void ShowStoryPanel(List<string> scripts)
-    {
-        gameObject.SetActive(true);
-        StartCoroutine(FadeIn());
-        SetStoryTexts(scripts);
-    }
+    
 
     private void OnPanelClick(PointerEventData evt)
     {

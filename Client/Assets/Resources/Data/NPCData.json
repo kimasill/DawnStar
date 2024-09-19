@@ -6,7 +6,8 @@
       "scripts": [
         {
           "id": "10001",
-          "name": "home",
+          "name": "루시스토리",
+          "type": "Home",
           "script": [
             "또! 누워있지!"
           ]
@@ -19,17 +20,10 @@
       "scripts": [
         {
           "id": "20001",
-          "name": "welcome",
+          "name": "새벽상점",
+          "type": "UI_Shop",
           "script": [
             "어서오세요."
-          ]
-        },
-        {
-          "id": "20002",
-          "name": "home",
-          "script": [
-            "상점보기",
-            "나가기"
           ]
         }
       ]

@@ -36,6 +36,11 @@ enum MsgId {
   S_QUEST_COMPLETE = 28;
   C_QUEST_COMPLETE = 29;
   C_BUY_ITEM = 30;
+  S_SHOP_LIST = 31;
+  C_REQUEST_SHOP = 32;
+  S_BUY_ITEM = 33;
+  S_CHANGE_POSITION = 34;  
+  C_CHANGE_POSITION = 35;
 }
 enum CreatureState{
   IDLE = 0;
@@ -70,6 +75,12 @@ enum SkillType{
 	SKILL_PROJECTILE = 2;
 }
 
+enum RewardType{
+	REWARD_EXP = 0;
+	REWARD_ITEM = 1;
+	REWARD_GOLD = 2;
+}
+
 enum PlayerServerState{
 	SERVER_STATE_LOGIN = 0;
 	SERVER_STATE_LOBBY = 1;
@@ -83,6 +94,7 @@ enum ItemType
 	ITEM_TYPE_WEAPON = 1;
 	ITEM_TYPE_ARMOR = 2;
 	ITEM_TYPE_CONSUMABLE = 3;
+	ITEM_TYPE_MATERIAL = 4;
 }
 
 enum WeaponType {
@@ -101,6 +113,11 @@ enum ArmorType{
 enum ConsumableType{
 	CONSUMABLE_TYPE_NONE = 0;
 	CONSUMABLE_TYPE_POTION = 1;
+}
+
+enum MaterialType{
+	MATERIAL_TYPE_NONE = 0;
+	MATERIAL_TYPE_FOOD = 1;
 }
 
 message S_EnterGame {
@@ -186,6 +203,13 @@ message S_AddItem{
 	repeated ItemInfo items = 1;
 }
 
+message C_RequestShop{
+}
+
+message S_ShopList{
+	repeated ItemInfo items = 1;
+}
+
 message C_EquipItem{
 	int32 itemDbId = 1;
 	bool equipped =2;
@@ -198,10 +222,25 @@ message S_EquipItem{
 
 message C_BuyItem{
 	int32 templateId = 1;
+	int32 count = 2;
+}
+
+message S_BuyItem{
+	int32 templateId = 1;
+	int32 count = 2;
+	int32 gold = 3;
 }
 
 message S_ChangeStat{
 	StatInfo statInfo = 1;
+}
+
+message S_ChangePosition{
+	int32 objectId = 1;
+	PositionInfo position = 2;
+}
+
+message C_ChangePosition{
 }
 
 message S_Tutorial {
@@ -265,17 +304,24 @@ message StatInfo{
   int32 attack = 4;
   float speed = 5;
   int32 totalExp = 6;
+  int32 gold = 7;
 }
 
 message QuestInfo
 {
   int32 questDbId = 1;
   int32 templateId = 2;
-  int32 exp = 3;
-  int32 progress = 4;
-  int32 connection = 5;
-  bool completed = 6;
-  string questType = 7;
+  int32 progress = 3;
+  int32 connection = 4;
+  bool completed = 5;
+  string questType = 6;
+  RewardInfo rewards = 7;
+}
+
+message RewardInfo
+{
+  RewardType rewardType = 1;
+  int32 rewardValue = 2;
 }
 
 message SkillInfo{
@@ -288,6 +334,7 @@ message ItemInfo{
 	int32 count = 3;
 	int32 slot = 4;
 	bool equipped = 5;
+	int32 price = 6;
 }
 
 message MapInfo{

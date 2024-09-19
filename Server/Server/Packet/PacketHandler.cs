@@ -139,4 +139,42 @@ class PacketHandler
             return;
         room.Push(room.HandleMapChanged, player, mapChangePacket.MapId);
     }
+
+    public static void C_ChangePositionHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+        room.Push(room.HandleChangePosition, player);
+    }
+
+    public static void C_RequestShopHandler(PacketSession session, IMessage packet)
+    {
+        C_RequestShop requestShopPacket = packet as C_RequestShop;
+        ClientSession clientSession = session as ClientSession;
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+        room.Push(room.HandleRequestShop, player);
+    }
+
+    public static void C_BuyItemHandler(PacketSession session, IMessage packet)
+    {
+        C_BuyItem buyItemPacket = packet as C_BuyItem;
+        ClientSession clientSession = session as ClientSession;
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+        room.Push(room.HandleBuyItem, player, buyItemPacket);
+    }
 }
