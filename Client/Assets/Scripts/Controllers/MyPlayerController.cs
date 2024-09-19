@@ -2,18 +2,21 @@ using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using static Define;
 using static Item;
 
 public class MyPlayerController : PlayerController
 {
-    bool _moveKeyPressed = false;
-
+    bool _moveKeyPressed = false;    
     public int WeaponDamage { get; private set; }
     public int ArmorDef { get; private set; }
     private NPCController _nearbyNPC;
+    public int Gold
+    {
+        get { return Stat.Gold; }
+        set { Stat.Gold = value; }
+    }
 
     //public QuestInfo Quest 
     //{
@@ -206,19 +209,19 @@ public class MyPlayerController : PlayerController
             if (Managers.Object.FindCreature(destPos) == null)
             {
                 CellPos = destPos;
-                CheckIfPlayerAtDoor(destPos);
+                CheckIfPlayerAtPortal(destPos);
                 DetectNearbyNPCs();
             }
         }
         CheckUpdatedFlag();
     }
 
-    private void CheckIfPlayerAtDoor(Vector3Int playerCellPosition)
+    private void CheckIfPlayerAtPortal(Vector3Int playerCellPosition)
     {
-        string door = Managers.Map.IsPlayerAtDoor(playerCellPosition);
-        if (door != null)
+        string portal = Managers.Map.IsPlayerAtPortal(playerCellPosition);
+        if (portal != null)
         {
-            int id = Managers.Map.GetDoorId(door);
+            int id = Managers.Map.GetPortalId(portal);
             C_MapChange mapPacket = new C_MapChange { MapId = id };
             Managers.Network.Send(mapPacket);
         }

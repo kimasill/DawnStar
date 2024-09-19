@@ -19,7 +19,11 @@ public abstract class BaseScene : MonoBehaviour
         if (obj == null)
             Managers.Resource.Instantiate("UI/EventSystem").name = "@EventSystem";
     }
-    protected abstract void InitializeNPCs();
+    protected void RequestShop()
+    {
+        Managers.Shop.Clear();
+        Managers.Shop.RequestShop();
+    }
     public virtual void ShowDescriptionUI(List<string> description)
     {        
     }

@@ -22,9 +22,11 @@ public class GameScene : BaseScene
     {
         
     }
+    protected virtual void InitializeNPCs()
+    {        
+    }
 
-    protected override void InitializeNPCs()
-    {
-        throw new System.NotImplementedException();
+    protected virtual void InitializeShop()
+    {       
     }
 }

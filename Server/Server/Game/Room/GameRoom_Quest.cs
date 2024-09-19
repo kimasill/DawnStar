@@ -59,23 +59,86 @@ namespace Server.Game
                 return;
             }
 
-
             // 플레이어의 위치를 포탈의 위치로 업데이트
-            player.CellPos = new Vector2Int((int)portalData.posX, (int)portalData.posY);
+            player.CellPos = new Vector2Int((int)portalData.posX, (int)portalData.posY);            
             player.PosInfo.State = CreatureState.Idle;
+            player.MapInfo.TemplateId = mapData.id;
+            player.MapInfo.MapName = mapData.name;
+            player.MapInfo.PortalId = portalData.id;
             // 클라이언트에 맵 이동 정보 전송
             S_MapChange mapChangePacket = new S_MapChange
             {
-                MapId = mapId,
-                ObjectInfo = player.Info,
-            };
-            player.Session.Send(mapChangePacket);
-
-            // 플레이어를 해당 맵에 소환하는 패킷 전송
+                MapId = mapId,            
+                ObjectInfo = player.Info
+            };            
             
+            player.Session.Send(mapChangePacket);
 
             // 플레이어의 위치와 맵 정보를 데이터베이스에 저장
             DbTransaction.SavePlayerPositionAndMap(player, mapId);
+        }
+
+        public void HandleRequestShop(Player player)
+        {
+            if (player == null)
+                return;
+
+            MapInfo mapInfo = player.MapInfo;
+            if (mapInfo == null)
+                return;
+
+            ShopData shopData = null;
+            foreach (var shop in DataManager.ShopDict)
+            {
+                if (shop.Value.mapId == mapInfo.TemplateId)
+                    shopData = shop.Value;
+            }             
+            if (shopData != null)
+            {
+                S_ShopList shopListPacket = new S_ShopList();
+                foreach (ShopItemData item in shopData.itemList)
+                {
+                    ItemInfo itemInfo = new ItemInfo()
+                    {
+                        TemplateId = item.id,
+                        Count = item.count,
+                        Price = item.price
+                    };
+                    shopListPacket.Items.Add(itemInfo);
+                }                
+                player.Session.Send(shopListPacket);
+            }                
+        }
+
+        public void HandleStatChange(Player player)
+        {
+            if (player == null)
+                return;
+
+            S_ChangeStat statInfoPacket = new S_ChangeStat();
+            StatInfo statInfo = new StatInfo()
+            {
+                Level = player.Stat.Level,
+                Hp = player.Stat.Hp,
+                MaxHp = player.Stat.MaxHp,
+                Attack = player.Stat.Attack,
+                Speed = player.Stat.Speed
+            };
+            statInfoPacket.StatInfo = statInfo;
+
+            player.Session.Send(statInfoPacket);
+        }
+
+        public void HandleChangePosition(Player player)
+        {
+            if (player == null)
+                return;
+
+            S_ChangePosition positionPacket = new S_ChangePosition();
+            positionPacket.ObjectId = player.Info.ObjectId;
+            positionPacket.Position = player.PosInfo;
+
+            player.Session.Send(positionPacket);
         }
     }
 }

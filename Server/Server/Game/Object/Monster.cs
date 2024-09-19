@@ -213,7 +213,7 @@ namespace Server.Game
             GameObject owner = attacker.GetOwner();
             if (owner.ObjectType == GameObjectType.Player)
             {
-                RewardData rewardData = GetRandomReward();
+                ItemRewardData rewardData = GetRandomReward();
                 if (rewardData != null)
                 {
                     Player player = (Player)owner;
@@ -222,14 +222,14 @@ namespace Server.Game
             }   
         }
 
-        RewardData GetRandomReward()
+        ItemRewardData GetRandomReward()
         {
             MonsterData monsterData = null;
             DataManager.MonsterDict.TryGetValue(TemplateId, out monsterData);
 
             int rand = new Random().Next(0, 101);
             int sum = 0;
-            foreach(RewardData rewardData in monsterData.rewards)
+            foreach(ItemRewardData rewardData in monsterData.rewards)
             {
                 sum+=rewardData.probability;
                 if(rand <= sum)

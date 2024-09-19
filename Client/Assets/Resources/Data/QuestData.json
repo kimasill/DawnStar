@@ -3,30 +3,54 @@
     {
       "id": "1",
       "title": "epic",
-      "exp": "100",
+      "rewards": [
+        {
+          "rewardType": "Reward_Exp",
+          "amount": "50"
+        }
+      ],
       "connection": "2",
       "questType": "epic"
     },
     {
       "id": "2",
       "title": "tutorial01",
-      "exp": "50",
+      "rewards": [
+        {
+          "rewardType": "Reward_Gold",
+          "amount": "10"
+        },
+        {
+          "rewardType": "Reward_Exp",
+          "amount": "50"          
+        }
+      ],
       "connection": "3",
       "questType": "story"
     },
     {
       "id": "3",
       "title": "tutorial02",
-      "exp": "50",
+      "rewards": [
+        {
+          "rewardType": "Reward_Exp",
+          "amount": "50"
+        }
+      ],
       "connection": "4",
       "questType": "interaction"
     },
     {
       "id": "4",
-      "title": "tutorial03",
-      "exp": "50",
+      "title": "Anger",
+      "rewards": [
+        {
+          "rewardType": "Reward_Exp",
+          "amount": "50"
+        }
+      ],
       "connection": "5",
-      "questType": "story"
+      "questType": "scene"
     }
   ]
 } 

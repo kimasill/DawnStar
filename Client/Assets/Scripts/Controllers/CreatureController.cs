@@ -18,7 +18,8 @@ public class CreatureController : BaseController
 			UpdateHpBar();
 		}
 	}
-	public override int Hp
+
+    public override int Hp
 	{
 		get { return Stat.Hp; }
 		set 

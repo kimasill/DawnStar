@@ -11,6 +11,7 @@ public class Define
         Lobby,
         DawnTown,
         DawnTown_Store,
+        DawnTown_Home,
         Game,
     }
 
@@ -25,5 +26,7 @@ public class Define
     {
         Click,
         Drag,
+        MouseOver,
+        MouseOut,
     }
 }

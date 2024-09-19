@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -164,26 +165,42 @@ class PacketHandler
 
     public static void S_MapChangeHandler(PacketSession session, IMessage packet)
     {
-        S_MapChange mapChangePacket = (S_MapChange)packet;        
+        S_MapChange mapChangePacket = (S_MapChange)packet;
         Debug.Log($"S_MapChangeHandler: Changing to map {mapChangePacket.MapId}");
-        if (Managers.Object.MyPlayer != null)
-        {
-            MyPlayerController mc = Managers.Object.MyPlayer;
-            int id = mc.Id;
-            mc.gameObject.SetActive(false);
-            Managers.Object.MyPlayer = null;
-            Managers.Object.Remove(id);
-        }
+        
+        Managers.Object.Remove(Managers.Object.MyPlayer.Id);
         Managers.Data.MapDict.TryGetValue(mapChangePacket.MapId, out MapData map);
-
-        SceneManager.sceneLoaded += (scene, mode) => OnSceneLoaded(scene, mode, mapChangePacket.ObjectInfo);
         Managers.Scene.LoadScene(map.name);
+        SceneManager.sceneLoaded += (scene, mode) => OnSceneLoaded(mapChangePacket.ObjectInfo);
     }
 
-    private static void OnSceneLoaded(Scene scene, LoadSceneMode mode, ObjectInfo playerInfo)
-    {        
-        Managers.Object.Add(playerInfo, myPlayer: true);
-        SceneManager.sceneLoaded -= (s, m) => OnSceneLoaded(s, m, playerInfo);
+    public static void OnSceneLoaded(ObjectInfo objectInfo)
+    {
+        if (objectInfo == null)
+        {
+            Debug.LogError("ObjectInfo is null in OnSceneLoaded");
+            return;
+        }
+
+        // 플레이어를 새로운 맵에 다시 생성
+        Managers.Object.Add(objectInfo, myPlayer: true);
+
+        // 플레이어 정보 업데이트
+        if (Managers.Object.MyPlayer != null)
+        {
+            Managers.Object.MyPlayer.PosInfo = objectInfo.Position;
+            Managers.Object.MyPlayer.Stat.MergeFrom(objectInfo.StatInfo);
+        }
+
+        // 이벤트 핸들러 제거
+        SceneManager.sceneLoaded -= (s, m) => OnSceneLoaded(objectInfo);
+    }
+
+    public static void S_ChangePositionHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangePosition changePosPacket = (S_ChangePosition)packet;
+        Managers.Object.MyPlayer.PosInfo = changePosPacket.Position;
+        Managers.Object.MyPlayer.SyncPos();
     }
 
     public static void S_CreatePlayerHandler(PacketSession session, IMessage packet)
@@ -205,7 +222,6 @@ class PacketHandler
 
     public static void S_ItemListHandler(PacketSession session, IMessage packet)
     {
-
         S_ItemList itemPacket = packet as S_ItemList;
         Managers.Inventory.Clear();
 
@@ -260,6 +276,23 @@ class PacketHandler
         if (Managers.Object.MyPlayer != null)
             Managers.Object.MyPlayer.RefreshAdditionalStat();       
     }
+
+    public static void S_ShopListHandler(PacketSession session, IMessage packet)
+    {
+        S_ShopList shopList = packet as S_ShopList;
+        Managers.Shop.Clear();
+
+        foreach (ItemInfo itemInfo in shopList.Items)
+        {            
+            Item item = Item.MakeItem(itemInfo);
+            Managers.Shop.Add(item);
+        }
+
+        Debug.Log("S_ShopListHandler");
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        gameSceneUI.ShopUI.RefreshUI();
+    }
+
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
     {
 
@@ -280,11 +313,32 @@ class PacketHandler
         int questId = Managers.Quest.Add(questPacket.Quest);
 
         Managers.Quest.StartQuest(questId);
+        Debug.Log($"Start Quest : {questPacket.Quest.TemplateId}");
     }
 
     public static void S_QuestCompleteHandler(PacketSession session, IMessage packet)
     {
         S_QuestComplete questPacket = (S_QuestComplete)packet;
         Managers.Quest.UpdateQuest(questPacket.Quest);
+        Debug.Log($"Complete Quest : {questPacket.Quest.TemplateId}");
+    }
+
+    public static void S_BuyItemHandler(PacketSession session, IMessage packet)
+    {
+        S_BuyItem buyItemPacket = packet as S_BuyItem;
+
+        if (buyItemPacket == null || buyItemPacket.Count == 0)
+            return;
+
+        Debug.Log("S_BuyItemHandler");
+        // 상점에서 아이템 제거
+        Managers.Shop.RemoveItem(buyItemPacket.TemplateId);
+
+        // 상점 UI 갱신
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        if (gameSceneUI != null)
+        {
+            gameSceneUI.ShopUI.RefreshUI();
+        }
     }
 }

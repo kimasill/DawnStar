@@ -77,6 +77,7 @@ namespace Server.Data
     {
         public int id;
         public string name;
+        public int price;
         public ItemType itemType;
     }
 
@@ -96,6 +97,11 @@ namespace Server.Data
         public ConsumableType consumableType;
         public int maxCount;
     }
+    public class MaterialData : ItemData
+    {
+        public MaterialType materialType;
+        public int maxCount;
+    }
 
     [Serializable]
     public class ItemLoader : ILoader<int, ItemData>
@@ -103,6 +109,7 @@ namespace Server.Data
         public List<WeaponData> weapons = new List<WeaponData>();
         public List<ArmorData> armors = new List<ArmorData>();
         public List<ConsumableData> consumables = new List<ConsumableData>();
+        public List<MaterialData> materials = new List<MaterialData>();
 
         public Dictionary<int, ItemData> MakeDict()
         {
@@ -122,6 +129,11 @@ namespace Server.Data
                 item.itemType = ItemType.Consumable;
                 dict.Add(item.id, item);
             }
+            foreach (ItemData item in materials)
+            {
+                item.itemType = ItemType.Material;
+                dict.Add(item.id, item);
+            }
             return dict;
         }
     }
@@ -129,7 +141,7 @@ namespace Server.Data
 
     #region Monster
     [Serializable]
-    public class RewardData
+    public class ItemRewardData
     {         
         public int probability; //100분율
         public int itemId;
@@ -141,7 +153,7 @@ namespace Server.Data
         public int id;
         public string name;
         public StatInfo stat;
-        public List<RewardData> rewards;
+        public List<ItemRewardData> rewards;
     }
     [Serializable]
     public class MonsterLoader : ILoader<int, MonsterData>
@@ -200,14 +212,22 @@ namespace Server.Data
     #endregion
 
     #region Quest
+
+    [Serializable]
+    public class RewardData
+    {
+        public RewardType type;
+        public int amount;
+    }
+
     [Serializable]
     public class QuestData
     {
         public int id;
-        public string title;        
-        public int exp;
+        public string title;
+        public List<RewardData> rewards;
         public int connection;        
-        public string questType;
+        public string questType;        
     }
 
     [Serializable]
@@ -226,5 +246,40 @@ namespace Server.Data
         }
     }
 
+    #endregion
+
+    #region Shop
+    [Serializable]
+    public class ShopItemData
+    {
+        public int id;
+        public int count;
+        public int price;
+    }
+
+    [Serializable]
+    public class ShopData
+    {
+        public int id;
+        public int mapId;
+        public string name;
+        public List<ShopItemData> itemList;
+    }
+
+    [Serializable]
+    public class ShopLoader : ILoader<int, ShopData>
+    {
+        public List<ShopData> shops = new List<ShopData>();
+
+        public Dictionary<int, ShopData> MakeDict()
+        {
+            Dictionary<int, ShopData> dict = new Dictionary<int, ShopData>();
+            foreach (ShopData shop in shops)
+            {
+                dict.Add(shop.id, shop);
+            }
+            return dict;
+        }
+    }
     #endregion
 }

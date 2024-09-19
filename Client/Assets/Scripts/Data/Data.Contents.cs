@@ -47,6 +47,7 @@ namespace Data
     {
         public int id;
         public string name;
+        public int price;
         public ItemType itemType;
         public string iconPath;
     }
@@ -68,12 +69,19 @@ namespace Data
         public int maxCount;
     }
 
+    public class MaterialData : ItemData
+    {
+        public MaterialType materialType;
+        public int maxCount;
+    }
+
     [Serializable]
     public class ItemLoader : ILoader<int, ItemData>
     {
         public List<WeaponData> weapons = new List<WeaponData>();
         public List<ArmorData> armors = new List<ArmorData>();
         public List<ConsumableData> consumables = new List<ConsumableData>();
+        public List<MaterialData> materials = new List<MaterialData>();
 
         public Dictionary<int, ItemData> MakeDict()
         {
@@ -93,10 +101,15 @@ namespace Data
                 item.itemType = ItemType.Consumable;
                 dict.Add(item.id, item);
             }
+            foreach (ItemData item in materials)
+            {
+                item.itemType = ItemType.Material;
+                dict.Add(item.id, item);
+            }
             return dict;
         }
     }
-    #endregion
+    #endregion 
 
     #region Monster
     [Serializable]
@@ -210,6 +223,7 @@ namespace Data
     {
         public int id;
         public string name;
+        public string type;
         public List<string> script;
     }
 
@@ -217,7 +231,7 @@ namespace Data
     public class NPCData
     {
         public int id;
-        public string name;
+        public string name;        
         public List<NPCScript> scripts;
     }
 

@@ -41,7 +41,7 @@ public class MapManager
 	public int SizeY { get { return MaxY - MinY + 1; } }
 
 	bool[,] _collision;
-    private Dictionary<Vector3Int, GameObject> _doorDictionary = new Dictionary<Vector3Int, GameObject>(); // 문 객체들을 저장할 Dictionary
+    private Dictionary<Vector3Int, GameObject> _portalDict = new Dictionary<Vector3Int, GameObject>(); // 문 객체들을 저장할 Dictionary
     public bool CanGo(Vector3Int cellPos)
 	{
         Vector3Int adjustedPos = new Vector3Int(cellPos.x + 1, cellPos.y + 1, 0);
@@ -56,13 +56,13 @@ public class MapManager
 		return !_collision[y, x];
 	}
 
-    public string IsPlayerAtDoor(Vector3Int cellPos)
+    public string IsPlayerAtPortal(Vector3Int cellPos)
     {
         // 디버깅을 위해 좌표 출력
         Debug.Log($"Checking door at cell position: {cellPos}");
 
         Vector3Int adjustedPos = new Vector3Int(cellPos.x + 1, cellPos.y + 1, 0);
-        if(_doorDictionary.TryGetValue(adjustedPos, out var result))
+        if(_portalDict.TryGetValue(adjustedPos, out var result))
 			return result.name;
 		return null;		
     }
@@ -70,8 +70,8 @@ public class MapManager
     public void LoadMap(int mapId)
 	{
 		DestroyMap();
-
-		string mapName = "Map_" + mapId.ToString("000");
+        _portalDict.Clear();
+        string mapName = "Map_" + mapId.ToString("000");
 		GameObject go = Managers.Resource.Instantiate($"Map/{mapName}");
 		go.name = "Map";
 
@@ -112,7 +112,7 @@ public class MapManager
 		{
 			GameObject.Destroy(map);
 			CurrentGrid = null;
-		}
+        }
 	}
 
     private void FindDoors(GameObject map)
@@ -127,14 +127,14 @@ public class MapManager
                     if (child.gameObject.layer == LayerMask.NameToLayer("Door"))
                     {
                         Vector3Int doorCellPos = CurrentGrid.WorldToCell(child.position);
-                        _doorDictionary[doorCellPos] = child.gameObject;
+                        _portalDict[doorCellPos] = child.gameObject;
                     }
                 }
             }
         }
     }
 
-    public int GetDoorId(string name)
+    public int GetPortalId(string name)
     {
 		foreach (var mapData in Managers.Data.MapDict)
         {			

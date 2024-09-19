@@ -20,8 +20,4 @@ public class LoginScene : BaseScene
     public override void Clear()
     {        
     }
-
-    protected override void InitializeNPCs()
-    {        
-    }
 }

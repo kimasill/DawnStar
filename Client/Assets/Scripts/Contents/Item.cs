@@ -40,6 +40,11 @@ public class Item
         set { Info.Equipped = value; }
     }
 
+    public int Price
+    {
+        get { return Info.Price; }
+        set { Info.Price = value; }
+    }
 
     public ItemType ItemType { get; private set; }
     public bool Stackable { get; protected set; }
@@ -69,6 +74,9 @@ public class Item
             case ItemType.Consumable:
                 item = new Consumable(itemInfo.TemplateId);
                 break;
+            case ItemType.Material:
+                item = new Material(itemInfo.TemplateId);
+                break;
         }
 
         if (item != null)
@@ -77,6 +85,7 @@ public class Item
             item.Count = itemInfo.Count;
             item.Slot = itemInfo.Slot;
             item.Equipped = itemInfo.Equipped;
+            item.Price = itemInfo.Price;
         }
 
         return item;
@@ -164,6 +173,34 @@ public class Item
                 MaxCount = data.maxCount;
                 ConsumableType = data.consumableType;
                 Stackable = (data.maxCount > 1);
+            }
+        }
+    }
+    public class Material : Item
+    {
+        public MaterialType MaterialType { get; private set; }
+        public int MaxCount { get; private set; }
+        public Material(int templateId) : base(ItemType.Material)
+        {
+            Init(templateId);
+        }
+
+        void Init(int templateId)
+        {
+            ItemData itemData = null;
+            Managers.Data.ItemDict.TryGetValue(templateId, out itemData);
+            if (itemData.itemType != ItemType.Material)
+            {
+                return;
+            }
+
+            MaterialData data = (MaterialData)itemData;
+            {
+                TemplateId = data.id;
+                Count = 1;
+                MaxCount = data.maxCount;
+                MaterialType = data.materialType;
+                Stackable = true; // 재료 아이템은 기본적으로 스택 가능
             }
         }
     }

@@ -63,6 +63,14 @@ public abstract class UI_Base : MonoBehaviour
 				evt.OnDragHandler -= action;
 				evt.OnDragHandler += action;
 				break;
-		}
+			case Define.UIEvent.MouseOver:
+                evt.OnMouseOverHandler -= action;
+                evt.OnMouseOverHandler += action;
+                break;
+            case Define.UIEvent.MouseOut:
+                evt.OnMouseOutHandler -= action;
+                evt.OnMouseOutHandler += action;
+                break;
+        }
 	}
 }
