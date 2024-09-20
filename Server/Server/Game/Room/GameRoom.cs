@@ -105,7 +105,8 @@ namespace Server.Game
                             player.MapInfo.TemplateId = mapData.id;
                             player.MapInfo.PortalId = portal.id;
                             player.MapInfo.MapName = mapData.name;
-                            DB.DbTransaction.SavePlayerPositionAndMap(gameObject as Player, portal.id);
+                            player.MapInfo.Scene = "DawnTown";
+                            DB.DbTransaction.SavePlayerMap(gameObject as Player, player.MapInfo);
                         }
                     }
                 }
@@ -117,10 +118,23 @@ namespace Server.Game
             }
             else
             {
-                //TODO: Single Map Pos Load
+                using (AppDbContext db = new AppDbContext())
+                {
+                    MapDb mapDb = db.Maps.FirstOrDefault(m => m.PlayerDbId == player.PlayerDbId);
+                    if (mapDb != null)
+                    {
+                        player.MapInfo.TemplateId = mapDb.TemplateId;
+                        player.MapInfo.Scene = mapDb.Scene;                        
+                        player.MapInfo.MapName = mapDb.MapName;
+                    }
+                    else
+                    {
+                        // mapDb가 null인 경우 처리
+                        // 예를 들어, 기본 위치로 설정하거나 오류를 기록
+                    }
+                }
             }
-
-            
+            player.Info.MapInfo = player.MapInfo;
             player.Room = this;
             player.RefreshAdditionalStat();
 

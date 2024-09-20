@@ -64,6 +64,7 @@ namespace Server.Game
             player.PosInfo.State = CreatureState.Idle;
             player.MapInfo.TemplateId = mapData.id;
             player.MapInfo.MapName = mapData.name;
+            player.MapInfo.Scene = mapData.name;
             player.MapInfo.PortalId = portalData.id;
             // 클라이언트에 맵 이동 정보 전송
             S_MapChange mapChangePacket = new S_MapChange
@@ -75,7 +76,8 @@ namespace Server.Game
             player.Session.Send(mapChangePacket);
 
             // 플레이어의 위치와 맵 정보를 데이터베이스에 저장
-            DbTransaction.SavePlayerPositionAndMap(player, mapId);
+            DbTransaction.SavePlayerStatus_All(player, this);
+            DbTransaction.SavePlayerMap(player, player.MapInfo);
         }
 
         public void HandleRequestShop(Player player)

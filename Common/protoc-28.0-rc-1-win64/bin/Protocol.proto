@@ -41,6 +41,7 @@ enum MsgId {
   S_BUY_ITEM = 33;
   S_CHANGE_POSITION = 34;  
   C_CHANGE_POSITION = 35;
+  C_REMOVE_ITEM = 36;
 }
 enum CreatureState{
   IDLE = 0;
@@ -231,6 +232,10 @@ message S_BuyItem{
 	int32 gold = 3;
 }
 
+message C_RemoveItem{
+	int32 itemDbId = 1;
+}
+
 message S_ChangeStat{
 	StatInfo statInfo = 1;
 }
@@ -287,6 +292,7 @@ message ObjectInfo {
   string name = 2;
   PositionInfo position = 3;
   StatInfo statInfo = 4;
+  MapInfo mapInfo = 5;
 }
 
 message PositionInfo{
@@ -342,6 +348,7 @@ message MapInfo{
 	int32 templateId = 2;
 	string mapName = 3;
 	int32 portalId = 4;
+	string scene = 5;
 }
 
 message TutorialInfo {

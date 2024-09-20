@@ -9,7 +9,7 @@ public class DawnTown_Home : DawnTown
 {
     protected override void Init()
     {
-        SceneType = Define.Scene.DawnTown_Home;
+        SceneType = Define.Scene.DawnTownHome;
 
         Managers.Map.LoadMap(3);
 
@@ -21,38 +21,72 @@ public class DawnTown_Home : DawnTown
         InitializeNPCs();
 
         // 인벤토리에서 아이템 확인 및 퀘스트 처리
-        CheckInventoryAndHandleQuest();
+        CheckInventoryAndHandleQuest03();
     }
 
-    private void CheckInventoryAndHandleQuest()
+    private void CheckInventoryAndHandleQuest03()
     {
         bool hasItem1001 = Managers.Inventory.Items.Any(item => item.Value.TemplateId == 1001);
         bool hasItem1002 = Managers.Inventory.Items.Any(item => item.Value.TemplateId == 1002);
 
         if (hasItem1001 && hasItem1002)
-        {
+        {   
+            foreach (var item in Managers.Inventory.Items)
+            {
+                if(item.Value.ItemDbId == 1001 || item.Value.ItemDbId == 1002)
+                {
+                    C_RemoveItem removeItemPacket = new C_RemoveItem(){ ItemDbId = item.Value.ItemDbId };
+                    Managers.Network.Send(removeItemPacket);
+                    Managers.Inventory.Remove(item.Key);
+                }
+            }
+
             // 진행 중인 퀘스트 완료 처리
             Managers.Quest.EndQuest();
         }
         else
         {
             // 퀘스트 완료 처리하지 않고 대사 출력
-            ShowQuestScript();
+            ShowQuestScript(2);
         }
     }
 
-    private void ShowQuestScript()
+    private void ShowQuestScript(int id)
     {
         int currentQuestId = Managers.Quest.GetCurrentQuestId();
         ScriptData questScriptData = null; 
         Managers.Data.ScriptDict.TryGetValue(currentQuestId, out questScriptData);
-
+        
         if (questScriptData != null && questScriptData.scripts.Count > 1)
-        {
-            List<string> scripts = questScriptData.scripts[1].script;
+        {            
             UI_GameWindow gameWindow = _sceneUi.GameWindow;
-            gameWindow.StoryPanel.ShowStoryPanel(scripts);
+            gameWindow.StoryPanel.ShowStoryPanel(questScriptData, id);
         }
+    }
+
+    public override void StartInteractionQuest(Quest quest)
+    {
+        if(quest.Id == 4)
+        {
+            ShowQuestScript(1);
+        }
+    }
+    public override void CheckInteractionQuest(Quest quest)
+    {
+        int id = Managers.Quest.GetCurrentQuestId();
+        if (quest.Id == id)
+        {
+            Managers.Quest.EndQuest();
+        }
+    }
+
+    public override void ShowStoryScene(ScriptData scriptData)
+    {
+        UI_GameScene gameUI = Managers.UI.SceneUI as UI_GameScene;
+        UI_StoryScene storyScene = gameUI.StoryScene;
+        storyScene.gameObject.SetActive(true);
+        storyScene.LoadStoryData(scriptData);
+        storyScene.ShowStory();
     }
 
     public void QuestCheck()

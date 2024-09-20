@@ -182,17 +182,13 @@ namespace Server
                         questPacket.Quest = questInfo;
                         Send(questPacket);
                     }
-                }  
-
-                //if (isFirstLogin)
-                {
-                    ServerState = PlayerServerState.ServerStateSingle;                    
-                    GameLogic.Instance.Push(() =>
-                    {
-                        GameRoom room = GameLogic.Instance.Find(1);
-                        room.Push(room.EnterSingleGame, MyPlayer, true);
-                    });
                 }
+                ServerState = PlayerServerState.ServerStateSingle;                    
+                GameLogic.Instance.Push(() =>
+                {
+                    GameRoom room = GameLogic.Instance.Find(1);
+                    room.Push(room.EnterSingleGame, MyPlayer, isFirstLogin);
+                });
                 //else
                 //{
                 //    ServerState = PlayerServerState.ServerStateGame;

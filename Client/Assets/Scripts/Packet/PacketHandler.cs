@@ -16,9 +16,21 @@ class PacketHandler
 {
 	public static void S_EnterGameHandler(PacketSession session, IMessage packet)
 	{
-		S_EnterGame enterGamePacket = packet as S_EnterGame;   
-        Managers.Object.Add(enterGamePacket.Player, myPlayer: true);
+		S_EnterGame enterGamePacket = packet as S_EnterGame;        
+        if (enterGamePacket.Player.MapInfo != null)
+        {
+            Managers.Scene.LoadScene(enterGamePacket.Player.MapInfo.Scene);
+            SceneManager.sceneLoaded += (scene, mode) => OnFirstSceneLoaded(enterGamePacket.Player);
+            
+        }
 	}
+
+    public static void OnFirstSceneLoaded(ObjectInfo objectInfo)
+    {
+        Managers.Object.Add(objectInfo, myPlayer: true);        
+        SceneManager.sceneLoaded -= (s, m) => OnFirstSceneLoaded(objectInfo);
+    }
+
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)
     {
         S_LeaveGame leaveGameHandler = packet as S_LeaveGame;
@@ -310,8 +322,8 @@ class PacketHandler
     public static void S_StartQuestHandler(PacketSession session, IMessage packet)
     {
         S_StartQuest questPacket = (S_StartQuest)packet;
-        int questId = Managers.Quest.Add(questPacket.Quest);
-
+        int questId = Managers.Quest.Add(questPacket.Quest);        
+        
         Managers.Quest.StartQuest(questId);
         Debug.Log($"Start Quest : {questPacket.Quest.TemplateId}");
     }

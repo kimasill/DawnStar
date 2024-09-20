@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Data;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -27,7 +28,15 @@ public abstract class BaseScene : MonoBehaviour
     public virtual void ShowDescriptionUI(List<string> description)
     {        
     }
-
+    public virtual void StartInteractionQuest(Quest quest)
+    {
+    }
+    public virtual void CheckInteractionQuest(Quest quest)
+    {
+    }
+    public virtual void ShowStoryScene(ScriptData scriptData)
+    {
+    }
     public void AddNPC(int id, GameObject npc)
     {
         if (!_npcs.ContainsKey(id))

@@ -74,5 +74,17 @@ namespace Server.Game
             };
             player.Session.Send(buyItemPacket);
         }
+
+        public void HandleRemoveItem(Player player, int id)
+        {
+            if (player == null)
+                return;
+
+            if (player.Inven.Items.ContainsKey(id) == false)
+                return;
+
+            DbTransaction.SaveRemovedItemDB(player, id, this);
+            // 인벤토리에서 해당 아이템 제거                 
+        }
     }
 }

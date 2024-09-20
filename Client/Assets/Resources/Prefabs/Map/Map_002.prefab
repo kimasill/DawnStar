@@ -2634,9 +2634,9 @@ GameObject:
   - component: {fileID: 1385387879445100184}
   - component: {fileID: 5975982812184176296}
   - component: {fileID: 8998551456020217837}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: DawnTown
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13697,9 +13697,9 @@ GameObject:
   - component: {fileID: 4343836989037752154}
   - component: {fileID: 3404327172304994879}
   - component: {fileID: 4828316969260544374}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: DawnTown
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

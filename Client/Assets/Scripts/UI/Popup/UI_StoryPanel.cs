@@ -15,6 +15,11 @@ public class UI_StoryPanel : UI_Popup
         UI_Conversation_Text,
     }
 
+    enum Images
+    {
+        UI_Conversation_Image,
+    }
+
     private TMP_Text _storyText;    
     private CanvasGroup _canvas;
     private Queue<string> scriptQueue = new Queue<string>();    
@@ -22,13 +27,16 @@ public class UI_StoryPanel : UI_Popup
     private bool isTyping = false;
     private bool isEndOfScript = false;
     private Action onCloseAction;
+    private Image _conversationImage;
 
     public override void Init()
     {
         _canvas = GetComponent<CanvasGroup>();
         _canvas.alpha = 0;
         Bind<TMP_Text>(typeof(Texts));
+        Bind<Image>(typeof(Images));
         _storyText = GetTextMeshPro((int)Texts.UI_Conversation_Text);
+        _conversationImage = GetImage((int)Images.UI_Conversation_Image);
         gameObject.BindEvent(OnPanelClick);
     }
 
@@ -43,7 +51,23 @@ public class UI_StoryPanel : UI_Popup
             ShowNextScript();
         }
     }
-    public void ShowScript(List<NPCScript> scripts)
+
+    private void SetConversationImage(string imageName)
+    {
+        // 이미지 로드 로직 (예: Resources 폴더에서 로드)
+        Sprite image = Resources.Load<Sprite>($"Textures/Images/{imageName}");
+        if (image != null)
+        {
+            Debug.Log($"Image '{imageName}' loaded successfully");
+            _conversationImage.sprite = image;
+        }
+        else
+        {
+            Debug.LogWarning($"Image '{imageName}' not found in 'Textures/Image/'");
+        }
+    }
+
+    public void ShowScriptAndProfile(List<NPCScript> scripts, string name)
     {
         gameObject.SetActive(true);
         StartCoroutine(FadeIn());
@@ -60,11 +84,11 @@ public class UI_StoryPanel : UI_Popup
                     }
                 };
             }
-            SetStoryTexts(script.script);
+            SetConversationImage(name);
+            SetStoryTexts(script.script);            
         }
     }
-
-    public void ShowStoryPanel(List<string> scripts, bool IsQuestEnd = false)
+    public void ShowStoryPanel(Script scripts, bool IsQuestEnd = false)
     {
         if (IsQuestEnd)
         {
@@ -75,7 +99,13 @@ public class UI_StoryPanel : UI_Popup
         }
         gameObject.SetActive(true);
         StartCoroutine(FadeIn());
-        SetStoryTexts(scripts);
+        SetConversationImage(scripts.name);
+        SetStoryTexts(scripts.script);
+    }
+    public void ShowStoryPanel(ScriptData scriptData, int id,  bool isQuestEnd = false)
+    {
+        Script scripts = scriptData.scripts[id-1];
+        ShowStoryPanel(scripts, isQuestEnd);
     }
 
     private void ShowNextScript()

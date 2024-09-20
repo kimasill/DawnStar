@@ -24,40 +24,57 @@ namespace Server.DB
             if (player == null || room == null)
                 return;
             //GameRoom
-            PlayerDb playerDb = new PlayerDb();
-            playerDb.PlayerDbId = player.PlayerDbId;
-            playerDb.Hp = player.Stat.Hp;
+            PlayerDb playerDb = new PlayerDb()
+            {
+                PlayerDbId = player.PlayerDbId,
+                Hp = player.Stat.Hp,
+                Level = player.Level,
+                Exp = player.Exp,
+                PosX = player.CellPos.x,
+                PosY = player.CellPos.y,
+                Gold = player.Gold
+            };
 
             Instance.Push(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
-                    db.Entry(playerDb).State = EntityState.Unchanged;
-                    db.Entry(playerDb).Property(nameof(playerDb.Hp)).IsModified = true;
-                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
-                    if (success)
+                    PlayerDb existingPlayerDb = db.Players.FirstOrDefault(p => p.PlayerDbId == playerDb.PlayerDbId);
+                    if (existingPlayerDb != null)
                     {
-                        //room.Push(() => Console.WriteLine($"Hp Saved{playerDb.Hp}"));
+                        existingPlayerDb.Hp = playerDb.Hp;
+                        existingPlayerDb.Level = playerDb.Level;
+                        existingPlayerDb.Exp = playerDb.Exp;
+                        existingPlayerDb.PosX = playerDb.PosX;
+                        existingPlayerDb.PosY = playerDb.PosY;
+                        existingPlayerDb.Gold = playerDb.Gold;
                     }
+                    else
+                    {
+                        db.Players.Add(playerDb);
+                    }
+                    db.SaveChangesEx();
                 }
             });
-
-
         }
+
 
         public static void SavePlayerStatus_Step1(Player player, GameRoom room)
         {
             if (player == null || room == null)
                 return;
             //GameRoom
-            PlayerDb playerDb = new PlayerDb();
-            playerDb.PlayerDbId = player.PlayerDbId;
-            playerDb.Hp = player.Stat.Hp;
-            playerDb.Level = player.Level;
-            playerDb.Exp = player.Exp;
-            playerDb.PosX = player.CellPos.x;
-            playerDb.PosY = player.CellPos.y;
-            playerDb.Gold = player.Gold;
+            PlayerDb playerDb = new PlayerDb()
+            {
+                PlayerDbId = player.PlayerDbId,
+                Hp = player.Stat.Hp,
+                Level = player.Level,
+                Exp = player.Exp,
+                PosX = player.CellPos.x,
+                PosY = player.CellPos.y,
+                Gold = player.Gold
+            };
+            
             Instance.Push<PlayerDb, GameRoom>(SavePlayerStatus_Step2, playerDb, room);
         }
 
@@ -65,7 +82,7 @@ namespace Server.DB
         {
             using (AppDbContext db = new AppDbContext())
             {
-                db.Entry(playerDb).State = EntityState.Unchanged;
+                db.Entry(playerDb).State = EntityState.Modified;
                 db.Entry(playerDb).Property(nameof(playerDb.Hp)).IsModified = true;
                 bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
                 if (success)
@@ -130,6 +147,35 @@ namespace Server.DB
                 }
             });
         }
+        public static void SaveRemovedItemDB(Player player, int id, GameRoom room)
+        {
+            //Info 일치하는 Item Db에서 제거
+            Instance.Push(() =>
+            {
+                using (AppDbContext db = new AppDbContext())
+                {
+                    ItemDb itemDb = db.Items
+                        .Where(i=> i.ItemDbId == id)                        
+                        .FirstOrDefault();
+
+                    if (itemDb != null)
+                    {
+                        db.Items.Remove(itemDb);
+                        bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.
+                        if(success) {
+                            room.Push(() =>
+                            {
+                                Item removedItem = player.Inven.Find(i => i.ItemDbId == id);
+                                if (removedItem != null)
+                                {
+                                    player.Inven.Remove(removedItem.ItemDbId);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        }
             
         public static void SaveCompleteQuest(Player player, QuestInfo questInfo)
         {
@@ -180,7 +226,7 @@ namespace Server.DB
                             questCompletePacket.Quest = questInfo;
                             player.Session.Send(questCompletePacket);
 
-                            SavePlayerStatus_Step1(player, player.Room);
+                            SavePlayerStatus_All(player, player.Room);
                         }
                     }
                 }

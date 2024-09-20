@@ -9,19 +9,22 @@ public class UI_GameScene : UI_Scene
     public UI_GameWindow GameWindow { get; private set; }
     public UI_Map MapUI { get; private set; }
     public UI_Shop ShopUI { get; private set; }
-    
+    public UI_StoryScene StoryScene { get; private set; }
+
     public override void Init()
     {
         base.Init();
-        GameWindow = GetComponentInChildren<UI_GameWindow>();    
+        GameWindow = GetComponentInChildren<UI_GameWindow>();         
         StatUI = GetComponentInChildren<UI_Stat>();
         InvenUI = GetComponentInChildren<UI_Inventory>();        
         ShopUI = GetComponentInChildren<UI_Shop>();
+        StoryScene = GetComponentInChildren<UI_StoryScene>();
 
         GameWindow.gameObject.SetActive(false);
         StatUI.gameObject.SetActive(false);
         InvenUI.gameObject.SetActive(false);       
         ShopUI.gameObject.SetActive(false);
+        StoryScene.gameObject.SetActive(false);
     }
 
     public void GetMap(string id)

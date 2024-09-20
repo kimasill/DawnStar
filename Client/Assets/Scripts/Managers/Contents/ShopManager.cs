@@ -35,11 +35,11 @@ public class ShopManager : MonoBehaviour
         return null;
     }
 
-    public void RemoveItem(int itemDbId)
+    public void RemoveItem(int templateId)
     {
-        if (Items.ContainsKey(itemDbId))
+        if (Items.ContainsKey(templateId))
         {
-            Items.Remove(itemDbId);
+            Items.Remove(templateId);
             OnItemRemoved?.Invoke();
         }
     }

@@ -177,4 +177,17 @@ class PacketHandler
             return;
         room.Push(room.HandleBuyItem, player, buyItemPacket);
     }
+
+    public static void C_RemoveItemHandler(PacketSession session, IMessage packet)
+    {
+        C_RemoveItem removeItemPacket = packet as C_RemoveItem;
+        ClientSession clientSession = session as ClientSession;
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+        room.Push(room.HandleRemoveItem, player, removeItemPacket.ItemDbId);
+    }
 }
