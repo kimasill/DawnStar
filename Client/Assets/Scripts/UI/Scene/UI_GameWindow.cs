@@ -2,6 +2,7 @@ using Data;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using UnityEngine;
 
 public class UI_GameWindow : UI_Base
@@ -18,15 +19,15 @@ public class UI_GameWindow : UI_Base
         StoryPanel.gameObject.SetActive(false);
     }
 
-    public void ShowStoryPanel(Dictionary<int, Script> storyDict)
+    public void ShowStoryPanel(Dictionary<int, Script> scripts)
     {
         if (StoryPanel != null)
         {
 
-            foreach (var script in storyDict.Values)
+            foreach (var script in scripts.Values)
             {
                 //TODO : 여러개의 스토리를 보여주기 위한 처리. 지금은 조건을 따지지않고 순서대로 다보여줌
-                StoryPanel.ShowStoryPanel(script.script);
+                StoryPanel.ShowStoryPanel(script);
             }
             StoryPanel.gameObject.SetActive(true);
         }
@@ -36,11 +37,12 @@ public class UI_GameWindow : UI_Base
         }
     }
 
-    public void ShowStoryPanel(List<NPCScript> scriptList)
+    public void ShowStoryPanel(NPCData npcData)
     {
+
         if (StoryPanel != null)
         {
-            StoryPanel.ShowScript(scriptList);
+            StoryPanel.ShowScriptAndProfile(npcData.scripts, npcData.name);
         }
         else
         {

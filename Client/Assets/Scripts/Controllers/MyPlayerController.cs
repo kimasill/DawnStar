@@ -17,19 +17,6 @@ public class MyPlayerController : PlayerController
         get { return Stat.Gold; }
         set { Stat.Gold = value; }
     }
-
-    //public QuestInfo Quest 
-    //{
-    //    get
-    //    { 
-    //        return Quest; 
-    //    }
-    //    set
-    //    {
-    //        Quest = value;
-    //        RefreshQuests();
-    //    } 
-    //}
     protected override void Init()
     {
         base.Init();
@@ -211,6 +198,7 @@ public class MyPlayerController : PlayerController
                 CellPos = destPos;
                 CheckIfPlayerAtPortal(destPos);
                 DetectNearbyNPCs();
+                CheckQuest();
             }
         }
         CheckUpdatedFlag();
@@ -225,6 +213,15 @@ public class MyPlayerController : PlayerController
             C_MapChange mapPacket = new C_MapChange { MapId = id };
             Managers.Network.Send(mapPacket);
         }
+    }
+
+    private void CheckQuest()
+    {
+        GameObject go = Managers.Map.IsPlayerAtQuest(CellPos);
+        if (go == null)
+            return;
+        Quest quest = go.GetComponent<Quest>();
+        Managers.Scene.CurrentScene.CheckInteractionQuest(quest);
     }
 
     private void DetectNearbyNPCs()

@@ -8,6 +8,8 @@ TagManager:
   - Icon
   - MapIcon
   - NPC
+  - Quest
+  - Door
   layers:
   - Default
   - TransparentFX
@@ -21,7 +23,7 @@ TagManager:
   - Ground
   - Block
   - Door
-  - 
+  - Quest
   - 
   - 
   - 

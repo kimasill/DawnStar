@@ -42,7 +42,19 @@
     },
     {
       "id": "4",
-      "title": "Anger",
+      "title": "Sleep",
+      "rewards": [
+        {
+          "rewardType": "Reward_Exp",
+          "amount": "50"
+        }
+      ],
+      "connection": "5",
+      "questType": "interaction"
+    },
+{
+      "id": "5",
+      "title": "Death",
       "rewards": [
         {
           "rewardType": "Reward_Exp",

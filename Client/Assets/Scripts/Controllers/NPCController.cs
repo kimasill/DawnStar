@@ -51,11 +51,10 @@ public class NPCController : CreatureController
     {        
         if (Managers.Data.NPCDict.TryGetValue(name, out var npcData))
         {
-            var storyDict = npcData.scripts;
             BaseScene currentScene = Managers.Scene.CurrentScene;
             UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
             UI_GameWindow gameWindow = gameSceneUI.GameWindow; 
-            gameWindow.ShowStoryPanel(storyDict);
+            gameWindow.ShowStoryPanel(npcData);
         }
     }
 }

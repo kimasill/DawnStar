@@ -4,6 +4,7 @@ using Server.Data;
 using Server.Game;
 using Server.Game.Job;
 using Server.Game.Room;
+using Server.Migrations;
 using Server.Utils;
 using System;
 using System.Collections.Generic;
@@ -46,7 +47,7 @@ namespace Server.DB
                 }
             });
         }
-        public static void SavePlayerPositionAndMap(Player player, int newMapId)
+        public static void SavePlayerMap(Player player, MapInfo map)
         {
             if (player == null)
                 return;
@@ -55,13 +56,29 @@ namespace Server.DB
             {
                 using (AppDbContext db = new AppDbContext())
                 {
-                    PlayerDb playerDb = db.Players.FirstOrDefault(p => p.PlayerDbId == player.PlayerDbId);
-                    if (playerDb != null)
+                    MapDb mapDb = db.Maps.FirstOrDefault(m => m.PlayerDbId == player.PlayerDbId);
+                    if (mapDb == null)
                     {
-                        playerDb.PosX = player.CellPos.x;
-                        playerDb.PosY = player.CellPos.y;
-                        playerDb.MapDbId = newMapId;
-                        db.SaveChangesEx();
+                        mapDb = new MapDb()
+                        {
+                            TemplateId = map.TemplateId,
+                            Scene = map.Scene,
+                            PlayerDbId = player.PlayerDbId,
+                            MapName = map.MapName
+                        };
+                        db.Maps.Add(mapDb);
+                    }
+                    else
+                    {
+                        mapDb.TemplateId = map.TemplateId;
+                        mapDb.Scene = map.Scene;
+                        mapDb.MapName = map.MapName;
+                    }
+
+                    bool success = db.SaveChangesEx(); // 저장할 때 예외처리를 해준다.
+                    if (success)
+                    {
+                        // 성공적으로 저장된 경우 추가 작업을 수행할 수 있습니다.
                     }
                 }
             });

@@ -42,6 +42,7 @@ public class MapManager
 
 	bool[,] _collision;
     private Dictionary<Vector3Int, GameObject> _portalDict = new Dictionary<Vector3Int, GameObject>(); // 문 객체들을 저장할 Dictionary
+	private Dictionary<Vector3Int, GameObject> _questDict = new Dictionary<Vector3Int, GameObject>(); // 문 객체들을 저장할 Dictionary
     public bool CanGo(Vector3Int cellPos)
 	{
         Vector3Int adjustedPos = new Vector3Int(cellPos.x + 1, cellPos.y + 1, 0);
@@ -67,10 +68,21 @@ public class MapManager
 		return null;		
     }
 
-    public void LoadMap(int mapId)
+	public GameObject IsPlayerAtQuest(Vector3Int cellPos)
+	{
+		Vector3Int adjustedPos = new Vector3Int(cellPos.x + 1, cellPos.y + 1, 0);
+		if (_questDict.TryGetValue(adjustedPos, out var result))
+        {
+            return result;
+        }
+		return null;
+    }
+
+            public void LoadMap(int mapId)
 	{
 		DestroyMap();
         _portalDict.Clear();
+        _questDict.Clear();
         string mapName = "Map_" + mapId.ToString("000");
 		GameObject go = Managers.Resource.Instantiate($"Map/{mapName}");
 		go.name = "Map";
@@ -102,8 +114,9 @@ public class MapManager
 				_collision[y, x] = (line[x] == '1' ? true : false);
 			}
 		}
-		FindDoors(go);
-	}
+		FindDoors();
+        FindQuests();
+    }
 
 	public void DestroyMap()
 	{
@@ -115,20 +128,32 @@ public class MapManager
         }
 	}
 
-    private void FindDoors(GameObject map)
+    private void FindDoors()
     {        
-        if (map != null)
+        GameObject[] doorObjects = GameObject.FindGameObjectsWithTag("Door");
+        foreach (GameObject doorObject in doorObjects)
         {
-            Transform envTransform = map.transform.Find("Tilemap_Env");
-            if (envTransform != null)
+            Vector3Int doorCellPos = CurrentGrid.WorldToCell(doorObject.transform.position);
+            _portalDict[doorCellPos] = doorObject;
+        }
+    }
+
+	 private void FindQuests()
+    {
+        GameObject[] questObjects = GameObject.FindGameObjectsWithTag("Quest");
+        foreach (GameObject questObject in questObjects)
+        {
+            // 퀘스트 오브젝트의 모든 타일을 _questDict에 추가
+            Bounds bounds = questObject.GetComponent<Collider2D>().bounds;
+            Vector3Int min = CurrentGrid.WorldToCell(bounds.min);
+            Vector3Int max = CurrentGrid.WorldToCell(bounds.max);
+
+            for (int x = min.x; x <= max.x; x++)
             {
-                foreach (Transform child in envTransform)
+                for (int y = min.y; y <= max.y; y++)
                 {
-                    if (child.gameObject.layer == LayerMask.NameToLayer("Door"))
-                    {
-                        Vector3Int doorCellPos = CurrentGrid.WorldToCell(child.position);
-                        _portalDict[doorCellPos] = child.gameObject;
-                    }
+                    Vector3Int cellPos = new Vector3Int(x, y, 0);
+                    _questDict[cellPos] = questObject;
                 }
             }
         }

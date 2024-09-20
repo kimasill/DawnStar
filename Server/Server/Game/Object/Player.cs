@@ -99,8 +99,8 @@ namespace Server.Game
             // 다른 쓰레드 하나를 만들어서, 데이터베이스에 저장하는 작업을 한다.
             //TODO : 플레이어의 정보를 데이터베이스에 저장한다.
             //위치정보, 레벨, 경험치, 아이템 정보, 퀘스트 정보 등등
-            //DbTransaction.SavePlayerStatus_All(this, Room);
-            DbTransaction.SavePlayerStatus_Step1(this, Room);
+            DbTransaction.SavePlayerStatus_All(this, Room);
+            DbTransaction.SavePlayerMap(this, MapInfo);
         }
 
         public void HandleEquipItem(C_EquipItem equipPacket)
@@ -170,6 +170,7 @@ namespace Server.Game
 
             // DB에 퀘스트 완료 상태 저장
             DbTransaction.SaveCompleteQuest(this, quest);
+            //DbTransaction.SavePlayerMap(this, MapInfo);
         }
 
         public void HandleStartQuest(int id)

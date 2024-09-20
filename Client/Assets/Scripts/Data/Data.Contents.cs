@@ -191,6 +191,7 @@ namespace Data
         public int id;
         public string name;
         public List<string> script;
+        public string image;
     }
 
     [Serializable]

@@ -9,7 +9,7 @@ public class DawnTown_Store : DawnTown
     UI_Shop _shop;
     protected override void Init()
     {
-        SceneType = Define.Scene.DawnTown_Store;
+        SceneType = Define.Scene.DawnTownStore;
 
         Managers.Map.LoadMap(2);
 
@@ -28,12 +28,14 @@ public class DawnTown_Store : DawnTown
         if (Managers.Quest.IsQuestInProgress(questId))
         {
             // 퀘스트 스크립트 데이터를 가져옴
-            List<string> scripts = Managers.Quest.GetQuestScripts(questId, 1); // 스크립트 리스트 ID 1번 추출
-            if (scripts != null && scripts.Count > 0)
+            ScriptData questScriptData = null;
+            Managers.Data.ScriptDict.TryGetValue(questId, out questScriptData);
+
+            if (questScriptData != null && questScriptData.scripts.Count > 0)
             {
                 // UI_StoryPanel을 통해 스크립트 출력
                 UI_GameWindow gameWindow = _sceneUi.GameWindow;
-                gameWindow.StoryPanel.ShowStoryPanel(scripts);
+                gameWindow.StoryPanel.ShowStoryPanel(questScriptData, 0);
             }
         }
     }

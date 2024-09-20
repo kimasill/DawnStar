@@ -47,7 +47,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CRequestShop, MakePacket<C_RequestShop>);
 		_handler.Add((ushort)MsgId.CRequestShop, PacketHandler.C_RequestShopHandler);		
 		_onRecv.Add((ushort)MsgId.CChangePosition, MakePacket<C_ChangePosition>);
-		_handler.Add((ushort)MsgId.CChangePosition, PacketHandler.C_ChangePositionHandler);
+		_handler.Add((ushort)MsgId.CChangePosition, PacketHandler.C_ChangePositionHandler);		
+		_onRecv.Add((ushort)MsgId.CRemoveItem, MakePacket<C_RemoveItem>);
+		_handler.Add((ushort)MsgId.CRemoveItem, PacketHandler.C_RemoveItemHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

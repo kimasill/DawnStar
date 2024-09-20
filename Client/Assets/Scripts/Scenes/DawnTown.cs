@@ -47,7 +47,6 @@ public class DawnTown : BaseScene
             }
         }
     }
-
     protected void InitializeShop()
     {        
     }

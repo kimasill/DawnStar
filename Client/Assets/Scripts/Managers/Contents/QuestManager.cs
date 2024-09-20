@@ -29,6 +29,19 @@ public class QuestManager
         return questId;
     }
 
+    public Quest GetQuest(int questId)
+    {
+        if (_quests.TryGetValue(questId, out Quest quest))
+        {
+            return quest;
+        }
+        else
+        {
+            Debug.LogWarning($"퀘스트 ID {questId}를 찾을 수 없습니다.");
+            return null;
+        }
+    }
+
     public void StartQuest(int questId)
     {
         if (_quests.TryGetValue(questId, out Quest quest))
@@ -61,8 +74,12 @@ public class QuestManager
                         Debug.LogWarning("GameSceneUI를 찾을 수 없습니다.");
                     }
                     break;
+                case "interaction":
+                    currentScene.StartInteractionQuest(quest);
+                    break;
                 case "scene":
-                    currentScene.ShowDescriptionUI(quest.Description.Values.First().script);
+                    ScriptData scriptData = Managers.Data.ScriptDict[questId];
+                    currentScene.ShowStoryScene(scriptData);
                     break;
 
             }
@@ -149,12 +166,4 @@ public class QuestManager
         Managers.Data.ScriptDict.TryGetValue(questId, out ScriptData scriptData);
         return scriptData.scripts[scriptListId-1].script;
     }
-}
-
-public class Quest
-{
-    public int Id { get; set; }
-    public Dictionary<int, Script> Description { get; set; }
-    public string Type { get; set; }
-    public bool IsCompleted { get; set; }
 }
