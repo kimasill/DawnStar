@@ -20,14 +20,17 @@ class PacketHandler
         if (enterGamePacket.Player.MapInfo != null)
         {
             Managers.Scene.LoadScene(enterGamePacket.Player.MapInfo.Scene);
-            SceneManager.sceneLoaded += (scene, mode) => OnFirstSceneLoaded(enterGamePacket.Player);
-            
+            SceneManager.sceneLoaded += (scene, mode) => OnFirstSceneLoaded(enterGamePacket.Player);            
         }
 	}
 
     public static void OnFirstSceneLoaded(ObjectInfo objectInfo)
     {
-        Managers.Object.Add(objectInfo, myPlayer: true);        
+        Managers.Object.Add(objectInfo, myPlayer: true);
+        C_StartQuest startQuestPacket = new C_StartQuest();
+        startQuestPacket.TemplateId = 0;
+        Managers.Network.Send(startQuestPacket);
+
         SceneManager.sceneLoaded -= (s, m) => OnFirstSceneLoaded(objectInfo);
     }
 
@@ -322,10 +325,9 @@ class PacketHandler
     public static void S_StartQuestHandler(PacketSession session, IMessage packet)
     {
         S_StartQuest questPacket = (S_StartQuest)packet;
-        int questId = Managers.Quest.Add(questPacket.Quest);        
-        
-        Managers.Quest.StartQuest(questId);
+        int questId = Managers.Quest.Add(questPacket.Quest);
         Debug.Log($"Start Quest : {questPacket.Quest.TemplateId}");
+        Managers.Quest.StartQuest(questId);
     }
 
     public static void S_QuestCompleteHandler(PacketSession session, IMessage packet)

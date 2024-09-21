@@ -1,9 +1,7 @@
 using Data;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -12,45 +10,84 @@ public class UI_StoryScene : UI_Base
 {
     public Image SceneChangeImage;
     public Image StoryImage;
-    public TMP_Text StoryScriptPanel;
+    public Image Background;
+    public Image TextPanel;
+    public TMP_Text StoryScriptText;
     private List<Sprite> storyImages = new List<Sprite>();
-    private List<string> storyScripts = new List<string>();
-    private int currentImageIndex = 0;
-    private int currentScriptIndex = 0;
-    private float imageDisplayTime = 5.0f; // 이미지가 자동으로 넘어가는 시간
-    private Coroutine imageCoroutine;
+    private List<List<string>> storyScripts = new List<List<string>>();
+    private int sceneIndex = 0;
+    private int currentLineIndex = 0;
     private Coroutine typingCoroutine;
+    private bool isTyping = false;
+    private bool isEndOfScript = false;
+    private bool isFading = false; // 페이드 인/아웃 중인지 여부를 나타내는 플래그
 
     public enum Images
     {
-        StoryImage,
+        UI_TextPanel,
+        UI_Background,
+        SceneChangeImage,
+        UI_StoryImage,
     }
     public enum Texts
     {
-        StoryScriptPanel,
+        UI_StoryText,
     }
 
     public override void Init()
     {
         Bind<Image>(typeof(Images));
         Bind<TMP_Text>(typeof(Texts));
+
+        StoryImage = GetImage((int)Images.UI_StoryImage);
+        StoryScriptText = GetTextMeshPro((int)Texts.UI_StoryText);
+        Background = GetImage((int)Images.UI_Background);
+        Background.gameObject.SetActive(false);
+        SceneChangeImage = GetImage((int)Images.SceneChangeImage);
+        GetImage((int)Images.UI_TextPanel).gameObject.BindEvent(OnScriptPanelClick);
     }
 
     public void ShowStory()
     {
-        // 초기화 작업
-        SceneChangeImage.gameObject.SetActive(true);
-        StartCoroutine(FadeInOut(SceneChangeImage, () =>
+        Debug.Log("ShowStory");
+        StartCoroutine(InitialFadeIn());
+    }
+
+    private IEnumerator InitialFadeIn()
+    {
+        isFading = true; // 페이드 인 시작
+        float alpha = 0;
+        while (alpha < 1)
         {
-            ShowNextImage();
-        }));
+            alpha += Time.deltaTime / 1.0f;
+            SceneChangeImage.color = new Color(SceneChangeImage.color.r, SceneChangeImage.color.g, SceneChangeImage.color.b, alpha);
+            yield return null;
+        }
+
+        Background.gameObject.SetActive(true);
+        Managers.Map.CurrentGrid.gameObject.SetActive(false);
+        Managers.Object.MyPlayer.gameObject.SetActive(false);
+        StoryImage.sprite = storyImages[sceneIndex];
+        yield return new WaitForSeconds(3.0f);
+
+        alpha = 1;
+        while (alpha > 0)
+        {
+            alpha -= Time.deltaTime / 1.0f;
+            SceneChangeImage.color = new Color(SceneChangeImage.color.r, SceneChangeImage.color.g, SceneChangeImage.color.b, alpha);
+            yield return null;
+        }
+        isFading = false; // 페이드 인 종료
+        ShowNextScript();
     }
 
     public void LoadStoryData(ScriptData scriptData)
     {
+        storyImages.Clear();
+        storyScripts.Clear();
+
         foreach (var script in scriptData.scripts)
         {
-            storyScripts.AddRange(script.script);
             if (!string.IsNullOrEmpty(script.image))
             {
                 Sprite image = Managers.Resource.Load<Sprite>(script.image);
@@ -59,101 +96,128 @@ public class UI_StoryScene : UI_Base
                     storyImages.Add(image);
                 }
             }
+
+            if (script.script != null && script.script.Count > 0)
+            {
+                storyScripts.Add(new List<string>(script.script));
+            }
         }
     }
 
-    private IEnumerator FadeInOut(Image image, System.Action onComplete)
+    private IEnumerator FadeInOut(Image image, System.Action onComplete, float waitTime)
     {
-        // 페이드 인
-        for (float t = 0; t < 1; t += Time.deltaTime)
+        isFading = true; // 페이드 인 시작
+        float alpha = 0;
+        while (alpha < 1)
         {
-            image.color = new Color(0, 0, 0, t);
+            alpha += Time.deltaTime / 1.0f;
+            SceneChangeImage.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
             yield return null;
         }
+        StoryScriptText.text = "";
+        StoryImage.sprite = storyImages[sceneIndex];        
+        yield return new WaitForSeconds(waitTime);
 
-        // 페이드 아웃
-        for (float t = 1; t > 0; t -= Time.deltaTime)
+        alpha = 1;
+        while (alpha > 0)
         {
-            image.color = new Color(0, 0, 0, t);
+            alpha -= Time.deltaTime / 1.0f;
+            SceneChangeImage.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
             yield return null;
         }
-
-        image.gameObject.SetActive(false);
+        isFading = false;
         onComplete?.Invoke();
+    }
+
+    private void ShowNextScene()
+    {
+        ShowNextImage();
+        Debug.Log($"SceneIndex : {sceneIndex}");
     }
 
     private void ShowNextImage()
     {
-        if (currentImageIndex < storyImages.Count)
+        if (sceneIndex < storyImages.Count)
         {
-            StoryImage.sprite = storyImages[currentImageIndex];
-            currentImageIndex++;
-            currentScriptIndex = 0;
-
-            if (storyScripts != null && storyScripts.Count > 0)
-            {
+            float waitTime = sceneIndex == 0 ? 3.0f : 1.0f;
+            StartCoroutine(FadeInOut(SceneChangeImage, () =>
+            {                
                 ShowNextScript();
-            }
-            else
-            {
-                imageCoroutine = StartCoroutine(WaitAndShowNextImage());
-            }
+            }, waitTime));
+             // 페이드 인/아웃 후에 스크립트 출력
         }
-        else
-        {
-            // 스토리 종료 처리
-            EndStory();
-        }
-    }
-
-    private IEnumerator WaitAndShowNextImage()
-    {
-        yield return new WaitForSeconds(imageDisplayTime);
-        ShowNextImage();
     }
 
     private void ShowNextScript()
     {
-        if (currentScriptIndex < storyScripts.Count)
+        if (sceneIndex < storyScripts.Count)
         {
+            currentLineIndex = 0;
             if (typingCoroutine != null)
             {
                 StopCoroutine(typingCoroutine);
             }
-            typingCoroutine = StartCoroutine(TypeText(storyScripts[currentScriptIndex]));
-            currentScriptIndex++;
+            typingCoroutine = StartCoroutine(TypeText(storyScripts[sceneIndex]));
         }
         else
         {
-            ShowNextImage();
+            EndStory();
         }
     }
 
-    private IEnumerator TypeText(string text)
+    private IEnumerator TypeText(List<string> textList)
     {
-        StoryScriptPanel.text = "";
-        foreach (char letter in text.ToCharArray())
+        isTyping = true;
+        if (currentLineIndex < textList.Count)
         {
-            StoryScriptPanel.text += letter;
-            yield return new WaitForSeconds(0.05f); // 한 글자씩 출력되는 속도 조절
+            StoryScriptText.text = "";
+            foreach (char letter in textList[currentLineIndex].ToCharArray())
+            {
+                StoryScriptText.text += letter;
+                yield return new WaitForSeconds(0.05f);
+                if(letter == '\n')
+                {
+                    yield return new WaitForSeconds(0.5f);
+                }
+            }
+            isTyping = false;
         }
     }
 
-    public void OnScriptPanelClick()
+    public void OnScriptPanelClick(PointerEventData evt)
     {
-        if (currentScriptIndex < storyScripts.Count)
+        if (isFading) return; // 페이드 인/아웃 중에는 클릭 이벤트 무시
+
+        Debug.Log(currentLineIndex);
+        if (isTyping)
         {
-            ShowNextScript();
+            StopCoroutine(typingCoroutine);
+            StoryScriptText.text = storyScripts[sceneIndex][currentLineIndex];
+            isTyping = false;
         }
-        else
+        else if (!isTyping)
         {
-            ShowNextImage();
+            if (currentLineIndex == storyScripts[sceneIndex].Count - 1)
+            {
+                isEndOfScript = true;
+            }
+            else if (currentLineIndex < storyScripts[sceneIndex].Count)
+            {
+                currentLineIndex++;
+                typingCoroutine = StartCoroutine(TypeText(storyScripts[sceneIndex]));
+            }
+        }
+
+        if (isEndOfScript && !isTyping)
+        {
+            isEndOfScript = false;
+            sceneIndex++;
+            ShowNextScene();
         }
     }
 
     private void EndStory()
     {
-        // 스토리 종료 처리
         gameObject.SetActive(false);
     }
 }

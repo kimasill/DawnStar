@@ -166,42 +166,13 @@ namespace Server.Game
                 return;
 
             // 퀘스트 완료 상태로 변경
-            quest.Completed = true;
+            if(quest.Completed == false)
+                quest.Completed = true;
 
             // DB에 퀘스트 완료 상태 저장
             DbTransaction.SaveCompleteQuest(this, quest);
             //DbTransaction.SavePlayerMap(this, MapInfo);
         }
-
-        public void HandleStartQuest(int id)
-        {
-            QuestData questData = DataManager.QuestDict.GetValueOrDefault(id);
-            if (questData == null)
-            {
-                // 퀘스트 데이터가 없는 경우 처리
-                return;
-            }
-                    // 퀘스트 시작 처리
-            QuestInfo quest = new QuestInfo
-            {                
-                TemplateId = questData.id,
-                Progress = 0,
-                Completed = false,
-                QuestType = questData.questType,
-            };
-
-            // DB에 퀘스트 정보 저장
-            // DB에 퀘스트 시작 상태 저장
-            DbTransaction.SaveStartQuest(this, quest);
-
-            // 클라이언트에게 퀘스트 시작 정보 전송
-            S_StartQuest startQuestPacket = new S_StartQuest
-            {
-                Quest = quest
-            };
-            Session.Send(startQuestPacket);
-        }
-
 
 
         public void RefreshAdditionalStat()

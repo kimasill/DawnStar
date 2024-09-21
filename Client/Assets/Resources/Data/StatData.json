@@ -22,7 +22,15 @@
       "attack": "30",
       "deffense": "20",
       "speed": "5.0",
-      "totalExp": "20"
+      "totalExp": "200"
+    },
+    {
+      "level": "4",
+      "maxHp": "400",
+      "attack": "35",
+      "deffense": "20",
+      "speed": "5.0",
+      "totalExp": "500"
     }
   ]
 } 
