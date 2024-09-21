@@ -201,34 +201,35 @@ namespace Server.DB
                         .Where(q => q.QuestDbId == questInfo.QuestDbId)
                         .FirstOrDefault();
 
-                    if (questDb != null)
-                    {
-                        questDb.Completed = true;
-                        bool success = db.SaveChangesEx(); // 저장할 때 예외 처리를 해준다.
-                        if (success)
-                        {
-                            player.Gold += gold;
-                            player.Exp += exp;                            
-                            RewardInfo rewardInfo = new RewardInfo();
-                            foreach(RewardData rewardData in questData.rewards)
-                            {
-                                rewardInfo.RewardType = rewardData.type;
-                                rewardInfo.RewardValue = rewardData.amount;
-                            }
-                            QuestInfo questInfo = new QuestInfo()
-                            {
-                                QuestDbId = questDb.QuestDbId,
-                                TemplateId = questDb.TemplateId,
-                                Connection = connection,
-                                Rewards = rewardInfo,
-                            };
-                            S_QuestComplete questCompletePacket = new S_QuestComplete();
-                            questCompletePacket.Quest = questInfo;
-                            player.Session.Send(questCompletePacket);
+                    if (questDb == null || questDb.Completed)
+                        return;
 
-                            SavePlayerStatus_All(player, player.Room);
+                    questDb.Completed = true;
+
+                    bool success = db.SaveChangesEx(); // 저장할 때 예외 처리를 해준다.
+                    if (success)
+                    {
+                        player.Gold += gold;
+                        player.Exp += exp;                            
+                        RewardInfo rewardInfo = new RewardInfo();
+                        foreach(RewardData rewardData in questData.rewards)
+                        {
+                            rewardInfo.RewardType = rewardData.type;
+                            rewardInfo.RewardValue = rewardData.amount;
                         }
-                    }
+                        QuestInfo questInfo = new QuestInfo()
+                        {
+                            QuestDbId = questDb.QuestDbId,
+                            TemplateId = questDb.TemplateId,
+                            Connection = connection,
+                            Rewards = rewardInfo,
+                        };
+                        S_QuestComplete questCompletePacket = new S_QuestComplete();
+                        questCompletePacket.Quest = questInfo;
+                        player.Session.Send(questCompletePacket);
+
+                        SavePlayerStatus_All(player, player.Room);
+                    }                    
                 }
             });
         }
@@ -242,6 +243,12 @@ namespace Server.DB
             {
                 using (AppDbContext db = new AppDbContext())
                 {
+                    QuestDb existingQuestDb = db.Quests.FirstOrDefault(q => q.TemplateId == questInfo.TemplateId && q.OwnerDbId == player.PlayerDbId);
+                    if (existingQuestDb != null)
+                    {
+                        return;
+                    }
+
                     QuestDb questDb = new QuestDb
                     {
                         OwnerDbId = player.PlayerDbId,

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class DawnTown_Home : DawnTown
 {
@@ -21,7 +22,7 @@ public class DawnTown_Home : DawnTown
         InitializeNPCs();
 
         // 인벤토리에서 아이템 확인 및 퀘스트 처리
-        CheckInventoryAndHandleQuest03();
+        CheckInventoryAndHandleQuest03();        
     }
 
     private void CheckInventoryAndHandleQuest03()
@@ -29,18 +30,22 @@ public class DawnTown_Home : DawnTown
         bool hasItem1001 = Managers.Inventory.Items.Any(item => item.Value.TemplateId == 1001);
         bool hasItem1002 = Managers.Inventory.Items.Any(item => item.Value.TemplateId == 1002);
 
-        if (hasItem1001 && hasItem1002)
+        var removeList = new List<int>();
+        if (hasItem1001 || hasItem1002)
         {   
             foreach (var item in Managers.Inventory.Items)
             {
-                if(item.Value.ItemDbId == 1001 || item.Value.ItemDbId == 1002)
+                if(item.Value.TemplateId == 1001 || item.Value.TemplateId == 1002)
                 {
                     C_RemoveItem removeItemPacket = new C_RemoveItem(){ ItemDbId = item.Value.ItemDbId };
                     Managers.Network.Send(removeItemPacket);
-                    Managers.Inventory.Remove(item.Key);
+                    removeList.Add(item.Key);                    
                 }
             }
-
+            foreach (var key in removeList)
+            {
+                Managers.Inventory.Remove(key);
+            }
             // 진행 중인 퀘스트 완료 처리
             Managers.Quest.EndQuest();
         }
@@ -74,7 +79,7 @@ public class DawnTown_Home : DawnTown
     public override void CheckInteractionQuest(Quest quest)
     {
         int id = Managers.Quest.GetCurrentQuestId();
-        if (quest.Id == id)
+        if (id == 4)
         {
             Managers.Quest.EndQuest();
         }
@@ -84,6 +89,7 @@ public class DawnTown_Home : DawnTown
     {
         UI_GameScene gameUI = Managers.UI.SceneUI as UI_GameScene;
         UI_StoryScene storyScene = gameUI.StoryScene;
+        gameUI.GameWindow.gameObject.SetActive(false);
         storyScene.gameObject.SetActive(true);
         storyScene.LoadStoryData(scriptData);
         storyScene.ShowStory();

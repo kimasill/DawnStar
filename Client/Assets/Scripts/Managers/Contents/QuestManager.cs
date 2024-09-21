@@ -9,6 +9,11 @@ public class QuestManager
     public Dictionary<int, Quest> _quests = new Dictionary<int, Quest>();
     public int Add(QuestInfo questInfo)
     {
+        if(_quests.ContainsKey(questInfo.TemplateId))
+        {
+            Debug.LogWarning($"이미 퀘스트 ID {questInfo.TemplateId}가 존재합니다.");
+            return -1;
+        }
         int questId = questInfo.TemplateId;
         Quest quest = new Quest { };
         if (Managers.Data.ScriptDict.TryGetValue(questId, out ScriptData scriptData))
@@ -46,11 +51,11 @@ public class QuestManager
     {
         if (_quests.TryGetValue(questId, out Quest quest))
         {
+
             BaseScene currentScene = Managers.Scene.CurrentScene;
             UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
             switch (quest.Type)
             {
-
                 case "epic":
                     currentScene.ShowDescriptionUI(quest.Description.Values.First().script);
                     break;
@@ -78,6 +83,7 @@ public class QuestManager
                     currentScene.StartInteractionQuest(quest);
                     break;
                 case "scene":
+                    Debug.Log("Start Story Scene");
                     ScriptData scriptData = Managers.Data.ScriptDict[questId];
                     currentScene.ShowStoryScene(scriptData);
                     break;

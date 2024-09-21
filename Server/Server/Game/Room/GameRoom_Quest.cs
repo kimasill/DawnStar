@@ -15,12 +15,71 @@ namespace Server.Game
 {
     public partial class GameRoom : JobSerializer
     {
-        public void HandleStartQuest(Player player, int questId)
+        public void HandleStartQuest(Player player, int questId = 0)
         {
             if (player == null)
                 return;
 
-            player.HandleStartQuest(questId);
+            S_StartQuest questPacket = new S_StartQuest();
+
+            using (AppDbContext db = new AppDbContext())
+            {
+                // 주어진 questId가 0이 아니면 해당 퀘스트를 찾고, 0이면 가장 최근 퀘스트를 찾습니다.
+                List<QuestDb> quests = db.Quests
+                    .Where(q => q.OwnerDbId == player.PlayerDbId && (questId == 0 || q.TemplateId == questId))
+                    .OrderByDescending(q => q.QuestDbId)
+                    .ToList();
+
+                QuestDb questDb = quests.FirstOrDefault();
+
+                if (questDb == null)
+                {
+                    if(questId == 0)
+                    {
+                        // 퀘스트가 없으면 새로 0번 퀘스트를 할당합니다.
+                        QuestInfo questInfo = new QuestInfo()
+                        {
+                            TemplateId = 0,
+                            Progress = 0,
+                            Completed = false,
+                            QuestType = "epic",
+                        };
+                        DbTransaction.SaveStartQuest(player, questInfo);
+                        questPacket.Quest = questInfo;
+                    }
+                    else
+                    {
+                        QuestData questData = DataManager.QuestDict.GetValueOrDefault(questId);
+                        if (questData == null)
+                            return;
+                        QuestInfo questInfo = new QuestInfo()
+                        {
+                            TemplateId = questData.id,
+                            Progress = 0,
+                            Completed = false,
+                            QuestType = questData.questType,
+                        };
+                        DbTransaction.SaveStartQuest(player, questInfo);
+                        questPacket.Quest = questInfo;
+                    }
+                }
+                else
+                {
+                    // 퀘스트가 있으면 해당 퀘스트를 할당합니다.
+                    QuestInfo questInfo = new QuestInfo()
+                    {
+                        QuestDbId = questDb.QuestDbId,
+                        TemplateId = questDb.TemplateId,
+                        Progress = questDb.Progress,
+                        Completed = questDb.Completed,
+                        QuestType = DataManager.QuestDict[questDb.TemplateId].questType
+                    };
+                    player.Quest = questInfo;
+                    questPacket.Quest = questInfo;
+                }
+            }
+
+            player.Session.Send(questPacket);
         }
 
         public void HandleQuestComplete(Player player, int questId)

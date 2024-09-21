@@ -100,7 +100,7 @@ namespace Server
             LobbyPlayerInfo playerInfo = LobbyPlayers.Find(p => p.Name == enterGamePacket.Name);
             if (playerInfo == null)
                 return;
-
+            bool isFirstLogin = false;
             MyPlayer = ObjectManager.Instance.Add<Player>();
             {
                 MyPlayer.PlayerDbId = playerInfo.PlayerDbId;
@@ -118,7 +118,9 @@ namespace Server
                     }
                 }
                 MyPlayer.Stat.MergeFrom(playerInfo.StatInfo);
-                //MyPlayer.Stat.Hp = playerInfo.StatInfo.MaxHp;
+                if(MyPlayer.Stat.Level == 0)
+                    isFirstLogin = true;
+
                 MyPlayer.Session = this;
                 S_ItemList itemListPacket = new S_ItemList();
 
@@ -142,47 +144,8 @@ namespace Server
                     //클라한테 아이템 전달
                 }
                 Send(itemListPacket);                
-                bool isFirstLogin = false;
-                S_StartQuest questPacket = new S_StartQuest();
-                using (AppDbContext db = new AppDbContext())
-                {
-                    List<QuestDb> quests = db.Quests
-                       .Where(q => q.OwnerDbId == playerInfo.PlayerDbId)
-                       .OrderByDescending(q => q.QuestDbId) // 퀘스트 ID를 기준으로 내림차순 정렬
-                       .Take(1) // 가장 마지막 퀘스트만 선택
-                       .ToList();
-
-                    if (quests == null || quests.Count == 0)
-                    {
-                        // 처음 접속한 것으로 간주하고 QuestDb 정보 할당
-                        QuestDb newQuest = new QuestDb()
-                        {
-                            OwnerDbId = playerInfo.PlayerDbId,
-                            TemplateId = 1, // 초기 퀘스트 ID 설정
-                            Progress = 0,                                
-                            Completed = false,                                
-                        };
-                        db.Quests.Add(newQuest);
-                        db.SaveChanges();
-                        quests.Add(newQuest);
-                        isFirstLogin = true;
-                    }
-                    
-                    foreach (QuestDb questDb in quests)
-                    {
-                        QuestInfo questInfo = new QuestInfo()
-                        {
-                            QuestDbId = questDb.QuestDbId,
-                            TemplateId = questDb.TemplateId,
-                            Progress = questDb.Progress,
-                            Completed = questDb.Completed,
-                            QuestType = DataManager.QuestDict[questDb.TemplateId].questType
-                        };
-                        MyPlayer.Quest = questInfo;
-                        questPacket.Quest = questInfo;
-                        Send(questPacket);
-                    }
-                }
+                
+                
                 ServerState = PlayerServerState.ServerStateSingle;                    
                 GameLogic.Instance.Push(() =>
                 {
