@@ -282,14 +282,18 @@ class PacketHandler
         {
             return;
         }
-        item.Equipped = equipItemOk.Equipped;
+        item.Equipped = equipItemOk.Equipped;        
         Debug.Log("S_EquipItemHandler");
 
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
         gameSceneUI.InvenUI.RefreshUI();
         gameSceneUI.StatUI.RefreshUI();
         if (Managers.Object.MyPlayer != null)
-            Managers.Object.MyPlayer.RefreshAdditionalStat();       
+        {
+            Managers.Object.MyPlayer.Equipment.SetItemInSlot(item);
+            Managers.Object.MyPlayer.RefreshAdditionalStat();
+        }
+            
     }
 
     public static void S_ShopListHandler(PacketSession session, IMessage packet)

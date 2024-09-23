@@ -25,7 +25,7 @@ public class SPUM_Manager : MonoBehaviour
     public string unitPath = "Assets/Resources/SPUM/SPUM_Units/";
     public SPUM_Prefabs _unitObjSet;
     public List<SPUM_SpriteButtonST> _textureList = new List<SPUM_SpriteButtonST>();
-    public SPUM_SpriteList _spriteObj;
+    public EquipmentController _spriteObj;
     public Text _unitCode;
     public Text _unitNumber;
     public GameObject _drawItemObj;
@@ -1975,7 +1975,7 @@ public class SPUM_Manager : MonoBehaviour
                 GameObject prefab = AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
                 //데이터 싱크 부분
                 SPUM_Prefabs tST = prefab.GetComponent<SPUM_Prefabs>();
-                SPUM_SpriteList tObjST = tST._spriteOBj;
+                EquipmentController tObjST = tST._spriteOBj;
                 _spriteObj.LoadSprite(tObjST);
 
                 //UI연동.
@@ -2059,7 +2059,7 @@ public class SPUM_Manager : MonoBehaviour
                 {
                     Debug.Log("Old Version data found.. Now sync version data..");
                     //이 경우는 데이터를 싱크해줘야한다.
-                    SPUM_SpriteList tObjST = tST._spriteOBj;
+                    EquipmentController tObjST = tST._spriteOBj;
                     if(tObjST._spHorseSPList !=null)
                     {
                         SetHorse(true,tObjST._spHorseString);
@@ -2116,7 +2116,7 @@ public class SPUM_Manager : MonoBehaviour
             ttObjST._code = prefabName;
             ttObjST.EditChk = false;
 
-            SPUM_SpriteList tSpST = ttObjST._spriteOBj;
+            EquipmentController tSpST = ttObjST._spriteOBj;
             SyncPath(tSpST._hairList,tSpST._hairListString);
             SyncPath(tSpST._clothList,tSpST._clothListString);
             SyncPath(tSpST._armorList,tSpST._armorListString);
@@ -2203,7 +2203,7 @@ public class SPUM_Manager : MonoBehaviour
             ttObjST._version = _version;
             ttObjST.EditChk = false;
 
-            SPUM_SpriteList tSpST = ttObjST._spriteOBj;
+            EquipmentController tSpST = ttObjST._spriteOBj;
             SyncPath(tSpST._hairList,tSpST._hairListString);
             SyncPath(tSpST._clothList,tSpST._clothListString);
             SyncPath(tSpST._armorList,tSpST._armorListString);
@@ -2298,7 +2298,7 @@ public class SPUM_Manager : MonoBehaviour
         for ( var j = 0 ; j < _prefabUnitList.Count ; j++)
         {
             GameObject tObj = _prefabUnitList[j];
-            SPUM_SpriteList tObjST = tObj.GetComponent<SPUM_Prefabs>()._spriteOBj;
+            EquipmentController tObjST = tObj.GetComponent<SPUM_Prefabs>()._spriteOBj;
 
             GameObject ttObj = Instantiate(_childItem) as GameObject;
             ttObj.transform.SetParent(_loadPool);
@@ -2531,7 +2531,7 @@ public class SPUM_Manager : MonoBehaviour
     public void LoadUnitDataName(int index)
     {
         SPUM_Prefabs tPrefabST = _prefabUnitList[index].GetComponent<SPUM_Prefabs>();
-        SPUM_SpriteList tObjST = tPrefabST._spriteOBj;
+        EquipmentController tObjST = tPrefabST._spriteOBj;
         if(tObjST._spHorseSPList !=null)
         {
             SetHorse(true,tObjST._spHorseString);

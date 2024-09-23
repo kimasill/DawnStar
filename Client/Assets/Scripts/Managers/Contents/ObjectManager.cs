@@ -73,9 +73,26 @@ public class ObjectManager
 			ac.Stat = info.StatInfo;			
             ac.SyncPos();
         }
-	}
+        else if(type == GameObjectType.Item)
+        {
+            GameObject go = Managers.Resource.Instantiate($"Item/Item");
+            go.name = info.Name;
+            _objects.Add(info.ObjectId, go);
 
-	public void Remove(int id)
+            ItemController ic = go.GetComponent<ItemController>();
+            ic.Id = info.ObjectId;
+            ic.PosInfo = info.Position;
+            ic.SyncPos();
+        }
+    }
+    public void GenerateId(GameObjectType type, out int id)
+    {
+        int typeCode = (int)type;
+        int newId = (typeCode >> 24) & 0x7F;
+        id = newId;
+    }
+
+    public void Remove(int id)
 	{
         //if (MyPlayer != null && MyPlayer.Id == id)
         //    return;

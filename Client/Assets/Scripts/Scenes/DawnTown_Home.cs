@@ -75,6 +75,11 @@ public class DawnTown_Home : DawnTown
         {
             ShowQuestScript(1);
         }
+        else if(quest.Id == 6)
+        {
+            ShowQuestScript(1);
+            SpawnItemBelowPlayer(3);
+        }
     }
     public override void CheckInteractionQuest(Quest quest)
     {
@@ -82,6 +87,33 @@ public class DawnTown_Home : DawnTown
         if (id == 4)
         {
             Managers.Quest.EndQuest();
+        }        
+    }
+
+    private void SpawnItemBelowPlayer(int itemId)
+    {
+        Vector3Int playerCellPos = Managers.Object.MyPlayer.CellPos;
+        Vector3Int spawnCellPos = new Vector3Int(playerCellPos.x, playerCellPos.y - 1);
+        PositionInfo positionInfo = new PositionInfo();
+        positionInfo.PosX = spawnCellPos.x;
+        positionInfo.PosY = spawnCellPos.y;
+        ItemController ic = null;
+        if (Managers.Data.ItemDict.TryGetValue(itemId, out ItemData itemData))
+        {
+            int objectId = 0;
+            Managers.Object.GenerateId(GameObjectType.Item, out objectId);
+            ObjectInfo itemInfo = new ObjectInfo
+            {
+                Name = itemData.name,
+                ObjectId = objectId,
+                Position = positionInfo
+            };
+
+            Managers.Object.Add(itemInfo);
+            ic = Managers.Object.FindById(objectId).GetComponent<ItemController>();
+            ic.Sprite = Managers.Resource.Load<Sprite>(itemData.iconPath);
+            ic.Count = 1;
+            ic.ItemData = itemData;
         }
     }
 

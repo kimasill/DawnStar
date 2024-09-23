@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using Google.Protobuf.Protocol;
+using Data;
 
-public class SPUM_SpriteList : MonoBehaviour
+public class EquipmentController : MonoBehaviour
 {
     public List<SpriteRenderer> _itemList = new List<SpriteRenderer>();
     public List<SpriteRenderer> _eyeList = new List<SpriteRenderer>();
@@ -28,9 +30,46 @@ public class SPUM_SpriteList : MonoBehaviour
     public List<string> _pantListString = new List<string>();
     public List<string> _weaponListString = new List<string>();
     public List<string> _backListString = new List<string>();
-    
 
 
+    public void SetItemInSlot(Item item)
+    {
+        List<SpriteRenderer> targetList = null;
+        ItemData itemData = null;
+        string iconPath = null;
+
+        if (Managers.Data.ItemDict.TryGetValue(item.TemplateId, out itemData))
+        {
+            iconPath = itemData.iconPath;
+        }
+
+        switch (item.ItemType)
+        {
+            case ItemType.Armor:
+                if (ArmorType.Helmet == (ArmorType)item.ItemType)
+                {
+                    targetList = _hairList;
+                }
+                else if (ArmorType.Armor == (ArmorType)item.ItemType)
+                {
+                    targetList = _armorList;
+                }
+                else if (ArmorType.Boots == (ArmorType)item.ItemType)
+                {
+                    targetList = _pantList;
+                }
+                break;
+            case ItemType.Weapon:
+                targetList = _weaponList;              
+                break;
+                // 다른 아이템 타입에 대한 처리 추가
+        }
+
+        if (targetList != null && targetList.Count > 0)
+        {
+            targetList[0].sprite = Managers.Resource.Load<Sprite>(iconPath); // 첫 번째 슬롯에 아이템 세팅
+        }
+    }
     public void Reset()
     {
         for(var i = 0 ; i < _hairList.Count;i++)
@@ -76,7 +115,7 @@ public class SPUM_SpriteList : MonoBehaviour
         }
     }
 
-    public void LoadSprite(SPUM_SpriteList data)
+    public void LoadSprite(EquipmentController data)
     {
         //스프라이트 데이터 연동
         SetSpriteList(_hairList,data._hairList);

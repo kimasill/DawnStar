@@ -22,7 +22,7 @@
         },
         {
           "rewardType": "Reward_Exp",
-          "amount": "50"          
+          "amount": "50"
         }
       ],
       "connection": "3",
@@ -52,7 +52,7 @@
       "connection": "5",
       "questType": "interaction"
     },
-{
+    {
       "id": "5",
       "title": "Death",
       "rewards": [
@@ -61,8 +61,103 @@
           "amount": "50"
         }
       ],
-      "connection": "5",
+      "connection": "6",
       "questType": "scene"
-    }
+    },
+    {
+      "id": "6",
+      "title": "Weapon",
+      "rewards": [
+        {
+          "rewardType": "Reward_Exp",
+          "amount": "50"
+        }
+      ],
+      "connection": "7",
+      "questType": "interaction"
+    },
+    {
+      "id": "7",
+      "title": "tutorial04",
+      "rewards": [
+        {
+          "rewardType": "Reward_Exp",
+          "amount": "50"
+        }
+      ],
+      "connection": "8",
+      "questType": "interaction"
+    },
+    {
+      "id": "8",
+      "title": "tutorial05",
+      "rewards": [
+        {
+          "rewardType": "Reward_Exp",
+          "amount": "50"
+        }
+      ],
+      "connection": "9",
+      "questType": "interaction"
+    },
+    {
+      "id": "9",
+      "title": "tutorial06",
+      "rewards": [
+        {
+          "rewardType": "Reward_Exp",
+          "amount": "50"
+        }
+      ],
+      "connection": "10",
+      "questType": "interaction"
+    },
+    {
+      "id": "10",
+      "title": "tutorial07",
+      "rewards": [
+        {
+          "rewardType": "Reward_Exp",
+          "amount": "50"
+        }
+      ],
+      "connection": "11",
+      "questType": "interaction"
+    },
+    {
+      "id": "11",
+      "title": "tutorial08",
+      "rewards": [
+        {
+          "rewardType": "Reward_Exp",
+          "amount": "50"
+        }
+      ],
+      "connection": "12",
+      "questType": "interaction"
+    },
+    {
+      "id": "12",
+      "title": "tutorial09",
+      "rewards": [
+        {
+          "rewardType": "Reward_Exp",
+          "amount": "50"
+        }
+      ],
+      "connection": "13",
+      "questType": "interaction"
+    },
+    {
+      "id": "13",
+      "title": "tutorial10",
+      "rewards": [
+        {
+          "rewardType": "Reward_Exp",
+          "amount": "50"
+        }
+      ],
+      "questType": "interaction"
   ]
+
 } 

@@ -15,6 +15,14 @@
       "damage": "5",
       "price": "50",
       "iconPath": "Textures/Item/bow"
+    },
+    {
+      "id": "3",
+      "name": "케일라드의 검",
+      "weaponType": "Sword",
+      "damage": "11",
+      "price": "70",
+      "iconPath": "Textures/Item/Weapons/Sword_1"
     }
   ],
   "armors": [

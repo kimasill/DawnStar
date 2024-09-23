@@ -12,6 +12,9 @@ public class UI_StoryScene : UI_Base
     public Image StoryImage;
     public Image Background;
     public Image TextPanel;
+    public Image CharacterImage;
+    public Image CharacterNameFrame;
+    public TMP_Text CharacterNameText;
     public TMP_Text StoryScriptText;
     private List<Sprite> storyImages = new List<Sprite>();
     private List<List<string>> storyScripts = new List<List<string>>();
@@ -28,10 +31,13 @@ public class UI_StoryScene : UI_Base
         UI_Background,
         SceneChangeImage,
         UI_StoryImage,
+        CharacterProfileImage,
+        UI_CharacterNameFrame,
     }
     public enum Texts
     {
         UI_StoryText,
+        CharacterNameText,
     }
 
     public override void Init()
@@ -41,9 +47,15 @@ public class UI_StoryScene : UI_Base
 
         StoryImage = GetImage((int)Images.UI_StoryImage);
         StoryScriptText = GetTextMeshPro((int)Texts.UI_StoryText);
-        Background = GetImage((int)Images.UI_Background);
-        Background.gameObject.SetActive(false);
+        CharacterNameText = GetTextMeshPro((int)Texts.CharacterNameText);
+        CharacterImage = GetImage((int)Images.CharacterProfileImage);
+        CharacterNameFrame = GetImage((int)Images.UI_CharacterNameFrame);
+        Background = GetImage((int)Images.UI_Background);        
         SceneChangeImage = GetImage((int)Images.SceneChangeImage);
+
+        GetImage((int)Images.UI_TextPanel).gameObject.SetActive(false);
+        Background.gameObject.SetActive(false);
+
         GetImage((int)Images.UI_TextPanel).gameObject.BindEvent(OnScriptPanelClick);
     }
 
@@ -56,27 +68,20 @@ public class UI_StoryScene : UI_Base
     private IEnumerator InitialFadeIn()
     {
         isFading = true; // 페이드 인 시작
-        float alpha = 0;
-        while (alpha < 1)
-        {
-            alpha += Time.deltaTime / 1.0f;
-            SceneChangeImage.color = new Color(SceneChangeImage.color.r, SceneChangeImage.color.g, SceneChangeImage.color.b, alpha);
-            yield return null;
-        }
+        
+        yield return StartCoroutine(FadeIn(SceneChangeImage, 1.0f));
 
         Background.gameObject.SetActive(true);
+        GetImage((int)Images.UI_TextPanel).gameObject.SetActive(true);
+        CharacterNameFrame.gameObject.SetActive(false);
+        CharacterImage.color = new Color(CharacterImage.color.r, CharacterImage.color.g, CharacterImage.color.b, 0);
         Managers.Map.CurrentGrid.gameObject.SetActive(false);
         Managers.Object.MyPlayer.gameObject.SetActive(false);
         StoryImage.sprite = storyImages[sceneIndex];
         yield return new WaitForSeconds(3.0f);
 
-        alpha = 1;
-        while (alpha > 0)
-        {
-            alpha -= Time.deltaTime / 1.0f;
-            SceneChangeImage.color = new Color(SceneChangeImage.color.r, SceneChangeImage.color.g, SceneChangeImage.color.b, alpha);
-            yield return null;
-        }
+        yield return StartCoroutine(FadeOut(SceneChangeImage, 1.0f));
+
         isFading = false; // 페이드 인 종료
         ShowNextScript();
     }
@@ -104,29 +109,45 @@ public class UI_StoryScene : UI_Base
         }
     }
 
-    private IEnumerator FadeInOut(Image image, System.Action onComplete, float waitTime)
+    private IEnumerator FadeInOut(Image image, System.Action onFaded, System.Action onComplete, float waitTime)
+    {
+        isFading = true; // 페이드 인/아웃 중에는 클릭 이벤트 무시
+        yield return StartCoroutine(FadeIn(image, 1.0f));
+
+        onFaded?.Invoke();     
+        
+        yield return new WaitForSeconds(waitTime);
+
+        yield return StartCoroutine(FadeOut(image, 1.0f));
+        isFading = false; // 페이드 인/아웃 종료
+
+        onComplete?.Invoke();
+    }
+
+    private IEnumerator FadeIn(Image image, float fadingTime)
     {
         isFading = true; // 페이드 인 시작
         float alpha = 0;
         while (alpha < 1)
         {
-            alpha += Time.deltaTime / 1.0f;
-            SceneChangeImage.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
+            alpha += Time.deltaTime / fadingTime;
+            image.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
             yield return null;
         }
-        StoryScriptText.text = "";
-        StoryImage.sprite = storyImages[sceneIndex];        
-        yield return new WaitForSeconds(waitTime);
+        isFading = false; // 페이드 인 종료
+    }
 
-        alpha = 1;
+    private IEnumerator FadeOut(Image image, float fadingTime)
+    {
+        isFading = true; // 페이드 아웃 시작
+        float alpha = 1;
         while (alpha > 0)
         {
-            alpha -= Time.deltaTime / 1.0f;
-            SceneChangeImage.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
+            alpha -= Time.deltaTime / fadingTime;
+            image.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
             yield return null;
         }
-        isFading = false;
-        onComplete?.Invoke();
+        isFading = false; // 페이드 아웃 종료
     }
 
     private void ShowNextScene()
@@ -140,10 +161,22 @@ public class UI_StoryScene : UI_Base
         if (sceneIndex < storyImages.Count)
         {
             float waitTime = sceneIndex == 0 ? 3.0f : 1.0f;
-            StartCoroutine(FadeInOut(SceneChangeImage, () =>
-            {                
-                ShowNextScript();
-            }, waitTime));
+            StartCoroutine(FadeInOut
+            (
+                SceneChangeImage,
+                () =>
+                {
+                    StoryScriptText.text = "";
+                    CharacterNameText.text = "";
+                    CharacterImage.sprite = null;
+                    CharacterImage.color = new Color(CharacterImage.color.r, CharacterImage.color.g, CharacterImage.color.b, 0);
+                    CharacterNameFrame.gameObject.SetActive(false);
+                    StoryImage.sprite = storyImages[sceneIndex];
+                },                
+                ShowNextScript, 
+                waitTime
+                )
+            );
              // 페이드 인/아웃 후에 스크립트 출력
         }
     }
@@ -165,13 +198,56 @@ public class UI_StoryScene : UI_Base
         }
     }
 
+    private string SplitSentence(List<string> textList)
+    {
+        string sentence = textList[currentLineIndex];
+        string characterName = "";
+        string characterProfileImagePath = "";
+
+        if (sentence.Contains(":"))
+        {
+            CharacterNameFrame.gameObject.SetActive(true);
+            string[] splitSentence = sentence.Split(':');
+            if (!splitSentence[0].Contains(","))
+            {
+                CharacterNameText.text = splitSentence[0];
+                return splitSentence[1];
+            }
+            string characterImageName = splitSentence[0].Split(',')[1];
+            characterName = splitSentence[0].Split(',')[0];
+            sentence = splitSentence[1];
+
+            CharacterNameText.text = characterName;
+            if(characterImageName != "")
+            characterProfileImagePath = "Textures/Images/" + characterImageName;
+            Sprite characterProfileImage = Managers.Resource.Load<Sprite>(characterProfileImagePath);
+            if (characterProfileImage != null)
+            {
+                CharacterImage.sprite = characterProfileImage;
+                StartCoroutine(FadeIn(CharacterImage, 1.0f));
+            }
+        }
+        else
+        {
+            if(CharacterImage.sprite != null)
+            {
+                StartCoroutine(FadeOut(CharacterImage, 1.0f));
+            }            
+            CharacterNameFrame.gameObject.SetActive(false);
+        }
+
+        return sentence;
+    }
+
     private IEnumerator TypeText(List<string> textList)
     {
         isTyping = true;
         if (currentLineIndex < textList.Count)
         {
+            string sentence = SplitSentence(textList);
             StoryScriptText.text = "";
-            foreach (char letter in textList[currentLineIndex].ToCharArray())
+            
+            foreach (char letter in sentence.ToCharArray())
             {
                 StoryScriptText.text += letter;
                 yield return new WaitForSeconds(0.05f);
@@ -219,5 +295,6 @@ public class UI_StoryScene : UI_Base
     private void EndStory()
     {
         gameObject.SetActive(false);
+        Managers.Quest.EndQuest();
     }
 }

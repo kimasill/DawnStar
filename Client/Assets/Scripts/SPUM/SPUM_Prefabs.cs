@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class SPUM_Prefabs : MonoBehaviour
 {
     public float _version;
-    public SPUM_SpriteList _spriteOBj;
+    public EquipmentController _spriteOBj;
     public bool EditChk;
     public string _code;
     public Animator _anim;
