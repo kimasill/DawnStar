@@ -178,6 +178,19 @@ class PacketHandler
         room.Push(room.HandleBuyItem, player, buyItemPacket);
     }
 
+    public static void C_RootItemHandler(PacketSession session, IMessage packet)
+    {
+        C_RootItem rootItemPacket = packet as C_RootItem;
+        ClientSession clientSession = session as ClientSession;
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+        room.Push(room.HandleRootItem, player, rootItemPacket);
+    }
+
     public static void C_RemoveItemHandler(PacketSession session, IMessage packet)
     {
         C_RemoveItem removeItemPacket = packet as C_RemoveItem;

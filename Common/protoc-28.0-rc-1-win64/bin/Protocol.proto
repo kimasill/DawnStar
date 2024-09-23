@@ -42,6 +42,7 @@ enum MsgId {
   S_CHANGE_POSITION = 34;  
   C_CHANGE_POSITION = 35;
   C_REMOVE_ITEM = 36;
+  C_ROOT_ITEM = 37;
 }
 enum CreatureState{
   IDLE = 0;
@@ -68,6 +69,7 @@ enum GameObjectType{
 	MONSTER = 2;
 	PROJECTILE = 3;
 	NPC = 4;
+	ITEM = 5;
 }
 
 enum SkillType{
@@ -109,6 +111,7 @@ enum ArmorType{
 	ARMOR_TYPE_HELMET = 1;
 	ARMOR_TYPE_ARMOR = 2;
 	ARMOR_TYPE_BOOTS = 3;
+	ARMOR_TYPE_BACK = 4;
 }
 
 enum ConsumableType{
@@ -230,6 +233,11 @@ message S_BuyItem{
 	int32 templateId = 1;
 	int32 count = 2;
 	int32 gold = 3;
+}
+
+message C_RootItem{
+	int32 templateId = 1;
+	int32 count = 2;
 }
 
 message C_RemoveItem{

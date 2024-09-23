@@ -1,4 +1,5 @@
-﻿using Google.Protobuf.Protocol;
+﻿using Data;
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,12 +10,13 @@ public class PlayerController : CreatureController
 	protected Coroutine _coSkill;
     protected bool _rangedSkill = false;
 
+    public EquipmentController Equipment { get; private set; }
 
-
-	protected override void Init()
+    protected override void Init()
 	{
 		base.Init();
-	}
+        Equipment = GetComponentInChildren<EquipmentController>();
+    }
 
     protected override void UpdateAnimation()
     {
@@ -118,4 +120,5 @@ public class PlayerController : CreatureController
 	{
 		Debug.Log("Player HIT !");
 	}
+
 }

@@ -74,6 +74,22 @@ namespace Server.Game
             };
             player.Session.Send(buyItemPacket);
         }
+        public void HandleLootItem(Player player, C_RootItem item)
+        {
+            if (player == null || item == null)
+                return;
+
+            //아이템 찾기
+            //if (player.Room.Items.ContainsKey(item.ItemDbId) == false)
+            //    return;
+
+            ItemRewardData rewardData = new ItemRewardData();
+            rewardData.itemId = item.TemplateId;
+            rewardData.count = item.Count;           
+
+            // 아이템 보상 처리
+            DbTransaction.RewardPlayer(player, rewardData, this);
+        }
 
         public void HandleRemoveItem(Player player, int id)
         {

@@ -17,6 +17,7 @@ public class MyPlayerController : PlayerController
         get { return Stat.Gold; }
         set { Stat.Gold = value; }
     }
+
     protected override void Init()
     {
         base.Init();
@@ -212,6 +213,18 @@ public class MyPlayerController : PlayerController
             int id = Managers.Map.GetPortalId(portal);
             C_MapChange mapPacket = new C_MapChange { MapId = id };
             Managers.Network.Send(mapPacket);
+        }
+    }
+
+    private void CheckIfPlayerAtItem()
+    {
+        Vector3Int playerCellPosition = CellPos;
+        GameObject itemObject = Managers.Object.FindCreature(playerCellPosition);
+        if (itemObject != null && itemObject.GetComponent<ItemController>() != null)
+        {
+            ItemController itemController = itemObject.GetComponent<ItemController>();
+            itemController.MoveToPlayer(transform);
+            // 아이템 루팅 로직 추가
         }
     }
 

@@ -17,10 +17,12 @@ public class UI_Stat : UI_Base
     enum Images
     {
         Slot_Helmet,
+        //Slot_Cloth,
         Slot_Armor,
         Slot_Weapon,
         Slot_Shield,
-        Slot_Boots
+        Slot_Boots,
+        //Slot_Back
     }
     bool _init = false;
     public override void Init()
@@ -38,12 +40,14 @@ public class UI_Stat : UI_Base
 
         //먼저 items 다 가린다
         Get<Image>((int)Images.Slot_Helmet).enabled = false;
+        //Get<Image>((int)Images.Slot_Cloth).enabled = false;
         Get<Image>((int)Images.Slot_Armor).enabled = false;
         Get<Image>((int)Images.Slot_Weapon).enabled = false;
         Get<Image>((int)Images.Slot_Shield).enabled = false;
         Get<Image>((int)Images.Slot_Boots).enabled = false;
+        //Get<Image>((int)Images.Slot_Back).enabled = false;
 
-        foreach(Item item in Managers.Inventory.Items.Values)
+        foreach (Item item in Managers.Inventory.Items.Values)
         {
             if(item.Equipped == false)
                 continue;
