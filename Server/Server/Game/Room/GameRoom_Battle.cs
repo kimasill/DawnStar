@@ -5,6 +5,7 @@ using Server.Game.Job;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Server.Game
@@ -19,7 +20,8 @@ namespace Server.Game
             // TODO : 검증
             PositionInfo movePosInfo = movePacket.Position;
             ObjectInfo info = player.Info;
-
+            info.Position.State = movePosInfo.State;
+            //Console.WriteLine(info.Position.State);
             // 다른 좌표로 이동할 경우, 갈 수 있는지 체크
             if (movePosInfo.PosX != info.Position.PosX || movePosInfo.PosY != info.Position.PosY)
             {
@@ -27,10 +29,9 @@ namespace Server.Game
                     return;
             }
 
-            info.Position.State = movePosInfo.State;
+            
             info.Position.MoveDir = movePosInfo.MoveDir;
             Map.ApplyMove(player, new Vector2Int(movePosInfo.PosX, movePosInfo.PosY));
-
             // 다른 플레이어한테도 알려준다
             S_Move resMovePacket = new S_Move();
             resMovePacket.ObjectId = player.Info.ObjectId;
@@ -43,8 +44,8 @@ namespace Server.Game
         {
             if (player == null)
                 return;
-
             ObjectInfo info = player.Info;
+            Console.WriteLine(player.Info.Position.State);
             if (info.Position.State != CreatureState.Idle)
                 return;
 

@@ -6,10 +6,11 @@ using UnityEngine;
 public class InventoryManager : MonoBehaviour
 {
     public Dictionary<int, Item> Items { get; } = new Dictionary<int, Item>();
-
+    public event Action<Item> ItemAdded;
     public void Add(Item item)
     {
         Items.Add(item.ItemDbId, item);
+        ItemAdded?.Invoke(item);
     }
 
     public void Remove(int itemId)
@@ -32,6 +33,11 @@ public class InventoryManager : MonoBehaviour
                 return item;
         }
         return null;
+    }
+
+    public void RefreshEquipment(EquipmentController equipmentController)
+    {
+        equipmentController.Refresh(Items);
     }
 
     public void Clear()

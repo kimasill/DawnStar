@@ -42,7 +42,8 @@ enum MsgId {
   S_CHANGE_POSITION = 34;  
   C_CHANGE_POSITION = 35;
   C_REMOVE_ITEM = 36;
-  C_ROOT_ITEM = 37;
+  C_LOOT_ITEM = 37;
+  C_REQUEST_MONSTER = 38;
 }
 enum CreatureState{
   IDLE = 0;
@@ -104,6 +105,8 @@ enum WeaponType {
 	WEAPON_TYPE_NONE = 0;
 	WEAPON_TYPE_SWORD = 1;
 	WEAPON_TYPE_BOW = 2;
+	WEAPON_TYPE_SHIELD = 3;
+	WEAPON_TYPE_STAFF = 4;
 }
 
 enum ArmorType{
@@ -135,6 +138,11 @@ message S_LeaveGame {
 
 message S_Spawn {
   repeated ObjectInfo objects = 1;
+}
+
+message C_RequestMonster {
+  repeated int32 templateId = 1;
+  PositionInfo position = 2;
 }
 
 message S_Despawn {
@@ -235,7 +243,7 @@ message S_BuyItem{
 	int32 gold = 3;
 }
 
-message C_RootItem{
+message C_LootItem{
 	int32 templateId = 1;
 	int32 count = 2;
 }

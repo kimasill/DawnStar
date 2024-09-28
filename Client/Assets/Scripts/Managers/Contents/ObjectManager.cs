@@ -8,9 +8,8 @@ public class ObjectManager
 {
 	public MyPlayerController MyPlayer { get; set; }
 	//id 에따라 관리
-	Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();      
-	
-	public static GameObjectType GetObjectType(int id)
+	Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
+    public static GameObjectType GetObjectType(int id)
     {
 		int type = (id >> 24) & 0x7F; 
         return (GameObjectType)type;
@@ -36,6 +35,7 @@ public class ObjectManager
                 MyPlayer.PosInfo = info.Position;
 				MyPlayer.Stat.MergeFrom(info.StatInfo);			            				
                 MyPlayer.SyncPos();
+                Managers.Inventory.RefreshEquipment(MyPlayer.Equipment);
             }
             else
             {
@@ -88,7 +88,13 @@ public class ObjectManager
     public void GenerateId(GameObjectType type, out int id)
     {
         int typeCode = (int)type;
-        int newId = (typeCode >> 24) & 0x7F;
+        Debug.Log($"typeCode : {typeCode}");
+        int newId;
+        do
+        {
+            newId = (typeCode << 24) | UnityEngine.Random.Range(1, 0x7F);
+        } while (_objects.ContainsKey(newId));
+        Debug.Log($"newId : {newId}");
         id = newId;
     }
 
@@ -122,7 +128,22 @@ public class ObjectManager
 		return null;
 	}
 
-	public GameObject FindById(int id)
+    public GameObject FindItem(Vector3Int cellPos)
+    {
+        foreach (GameObject obj in _objects.Values)
+        {
+            ItemController ic = obj.GetComponent<ItemController>();
+            if (ic == null)
+                continue;
+
+            if (ic.CellPos == cellPos)
+                return obj;
+        }
+
+        return null;
+    }
+
+    public GameObject FindById(int id)
     {
         GameObject go = null;
         _objects.TryGetValue(id, out go);

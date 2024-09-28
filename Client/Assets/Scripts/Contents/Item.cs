@@ -1,6 +1,7 @@
 using Data;
 using Google.Protobuf.Protocol;
 using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,7 @@ using UnityEngine;
 public class Item
 {
     public ItemInfo Info { get; } = new ItemInfo();
-
+    public event Action<Item> OnEquipped;
     public int ItemDbId
     {
         get { return Info.ItemDbId; }
@@ -37,7 +38,10 @@ public class Item
     public bool Equipped
     {
         get { return Info.Equipped; }
-        set { Info.Equipped = value; }
+        set {           
+                Info.Equipped = value;
+            OnEquipped?.Invoke(this);
+        }
     }
 
     public int Price

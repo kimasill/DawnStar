@@ -118,8 +118,15 @@ namespace Server
                     }
                 }
                 MyPlayer.Stat.MergeFrom(playerInfo.StatInfo);
+
+
+
                 if(MyPlayer.Stat.Level == 0)
+                {
                     isFirstLogin = true;
+                    ServerState = PlayerServerState.ServerStateSingle;
+                }
+                    
 
                 MyPlayer.Session = this;
                 S_ItemList itemListPacket = new S_ItemList();
@@ -143,26 +150,30 @@ namespace Server
                     }
                     //클라한테 아이템 전달
                 }
-                Send(itemListPacket);                
-                
-                
-                ServerState = PlayerServerState.ServerStateSingle;                    
-                GameLogic.Instance.Push(() =>
-                {
-                    GameRoom room = GameLogic.Instance.Find(1);
-                    room.Push(room.EnterSingleGame, MyPlayer, isFirstLogin);
-                });
-                //else
-                //{
-                //    ServerState = PlayerServerState.ServerStateGame;
+                Send(itemListPacket);
 
-                //    //GameLogic 담당 스레드에 등록
-                //    GameLogic.Instance.Push(() =>
-                //    {
-                //        GameRoom room = GameLogic.Instance.Find(1);
-                //        room.Push(room.EnterGame, MyPlayer, true);
-                //    });
-                //}                
+                //Test
+                ServerState = PlayerServerState.ServerStateSingle;
+                if (ServerState == PlayerServerState.ServerStateSingle)
+                {
+                    GameLogic.Instance.Push(() =>
+                    {
+                        GameRoom room = GameLogic.Instance.Add(1);
+                        Console.WriteLine($"Player Room Id:{room.RoomId}");
+                        room.Push(room.EnterSingleGame, MyPlayer, isFirstLogin);
+                    });
+                }                
+                else
+                {
+                    ServerState = PlayerServerState.ServerStateGame;
+                    //GameLogic 담당 스레드에 등록
+                    GameLogic.Instance.Push(() =>
+                    {
+                        GameRoom room = GameLogic.Instance.Find(1); //멀티서버
+                        Console.WriteLine($"Player Room Id:{room.RoomId}");
+                        room.Push(room.EnterGame, MyPlayer, false);
+                    });
+                }
             }
         }
         public void HandleCreatePlayer(C_CreatePlayer createPacket)

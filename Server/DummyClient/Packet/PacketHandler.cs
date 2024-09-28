@@ -155,4 +155,14 @@ class PacketHandler
     {
         S_ShopList shopList = packet as S_ShopList;
     }
+
+    public static void S_BuyItemHandler(PacketSession session, IMessage packet)
+    {
+        S_BuyItem buyItem = packet as S_BuyItem;
+    }
+
+    public static void S_ChangePositionHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangePosition inventory = packet as S_ChangePosition;
+    }
 }

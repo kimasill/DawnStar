@@ -22,7 +22,10 @@ public class DawnTown_Home : DawnTown
         InitializeNPCs();
 
         // 인벤토리에서 아이템 확인 및 퀘스트 처리
-        CheckInventoryAndHandleQuest03();        
+        if (Managers.Quest.IsQuestInProgress(3)) 
+        {
+            CheckInventoryAndHandleQuest03();
+        }      
     }
 
     private void CheckInventoryAndHandleQuest03()
@@ -52,20 +55,7 @@ public class DawnTown_Home : DawnTown
         else
         {
             // 퀘스트 완료 처리하지 않고 대사 출력
-            ShowQuestScript(2);
-        }
-    }
-
-    private void ShowQuestScript(int id)
-    {
-        int currentQuestId = Managers.Quest.GetCurrentQuestId();
-        ScriptData questScriptData = null; 
-        Managers.Data.ScriptDict.TryGetValue(currentQuestId, out questScriptData);
-        
-        if (questScriptData != null && questScriptData.scripts.Count > 1)
-        {            
-            UI_GameWindow gameWindow = _sceneUi.GameWindow;
-            gameWindow.StoryPanel.ShowStoryPanel(questScriptData, id);
+            Managers.Quest.ShowQuestScript(3, 2);
         }
     }
 
@@ -73,11 +63,11 @@ public class DawnTown_Home : DawnTown
     {
         if(quest.Id == 4)
         {
-            ShowQuestScript(1);
+            Managers.Quest.ShowQuestScript(quest.Id);
         }
         else if(quest.Id == 6)
         {
-            ShowQuestScript(1);
+            Managers.Quest.ShowQuestScript(quest.Id);
             SpawnItemBelowPlayer(3);
         }
     }
@@ -106,7 +96,7 @@ public class DawnTown_Home : DawnTown
             {
                 Name = itemData.name,
                 ObjectId = objectId,
-                Position = positionInfo
+                Position = positionInfo,                
             };
 
             Managers.Object.Add(itemInfo);
@@ -114,6 +104,39 @@ public class DawnTown_Home : DawnTown
             ic.Sprite = Managers.Resource.Load<Sprite>(itemData.iconPath);
             ic.Count = 1;
             ic.ItemData = itemData;
+        }
+        Managers.Inventory.ItemAdded += OnInventoryItemAdded;
+        DoorChangeAfterQuest06();
+    }
+
+    private void DoorChangeAfterQuest06()
+    {
+        Managers.Map.RemovePortalByName("DawnTown");
+        GameObject[] doorObjects = GameObject.FindGameObjectsWithTag("Door");
+        if (doorObjects != null && doorObjects.Length > 0)
+        {
+            foreach (var doorObject in doorObjects)
+            {
+                doorObject.name = "DawnTownDead";
+            }
+        }
+        Managers.Map.FindDoors();
+    }
+
+    private void OnInventoryItemAdded(Item item)
+    {
+        if(item.TemplateId == 3)
+        {
+            Managers.Inventory.ItemAdded -= OnInventoryItemAdded;
+            item.OnEquipped += HandleAddedItem03;
+        }
+    }
+
+    private void HandleAddedItem03(Item item)
+    {
+        if(item.TemplateId == 3)
+        {
+            Managers.Quest.EndQuest();
         }
     }
 

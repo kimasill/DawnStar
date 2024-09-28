@@ -9,13 +9,23 @@ public class PlayerController : CreatureController
 {
 	protected Coroutine _coSkill;
     protected bool _rangedSkill = false;
+    protected EquipmentController _equipmentController;
 
-    public EquipmentController Equipment { get; private set; }
+    public EquipmentController Equipment 
+    { 
+        get {
+            if (_equipmentController == null)
+                _equipmentController = GetComponentInChildren<EquipmentController>();
+            return 
+                _equipmentController; 
+        } 
+        private set { } 
+    }
+
 
     protected override void Init()
 	{
-		base.Init();
-        Equipment = GetComponentInChildren<EquipmentController>();
+        base.Init();        
     }
 
     protected override void UpdateAnimation()
@@ -54,15 +64,14 @@ public class PlayerController : CreatureController
         }
         else if (State == CreatureState.Skill)
         {
+            Debug.Log("PlayerController UpdateAnimation State == CreatureState.Skill");
             switch (LookDir)
             {
                 case LookDir.LookLeft:
                     _animator.Play(_rangedSkill ? "ATTACK_WEAPON_RIGHT" : "ATTACK");
-                    _sprite.flipX = true;
                     break;
                 case LookDir.LookRight:
                     _animator.Play(_rangedSkill ? "ATTACK_WEAPON_RIGHT" : "ATTACK");
-                    _sprite.flipX = false;
                     break;
             }
         }

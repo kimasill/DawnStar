@@ -94,6 +94,7 @@ public class BaseController : MonoBehaviour
                 return;
 
             PosInfo.State = value;
+            Debug.Log("State : " + value);
             UpdateAnimation();
             _updated = true;
         }

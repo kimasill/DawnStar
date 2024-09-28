@@ -138,6 +138,9 @@ namespace Server.Migrations
                     b.Property<int>("PosY")
                         .HasColumnType("int");
 
+                    b.Property<int>("ServerState")
+                        .HasColumnType("int");
+
                     b.Property<float>("Speed")
                         .HasColumnType("real");
 

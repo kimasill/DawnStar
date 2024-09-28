@@ -10,6 +10,7 @@ TagManager:
   - NPC
   - Quest
   - Door
+  - QuestItem
   layers:
   - Default
   - TransparentFX
@@ -24,7 +25,7 @@ TagManager:
   - Block
   - Door
   - Quest
-  - 
+  - Cover
   - 
   - 
   - 
@@ -49,4 +50,7 @@ TagManager:
     locked: 0
   - name: Individual
     uniqueID: 4141152767
+    locked: 0
+  - name: Fog
+    uniqueID: 1867890455
     locked: 0

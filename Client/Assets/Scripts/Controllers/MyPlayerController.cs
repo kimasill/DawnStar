@@ -1,4 +1,5 @@
 using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ public class MyPlayerController : PlayerController
         RefreshAdditionalStat();        
     }
 
-    protected override void UpdateController()
+    protected override void UpdateController() 
     {
         GetUIKeyInput();
         switch (State)
@@ -95,15 +96,22 @@ public class MyPlayerController : PlayerController
 
         if (Input.mouseScrollDelta.y != 0)
         {
-            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-            UI_Map mapUI = gameSceneUI.MapUI;
-            if(mapUI == null)
+            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;            
+            if(gameSceneUI.MapUI == null)
             {
                 return;
             }
+            UI_Map mapUI = gameSceneUI.MapUI;
             if (mapUI.gameObject.activeSelf)
             {
                 mapUI.ZoomMap(Input.mouseScrollDelta.y * 10); // 스크롤에 따라 지도 크기 조절
+            }
+            // 인벤토리가 활성화된 경우 스크롤뷰를 내립니다.
+            UI_Inventory invenUI = gameSceneUI.InvenUI;
+            if (invenUI.gameObject.activeSelf && invenUI.ScrollRect != null)
+            {
+                float scrollDelta = Input.mouseScrollDelta.y * 0.1f; // 스크롤 속도 조절
+                invenUI.ScrollRect.verticalNormalizedPosition = Mathf.Clamp01(invenUI.ScrollRect.verticalNormalizedPosition - scrollDelta);
             }
         }
     }
@@ -133,9 +141,11 @@ public class MyPlayerController : PlayerController
             _moveKeyPressed = false;
         }
     }
-
+    private bool _isAttacking = false;
     protected override void UpdateIdle()
     {
+        if (_isAttacking)
+            return;
         // 이동 상태로 갈지 확인
         if (_moveKeyPressed)
         {
@@ -146,6 +156,7 @@ public class MyPlayerController : PlayerController
         // 스킬 상태로 갈지 확인
         if (Input.GetKey(KeyCode.Space))
         {
+            _isAttacking = true;
             Debug.Log("기본공격");
             C_Skill skill = new C_Skill() { Info = new SkillInfo()};
             skill.Info.SkillId = 1;//화살
@@ -158,6 +169,7 @@ public class MyPlayerController : PlayerController
     IEnumerator CoInputCooltime(float time)
     {
         yield return new WaitForSeconds(time);
+        _isAttacking = false;
     }
 
     void LateUpdate()
@@ -198,6 +210,7 @@ public class MyPlayerController : PlayerController
             {
                 CellPos = destPos;
                 CheckIfPlayerAtPortal(destPos);
+                CheckIfPlayerAtItem();
                 DetectNearbyNPCs();
                 CheckQuest();
             }
@@ -219,7 +232,7 @@ public class MyPlayerController : PlayerController
     private void CheckIfPlayerAtItem()
     {
         Vector3Int playerCellPosition = CellPos;
-        GameObject itemObject = Managers.Object.FindCreature(playerCellPosition);
+        GameObject itemObject = Managers.Object.FindItem(playerCellPosition);
         if (itemObject != null && itemObject.GetComponent<ItemController>() != null)
         {
             ItemController itemController = itemObject.GetComponent<ItemController>();
@@ -265,6 +278,7 @@ public class MyPlayerController : PlayerController
     //Dirty Flag Check
     protected override void CheckUpdatedFlag()
     {
+        Debug.Log($"Flag updated: {_updated} State: {State}");
         if (_updated)
         {
             C_Move movePacket = new C_Move();
@@ -295,9 +309,5 @@ public class MyPlayerController : PlayerController
             }
 
         }
-    }
-
-    public void RefreshQuests()
-    {
     }
 }

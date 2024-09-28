@@ -87,12 +87,24 @@ public class QuestManager
                     ScriptData scriptData = Managers.Data.ScriptDict[questId];
                     currentScene.ShowStoryScene(scriptData);
                     break;
-
             }
         }
         else
         {
             Debug.LogWarning($"퀘스트 ID {questId}를 찾을 수 없습니다.");
+        }
+    }
+
+    public void ShowQuestScript(int questId, int scriptId = 1)
+    {
+        ScriptData questScriptData = null;
+        Managers.Data.ScriptDict.TryGetValue(questId, out questScriptData);
+
+        if (questScriptData != null && questScriptData.scripts.Count > 1)
+        {
+            UI_GameScene gameScene = (UI_GameScene)Managers.UI.SceneUI;
+            UI_GameWindow gameWindow = gameScene.GameWindow;
+            gameWindow.StoryPanel.ShowStoryPanel(questScriptData, scriptId);
         }
     }
 
@@ -129,7 +141,6 @@ public class QuestManager
             Managers.Network.Send(questCompletePacket);
         }
     }
-
     //Connection : Next Quest Id
     private void CheckNextQuest(QuestInfo questInfo)
     {
@@ -142,7 +153,7 @@ public class QuestManager
             Managers.Network.Send(startQuest);
         }
         else
-        {
+        { 
             Debug.Log("다음 퀘스트가 없습니다.");
         }
     }
@@ -151,7 +162,9 @@ public class QuestManager
     {
         // 현재 진행 중인 퀘스트 ID를 반환하는 로직을 구현
         // 예시: 진행 중인 퀘스트 ID를 반환
-        return _quests.FirstOrDefault(q => !q.Value.IsCompleted).Key;
+        // Test Code : 가장 마지막 퀘스트 반환
+        return _quests.Keys.Max();
+        //return _quests.FirstOrDefault(q => !q.Value.IsCompleted).Key;
     }
 
     public bool IsQuestInProgress(int questId)

@@ -97,7 +97,7 @@ class PacketHandler
         {
             return;
         }
-
+        Debug.Log($"S_SkillHandler : {skillPacket.Info.SkillId}");
         cc.UseSkill(skillPacket.Info.SkillId);
     }
 
@@ -246,9 +246,12 @@ class PacketHandler
             Item item = Item.MakeItem(itemInfo);
             Managers.Inventory.Add(item);
         }
-        
-        if(Managers.Object.MyPlayer != null)
+        if (Managers.Object.MyPlayer != null)
+        {
             Managers.Object.MyPlayer.RefreshAdditionalStat();
+            EquipmentController equipment = Managers.Object.MyPlayer.Equipment;
+            Managers.Inventory.RefreshEquipment(equipment);
+        }
     }
 
     public static void S_AddItemHandler(PacketSession session, IMessage packet)
@@ -270,7 +273,9 @@ class PacketHandler
         gameSceneUI.StatUI.RefreshUI();
 
         if (Managers.Object.MyPlayer != null)
-            Managers.Object.MyPlayer.RefreshAdditionalStat();   
+        {
+            Managers.Object.MyPlayer.RefreshAdditionalStat();
+        }   
     }
     public static void S_EquipItemHandler(PacketSession session, IMessage packet)
     {
@@ -292,8 +297,7 @@ class PacketHandler
         {
             Managers.Object.MyPlayer.Equipment.SetItemInSlot(item);
             Managers.Object.MyPlayer.RefreshAdditionalStat();
-        }
-            
+        }            
     }
 
     public static void S_ShopListHandler(PacketSession session, IMessage packet)

@@ -2,6 +2,7 @@ using Data;
 using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using static Item;
@@ -12,7 +13,7 @@ public class UI_Stat : UI_Base
     {
         NameText,
         AttackValueText,
-        DefenceValueText
+        DefenseValueText
     }
     enum Images
     {
@@ -22,12 +23,12 @@ public class UI_Stat : UI_Base
         Slot_Weapon,
         Slot_Shield,
         Slot_Boots,
-        //Slot_Back
+        Slot_Back
     }
     bool _init = false;
     public override void Init()
     {
-        Bind<Text>(typeof(Texts));
+        Bind<TMP_Text>(typeof(Texts)); // Change TMPro to TextMeshProUGUI
         Bind<Image>(typeof(Images));
         _init = true;
         RefreshUI();
@@ -45,11 +46,11 @@ public class UI_Stat : UI_Base
         Get<Image>((int)Images.Slot_Weapon).enabled = false;
         Get<Image>((int)Images.Slot_Shield).enabled = false;
         Get<Image>((int)Images.Slot_Boots).enabled = false;
-        //Get<Image>((int)Images.Slot_Back).enabled = false;
+        Get<Image>((int)Images.Slot_Back).enabled = false;
 
         foreach (Item item in Managers.Inventory.Items.Values)
         {
-            if(item.Equipped == false)
+            if (item.Equipped == false)
                 continue;
             ItemData itemData = null;
             Managers.Data.ItemDict.TryGetValue(item.TemplateId, out itemData);
@@ -77,16 +78,20 @@ public class UI_Stat : UI_Base
                         Get<Image>((int)Images.Slot_Boots).enabled = true;
                         Get<Image>((int)Images.Slot_Boots).sprite = icon;
                         break;
+                    case ArmorType.Back:
+                        Get<Image>((int)Images.Slot_Back).enabled = true;
+                        Get<Image>((int)Images.Slot_Back).sprite = icon;
+                        break;
                 }
             }
             //Text ¼³Á¤
             MyPlayerController player = Managers.Object.MyPlayer;
             player.RefreshAdditionalStat();
 
-            Get<Text>((int)Texts.NameText).text = player.name;
+            Get<TMP_Text>((int)Texts.NameText).text = player.name;
             int totalDamage = player.Stat.Attack + player.WeaponDamage;
-            Get<Text>((int)Texts.AttackValueText).text = $"{totalDamage}(+{player.WeaponDamage})";
-            Get<Text>((int)Texts.DefenceValueText).text = $"{player.ArmorDef}";
+            Get<TMP_Text>((int)Texts.AttackValueText).text = $"{totalDamage}(+{player.WeaponDamage})";
+            Get<TMP_Text>((int)Texts.DefenseValueText).text = $"{player.ArmorDef}";
         }
     }
 }
