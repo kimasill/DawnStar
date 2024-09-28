@@ -66,6 +66,26 @@
           "posY": "-5"
         }
       ]
+    },
+    {
+      "id": "004",
+      "name": "DawnTownDead",
+      "portals": [
+        {
+          "id": "400",
+          "name": "DawnTownHome",
+          "location": "DawnTownDead",
+          "posX": "-38",
+          "posY": "-9"
+        },
+        {
+          "id": "401",
+          "name": "EastEnd",
+          "location": "DawnTownDead",
+          "posX": "-14",
+          "posY": "-4"
+        }
+      ]
     }
   ]
 } 

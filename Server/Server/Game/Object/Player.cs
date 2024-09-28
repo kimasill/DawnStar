@@ -61,8 +61,7 @@ namespace Server.Game
         public int ArmorDef { get; private set; }
 
         public override int TotalAttack { get { return Stat.Attack + WeaponDamage; } }
-        public override int TotalDefense { get { return ArmorDef; } }
-
+        public override int TotalDefense { get { return ArmorDef; } }        
 
         public Player()
         {

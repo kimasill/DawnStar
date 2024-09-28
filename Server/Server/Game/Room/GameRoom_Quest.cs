@@ -76,6 +76,8 @@ namespace Server.Game
                     };
                     player.Quest = questInfo;
                     questPacket.Quest = questInfo;
+
+                    
                 }
             }
 
@@ -200,6 +202,41 @@ namespace Server.Game
             positionPacket.Position = player.PosInfo;
 
             player.Session.Send(positionPacket);
+        }
+
+        public void HandleSpawnMonster(Player player, C_RequestMonster monsterPacket)
+        {
+            if (player == null)
+                return;
+
+            Monster[] monsters = null;                
+            // 몬스터 생성
+            foreach (int id in monsterPacket.TemplateId)
+            {
+                Monster monster = new Monster();
+                monster.Init(id);
+                monsters.Append(monster);                
+            }
+            
+
+            // 싱글 모드일 경우 클라이언트에만 몬스터를 추가
+            if (player.Session.ServerState == PlayerServerState.ServerStateSingle)
+            {                
+                S_Spawn spawnPacket = new S_Spawn();
+                foreach (Monster monster in monsters)
+                {
+                    spawnPacket.Objects.Add(monster.Info);                        
+                }
+                player.Session.Send(spawnPacket);
+            }
+            else
+            {
+                // 멀티 모드일 경우 기존 로직 사용
+                foreach (Monster monster in monsters)
+                {
+                    EnterGame(monster, false);
+                }
+            }
         }
     }
 }

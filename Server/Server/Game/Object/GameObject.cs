@@ -11,7 +11,7 @@ namespace Server.Game
 {
     public class GameObject
     {
-        public ObjectInfo Info { get; private set; } = new ObjectInfo();
+        public ObjectInfo Info { get; private set;} = new ObjectInfo();
         public GameRoom Room { get; set; }
         public GameObjectType ObjectType { get; protected set; } = GameObjectType.None;
         public int Id 

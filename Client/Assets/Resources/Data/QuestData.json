@@ -73,12 +73,12 @@
           "amount": "50"
         }
       ],
-      "connection": "7",
+      "connection":"0",
       "questType": "interaction"
     },
     {
       "id": "7",
-      "title": "tutorial04",
+      "title": "TotheEastEnd",
       "rewards": [
         {
           "rewardType": "Reward_Exp",
@@ -90,7 +90,7 @@
     },
     {
       "id": "8",
-      "title": "tutorial05",
+      "title": "TotheEastEnd",
       "rewards": [
         {
           "rewardType": "Reward_Exp",
@@ -158,6 +158,7 @@
         }
       ],
       "questType": "interaction"
+    }
   ]
 
 } 

@@ -178,9 +178,9 @@ class PacketHandler
         room.Push(room.HandleBuyItem, player, buyItemPacket);
     }
 
-    public static void C_RootItemHandler(PacketSession session, IMessage packet)
+    public static void C_LootItemHandler(PacketSession session, IMessage packet)
     {
-        C_RootItem rootItemPacket = packet as C_RootItem;
+        C_LootItem rootItemPacket = packet as C_LootItem;
         ClientSession clientSession = session as ClientSession;
         Player player = clientSession.MyPlayer;
         if (player == null)
@@ -188,7 +188,7 @@ class PacketHandler
         GameRoom room = player.Room;
         if (room == null)
             return;
-        room.Push(room.HandleRootItem, player, rootItemPacket);
+        room.Push(room.HandleLootItem, player, rootItemPacket);
     }
 
     public static void C_RemoveItemHandler(PacketSession session, IMessage packet)
@@ -202,5 +202,20 @@ class PacketHandler
         if (room == null)
             return;
         room.Push(room.HandleRemoveItem, player, removeItemPacket.ItemDbId);
+    }
+
+    public static void C_RequestMonsterHandler(PacketSession session, IMessage packet)
+    {
+        C_RequestMonster spawnPacket = packet as C_RequestMonster;
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession == null || clientSession.MyPlayer == null)
+            return;
+
+        GameRoom room = clientSession.MyPlayer.Room;
+        if (room == null)
+            return;
+
+        room.HandleSpawnMonster(clientSession.MyPlayer, spawnPacket);
     }
 }

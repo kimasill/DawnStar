@@ -1,4 +1,5 @@
-﻿using Server.Data;
+﻿using Google.Protobuf.Protocol;
+using Server.Data;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace Server.DB
         public AccountDb Account { get; set; }
 
         public ICollection<ItemDb> Items { get; set; }
-
+        public PlayerServerState ServerState { get; set; }
         public int Level { get; set; }
         public int Hp { get; set; }
         public int MaxHp { get; set; }

@@ -192,13 +192,20 @@ public class UI_StoryScene : UI_Base
             }
             typingCoroutine = StartCoroutine(TypeText(storyScripts[sceneIndex]));
         }
-        else
-        {
-            EndStory();
-        }
     }
 
     private string SplitSentence(List<string> textList)
+    {
+        string sentence = textList[currentLineIndex];
+        if (sentence.Contains(":"))
+        {
+            string[] splitSentence = sentence.Split(':');            
+            return splitSentence[1];            
+        }
+        return sentence;
+    }
+
+    private string SplitSentenceAndAssign(List<string> textList)
     {
         string sentence = textList[currentLineIndex];
         string characterName = "";
@@ -244,7 +251,7 @@ public class UI_StoryScene : UI_Base
         isTyping = true;
         if (currentLineIndex < textList.Count)
         {
-            string sentence = SplitSentence(textList);
+            string sentence = SplitSentenceAndAssign(textList);
             StoryScriptText.text = "";
             
             foreach (char letter in sentence.ToCharArray())
@@ -268,7 +275,7 @@ public class UI_StoryScene : UI_Base
         if (isTyping)
         {
             StopCoroutine(typingCoroutine);
-            StoryScriptText.text = storyScripts[sceneIndex][currentLineIndex];
+            StoryScriptText.text = SplitSentence(storyScripts[sceneIndex]);
             isTyping = false;
         }
         else if (!isTyping)
@@ -288,13 +295,40 @@ public class UI_StoryScene : UI_Base
         {
             isEndOfScript = false;
             sceneIndex++;
-            ShowNextScene();
+            if (sceneIndex < storyScripts.Count)
+            {
+                ShowNextScene();
+            }
+            else
+            {
+                StartCoroutine(FadeOutAndEndStory());
+            }
         }
+    }
+
+    private IEnumerator FadeOutAndEndStory()
+    {
+        Managers.Map.CurrentGrid.gameObject.SetActive(true);
+        Managers.Object.MyPlayer.gameObject.SetActive(true);
+        UI_GameScene gameUI = Managers.UI.SceneUI as UI_GameScene;
+        gameUI.GameWindow.gameObject.SetActive(true);
+        yield return StartCoroutine(FadeOut(SceneChangeImage, 1.0f));
+        EndStory();
     }
 
     private void EndStory()
     {
-        gameObject.SetActive(false);
+        Clear();
         Managers.Quest.EndQuest();
+        gameObject.SetActive(false);
+    }
+
+    private void Clear()
+    {
+        storyImages.Clear();
+        storyScripts.Clear();
+        sceneIndex = 0;
+        currentLineIndex = 0;
+        isTyping = false;
     }
 }

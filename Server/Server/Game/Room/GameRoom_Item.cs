@@ -74,7 +74,7 @@ namespace Server.Game
             };
             player.Session.Send(buyItemPacket);
         }
-        public void HandleLootItem(Player player, C_RootItem item)
+        public void HandleLootItem(Player player, C_LootItem item)
         {
             if (player == null || item == null)
                 return;

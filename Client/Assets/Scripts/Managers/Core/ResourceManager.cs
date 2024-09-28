@@ -20,7 +20,10 @@ public class ResourceManager
 
         return Resources.Load<T>(path);
     }
-
+    public T[] LoadAll<T>(string path) where T : Object
+    {
+        return Resources.LoadAll<T>(path);
+    }
     public GameObject Instantiate(string path, Transform parent = null)
     {
         GameObject original = Load<GameObject>($"Prefabs/{path}");

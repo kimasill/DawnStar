@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Numerics;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Server.Game
 {
@@ -84,6 +86,7 @@ namespace Server.Game
         Random _rand = new Random();
         // ...
 
+
         public void EnterSingleGame(GameObject gameObject, bool isFirst = false)
         {
             if (gameObject == null)
@@ -112,28 +115,15 @@ namespace Server.Game
                 }
                 else
                 {
-                    // mapData가 null인 경우 처리
-                    // 예를 들어, 오류를 기록하거나 기본값을 설정
                 }
             }
             else
             {
-                using (AppDbContext db = new AppDbContext())
-                {
-                    MapDb mapDb = db.Maps.FirstOrDefault(m => m.PlayerDbId == player.PlayerDbId);
-                    if (mapDb != null)
-                    {
-                        player.MapInfo.TemplateId = mapDb.TemplateId;
-                        player.MapInfo.Scene = mapDb.Scene;                        
-                        player.MapInfo.MapName = mapDb.MapName;
-                    }
-                    else
-                    {
-                        // mapDb가 null인 경우 처리
-                        // 예를 들어, 기본 위치로 설정하거나 오류를 기록
-                    }
-                }
+                MergeMapInfo(player);
             }
+
+            _players.Add(gameObject.Id, player);
+            var zone = GetZone(player.CellPos);
             player.Info.MapInfo = player.MapInfo;
             player.Room = this;
             player.RefreshAdditionalStat();
@@ -144,8 +134,9 @@ namespace Server.Game
                 S_EnterGame enterPacket = new S_EnterGame();
                 enterPacket.Player = player.Info;
                 player.Session.Send(enterPacket);
-            }
 
+                player.Vision.Update();
+            }
         }
         public void EnterGame(GameObject gameObject, bool randPos)
         {
@@ -176,7 +167,7 @@ namespace Server.Game
                 player.Room = this;
 
                 player.RefreshAdditionalStat();
-
+                MergeMapInfo(player);
                 Map.ApplyMove(player, new Vector2Int(player.CellPos.x, player.CellPos.y));
                 //GetZone(player.CellPos).Players.Add(player);
                 var zone = GetZone(player.CellPos);
@@ -227,6 +218,25 @@ namespace Server.Game
                 S_Spawn spawnPacket = new S_Spawn();
                 spawnPacket.Objects.Add(gameObject.Info);
                 Broadcast(gameObject.CellPos, spawnPacket);
+            }
+        }
+
+        private void MergeMapInfo(Player player)
+        {
+            using (AppDbContext db = new AppDbContext())
+            {
+                MapDb mapDb = db.Maps.FirstOrDefault(m => m.PlayerDbId == player.PlayerDbId);
+                if (mapDb != null)
+                {
+                    player.MapInfo.TemplateId = mapDb.TemplateId;
+                    player.MapInfo.Scene = mapDb.Scene;
+                    player.MapInfo.MapName = mapDb.MapName;
+                }
+                else
+                {
+                    // mapDb가 null인 경우 처리
+                    // 예를 들어, 기본 위치로 설정하거나 오류를 기록
+                }
             }
         }
 
@@ -313,8 +323,7 @@ namespace Server.Game
 
         public void Broadcast(Vector2Int pos, IMessage packet)
         {
-            List<Zone> zones = GetAdjacentZone(pos);
-            
+            List<Zone> zones = GetAdjacentZone(pos);            
             foreach(Player p in zones.SelectMany(z => z.Players))
             {
                 int dx = p.CellPos.x - pos.x;

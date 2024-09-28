@@ -4,6 +4,8 @@ using UnityEngine;
 using System.IO;
 using Google.Protobuf.Protocol;
 using Data;
+using static Item;
+using System;
 
 public class EquipmentController : MonoBehaviour
 {
@@ -31,43 +33,57 @@ public class EquipmentController : MonoBehaviour
     public List<string> _weaponListString = new List<string>();
     public List<string> _backListString = new List<string>();
 
-
+    public void Refresh(Dictionary<int, Item> items)
+    {
+        foreach (var item in items.Values)
+        {
+            SetItemInSlot(item);
+        }
+    }
     public void SetItemInSlot(Item item)
     {
-        List<SpriteRenderer> targetList = null;
-        ItemData itemData = null;
-        string iconPath = null;
+        ItemData itemData = null; 
+        Managers.Data.ItemDict.TryGetValue(item.TemplateId, out itemData);
+        Sprite[] sprite = Managers.Resource.LoadAll<Sprite>(itemData.iconPath);
 
-        if (Managers.Data.ItemDict.TryGetValue(item.TemplateId, out itemData))
-        {
-            iconPath = itemData.iconPath;
+        if (item is Weapon weapon)
+        {            
+            if (weapon.WeaponType == WeaponType.Sword || weapon.WeaponType == WeaponType.Bow)
+            {
+                _weaponList[0].sprite = sprite[0];
+            }
+            else if (weapon.WeaponType == WeaponType.Shield)
+            {
+                _weaponList[3].sprite = sprite[0];
+            }
         }
-
-        switch (item.ItemType)
-        {
-            case ItemType.Armor:
-                if (ArmorType.Helmet == (ArmorType)item.ItemType)
+        else if (item is Armor armor)
+        {            
+            if (armor.ArmorType == ArmorType.Helmet)
+            {
+                _hairList[2].sprite = sprite[0];
+            }
+            else if (armor.ArmorType == ArmorType.Armor)
+            {
+                foreach(var t in sprite)
                 {
-                    targetList = _hairList;
+                    if (t.name == "Body")
+                        _armorList[0].sprite = t;
+                    else if(t.name == "Left")
+                        _armorList[1].sprite = t;
+                    else if (t.name == "Right")
+                        _armorList[2].sprite = t;
                 }
-                else if (ArmorType.Armor == (ArmorType)item.ItemType)
-                {
-                    targetList = _armorList;
-                }
-                else if (ArmorType.Boots == (ArmorType)item.ItemType)
-                {
-                    targetList = _pantList;
-                }
-                break;
-            case ItemType.Weapon:
-                targetList = _weaponList;              
-                break;
-                // 다른 아이템 타입에 대한 처리 추가
-        }
-
-        if (targetList != null && targetList.Count > 0)
-        {
-            targetList[0].sprite = Managers.Resource.Load<Sprite>(iconPath); // 첫 번째 슬롯에 아이템 세팅
+            }
+            else if (armor.ArmorType == ArmorType.Boots)
+            {
+                _pantList[0].sprite = sprite[0];
+                _pantList[1].sprite = sprite[1];
+            }
+            else if (armor.ArmorType == ArmorType.Back)
+            {
+                _backList[0].sprite = sprite[0];
+            }
         }
     }
     public void Reset()

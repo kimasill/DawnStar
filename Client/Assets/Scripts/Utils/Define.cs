@@ -12,6 +12,7 @@ public class Define
         DawnTown,
         DawnTownStore,
         DawnTownHome,
+        DawnTownDead,
         Game,
     }
 

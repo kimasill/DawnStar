@@ -37,6 +37,7 @@ public abstract class BaseScene : MonoBehaviour
     public virtual void ShowStoryScene(ScriptData scriptData)
     {
     }
+
     public void AddNPC(int id, GameObject npc)
     {
         if (!_npcs.ContainsKey(id))

@@ -2,15 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_Inventory : UI_Base
 {
     public List<UI_Inventory_Item> Items { get; } = new List<UI_Inventory_Item>();
+
+    [SerializeField]
+    public GameObject grid = null;
+    public ScrollRect ScrollRect { get; private set; }
     public override void Init()
     {
         Items.Clear();
 
-        GameObject grid = transform.Find("ItemGrid").gameObject;
+        ScrollRect = GetComponentInChildren<ScrollRect>();
         foreach (Transform child in grid.transform)
         {
             Destroy(child.gameObject);

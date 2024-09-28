@@ -8,18 +8,27 @@ public class ItemController : BaseController
 {
     public Vector3Int SpawnPosition { get; set; }
 
-    private SpriteRenderer _spriteRenderer;
-
     public ItemData ItemData { get; set; }
 
     public int Count { get; set; }
 
     public Sprite Sprite
     {
-        get { return _spriteRenderer.sprite; }
-        set { _spriteRenderer.sprite = value; }
+        
+        get { return _sprite.sprite; }
+        set {
+            if (_sprite == null)
+            {
+                _sprite = GetComponent<SpriteRenderer>();
+            }
+            _sprite.sprite = value; 
+        }
     }
 
+    protected override void Init() // Changed 'public' to 'protected' to match the base class method
+    {
+        base.Init();
+    }
     public void MoveToPlayer(Transform playerTransform)
     {
         StartCoroutine(MoveToPlayerCoroutine(playerTransform));
@@ -42,7 +51,7 @@ public class ItemController : BaseController
     private void SendItemPickupRequestToServer()
     {
         // º≠πˆø° æ∆¿Ã≈€ »πµÊ ø‰√ª¿ª ∫∏≥ø
-        C_RootItem rootItemPacket = new C_RootItem
+        C_LootItem rootItemPacket = new C_LootItem
         {
             TemplateId = ItemData.id,
             Count = Count
