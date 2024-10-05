@@ -2,10 +2,14 @@
   "skills": [
     {
       "id": "1",
-      "name": "평타",
+      "name": "기본공격",
       "coolTime": "0.2",
       "damage": "10",
-      "skillType": "SkillAttack"
+      "skillType": "SkillAttack",
+      "shape": {
+        "shapeType": "ShapeBent",
+        "range": "2.0"
+      }
     },
     {
       "id": "2",

@@ -58,20 +58,47 @@ public class CreatureController : BaseController
 
 	public virtual void OnDamaged()
 	{
-
+        State = CreatureState.Stiff;
 	}
 
     public virtual void OnDead()
     {
-		State = CreatureState.Dead;
-
-        GameObject effect = Managers.Resource.Instantiate("Effect/DieEffect");
-        effect.transform.position = transform.position;
-        effect.GetComponent<Animator>().Play("START");
-        GameObject.Destroy(effect, 0.5f);
+        State = CreatureState.Dead;
+        if (this is MonsterController) // Check if the instance is of type MonsterController
+        {
+            StartCoroutine(FadeOut());
+        }
     }
 
-	public virtual void UseSkill(int skillId)
+    private IEnumerator FadeOut()
     {
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        Color originalColor = spriteRenderer.color;
+        float fadeDuration = 1.0f;
+        float elapsed = 0f;
+
+        while (elapsed < fadeDuration)
+        {
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / fadeDuration);
+            spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0f);
+    }
+
+    public virtual void UseSkill(int skillId)
+    {
+    }
+
+    public bool IsPlayingDieAnimation()
+    {
+        Animator animator = GetComponent<Animator>();
+        if (animator == null)
+            return false;
+
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        return stateInfo.IsName("DEATH") && stateInfo.normalizedTime < 1.0f;
     }
 }

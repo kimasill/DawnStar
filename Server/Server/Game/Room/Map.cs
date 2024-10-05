@@ -89,6 +89,7 @@ namespace Server.Game.Room
             }
         }
         public int cellDistanceFromZero { get { return Math.Abs(x) + Math.Abs(y); } }
+
     }
 
     public class Map

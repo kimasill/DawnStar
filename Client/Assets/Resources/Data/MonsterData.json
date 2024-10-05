@@ -14,27 +14,33 @@
         {
           "probability": "10",
           "itemId": "1",
-          "count": "1"
-        },
+          "minCount": "1",
+          "maxCount": "1"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "스켈레톤",
+      "stat": {
+        "level": "2",
+        "maxHp": "100",
+        "attack": "1",
+        "speed": "3.0",
+        "totalExp": "20"
+      },
+      "rewards": [
         {
           "probability": "10",
-          "itemId": "2",
-          "count": "1"
+          "itemId": "1101",
+          "minCount": "1",
+          "maxCount": "2"
         },
         {
-          "probability": "10",
-          "itemId": "100",
-          "count": "1"
-        },
-        {
-          "probability": "10",
-          "itemId": "101",
-          "count": "1"
-        },
-        {
-          "probability": "10",
-          "itemId": "200",
-          "count": "5"
+          "probability": "50",
+          "itemId": "10001",
+          "minCount": "1",
+          "maxCount": "10"
         }
       ]
     }

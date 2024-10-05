@@ -1,4 +1,9 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Server.Data;
+using Server.DB;
+using Server.Migrations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,12 +17,29 @@ namespace Server.Game
 
         public void Add(Item item)
         {
-            Items.Add(item.ItemDbId, item);
+            Item existingItem = Get(item.ItemDbId);
+            if (existingItem != null)
+            {
+                existingItem.Count += item.Count;
+            }
+            else
+            {
+                Items.Add(item.ItemDbId, item);
+            }
         }
 
         public void Remove(int itemId)
         {
             Items.Remove(itemId);
+        }
+
+        public void UpdateItem(int itemId, int count)
+        {
+            Item item = Get(itemId);
+            if (item != null)
+            {
+                item.Count = count;
+            }
         }
 
         public Item Get(int itemId)
@@ -36,7 +58,45 @@ namespace Server.Game
             }
             return null;
         }
-
+        public int? GetSlot(int itemId, int count)
+        {
+            var existingItem = Find(i => i.TemplateId == itemId && (i.ItemType == ItemType.Goods || i.ItemType == ItemType.Material));
+            if (existingItem != null)
+            {
+                if (existingItem.Stackable)
+                {
+                    if (existingItem.ItemType == ItemType.Goods)
+                    {
+                        GoodsData goodsData = DataManager.ItemDict[itemId] as GoodsData;
+                        if (goodsData == null)
+                            return null;
+                        if (existingItem.Count + count > goodsData.maxCount)
+                        {
+                            return GetEmptySlot();
+                        }
+                        else
+                        {
+                            return existingItem.Slot;
+                        }
+                    }
+                    else if (existingItem.ItemType == ItemType.Material)
+                    {
+                        MaterialData materialData = DataManager.ItemDict[itemId] as MaterialData;
+                        if (materialData == null)
+                            return null;
+                        if (existingItem.Count + count > materialData.maxCount)
+                        {
+                            return GetEmptySlot();
+                        }
+                        else
+                        {
+                            return existingItem.Slot;
+                        }
+                    }
+                }
+            }
+            return GetEmptySlot();
+        }
         public int? GetEmptySlot()
         {
             for (int slot = 0; slot<20; slot++)
@@ -46,6 +106,49 @@ namespace Server.Game
                     return slot;
             }
             return null;
+        }
+
+        public int GetInvenProperty(int templateId)
+        {
+            int total = 0;
+
+            foreach (Item item in Items.Values)
+            {
+                if (item.TemplateId == templateId)
+                {
+                    total += item.Count;
+                }
+            }
+            return total;
+        }
+
+        public void SetInvenProperty(int count, int templateId, Player player)
+        {
+            GoodsData goodsData = DataManager.ItemDict[templateId] as GoodsData;
+            if(goodsData == null)
+                return;
+
+            int? slot = GetSlot(templateId, count);
+            if(slot == null)
+                return;
+
+            ItemDb itemDb = new ItemDb()
+            {
+                TemplateId = templateId,
+                Count = count,
+                OwnerDbId = player.PlayerDbId,
+                Slot = slot.Value
+            };
+
+            int remainingCount = count - GetInvenProperty(templateId);
+            if(remainingCount > 0)
+            {
+                DbTransaction.SaveItemDB(player, itemDb, player.Room);
+            }
+            else if(remainingCount < 0)
+            {
+                DbTransaction.SaveRemovedItemDB(player, itemDb, player.Room);
+            }
         }
     }
 }

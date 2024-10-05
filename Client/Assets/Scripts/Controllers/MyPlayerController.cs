@@ -11,6 +11,7 @@ public class MyPlayerController : PlayerController
 {
     bool _moveKeyPressed = false;    
     public int WeaponDamage { get; private set; }
+    public int AttackSpeed { get; private set; }
     public int ArmorDef { get; private set; }
     private NPCController _nearbyNPC;
     public int Gold
@@ -159,7 +160,7 @@ public class MyPlayerController : PlayerController
             _isAttacking = true;
             Debug.Log("기본공격");
             C_Skill skill = new C_Skill() { Info = new SkillInfo()};
-            skill.Info.SkillId = 1;//화살
+            skill.Info.SkillId = 1;
             Managers.Network.Send(skill); 
             
             _coInputCooltime = StartCoroutine(CoInputCooltime(0.2f));
@@ -278,7 +279,6 @@ public class MyPlayerController : PlayerController
     //Dirty Flag Check
     protected override void CheckUpdatedFlag()
     {
-        Debug.Log($"Flag updated: {_updated} State: {State}");
         if (_updated)
         {
             C_Move movePacket = new C_Move();

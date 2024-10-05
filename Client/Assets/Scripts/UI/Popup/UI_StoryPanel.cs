@@ -20,9 +20,9 @@ public class UI_StoryPanel : UI_Popup
         UI_Conversation_Image,
     }
 
-    private TMP_Text _storyText;    
+    private TMP_Text _storyText;
     private CanvasGroup _canvas;
-    private Queue<string> scriptQueue = new Queue<string>();    
+    private Queue<string> scriptQueue = new Queue<string>();
     private Coroutine typingCoroutine;
     private bool isTyping = false;
     private bool isEndOfScript = false;
@@ -85,7 +85,7 @@ public class UI_StoryPanel : UI_Popup
                 };
             }
             SetConversationImage(name);
-            SetStoryTexts(script.script);            
+            SetStoryTexts(script.script);
         }
     }
     public void ShowStoryPanel(Script scripts, bool IsQuestEnd = false)
@@ -102,14 +102,14 @@ public class UI_StoryPanel : UI_Popup
         SetConversationImage(scripts.name);
         SetStoryTexts(scripts.script);
     }
-    public void ShowStoryPanel(ScriptData scriptData, int id,  bool isQuestEnd = false)
+    public void ShowStoryPanel(ScriptData scriptData, int id, bool isQuestEnd = false)
     {
-        Script scripts = scriptData.scripts[id-1];
+        Script scripts = scriptData.scripts[id - 1];
         ShowStoryPanel(scripts, isQuestEnd);
     }
 
     private void ShowNextScript()
-    {        
+    {
         if (scriptQueue.Count > 0)
         {
             string nextScript = scriptQueue.Dequeue();
@@ -135,7 +135,6 @@ public class UI_StoryPanel : UI_Popup
             yield return new WaitForSeconds(0.05f); // 한 글자씩 출력되는 속도 조절
         }
         isTyping = false;
-        ShowNextScript();
     }
 
     private IEnumerator FadeIn()
@@ -163,8 +162,6 @@ public class UI_StoryPanel : UI_Popup
         onCloseAction = null;
     }
 
-    
-
     private void OnPanelClick(PointerEventData evt)
     {
         if (isTyping)
@@ -173,7 +170,10 @@ public class UI_StoryPanel : UI_Popup
             if (typingCoroutine != null)
             {
                 StopCoroutine(typingCoroutine);
-                _storyText.text = scriptQueue.Peek();
+                if (scriptQueue.Count > 0)
+                {
+                    _storyText.text = scriptQueue.Peek();
+                }
                 isTyping = false;
             }
         }

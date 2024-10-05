@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -16,11 +17,12 @@ class PacketHandler
 {
 	public static void S_EnterGameHandler(PacketSession session, IMessage packet)
 	{
-		S_EnterGame enterGamePacket = packet as S_EnterGame;        
+		S_EnterGame enterGamePacket = packet as S_EnterGame; 
+        
         if (enterGamePacket.Player.MapInfo != null)
         {
             Managers.Scene.LoadScene(enterGamePacket.Player.MapInfo.Scene);
-            SceneManager.sceneLoaded += (scene, mode) => OnFirstSceneLoaded(enterGamePacket.Player);            
+            SceneManager.sceneLoaded += (scene, mode) => OnSceneLoaded(enterGamePacket.Player);                  
         }
 	}
 
@@ -30,7 +32,6 @@ class PacketHandler
         C_StartQuest startQuestPacket = new C_StartQuest();
         startQuestPacket.TemplateId = 0;
         Managers.Network.Send(startQuestPacket);
-
         SceneManager.sceneLoaded -= (s, m) => OnFirstSceneLoaded(objectInfo);
     }
 
@@ -43,7 +44,8 @@ class PacketHandler
     public static void S_SpawnHandler(PacketSession session, IMessage packet)
     {
         S_Spawn spawnPacket = packet as S_Spawn;        
-
+        Debug.Log("S_SpawnHandler");
+        
         foreach (ObjectInfo obj in spawnPacket.Objects)
         {
             Managers.Object.Add(obj, myPlayer: false);
@@ -54,9 +56,33 @@ class PacketHandler
         S_Despawn despawnPacket = packet as S_Despawn;
         foreach (int obj in despawnPacket.ObjectId)
         {
-            Managers.Object.Remove(obj);
+            if (Managers.Object.IsPlayingAnim(obj))
+            {
+                Managers.Object.RemoveAfterAnimation(obj);
+            }
+            else Managers.Object.Remove(obj);
         }
     }
+
+    public static void S_LoadingHandler(PacketSession session, IMessage packet)
+    {
+        if (Managers.UI.IsLoading())
+        {
+            Debug.Log("Loading is already in progress or completed.");
+            return;
+        }
+
+        S_Loading loadingPacket = packet as S_Loading;        
+        if(loadingPacket.Loading == false)
+        {
+            Managers.UI.HideLoadingUI();
+        }
+        else
+        {
+            Managers.UI.ShowLoadingUI();
+        }
+    }
+
     public static void S_MoveHandler(PacketSession session, IMessage packet)
     {
         S_Move movePacket = packet as S_Move;
@@ -116,7 +142,15 @@ class PacketHandler
         {
             return;
         }
-        cc.Hp =  changePacket.Hp;
+        if(cc.Hp > changePacket.Hp)
+        {
+            cc.OnDamaged();
+        }
+        else if (cc.Hp < changePacket.Hp)
+        {
+            //TODO 회복
+        }
+        cc.Hp = changePacket.Hp;
     }
     public static void S_DieHandler(PacketSession session, IMessage packet)
     {
@@ -137,6 +171,17 @@ class PacketHandler
         cc.OnDead();
     }
 
+    public static void S_RespawnHandler(PacketSession session, IMessage packet)
+    {
+        S_Respawn respawnPacket = packet as S_Respawn;
+
+        // 부활 UI 생성
+        UI_Respawn respawnUI = Managers.UI.ShowPopupUI<UI_Respawn>();
+        respawnUI.SetRespawnPacket(respawnPacket);
+
+        // 부활 UI가 활성화 되어 있는 동안 다른 조작 차단
+        Managers.Object.MyPlayer.gameObject.SetActive(false);
+    }
     public static void S_ConnectedHandler(PacketSession session, IMessage packet)
     {
         Debug.Log("S_ConnectedHandler");
@@ -199,6 +244,10 @@ class PacketHandler
 
         // 플레이어를 새로운 맵에 다시 생성
         Managers.Object.Add(objectInfo, myPlayer: true);
+
+        C_StartQuest startQuestPacket = new C_StartQuest();
+        startQuestPacket.TemplateId = 0;
+        Managers.Network.Send(startQuestPacket);
 
         // 플레이어 정보 업데이트
         if (Managers.Object.MyPlayer != null)
@@ -277,6 +326,27 @@ class PacketHandler
             Managers.Object.MyPlayer.RefreshAdditionalStat();
         }   
     }
+
+    public static void S_RemoveItemHandler(PacketSession session, IMessage packet)
+    {
+        S_RemoveItem removeItem = packet as S_RemoveItem;
+        //메모리에서 아이템 정보 삭제 or 수정
+        foreach (ItemInfo item in removeItem.Items)
+        {            
+            Managers.Inventory.RemoveOrUpdate(item);
+        }
+
+        Debug.Log("S_RemoveItem");
+
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        gameSceneUI.InvenUI.RefreshUI();
+        gameSceneUI.StatUI.RefreshUI();
+        if (Managers.Object.MyPlayer != null)
+        {
+            Managers.Object.MyPlayer.RefreshAdditionalStat();
+        }
+    }
+
     public static void S_EquipItemHandler(PacketSession session, IMessage packet)
     {
         S_EquipItem equipItemOk = packet as S_EquipItem;
@@ -361,6 +431,47 @@ class PacketHandler
         if (gameSceneUI != null)
         {
             gameSceneUI.ShopUI.RefreshUI();
+        }
+    }
+
+    public static void S_DropItemHandler(PacketSession session, IMessage packet)
+    {
+        S_DropItem dropItemPacket = packet as S_DropItem;
+        if (dropItemPacket == null)
+            return;
+
+        // 아이템 데이터 찾기
+        ItemData itemData = null; 
+        Managers.Data.ItemDict.TryGetValue(dropItemPacket.TemplateId, out itemData);
+        if (itemData == null)
+        {
+            Debug.LogError($"ItemData not found for TemplateId: {dropItemPacket.TemplateId}");
+            return;
+        }
+        Managers.Object.GenerateId(GameObjectType.Item, out int tempId);
+        
+        // ObjectInfo 생성
+        ObjectInfo objectInfo = new ObjectInfo
+        {
+            ObjectId = tempId,
+            Position = dropItemPacket.Position,
+            Name = itemData.name,
+        };
+        // ObjectManager에 추가
+        Managers.Object.Add(objectInfo, activate:false);
+
+        Debug.Log($"item:{objectInfo.Name}");
+        // 아이템 스프라이트 변경 및 초기화
+        GameObject itemObject = Managers.Object.FindById(tempId);
+        if (itemObject != null)
+        {
+            ItemController itemController = itemObject.GetComponent<ItemController>();            
+            if (itemController != null)
+            {
+                itemController.ItemData = itemData;
+                itemController.Count = dropItemPacket.Count;            
+                itemController.HandleDropItem(dropItemPacket.Position); // 아이템이 튀어나오는 것처럼 보이게 설정
+            }
         }
     }
 }

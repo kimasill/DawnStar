@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,8 @@ using static Define;
 
 public class MonsterController : CreatureController
 {
-	//Coroutine _coSkill;
+    private long _stiffEndTick = 0;
+    //Coroutine _coSkill;
     protected override void Init()
 	{
 		base.Init();
@@ -17,11 +19,24 @@ public class MonsterController : CreatureController
 		base.UpdateIdle();
 	}
 
-	public override void OnDamaged()
+    protected override void UpdateStiff()
+    {
+        if (_stiffEndTick == 0)
+        {
+            _stiffEndTick = Environment.TickCount + 1000;
+        }
+        if (_stiffEndTick > Environment.TickCount)
+            return;
+        _stiffEndTick = 0;
+        State = CreatureState.Idle;
+    }
+
+    public override void OnDamaged()
 	{
-	//	Managers.Object.Remove(Id);
-	//	Managers.Resource.Destroy(gameObject);
-	}
+        base.OnDamaged();
+    }
+
+
 
     public override void UseSkill(int skillId)
     {

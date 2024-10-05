@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class QuestManager
 {
-    public Dictionary<int, Quest> _quests = new Dictionary<int, Quest>();
+    private Dictionary<int, Quest> _quests = new Dictionary<int, Quest>();
+    public Dictionary<int, Quest> Quests { get { return _quests; } }
     public int Add(QuestInfo questInfo)
     {
         if(_quests.ContainsKey(questInfo.TemplateId))
@@ -87,6 +88,10 @@ public class QuestManager
                     ScriptData scriptData = Managers.Data.ScriptDict[questId];
                     currentScene.ShowStoryScene(scriptData);
                     break;
+                case "battle":
+                    Debug.Log("Start Battle Scene");
+                    currentScene.StartBattleQuest(quest);
+                    break;
             }
         }
         else
@@ -100,7 +105,7 @@ public class QuestManager
         ScriptData questScriptData = null;
         Managers.Data.ScriptDict.TryGetValue(questId, out questScriptData);
 
-        if (questScriptData != null && questScriptData.scripts.Count > 1)
+        if (questScriptData != null && questScriptData.scripts.Count >= 1)
         {
             UI_GameScene gameScene = (UI_GameScene)Managers.UI.SceneUI;
             UI_GameWindow gameWindow = gameScene.GameWindow;

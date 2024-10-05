@@ -1,6 +1,7 @@
 using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +13,9 @@ public class UI_Inventory_Item : UI_Base
 
     [SerializeField]
     Image _frame = null;
+
+    [SerializeField]
+    TMP_Text _itemCount = null;
 
     public int ItemDbId { get; private set; }
     public int TemplateId { get; private set; }
@@ -31,7 +35,7 @@ public class UI_Inventory_Item : UI_Base
             if(itemData == null)
                 return;
             //TODO : 패킷 넘겨주기
-            if (itemData.itemType == ItemType.Consumable)
+            if (itemData.itemType == ItemType.Consumable || itemData.itemType == ItemType.Goods)
                 return;
 
             C_EquipItem equipItemPacket = new C_EquipItem();
@@ -51,6 +55,7 @@ public class UI_Inventory_Item : UI_Base
             Count = 0;
             Equipped = false;
 
+            _itemCount.gameObject.SetActive(false);
             _icon.gameObject.SetActive(false);
             _frame.gameObject.SetActive(false);
         }
@@ -65,10 +70,11 @@ public class UI_Inventory_Item : UI_Base
         Managers.Data.ItemDict.TryGetValue(TemplateId, out itemData);
 
         Sprite icon = Managers.Resource.Load<Sprite>(itemData.iconPath);
-        _icon.sprite = icon;        
-        
+        _icon.sprite = icon;
+        _itemCount.text = Count.ToString();
+
+        _itemCount.gameObject.SetActive(true);
         _icon.gameObject.SetActive(true);
         _frame.gameObject.SetActive(Equipped);
-        
     }
 }

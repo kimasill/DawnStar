@@ -213,9 +213,33 @@ public class BaseController : MonoBehaviour
                     break;
             }
         }
-        else
+        else if (State == CreatureState.Stiff)
         {
-
+            switch (LookDir)
+            {
+                case LookDir.LookLeft:
+                    _animator.Play("HURT");
+                    _sprite.flipX = true;
+                    break;
+                case LookDir.LookRight:
+                    _animator.Play("HURT");
+                    _sprite.flipX = false;
+                    break;
+            }
+        }
+        else if(State == CreatureState.Dead)
+        {
+            switch (LookDir)
+            {
+                case LookDir.LookLeft:
+                    _animator.Play("DEATH");
+                    _sprite.flipX = true;
+                    break;
+                case LookDir.LookRight:
+                    _animator.Play("DEATH");
+                    _sprite.flipX = false;
+                    break;
+            }
         }
     }
 
@@ -251,6 +275,9 @@ public class BaseController : MonoBehaviour
             case CreatureState.Skill:
                 UpdateSkill();
                 break;
+            case CreatureState.Stiff:
+                UpdateStiff();
+                break;
             case CreatureState.Dead:
                 UpdateDead();
                 break;
@@ -260,7 +287,9 @@ public class BaseController : MonoBehaviour
     protected virtual void UpdateIdle()
     {
     }
-
+    protected virtual void UpdateStiff()
+    {
+    }
     // 스르륵 이동하는 것을 처리
     protected virtual void UpdateMoving()
     {

@@ -44,12 +44,18 @@ enum MsgId {
   C_REMOVE_ITEM = 36;
   C_LOOT_ITEM = 37;
   C_REQUEST_MONSTER = 38;
+  S_DROP_ITEM = 39;
+  S_REMOVE_ITEM = 40;
+  S_RESPAWN = 41;
+  C_RESPAWN = 42;
+  S_LOADING = 43;
 }
 enum CreatureState{
   IDLE = 0;
   MOVING = 1;
   SKILL = 2;
   DEAD = 3;
+  STIFF = 4;
 }
 
 enum MoveDir{
@@ -79,6 +85,15 @@ enum SkillType{
 	SKILL_PROJECTILE = 2;
 }
 
+enum ShapeType{
+	SHAPE_NONE = 0;
+	SHAPE_CIRCLE = 1;
+	SHAPE_RECTANGLE = 2;
+	SHAPE_LINE = 3;
+	SHAPE_BENT = 4;
+	SHAPE_CROSS = 5;
+}
+
 enum RewardType{
 	REWARD_EXP = 0;
 	REWARD_ITEM = 1;
@@ -99,6 +114,7 @@ enum ItemType
 	ITEM_TYPE_ARMOR = 2;
 	ITEM_TYPE_CONSUMABLE = 3;
 	ITEM_TYPE_MATERIAL = 4;
+	ITEM_TYPE_GOODS = 5;
 }
 
 enum WeaponType {
@@ -125,6 +141,20 @@ enum ConsumableType{
 enum MaterialType{
 	MATERIAL_TYPE_NONE = 0;
 	MATERIAL_TYPE_FOOD = 1;
+	MATERIAL_TYPE_GOLD = 2;
+	MATERIAL_TYPE_DROP = 3;
+}
+
+enum GoodsType{
+	GOODS_TYPE_NONE = 0;
+	GOODS_TYPE_QUEST = 1;
+	GOODS_TYPE_KEY = 2;
+}
+
+enum RespawnType{
+	RESPAWN_TYPE_NONE = 0;
+	RESPAWN_TYPE_SPOT = 1;
+	RESPAWN_TYPE_REPEAT = 2;
 }
 
 message S_EnterGame {
@@ -141,8 +171,7 @@ message S_Spawn {
 }
 
 message C_RequestMonster {
-  repeated int32 templateId = 1;
-  PositionInfo position = 2;
+  repeated int32 id = 1;
 }
 
 message S_Despawn {
@@ -186,6 +215,10 @@ message S_Die{
 message S_Connected{
 }
 
+message S_Loading{
+	bool loading = 1;
+}
+
 message C_Login{
   string uniqueId = 1;  
 }
@@ -206,6 +239,14 @@ message S_CreatePlayer{
 message C_EnterGame{
 	string name = 1;
 }
+
+message S_Respawn{
+}
+
+message C_Respawn{
+	RespawnType respawnType = 1;
+}
+
 
 message S_ItemList{
 	repeated ItemInfo items = 1;
@@ -248,8 +289,19 @@ message C_LootItem{
 	int32 count = 2;
 }
 
+message S_DropItem{	
+	int32 templateId = 1;
+	int32 count = 2;
+	PositionInfo position = 3;
+}
+
 message C_RemoveItem{
 	int32 itemDbId = 1;
+	int32 count = 2;
+}
+
+message S_RemoveItem{
+	repeated ItemInfo items = 1;
 }
 
 message S_ChangeStat{
@@ -324,9 +376,10 @@ message StatInfo{
   int32 hp = 2;
   int32 maxHp = 3;
   int32 attack = 4;
-  float speed = 5;
-  int32 totalExp = 6;
-  int32 gold = 7;
+  int32 defense = 5;
+  float speed = 6;
+  int32 totalExp = 7;
+  int32 gold = 8;
 }
 
 message QuestInfo

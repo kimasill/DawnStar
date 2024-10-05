@@ -48,12 +48,15 @@ namespace Server.Game
         }
 
         public int Gold { 
-            get { return Stat.Gold; }
+            get 
+            {
+                return Inven.GetInvenProperty(10001);
+            }
             set
             {
                 if (value >= 0)
                 {
-                    Stat.Gold = value;
+                    Inven.SetInvenProperty(value,10001,this);
                 }
             }
         }
@@ -76,7 +79,29 @@ namespace Server.Game
 
         public override void Ondead(GameObject attacker)
         {
-            base.Ondead(attacker);
+            if (Room == null)
+                return;
+
+            S_Die diePacket = new S_Die();
+            diePacket.ObjectId = Id;
+            diePacket.AttackerId = attacker.Id;
+            Room.Broadcast(CellPos, diePacket);
+
+            GameRoom room = Room;//Room이 null이 될 수 있으므로 미리 저장  
+
+            Room.PushAfter(1000, () =>
+            {
+                if (Room != null)
+                {
+                    SendRespawnPacket();
+                }
+            });
+        }
+
+        public void SendRespawnPacket()
+        {
+            S_Respawn respawnPacket = new S_Respawn();            
+            Session.Send(respawnPacket);
         }
 
         public void OnlevelUp()
@@ -105,6 +130,10 @@ namespace Server.Game
         public void HandleEquipItem(C_EquipItem equipPacket)
         {
             Item item = Inven.Get(equipPacket.ItemDbId);
+            if(item.ItemType == ItemType.Goods || item.ItemType == ItemType.Material)
+            {
+                return;
+            }
             if (item == null)
                 return;
 

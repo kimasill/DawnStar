@@ -8,7 +8,8 @@ public class UIManager
 
     Stack<UI_Popup> _popupStack = new Stack<UI_Popup>();
     public UI_Scene SceneUI { get; private set; }
-
+    private UI_Loading _loadingUI;
+    private bool _isLoading = false;
     public GameObject Root
     {
         get
@@ -122,6 +123,44 @@ public class UIManager
     {
         while (_popupStack.Count > 0)
             ClosePopupUI();
+    }
+    public void ShowLoadingUI()
+    {
+        if (_loadingUI == null)
+        {
+            _loadingUI = ShowPopupUI<UI_Loading>();
+            _isLoading = true;
+        }
+    }
+
+    public void HideLoadingUI()
+    {
+        if (_loadingUI != null)
+        {
+            ClosePopupUI(_loadingUI);
+            _loadingUI = null;
+            _isLoading = false;
+        }
+    }
+
+    public void SetLoadingText(string text)
+    {
+        if (_loadingUI != null)
+        {
+            _loadingUI.SetLoadingText(text);
+        }
+    }
+
+    public void SetLoadingImage(string path)
+    {
+        if (_loadingUI != null)
+        {
+            _loadingUI.SetLoadingImage(path);
+        }
+    }
+    public bool IsLoading()
+    {
+        return _isLoading;
     }
 
     public void Clear()

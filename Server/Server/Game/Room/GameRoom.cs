@@ -87,58 +87,8 @@ namespace Server.Game
         // ...
 
 
-        public void EnterSingleGame(GameObject gameObject, bool isFirst = false)
-        {
-            if (gameObject == null)
-                return;
-            Player player = gameObject as Player;
-            MapData mapData;
-
-            if (isFirst)
-            {
-                if (DataManager.MapDict.TryGetValue(001, out mapData) && mapData != null)
-                {
-                    foreach (PortalData portal in mapData.portals)
-                    {
-                        if (portal == null) continue;
-                        if (portal.id == 100)
-                        {
-                            Vector2Int respawnPos = new Vector2Int((int)(portal.posX * 3.2), (int)(portal.posY * 3.2));
-                            gameObject.CellPos = respawnPos;
-                            player.MapInfo.TemplateId = mapData.id;
-                            player.MapInfo.PortalId = portal.id;
-                            player.MapInfo.MapName = mapData.name;
-                            player.MapInfo.Scene = "DawnTown";
-                            DB.DbTransaction.SavePlayerMap(gameObject as Player, player.MapInfo);
-                        }
-                    }
-                }
-                else
-                {
-                }
-            }
-            else
-            {
-                MergeMapInfo(player);
-            }
-
-            _players.Add(gameObject.Id, player);
-            var zone = GetZone(player.CellPos);
-            player.Info.MapInfo = player.MapInfo;
-            player.Room = this;
-            player.RefreshAdditionalStat();
-
-            Map.ApplyMove(player, new Vector2Int(player.CellPos.x, player.CellPos.y), true);
-
-            {
-                S_EnterGame enterPacket = new S_EnterGame();
-                enterPacket.Player = player.Info;
-                player.Session.Send(enterPacket);
-
-                player.Vision.Update();
-            }
-        }
-        public void EnterGame(GameObject gameObject, bool randPos)
+        
+        public void EnterGame(GameObject gameObject, bool randPos=false)
         {
             if (gameObject == null)
                 return;
@@ -159,17 +109,23 @@ namespace Server.Game
             }
 
             GameObjectType type = ObjectManager.GetObjectType(gameObject.Id);
-
+            Player player = null;
             if (type == GameObjectType.Player)
             {
-                Player player = gameObject as Player;
+                player = gameObject as Player;
+                if (player == null)
+                    return;
+
                 _players.Add(gameObject.Id, player);
                 player.Room = this;
+                MergeMapInfo(player);
 
                 player.RefreshAdditionalStat();
-                MergeMapInfo(player);
+                player.Info.MapInfo = player.MapInfo;
+
                 Map.ApplyMove(player, new Vector2Int(player.CellPos.x, player.CellPos.y));
-                //GetZone(player.CellPos).Players.Add(player);
+                Console.WriteLine($"Player Room Id:{RoomId}");
+
                 var zone = GetZone(player.CellPos);
                 if (zone == null)
                 {
@@ -177,11 +133,19 @@ namespace Server.Game
                     return;
                 }
                 zone.Players.Add(player);
+
                 // 본인한테 정보 전송
                 {
                     S_EnterGame enterPacket = new S_EnterGame();
                     enterPacket.Player = player.Info;
-                    player.Session.Send(enterPacket);
+                    if (player.Session != null)
+                    {
+                        player.Session.Send(enterPacket);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: player.Session is null");
+                    }
 
                     player.Vision.Update();
                 }
@@ -214,10 +178,11 @@ namespace Server.Game
             }
 
             // 타인한테 정보 전송
+            // null 전달 변경
             {
                 S_Spawn spawnPacket = new S_Spawn();
                 spawnPacket.Objects.Add(gameObject.Info);
-                Broadcast(gameObject.CellPos, spawnPacket);
+                Broadcast(gameObject.CellPos, spawnPacket, player);
             }
         }
 
@@ -321,11 +286,13 @@ namespace Server.Game
             return null;
         }
 
-        public void Broadcast(Vector2Int pos, IMessage packet)
+        public void Broadcast(Vector2Int pos, IMessage packet, Player excludePlayer = null)
         {
             List<Zone> zones = GetAdjacentZone(pos);            
             foreach(Player p in zones.SelectMany(z => z.Players))
             {
+                if (p == excludePlayer)
+                    continue;
                 int dx = p.CellPos.x - pos.x;
                 int dy = p.CellPos.y - pos.y;
                 if (Math.Abs(dx) > GameRoom.VisionCells || Math.Abs(dy) > GameRoom.VisionCells)

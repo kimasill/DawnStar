@@ -14,13 +14,13 @@ public class ObjectManager
 		int type = (id >> 24) & 0x7F; 
         return (GameObjectType)type;
     }
-	public void Add(ObjectInfo info, bool myPlayer = false) 
+	public void Add(ObjectInfo info, bool myPlayer = false, bool activate = true) 
 	{ 
 		if(MyPlayer != null && MyPlayer.Id == info.ObjectId) 
             return;
         if (_objects.ContainsKey(info.ObjectId))
             return;
-
+        Debug.Log($" myplayer:{myPlayer}, objectId :{info.ObjectId }");
         GameObjectType type = GetObjectType(info.ObjectId);
 		if(type == GameObjectType.Player)
         {
@@ -52,7 +52,7 @@ public class ObjectManager
         }
         else if(type == GameObjectType.Monster)
         {
-            GameObject go = Managers.Resource.Instantiate("Creature/NormalSkeleton");
+            GameObject go = Managers.Resource.Instantiate($"Creature/{info.Name}");
             go.name = info.Name;
             _objects.Add(info.ObjectId, go);
 
@@ -85,6 +85,8 @@ public class ObjectManager
             ic.SyncPos();
         }
     }
+
+    //임시 아이디 생성
     public void GenerateId(GameObjectType type, out int id)
     {
         int typeCode = (int)type;
@@ -96,6 +98,45 @@ public class ObjectManager
         } while (_objects.ContainsKey(newId));
         Debug.Log($"newId : {newId}");
         id = newId;
+    }
+
+    public bool IsPlayingAnim(int id)
+    {
+        if (_objects.ContainsKey(id))
+        {
+            GameObject go = FindById(id);
+            if (go == null)
+                return false;
+
+            CreatureController cc = go.GetComponent<CreatureController>();
+            if (cc == null)
+                return false;
+            if (GameObjectType.Monster == GetObjectType(id))
+            {
+                if (cc.IsPlayingDieAnimation())
+                {
+                    return true;
+                }
+                else return false;
+            }
+        }
+        return false;
+    }
+    public IEnumerator RemoveAfterAnimation(int id)
+    {
+        GameObject go = FindById(id);
+        CreatureController cc = go.GetComponent<CreatureController>();
+        Animator animator = cc.GetComponent<Animator>();
+        if (animator != null)
+        {
+            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+            while (stateInfo.IsName("DEATH") && stateInfo.normalizedTime < 1.0f)
+            {
+                yield return null;
+                stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+            }
+        }
+        Remove(id);
     }
 
     public void Remove(int id)
