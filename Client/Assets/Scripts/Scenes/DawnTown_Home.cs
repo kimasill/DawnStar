@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class DawnTown_Home : DawnTown
 {
@@ -25,7 +24,12 @@ public class DawnTown_Home : DawnTown
         if (Managers.Quest.IsQuestInProgress(3)) 
         {
             CheckInventoryAndHandleQuest03();
-        }      
+        }    
+        if(Managers.Quest.GetQuest(6) == null)
+        {
+            // 퀘스트 6을 완료하고 재접한 경우
+            DoorChangeAfterQuest06();
+        }
     }
 
     private void CheckInventoryAndHandleQuest03()

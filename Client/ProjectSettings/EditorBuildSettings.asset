@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DawnTownHome.unity
     guid: 5e693ff526a4f104bafe6ac60feb456f
+  - enabled: 1
+    path: Assets/Scenes/DawnTownDead.unity
+    guid: 01011a049ffd4aa4b98fe94110bcf712
   m_configObjects: {}

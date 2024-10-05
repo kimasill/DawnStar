@@ -74,6 +74,9 @@ namespace Server.Game
                 case ItemType.Material:
                     item = new Material(itemDb.TemplateId);
                     break;
+                case ItemType.Goods:
+                    item = new Goods(itemDb.TemplateId);
+                    break;
             }
 
             if (item != null)
@@ -197,6 +200,35 @@ namespace Server.Game
                     Count = 1;
                     MaxCount = data.maxCount;
                     MaterialType = data.materialType;
+                    Stackable = (data.maxCount > 1);
+                }
+            }
+        }
+
+        public class Goods : Item
+        {
+            public GoodsType GoodsType { get; private set; }
+            public int MaxCount { get; private set; }
+            public Goods(int templateId) : base(ItemType.Goods)
+            {
+                Init(templateId);
+            }
+
+            void Init(int templateId)
+            {
+                ItemData itemData = null;
+                DataManager.ItemDict.TryGetValue(templateId, out itemData);
+                if (itemData.itemType != ItemType.Goods)
+                {
+                    return;
+                }
+
+                GoodsData data = (GoodsData)itemData;
+                {
+                    TemplateId = data.id;
+                    Count = 1;
+                    MaxCount = data.maxCount;
+                    GoodsType = data.goodsType;
                     Stackable = (data.maxCount > 1);
                 }
             }

@@ -59,7 +59,7 @@ namespace Server
                                 Speed = playerDb.Speed,
                                 TotalExp = playerDb.Exp,
                                 Gold = playerDb.Gold,
-                            }
+                            }                            
                         };
 
                         // 메모리에도 들고 있다
@@ -118,16 +118,17 @@ namespace Server
                     }
                 }
                 MyPlayer.Stat.MergeFrom(playerInfo.StatInfo);
+                if(MyPlayer.Stat.Hp <= 0)
+                {
+                    MyPlayer.Stat.Hp = MyPlayer.Stat.MaxHp;
+                }
 
 
-
-                if(MyPlayer.Stat.Level == 0)
+                if (MyPlayer.Stat.Level == 0)
                 {
                     isFirstLogin = true;
                     ServerState = PlayerServerState.ServerStateSingle;
                 }
-                    
-
                 MyPlayer.Session = this;
                 S_ItemList itemListPacket = new S_ItemList();
 
@@ -151,16 +152,18 @@ namespace Server
                     //클라한테 아이템 전달
                 }
                 Send(itemListPacket);
-
-                //Test
                 ServerState = PlayerServerState.ServerStateSingle;
                 if (ServerState == PlayerServerState.ServerStateSingle)
                 {
+                    if(isFirstLogin)
+                    {
+                        MyPlayer = SingleGameSetting(MyPlayer);
+                    }
                     GameLogic.Instance.Push(() =>
                     {
                         GameRoom room = GameLogic.Instance.Add(1);
                         Console.WriteLine($"Player Room Id:{room.RoomId}");
-                        room.Push(room.EnterSingleGame, MyPlayer, isFirstLogin);
+                        room.Push(room.EnterGame, MyPlayer, false);
                     });
                 }                
                 else
@@ -176,6 +179,30 @@ namespace Server
                 }
             }
         }
+        private Player SingleGameSetting(Player player)
+        {
+            MapData mapData;
+            if (DataManager.MapDict.TryGetValue(001, out mapData) && mapData != null)
+            {
+                foreach (PortalData portal in mapData.portals)
+                {
+                    if (portal == null) continue;
+                    if (portal.id == 100)
+                    {
+                        Vector2Int respawnPos = new Vector2Int((int)(portal.posX * 3.2), (int)(portal.posY * 3.2));
+                        player.CellPos = respawnPos;
+                        player.MapInfo.TemplateId = mapData.id;
+                        player.MapInfo.PortalId = portal.id;
+                        player.MapInfo.MapName = mapData.name;
+                        player.MapInfo.Scene = "DawnTown";
+                        DB.DbTransaction.SavePlayerMap(player, player.MapInfo);
+                    }
+                }
+                return player;
+            }
+            return null;
+        }
+
         public void HandleCreatePlayer(C_CreatePlayer createPacket)
         {
             // TODO : 이런 저런 보안 체크

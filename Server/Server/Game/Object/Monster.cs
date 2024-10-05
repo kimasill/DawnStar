@@ -16,6 +16,8 @@ namespace Server.Game
     public class Monster : GameObject
     {
         public int TemplateId { get; private set; }
+        public Vector2Int SpawnPosition { get; set; }
+        public int SpawnId { get; set; }
         public Monster()
         {
             ObjectType = GameObjectType.Monster;
@@ -24,15 +26,18 @@ namespace Server.Game
         public void Init(int templateId)
         {
             TemplateId = templateId;
-
+            
             MonsterData monsterData = null;
             DataManager.MonsterDict.TryGetValue(TemplateId, out monsterData);
+            Info.Name = monsterData.name;
             Stat.MergeFrom(monsterData.stat);
             Stat.Hp = monsterData.stat.MaxHp;
             State = CreatureState.Idle;
         }
         //FSM (Finite State Machine)
         IJob _job;
+        private long _stiffEndTick;
+        private int _respawnTime = 60000;
         public override void Update()
         {
             switch (State)
@@ -45,6 +50,9 @@ namespace Server.Game
                     break;
                 case CreatureState.Skill:
                     UpdateSkill();
+                    break;
+                case CreatureState.Stiff:
+                    UpdateStiff();
                     break;
                 case CreatureState.Dead:
                     UpdateDead();
@@ -197,8 +205,23 @@ namespace Server.Game
                 return;
             _coolTick = 0;
         }
+        protected virtual void UpdateStiff()
+        {
+            if (_stiffEndTick == 0)
+            {
+                _stiffEndTick = Environment.TickCount64 + 1000;
+            }
+            if (_stiffEndTick > Environment.TickCount64)
+                return;
+            _stiffEndTick = 0;
+            State = CreatureState.Idle;
+        }
         protected virtual void UpdateDead() { }
 
+        public override void OnDamaged(GameObject attacker, int damage)
+        {
+            base.OnDamaged(attacker, damage);            
+        }
         public override void Ondead(GameObject attacker)
         {
             //죽은 상태로 변경 : job 취소
@@ -207,19 +230,40 @@ namespace Server.Game
                 _job.Cancel = true;
                 _job = null;
             }
+            if (Room == null)
+                return;
 
-            base.Ondead(attacker);
-            //Todo : 경험치, 아이템 드랍
+            S_Die diePacket = new S_Die();
+            diePacket.ObjectId = Id;
+            diePacket.AttackerId = attacker.Id;
+            Room.Broadcast(CellPos, diePacket);
+
+            GameRoom room = Room;//Room이 null이 될 수 있으므로 미리 저장  
             GameObject owner = attacker.GetOwner();
             if (owner.ObjectType == GameObjectType.Player)
             {
+
                 ItemRewardData rewardData = GetRandomReward();
                 if (rewardData != null)
                 {
+                    int count = GetRewardCount(rewardData);
                     Player player = (Player)owner;
-                    DbTransaction.RewardPlayer(player, rewardData, Room);
+                    Room.DropItem(player, PosInfo, count, rewardData);
+                    //DbTransaction.RewardPlayer(player, rewardData, Room);
                 }
-            }   
+            }
+            room.LeaveGame(Id);
+            Stat.Hp = Stat.MaxHp;
+            PosInfo.State = CreatureState.Idle;
+            PosInfo.MoveDir = MoveDir.Down;
+            List<int> spawnIds = [SpawnId];
+            Room.PushAfter(_respawnTime, () =>
+            {
+                if (Room != null)
+                {
+                    Room.HandleSpawnMonster((Player)attacker, spawnIds);
+                }
+            });
         }
 
         ItemRewardData GetRandomReward()
@@ -238,6 +282,13 @@ namespace Server.Game
                 }
             }
             return null;
+        }
+
+        int GetRewardCount(ItemRewardData rewardData)
+        {
+            int min = rewardData.minCount;
+            int max = rewardData.maxCount;
+            return new Random().Next(min, max + 1);
         }
     }
 }

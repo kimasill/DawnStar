@@ -120,7 +120,19 @@ namespace Server.Game
                 return MoveDir.Down;
         }
 
-        public virtual void OnDamaged(GameObject target, int damage)
+        public Vector2Int GetPosFromLookDir(Vector2Int pos, LookDir lookDir)
+        {
+            switch (lookDir)
+            {
+                case LookDir.LookLeft:
+                    return pos + Vector2Int.left;
+                case LookDir.LookRight:
+                    return pos + Vector2Int.right;
+            }
+            return pos;
+        }
+
+        public virtual void OnDamaged(GameObject attacker, int damage)
         {
             if (Room == null)
                 return;
@@ -128,15 +140,15 @@ namespace Server.Game
             damage = Math.Max(damage - TotalDefense, 0);
             Stat.Hp = Math.Max(Stat.Hp - damage, 0);
             Stat.Hp -= damage;
-
             S_ChangeHp changePacket = new S_ChangeHp();
             changePacket.ObjectId = Id;
             changePacket.Hp = Stat.Hp;
+            Console.WriteLine($"OnDamaged : {Id}, {damage}");
             Room.Broadcast(CellPos, changePacket);
-
+            State = CreatureState.Stiff;
             if (Stat.Hp <= 0)
             {
-                Ondead(target);
+                Ondead(attacker);
             }
         }
 
@@ -151,12 +163,13 @@ namespace Server.Game
             Room.Broadcast(CellPos, diePacket);
 
             GameRoom room = Room;//Room이 null이 될 수 있으므로 미리 저장  
+            
             room.LeaveGame(Id);
             Stat.Hp = Stat.MaxHp;
             PosInfo.State = CreatureState.Idle;
             PosInfo.MoveDir = MoveDir.Down;
 
-            room.EnterGame(this, randPos : true);
+            room.EnterGame(this, false);
         }
 
         public virtual GameObject GetOwner()

@@ -81,6 +81,9 @@ public class Item
             case ItemType.Material:
                 item = new Material(itemInfo.TemplateId);
                 break;
+            case ItemType.Goods:
+                item = new Goods(itemInfo.TemplateId);
+                break;
         }
 
         if (item != null)
@@ -205,6 +208,34 @@ public class Item
                 MaxCount = data.maxCount;
                 MaterialType = data.materialType;
                 Stackable = true; // 재료 아이템은 기본적으로 스택 가능
+            }
+        }
+    }
+    public class Goods : Item
+    {
+        public GoodsType GoodsType { get; private set; }
+        public int MaxCount { get; private set; }
+        public Goods(int templateId) : base(ItemType.Goods)
+        {
+            Init(templateId);
+        }
+
+        void Init(int templateId)
+        {
+            ItemData itemData = null;
+            Managers.Data.ItemDict.TryGetValue(templateId, out itemData);
+            if (itemData.itemType != ItemType.Goods)
+            {
+                return;
+            }
+
+            GoodsData data = (GoodsData)itemData;
+            {
+                TemplateId = data.id;
+                Count = 1;
+                MaxCount = data.maxCount;
+                GoodsType = data.goodsType;
+                Stackable = (data.maxCount > 1);
             }
         }
     }

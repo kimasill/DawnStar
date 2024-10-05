@@ -6,6 +6,7 @@ using Server.Game.Room;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace Server.Game
@@ -31,6 +32,7 @@ namespace Server.Game
 
             
             info.Position.MoveDir = movePosInfo.MoveDir;
+            info.Position.LookDir = movePosInfo.LookDir;
             Map.ApplyMove(player, new Vector2Int(movePosInfo.PosX, movePosInfo.PosY));
             // 다른 플레이어한테도 알려준다
             S_Move resMovePacket = new S_Move();
@@ -64,30 +66,28 @@ namespace Server.Game
             {
                 case SkillType.SkillAttack:
                     {
-                        Vector2Int skillPos = player.GetFrontCellPos(info.Position.MoveDir);
-                        GameObject target = Map.Find(skillPos);
-                        if (target != null)
+                        List<Vector2Int> skillPos = new List<Vector2Int>();
+                        List<GameObject> targets = new List<GameObject>();
+                        if (skillData.shape.shapeType == ShapeType.ShapeBent)
                         {
-                            // LookDir에 따라 공격 방향 처리
-                            // TODO : 데미지 계산
-                            // TODO : MoveDir 방향에도 공격 처리
-                            if (info.Position.LookDir == LookDir.LookLeft)
-                            {
-                                   skillPos = player.GetFrontCellPos(MoveDir.Left);
-                            }
-                            else if (info.Position.LookDir == LookDir.LookRight)
-                            {
-                                   skillPos = player.GetFrontCellPos(MoveDir.Right);
-                            }                           
-
-                            target = Map.Find(skillPos);
+                            skillPos.Add(player.CellPos);
+                            skillPos.Add(player.GetFrontCellPos());
+                            skillPos.Add(player.GetPosFromLookDir(player.CellPos, info.Position.LookDir));
+                        }
+                        foreach (Vector2Int pos in skillPos)
+                        {
+                            GameObject target = Map.Find(pos);
                             if (target != null)
                             {
+                                // LookDir에 따라 공격 방향 처리
+                                // TODO : 데미지 계산
+                                // TODO : MoveDir 방향에도 공격 처리
                                 Console.WriteLine("Hit GameObject !");
+                                target.OnDamaged(player, player.TotalAttack); //피격판정      
                             }
                         }
+                        break;
                     }
-                    break;
                 case SkillType.SkillProjectile:
                     {
                         Arrow arrow = ObjectManager.Instance.Add<Arrow>();
@@ -106,6 +106,5 @@ namespace Server.Game
                     break;
             }
         }
-
-      }
+    }
 }

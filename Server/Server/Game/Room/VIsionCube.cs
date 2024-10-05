@@ -93,9 +93,13 @@ namespace Server.Game.Room
                 S_Spawn spawnPacket = new S_Spawn();
                 foreach (GameObject obj in added)
                 {
+                    if(obj == Owner)
+                    {
+                        continue;
+                    }
                     ObjectInfo info = new ObjectInfo();
                     info.MergeFrom(obj.Info);
-                    spawnPacket.Objects.Add(info);
+                    spawnPacket.Objects.Add(info);                    
                 }
                 Owner.Session.Send(spawnPacket);
             }

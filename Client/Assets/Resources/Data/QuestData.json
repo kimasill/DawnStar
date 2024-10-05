@@ -86,7 +86,7 @@
         }
       ],
       "connection": "8",
-      "questType": "interaction"
+      "questType": "battle"
     },
     {
       "id": "8",

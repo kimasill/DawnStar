@@ -66,6 +66,21 @@ class PacketHandler
         clientSession.HandleEnterGame(enterGamePacket);
     }
 
+    public static void C_RespawnHandler(PacketSession session, IMessage packet)
+    {
+        C_Respawn respawnPacket = (C_Respawn)packet;
+        ClientSession clientSession = session as ClientSession;
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+        
+        room.Push(room.HandleRespawn, player, respawnPacket.RespawnType);
+    }
+
     public static void C_CreatePlayerHandler(PacketSession session, IMessage packet)
     {
         C_CreatePlayer createPlayerPacket = (C_CreatePlayer)packet;
@@ -201,7 +216,7 @@ class PacketHandler
         GameRoom room = player.Room;
         if (room == null)
             return;
-        room.Push(room.HandleRemoveItem, player, removeItemPacket.ItemDbId);
+        room.Push(room.HandleRemoveItem, player, removeItemPacket);
     }
 
     public static void C_RequestMonsterHandler(PacketSession session, IMessage packet)
@@ -216,6 +231,6 @@ class PacketHandler
         if (room == null)
             return;
 
-        room.HandleSpawnMonster(clientSession.MyPlayer, spawnPacket);
+        room.HandleSpawnMonster(clientSession.MyPlayer, spawnPacket.Id.ToList());
     }
 }

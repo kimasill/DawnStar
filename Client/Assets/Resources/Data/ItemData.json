@@ -49,7 +49,7 @@
       "name": "HP 물약",
       "consumableType": "Potion",
       "maxCount": "5",
-      "price" : "20",
+      "price": "20",
       "iconPath": "Textures/Item/hp"
     }
   ],
@@ -57,18 +57,52 @@
     {
       "id": "1001",
       "name": "치즈",
-      "maxCount": "99",
+      "maxCount": "9999",
       "materialType": "Food",
-      "price" :  "1",
-      "iconPath": "Textures/Item/cheese"
+      "price": "1",
+      "iconPath": "Textures/Item/Materials/Food/cheese"
     },
     {
       "id": "1002",
       "name": "사과",
-      "maxCount": "99",
+      "maxCount": "9999",
       "materialType": "Food",
       "price": "1",
-      "iconPath": "Textures/Item/apple"
+      "iconPath": "Textures/Item/Materials/Food/apple"
+    },
+    {
+      "id": "1101",
+      "name": "뼈",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "1",
+      "iconPath": "Textures/Item/Materials/Drop/bone"
+    },
+    {
+      "id": "1102",
+      "name": "개구리다리",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "1",
+      "iconPath": "Textures/Item/Materials/Drop/frog_leg"
+    }
+  ],
+  "goods": [
+    {
+      "id": "10001",
+      "name": "골드",
+      "maxCount": "9999999",
+      "materialType": "Gold",
+      "price": "0",
+      "iconPath": "Textures/Item/Materials/Gold"
+    },
+    {
+      "id": "10002",
+      "name": "다이아몬드",
+      "maxCount": "9999999",
+      "materialType": "Diamond",
+      "price": "0",
+      "iconPath": "Textures/Item/Materials/Diamond"
     }
   ]
 } 

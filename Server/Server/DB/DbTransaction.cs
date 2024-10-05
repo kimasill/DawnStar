@@ -1,4 +1,5 @@
-﻿using Google.Protobuf.Protocol;
+﻿using Google.Protobuf;
+using Google.Protobuf.Protocol;
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Game;
@@ -28,11 +29,13 @@ namespace Server.DB
             {
                 PlayerDbId = player.PlayerDbId,
                 Hp = player.Stat.Hp,
+                MaxHp = player.Stat.MaxHp,
                 Level = player.Level,
+                Attack = player.Stat.Attack,                
+                Defense = player.Stat.Defense,
                 Exp = player.Exp,
                 PosX = player.CellPos.x,
                 PosY = player.CellPos.y,
-                Gold = player.Gold
             };
 
             Instance.Push(() =>
@@ -41,13 +44,12 @@ namespace Server.DB
                 {
                     PlayerDb existingPlayerDb = db.Players.FirstOrDefault(p => p.PlayerDbId == playerDb.PlayerDbId);
                     if (existingPlayerDb != null)
-                    {
+                    {                        
                         existingPlayerDb.Hp = playerDb.Hp;
                         existingPlayerDb.Level = playerDb.Level;
                         existingPlayerDb.Exp = playerDb.Exp;
                         existingPlayerDb.PosX = playerDb.PosX;
                         existingPlayerDb.PosY = playerDb.PosY;
-                        existingPlayerDb.Gold = playerDb.Gold;
                     }
                     else
                     {
@@ -71,8 +73,7 @@ namespace Server.DB
                 Level = player.Level,
                 Exp = player.Exp,
                 PosX = player.CellPos.x,
-                PosY = player.CellPos.y,
-                Gold = player.Gold
+                PosY = player.CellPos.y
             };
             
             Instance.Push<PlayerDb, GameRoom>(SavePlayerStatus_Step2, playerDb, room);
@@ -97,21 +98,20 @@ namespace Server.DB
             //Console.WriteLine($"save hp{hp}");
         }
 
-        public static void RewardPlayer(Player player, ItemRewardData rewardData, GameRoom room)
+        public static void RewardPlayer(Player player, ItemRewardData rewardData, int count, GameRoom room)
         {
             if (player == null || rewardData == null || room == null)
             {
                 return;
             }
-
-            int? slot = player.Inven.GetEmptySlot();
+            int? slot = player.Inven.GetSlot(rewardData.itemId, count);            
             if (slot == null)
                 return;
 
             ItemDb itemDb = new ItemDb()
             {
                 TemplateId = rewardData.itemId,
-                Count = rewardData.count,
+                Count = count,
                 OwnerDbId = player.PlayerDbId,
                 Slot = slot.Value
             };
@@ -124,7 +124,17 @@ namespace Server.DB
             {
                 using (AppDbContext db = new AppDbContext())
                 {
-                    db.Items.Add(itemDb);
+                    ItemDb existingItemDb = db.Items
+                        .FirstOrDefault(i => i.OwnerDbId == itemDb.OwnerDbId && i.Slot == itemDb.Slot);
+                    if (existingItemDb != null)
+                    {
+                        existingItemDb.Count += itemDb.Count;
+                    }
+                    else
+                    {
+                        db.Items.Add(itemDb);
+                    }
+
                     bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
                     if (success)
                     {
@@ -147,28 +157,66 @@ namespace Server.DB
                 }
             });
         }
-        public static void SaveRemovedItemDB(Player player, int id, GameRoom room)
+        public static void SaveRemovedItemDB(Player player, ItemDb itemDb, GameRoom room)
         {
-            //Info 일치하는 Item Db에서 제거
             Instance.Push(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
-                    ItemDb itemDb = db.Items
-                        .Where(i=> i.ItemDbId == id)                        
-                        .FirstOrDefault();
-
-                    if (itemDb != null)
+                    int remainingCount = itemDb.Count;
+                    while (remainingCount > 0)
                     {
-                        db.Items.Remove(itemDb);
-                        bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.
-                        if(success) {
+                        ItemDb tItemDb = db.Items
+                            .Where(i => i.ItemDbId == itemDb.ItemDbId && i.OwnerDbId == player.PlayerDbId)
+                            .FirstOrDefault();
+
+                        if (itemDb == null)
+                        {
+                            tItemDb = db.Items
+                                .Where(i => i.TemplateId == itemDb.TemplateId && i.OwnerDbId == player.PlayerDbId)
+                                .FirstOrDefault();
+                            break;
+                        }
+
+                        if (tItemDb.Count > remainingCount)
+                        {
+                            // Count를 감소시킨다.
+                            tItemDb.Count -= remainingCount;
+                            remainingCount = 0;
+                        }
+                        else
+                        {
+                            // Count가 0 이하가 되면 아이템을 제거한다.
+                            remainingCount -= tItemDb.Count;
+                            db.Items.Remove(tItemDb);
+                        }
+
+                        bool success = db.SaveChangesEx(); // 저장할 때 예외 처리를 해준다.
+                        if (success)
+                        {
                             room.Push(() =>
                             {
-                                Item removedItem = player.Inven.Find(i => i.ItemDbId == id);
-                                if (removedItem != null)
+                                Item iItem = player.Inven.Find(i => i.ItemDbId == tItemDb.ItemDbId);
+                                if (iItem != null)
                                 {
-                                    player.Inven.Remove(removedItem.ItemDbId);
+                                    if (iItem.Count > remainingCount)
+                                    {
+                                        int rCount = iItem.Count - remainingCount;
+                                        player.Inven.UpdateItem(iItem.ItemDbId, rCount);
+                                    }
+                                    else
+                                    {
+                                        player.Inven.Remove(iItem.ItemDbId);
+                                    }
+                                }
+                                Item rItem = Item.MakeItem(tItemDb);
+                                //client noti
+                                {
+                                    S_RemoveItem itemPacket = new S_RemoveItem();
+                                    ItemInfo info = new ItemInfo();
+                                    info.MergeFrom(rItem.Info);
+                                    itemPacket.Items.Add(info);
+                                    player.Session.Send(itemPacket);
                                 }
                             });
                         }

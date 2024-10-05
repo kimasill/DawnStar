@@ -1,3 +1,4 @@
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,9 @@ public class InventoryManager : MonoBehaviour
     public event Action<Item> ItemAdded;
     public void Add(Item item)
     {
+        Item pItem = Get(item.ItemDbId);
+        if (pItem != null)
+            pItem.Count += item.Count;
         Items.Add(item.ItemDbId, item);
         ItemAdded?.Invoke(item);
     }
@@ -16,6 +20,19 @@ public class InventoryManager : MonoBehaviour
     public void Remove(int itemId)
     {
         Items.Remove(itemId);
+    }
+
+    public void RemoveOrUpdate(ItemInfo item)
+    {
+        Item tItem = Get(item.ItemDbId);
+        if (tItem.Count > item.Count)
+        {
+            tItem.Count -= item.Count;
+        }
+        else
+        {
+            Remove(item.ItemDbId);
+        }
     }
 
     public Item Get(int itemId)

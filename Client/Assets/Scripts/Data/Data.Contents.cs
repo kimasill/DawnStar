@@ -15,9 +15,14 @@ namespace Data
         public float coolTime;
         public int damage;
         public SkillType skillType;
+        public ShapeInfo shape;
         public ProjectileInfo projectile;
     }
-
+    public class ShapeInfo
+    {
+        public ShapeType shapeType;
+        public float range;
+    }
     public class ProjectileInfo
     {
         public string name;
@@ -68,10 +73,14 @@ namespace Data
         public ConsumableType consumableType;
         public int maxCount;
     }
-
     public class MaterialData : ItemData
     {
         public MaterialType materialType;
+        public int maxCount;
+    }
+    public class GoodsData : ItemData
+    {
+        public GoodsType goodsType;
         public int maxCount;
     }
 
@@ -82,6 +91,7 @@ namespace Data
         public List<ArmorData> armors = new List<ArmorData>();
         public List<ConsumableData> consumables = new List<ConsumableData>();
         public List<MaterialData> materials = new List<MaterialData>();
+        public List<GoodsData> goods = new List<GoodsData>();
 
         public Dictionary<int, ItemData> MakeDict()
         {
@@ -106,6 +116,11 @@ namespace Data
                 item.itemType = ItemType.Material;
                 dict.Add(item.id, item);
             }
+            foreach (ItemData item in goods)
+            {
+                item.itemType = ItemType.Goods;
+                dict.Add(item.id, item);
+            }
             return dict;
         }
     }
@@ -117,7 +132,8 @@ namespace Data
     {
         public int probability; //100분율
         public int itemId;
-        public int count;
+        public int minCount;
+        public int maxCount;
     }
     [Serializable]
     public class MonsterData
@@ -156,21 +172,25 @@ namespace Data
         public float posY;
     }
 
+    public class SpawnData
+    {
+        public int id;
+        public int objectId;
+    }
+
     [Serializable]
     public class MapData
     {
         public int id;
         public string name;
         public List<PortalData> portals;
+        public List<SpawnData> spawns;
     }
-
-
 
     [Serializable]
     public class MapLoader : ILoader<int, MapData>
     {
         public List<MapData> maps = new List<MapData>();
-
         public Dictionary<int, MapData> MakeDict()
         {
             Dictionary<int, MapData> dict = new Dictionary<int, MapData>();

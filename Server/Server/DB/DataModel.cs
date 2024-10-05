@@ -35,6 +35,7 @@ namespace Server.DB
         public int Hp { get; set; }
         public int MaxHp { get; set; }
         public int Attack { get; set; }
+        public int Defense { get; set; }
         public float Speed { get; set; }
         public int Exp { get; set; }
         public int PosX { get; set; }

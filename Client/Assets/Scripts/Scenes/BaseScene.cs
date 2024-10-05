@@ -28,15 +28,10 @@ public abstract class BaseScene : MonoBehaviour
     public virtual void ShowDescriptionUI(List<string> description)
     {        
     }
-    public virtual void StartInteractionQuest(Quest quest)
-    {
-    }
-    public virtual void CheckInteractionQuest(Quest quest)
-    {
-    }
-    public virtual void ShowStoryScene(ScriptData scriptData)
-    {
-    }
+    public virtual void StartInteractionQuest(Quest quest) { }
+    public virtual void CheckInteractionQuest(Quest quest) { }
+    public virtual void ShowStoryScene(ScriptData scriptData) { }
+    public virtual void StartBattleQuest(Quest quest) { }
 
     public void AddNPC(int id, GameObject npc)
     {

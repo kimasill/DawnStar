@@ -67,7 +67,15 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SBuyItem, MakePacket<S_BuyItem>);
 		_handler.Add((ushort)MsgId.SBuyItem, PacketHandler.S_BuyItemHandler);		
 		_onRecv.Add((ushort)MsgId.SChangePosition, MakePacket<S_ChangePosition>);
-		_handler.Add((ushort)MsgId.SChangePosition, PacketHandler.S_ChangePositionHandler);
+		_handler.Add((ushort)MsgId.SChangePosition, PacketHandler.S_ChangePositionHandler);		
+		_onRecv.Add((ushort)MsgId.SDropItem, MakePacket<S_DropItem>);
+		_handler.Add((ushort)MsgId.SDropItem, PacketHandler.S_DropItemHandler);		
+		_onRecv.Add((ushort)MsgId.SRemoveItem, MakePacket<S_RemoveItem>);
+		_handler.Add((ushort)MsgId.SRemoveItem, PacketHandler.S_RemoveItemHandler);		
+		_onRecv.Add((ushort)MsgId.SRespawn, MakePacket<S_Respawn>);
+		_handler.Add((ushort)MsgId.SRespawn, PacketHandler.S_RespawnHandler);		
+		_onRecv.Add((ushort)MsgId.SLoading, MakePacket<S_Loading>);
+		_handler.Add((ushort)MsgId.SLoading, PacketHandler.S_LoadingHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

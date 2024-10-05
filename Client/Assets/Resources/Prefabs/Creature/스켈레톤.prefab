@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5865940985775652430}
   - component: {fileID: -3738793594578060178}
   m_Layer: 0
-  m_Name: NormalSkeleton
+  m_Name: "\uC2A4\uCF08\uB808\uD1A4"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -72,8 +72,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -153814529
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 1022205791, guid: 0ea0bc6dd911c5b4087d2f0dd1590ee3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
