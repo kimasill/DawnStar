@@ -94,6 +94,21 @@ public class MyPlayerController : PlayerController
         {
             _nearbyNPC.StartInteraction();
         }
+        else if (Input.GetKeyDown(KeyCode.Q))
+        {
+            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+            UI_Quest questUI = gameSceneUI.QuestUI;
+
+            if (questUI.gameObject.activeSelf)
+            {
+                questUI.gameObject.SetActive(false);
+            }
+            else
+            {
+                questUI.gameObject.SetActive(true);
+                questUI.RefreshUI();
+            }
+        }
 
         if (Input.mouseScrollDelta.y != 0)
         {

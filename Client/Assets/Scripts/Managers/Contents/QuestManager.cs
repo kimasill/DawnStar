@@ -8,33 +8,26 @@ public class QuestManager
 {
     private Dictionary<int, Quest> _quests = new Dictionary<int, Quest>();
     public Dictionary<int, Quest> Quests { get { return _quests; } }
-    public int Add(QuestInfo questInfo)
+    public Quest CurrentQuest { get; private set; }
+    public void Add(Quest quest)
     {
-        if(_quests.ContainsKey(questInfo.TemplateId))
-        {
-            Debug.LogWarning($"이미 퀘스트 ID {questInfo.TemplateId}가 존재합니다.");
-            return -1;
-        }
-        int questId = questInfo.TemplateId;
-        Quest quest = new Quest { };
-        if (Managers.Data.ScriptDict.TryGetValue(questId, out ScriptData scriptData))
+        if(_quests.ContainsKey(quest.TemplateId))
+        {           
+            UpdateQuestProgress(quest.TemplateId, quest.Progress);
+            return;
+        }        
+        
+        if (Managers.Data.ScriptDict.TryGetValue(quest.TemplateId, out ScriptData scriptData))
         {
             quest.Description = scriptData.scripts.ToDictionary(s => s.id, s => s);
         }
         else
         {
-            Debug.LogWarning($"퀘스트 Script {questId}를 찾을 수 없습니다.");
-        }
+            Debug.LogWarning($"퀘스트 Script {quest.TemplateId}를 찾을 수 없습니다.");
+        }       
 
-        quest.Id = questId;
-        quest.Type = questInfo.QuestType;
-        quest.IsCompleted = false;
-
-        _quests.Add(quest.Id, quest);
-
-        return questId;
+        _quests.Add(quest.TemplateId, quest);
     }
-
     public Quest GetQuest(int questId)
     {
         if (_quests.TryGetValue(questId, out Quest quest))
@@ -48,13 +41,23 @@ public class QuestManager
         }
     }
 
-    public void StartQuest(int questId)
+    public void StartQuest(Quest quest)
     {
-        if (_quests.TryGetValue(questId, out Quest quest))
+        if(quest == null)
         {
-
-            BaseScene currentScene = Managers.Scene.CurrentScene;
-            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+            Debug.LogWarning("퀘스트가 없습니다.");
+            return;
+        }
+        if(!_quests.ContainsKey(quest.TemplateId))
+        {
+            Debug.LogWarning("퀘스트가 등록되지 않았습니다.");
+            return;
+        }
+        Debug.Log($"퀘스트{quest.TemplateId} 진행도 : {quest.Progress} ");
+        BaseScene currentScene = Managers.Scene.CurrentScene;
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        if(quest.Progress == 1)
+        {
             switch (quest.Type)
             {
                 case "epic":
@@ -85,7 +88,7 @@ public class QuestManager
                     break;
                 case "scene":
                     Debug.Log("Start Story Scene");
-                    ScriptData scriptData = Managers.Data.ScriptDict[questId];
+                    ScriptData scriptData = Managers.Data.ScriptDict[quest.TemplateId];
                     currentScene.ShowStoryScene(scriptData);
                     break;
                 case "battle":
@@ -93,12 +96,14 @@ public class QuestManager
                     currentScene.StartBattleQuest(quest);
                     break;
             }
-        }
-        else
-        {
-            Debug.LogWarning($"퀘스트 ID {questId}를 찾을 수 없습니다.");
-        }
+            Debug.Log($"퀘스트{quest.TemplateId} 진행 시작");
+            quest.Progress = 2;
+            UI_QuestNoti popup = Managers.UI.ShowPopupUI<UI_QuestNoti>();
+            popup.ShowQuestStart(quest.Title);
+            CurrentQuest = quest;
+        }        
     }
+
 
     public void ShowQuestScript(int questId, int scriptId = 1)
     {
@@ -119,6 +124,8 @@ public class QuestManager
         if (_quests.ContainsKey(questId))
         {
             _quests[questId].IsCompleted = true;
+            UI_QuestNoti popup = Managers.UI.ShowPopupUI<UI_QuestNoti>();
+            popup.ShowQuestComplete(_quests[questId].Title);
             CheckNextQuest(questInfo);
         }
         else
@@ -142,7 +149,7 @@ public class QuestManager
             Quest latestQuest = _quests[latestQuestId];
 
             C_QuestComplete questCompletePacket = new C_QuestComplete();
-            questCompletePacket.QuestDbId = latestQuest.Id;
+            questCompletePacket.QuestDbId = latestQuest.TemplateId;
             Managers.Network.Send(questCompletePacket);
         }
     }
@@ -189,5 +196,20 @@ public class QuestManager
         }
         Managers.Data.ScriptDict.TryGetValue(questId, out ScriptData scriptData);
         return scriptData.scripts[scriptListId-1].script;
+    }
+    public void Clear()
+    {
+        _quests.Clear();
+    }
+    public void UpdateQuestProgress(int questId, int progress)
+    {
+        if (_quests.TryGetValue(questId, out Quest quest))
+        {
+            quest.Progress = progress;
+        }
+        else
+        {
+            Debug.LogWarning($"퀘스트 ID {questId}를 찾을 수 없습니다.");
+        }
     }
 }

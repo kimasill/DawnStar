@@ -20,8 +20,6 @@ namespace Server.Game
             if (player == null)
                 return;
 
-            S_StartQuest questPacket = new S_StartQuest();
-
             using (AppDbContext db = new AppDbContext())
             {
                 // 주어진 questId가 0이 아니면 해당 퀘스트를 찾고, 0이면 가장 최근 퀘스트를 찾습니다.
@@ -37,54 +35,60 @@ namespace Server.Game
                     if(questId == 0)
                     {
                         // 퀘스트가 없으면 새로 0번 퀘스트를 할당합니다.
-                        QuestInfo questInfo = new QuestInfo()
+                        questDb = new QuestDb()
                         {
                             TemplateId = 0,
                             Progress = 0,
-                            Completed = false,
-                            QuestType = "epic",
+                            Completed = false,                            
                         };
-                        DbTransaction.SaveStartQuest(player, questInfo);
-                        questPacket.Quest = questInfo;
                     }
                     else
                     {
                         QuestData questData = DataManager.QuestDict.GetValueOrDefault(questId);
                         if (questData == null)
                             return;
-                        QuestInfo questInfo = new QuestInfo()
+                        questDb = new QuestDb()
                         {
                             TemplateId = questData.id,
                             Progress = 0,
-                            Completed = false,
-                            QuestType = questData.questType,
+                            Completed = false,                            
                         };
-                        DbTransaction.SaveStartQuest(player, questInfo);
-                        questPacket.Quest = questInfo;
                     }
                 }
                 else
                 {
                     if(questDb.Completed)
                         return;
-                    
-                    // 퀘스트가 있으면 해당 퀘스트를 할당합니다.
-                    QuestInfo questInfo = new QuestInfo()
-                    {
-                        QuestDbId = questDb.QuestDbId,
-                        TemplateId = questDb.TemplateId,
-                        Progress = questDb.Progress,
-                        Completed = questDb.Completed,
-                        QuestType = DataManager.QuestDict[questDb.TemplateId].questType
-                    };
-                    if (player.Quest.TemplateId == questInfo.TemplateId)//메모리에 들고있으면 안함
-                        return;
-                    player.Quest = questInfo;
-                    questPacket.Quest = questInfo;
-                }
-            }
 
-            player.Session.Send(questPacket);
+                    if (player.Quest.CurrentQuest.TemplateId == questDb.TemplateId && player.Quest.CurrentQuest.Progress == 1)//메모리에 들고있으면 안함
+                        return;                    
+                }
+                DbTransaction.SaveStartQuest(player, questDb, player.Room);
+            }
+        }
+
+        public void HandleUpdateQuest(Player player, int questId, int progress)
+        {
+            if (player == null)
+                return;
+
+            // 퀘스트 진행 상태 업데이트
+            Quest quest = player.Quest.CurrentQuest; // 현재 퀘스트 정보 가져오기
+            if (quest == null || quest.TemplateId != questId)
+                return;
+
+            // 퀘스트 진행 상태 업데이트
+            quest.Progress = progress;
+
+            QuestDb questDb = new QuestDb()
+            {
+                TemplateId = quest.TemplateId,
+                Progress = quest.Progress,
+                Completed = quest.IsCompleted,
+            };
+
+            // DB에 퀘스트 진행 상태 저장
+            DbTransaction.SaveQuestDB(player, questDb, player.Room);
         }
 
         public void HandleQuestComplete(Player player, int questId)
@@ -92,7 +96,25 @@ namespace Server.Game
             if (player == null)
                 return;
 
-            player.HandleQuestComplete(questId);
+                // 퀘스트 완료 처리
+            Quest quest = player.Quest.CurrentQuest; // 현재 퀘스트 정보 가져오기
+            if (quest == null || quest.TemplateId != questId)
+                return;
+
+            // 퀘스트 완료 상태로 변경
+            if (quest.IsCompleted == false)
+                quest.IsCompleted = true;
+            quest.Progress = 100;
+
+            QuestDb questDb = new QuestDb()
+            {
+                TemplateId = quest.TemplateId,
+                Progress = quest.Progress,
+                Completed = quest.IsCompleted,
+            };
+
+            // DB에 퀘스트 완료 상태 저장
+            DbTransaction.SaveCompleteQuest(player, questDb, player.Room);                
         }
 
         public void HandleRequestShop(Player player)

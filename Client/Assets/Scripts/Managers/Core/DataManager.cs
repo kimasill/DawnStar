@@ -16,6 +16,7 @@ public class DataManager
     public Dictionary<int, Data.MapData> MapDict { get; private set; } = new Dictionary<int, Data.MapData>();
     public Dictionary<int, Data.ScriptData> ScriptDict { get; private set; } = new Dictionary<int, Data.ScriptData>();
     public Dictionary<string, Data.NPCData> NPCDict { get; private set; } = new Dictionary<string, Data.NPCData>();
+    public Dictionary<int, Data.QuestData> QuestDict { get; private set; } = new Dictionary<int, Data.QuestData>();
 
     public void Init()
     {
@@ -24,6 +25,7 @@ public class DataManager
         MonsterDict = LoadJson<Data.MonsterLoader, int, Data.MonsterData>("MonsterData").MakeDict();
         MapDict = LoadJson<Data.MapLoader, int, Data.MapData>("MapData").MakeDict();
         ScriptDict = LoadJson<Data.ScriptLoader, int, Data.ScriptData>("QuestScriptData").MakeDict();
+        QuestDict = LoadJson<Data.QuestLoader, int, Data.QuestData>("QuestData").MakeDict();
         NPCDict = LoadJson<Data.NPCLoader, string, Data.NPCData>("NPCData").MakeDict();
     }
 

@@ -21,7 +21,7 @@ namespace Server.Game
         public ClientSession Session { get; set; }
         public VIsionCube Vision { get; private set; }
         public Inventory Inven { get; private set; } = new Inventory();
-        public QuestInfo Quest { get; set; } = new QuestInfo();
+        public QuestInventory Quest { get; set; } = new QuestInventory();
         public int Exp {
             get { return Stat.TotalExp; }
             set {
@@ -115,14 +115,15 @@ namespace Server.Game
         }
 
         public void OnLeaveGame()
-        {
-            
+        {            
             //문제 : 플레이어가 게임을 나가면, 플레이어의 정보를 저장해야 한다.
             // 코드흐름 막아버린다. 데이터 베이스 접근하는 부분이 Core한 부분에 있으면 안됨.
             //해결 : 비동기 처리를 한다. 비동기 처리를 하면, 코드흐름이 막히지 않는다.
             // 다른 쓰레드 하나를 만들어서, 데이터베이스에 저장하는 작업을 한다.
             //TODO : 플레이어의 정보를 데이터베이스에 저장한다.
             //위치정보, 레벨, 경험치, 아이템 정보, 퀘스트 정보 등등
+            if(Quest.CurrentQuest.Progress<50)
+                Room.HandleUpdateQuest(this, Quest.CurrentQuest.TemplateId, 0);
             DbTransaction.SavePlayerStatus_All(this, Room);
             DbTransaction.SavePlayerMap(this, MapInfo);
         }
@@ -184,22 +185,6 @@ namespace Server.Game
             }
 
             RefreshAdditionalStat();
-        }
-
-        public void HandleQuestComplete(int id)
-        {
-            // 퀘스트 완료 처리
-            QuestInfo quest = Quest; // 현재 퀘스트 정보 가져오기
-            if (quest == null || quest.TemplateId != id)
-                return;
-
-            // 퀘스트 완료 상태로 변경
-            if(quest.Completed == false)
-                quest.Completed = true;
-
-            // DB에 퀘스트 완료 상태 저장
-            DbTransaction.SaveCompleteQuest(this, quest);
-            //DbTransaction.SavePlayerMap(this, MapInfo);
         }
 
 

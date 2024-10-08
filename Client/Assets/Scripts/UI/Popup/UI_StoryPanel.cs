@@ -28,6 +28,7 @@ public class UI_StoryPanel : UI_Popup
     private bool isEndOfScript = false;
     private Action onCloseAction;
     private Image _conversationImage;
+    private string currentTypingText = "";
 
     public override void Init()
     {
@@ -128,6 +129,7 @@ public class UI_StoryPanel : UI_Popup
     private IEnumerator TypeText(string text)
     {
         isTyping = true;
+        currentTypingText = text;
         _storyText.text = "";
         foreach (char letter in text.ToCharArray())
         {
@@ -170,10 +172,7 @@ public class UI_StoryPanel : UI_Popup
             if (typingCoroutine != null)
             {
                 StopCoroutine(typingCoroutine);
-                if (scriptQueue.Count > 0)
-                {
-                    _storyText.text = scriptQueue.Peek();
-                }
+                _storyText.text = currentTypingText;
                 isTyping = false;
             }
         }

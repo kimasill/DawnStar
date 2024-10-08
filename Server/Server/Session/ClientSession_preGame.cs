@@ -152,6 +152,25 @@ namespace Server
                     //클라한테 아이템 전달
                 }
                 Send(itemListPacket);
+                S_QuestList questListPacket = new S_QuestList();
+                using (AppDbContext db = new AppDbContext())
+                {
+                    List<QuestDb> quests = db.Quests
+                        .Where(q => q.OwnerDbId == playerInfo.PlayerDbId)
+                        .ToList();
+                    foreach (QuestDb questDb in quests)
+                    {
+                        Quest quest = Quest.MakeQuest(questDb);
+                        if (quest != null)
+                        {
+                            MyPlayer.Quest.Add(quest);
+                            QuestInfo info = new QuestInfo();
+                            info.MergeFrom(quest.Info);
+                            questListPacket.Quests.Add(info);
+                        }
+                    }
+                }
+                Send(questListPacket);
                 ServerState = PlayerServerState.ServerStateSingle;
                 if (ServerState == PlayerServerState.ServerStateSingle)
                 {

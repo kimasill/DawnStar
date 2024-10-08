@@ -2,7 +2,7 @@
   "quests": [
     {
       "id": "1",
-      "title": "epic",
+      "title": "새벽마을",
       "rewards": [
         {
           "rewardType": "Reward_Exp",
@@ -10,11 +10,12 @@
         }
       ],
       "connection": "2",
-      "questType": "epic"
+      "questType": "epic",
+      "description": "새벽마을에 도착했다."
     },
     {
       "id": "2",
-      "title": "tutorial01",
+      "title": "일상",
       "rewards": [
         {
           "rewardType": "Reward_Gold",
@@ -26,11 +27,12 @@
         }
       ],
       "connection": "3",
-      "questType": "story"
+      "questType": "story",
+      "description": "마을 사람들과 대화를 나누었다."
     },
     {
       "id": "3",
-      "title": "tutorial02",
+      "title": "일상2",
       "rewards": [
         {
           "rewardType": "Reward_Exp",
@@ -38,11 +40,12 @@
         }
       ],
       "connection": "4",
-      "questType": "interaction"
+      "questType": "interaction",
+      "description": "마을 사람들과 대화를 나누었다."
     },
     {
       "id": "4",
-      "title": "Sleep",
+      "title": "전조",
       "rewards": [
         {
           "rewardType": "Reward_Exp",
@@ -50,11 +53,12 @@
         }
       ],
       "connection": "5",
-      "questType": "interaction"
+      "questType": "interaction",
+      "description": "마을 사람들과 대화를 나누었다."
     },
     {
       "id": "5",
-      "title": "Death",
+      "title": "죽음",
       "rewards": [
         {
           "rewardType": "Reward_Exp",
@@ -62,11 +66,12 @@
         }
       ],
       "connection": "6",
-      "questType": "scene"
+      "questType": "scene",
+      "description": "마을 사람들과 대화를 나누었다."
     },
     {
       "id": "6",
-      "title": "Weapon",
+      "title": "분노",
       "rewards": [
         {
           "rewardType": "Reward_Exp",
@@ -74,11 +79,12 @@
         }
       ],
       "connection":"0",
-      "questType": "interaction"
+      "questType": "interaction",
+      "description": "마을 사람들과 대화를 나누었다."
     },
     {
       "id": "7",
-      "title": "TotheEastEnd",
+      "title": "발걸음",
       "rewards": [
         {
           "rewardType": "Reward_Exp",
@@ -86,7 +92,8 @@
         }
       ],
       "connection": "8",
-      "questType": "battle"
+      "questType": "battle",
+      "description": "나타나는 몬스터들을 처치하며, 동쪽으로 향하세요."
     },
     {
       "id": "8",
@@ -98,7 +105,8 @@
         }
       ],
       "connection": "9",
-      "questType": "interaction"
+      "questType": "interaction",
+      "description": "마을 사람들과 대화를 나누었다."
     },
     {
       "id": "9",
@@ -110,7 +118,8 @@
         }
       ],
       "connection": "10",
-      "questType": "interaction"
+      "questType": "interaction",
+      "description": "마을 사람들과 대화를 나누었다."
     },
     {
       "id": "10",
@@ -122,7 +131,8 @@
         }
       ],
       "connection": "11",
-      "questType": "interaction"
+      "questType": "interaction",
+      "description": "마을 사람들과 대화를 나누었다."
     },
     {
       "id": "11",
@@ -134,7 +144,8 @@
         }
       ],
       "connection": "12",
-      "questType": "interaction"
+      "questType": "interaction",
+      "description": "마을 사람들과 대화를 나누었다."
     },
     {
       "id": "12",
@@ -146,7 +157,8 @@
         }
       ],
       "connection": "13",
-      "questType": "interaction"
+      "questType": "interaction",
+      "description": "마을 사람들과 대화를 나누었다."
     },
     {
       "id": "13",
@@ -157,8 +169,8 @@
           "amount": "50"
         }
       ],
-      "questType": "interaction"
+      "questType": "interaction",
+      "description": "마을 사람들과 대화를 나누었다."
     }
   ]
-
 } 

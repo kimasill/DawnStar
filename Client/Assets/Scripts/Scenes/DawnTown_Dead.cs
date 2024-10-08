@@ -12,7 +12,6 @@ public class DawnTownDead : DawnTown
         Managers.Map.LoadMap(4); // DawnTownDead 맵 로드
 
         Screen.SetResolution(640, 480, false);
-        _sceneUi = Managers.UI.ShowSceneUI<UI_GameScene>();
         _sceneUi.SetActive(_sceneUi.GameWindow, true);
         StartQuest07();
     }
@@ -24,6 +23,10 @@ public class DawnTownDead : DawnTown
 
     private void StartQuest07()
     {
+        if(Managers.Quest.CurrentQuest != null)
+        {
+            return;
+        }
         // 퀘스트 07 시작
         if(Managers.Quest.Quests == null || Managers.Quest.Quests.Count == 0)
         {
@@ -54,7 +57,7 @@ public class DawnTownDead : DawnTown
 
     public override void StartBattleQuest(Quest quest)
     {
-        if(quest.Id == 7)
+        if(quest.TemplateId == 7)
         {
             Managers.Quest.ShowQuestScript(7);
             GameObject  map = Managers.Map.CurrentGrid.gameObject;
