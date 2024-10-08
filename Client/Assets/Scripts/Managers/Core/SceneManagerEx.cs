@@ -5,9 +5,24 @@ using UnityEngine.SceneManagement;
 
 public class SceneManagerEx : MonoBehaviour
 {
+    
+    private static SceneManagerEx _instance;
+    public static SceneManagerEx Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                // 씬에 SceneManagerEx 오브젝트가 없으면 생성
+                GameObject go = new GameObject("SceneManagerEx");
+                _instance = go.AddComponent<SceneManagerEx>();
+                DontDestroyOnLoad(go);
+            }
+            return _instance;
+        }
+    }
     public BaseScene CurrentScene { get { return GameObject.FindObjectOfType<BaseScene>(); } }
-
-	public void LoadScene(Define.Scene type)
+    public void LoadScene(Define.Scene type)
     {
         Managers.Clear();
 
@@ -16,11 +31,25 @@ public class SceneManagerEx : MonoBehaviour
     public void LoadScene(string name)
     {
         Managers.Clear();
-        StartCoroutine(LoadSceneCoroutine(name));
+
+        // SceneManagerEx 인스턴스가 제대로 초기화되었는지 확인
+        if (this != null)
+        {
+            StartCoroutine(LoadSceneCoroutine(name));
+        }
+        else
+        {
+            Debug.LogError("SceneManagerEx instance is not initialized.");
+        }
     }
 
     private IEnumerator LoadSceneCoroutine(string sceneName)
     {
+        if (Managers.UI == null)
+        {
+            Debug.LogError("UIManager is not initialized.");
+            yield break;
+        }
         // 로딩창 표시
         Managers.UI.ShowLoadingUI();
 
@@ -29,7 +58,9 @@ public class SceneManagerEx : MonoBehaviour
         while (!asyncLoad.isDone)
         {
             // 로딩 진행 상황 업데이트
+            //TODO: 외부인자로 변경
             Managers.UI.SetLoadingText($"Loading... {asyncLoad.progress * 100}%");
+            Managers.UI.SetLoadingImage("Textures/Images/StoryScene009");
             yield return null;
         }
 

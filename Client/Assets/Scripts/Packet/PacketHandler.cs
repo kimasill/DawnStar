@@ -403,9 +403,10 @@ class PacketHandler
     public static void S_StartQuestHandler(PacketSession session, IMessage packet)
     {
         S_StartQuest questPacket = (S_StartQuest)packet;
-        int questId = Managers.Quest.Add(questPacket.Quest);
+        Quest quest = Quest.MakeQuest(questPacket.Quest);
+        Managers.Quest.Add(quest);
         Debug.Log($"Start Quest : {questPacket.Quest.TemplateId}");
-        Managers.Quest.StartQuest(questId);
+        Managers.Quest.StartQuest(quest);
     }
 
     public static void S_QuestCompleteHandler(PacketSession session, IMessage packet)
@@ -415,6 +416,17 @@ class PacketHandler
         Debug.Log($"Complete Quest : {questPacket.Quest.TemplateId}");
     }
 
+    public static void S_QuestListHandler(PacketSession session, IMessage packet)
+    {
+        S_QuestList questListPacket = (S_QuestList)packet;
+        Managers.Quest.Clear();
+        foreach (QuestInfo questInfo in questListPacket.Quests)
+        {
+            Quest quest = Quest.MakeQuest(questInfo);
+            Managers.Quest.Add(quest);
+        }
+        Debug.Log("S_QuestListHandler");
+    }
     public static void S_BuyItemHandler(PacketSession session, IMessage packet)
     {
         S_BuyItem buyItemPacket = packet as S_BuyItem;

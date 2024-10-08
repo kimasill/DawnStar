@@ -257,11 +257,11 @@ namespace Server.Game
             PosInfo.State = CreatureState.Idle;
             PosInfo.MoveDir = MoveDir.Down;
             List<int> spawnIds = [SpawnId];
-            Room.PushAfter(_respawnTime, () =>
+            room.PushAfter(_respawnTime, () =>
             {
-                if (Room != null)
+                if (room != null)
                 {
-                    Room.HandleSpawnMonster((Player)attacker, spawnIds);
+                    room.HandleSpawnMonster((Player)attacker, spawnIds);
                 }
             });
         }

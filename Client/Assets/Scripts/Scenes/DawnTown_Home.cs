@@ -65,13 +65,13 @@ public class DawnTown_Home : DawnTown
 
     public override void StartInteractionQuest(Quest quest)
     {
-        if(quest.Id == 4)
+        if(quest.TemplateId == 4)
         {
-            Managers.Quest.ShowQuestScript(quest.Id);
+            Managers.Quest.ShowQuestScript(quest.TemplateId);
         }
-        else if(quest.Id == 6)
+        else if(quest.TemplateId == 6)
         {
-            Managers.Quest.ShowQuestScript(quest.Id);
+            Managers.Quest.ShowQuestScript(quest.TemplateId);
             SpawnItemBelowPlayer(3);
         }
     }

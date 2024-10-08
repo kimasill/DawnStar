@@ -272,4 +272,41 @@ namespace Data
         }
     }
     #endregion
+    #region Quest
+
+    [Serializable]
+    public class QuestRewardData
+    {
+        public RewardType type;
+        public int amount;
+    }
+
+    [Serializable]
+    public class QuestData
+    {
+        public int id;
+        public string title;
+        public List<RewardData> rewards;
+        public int connection;
+        public string questType;
+        public string description;
+    }
+
+    [Serializable]
+    public class QuestLoader : ILoader<int, QuestData>
+    {
+        public List<QuestData> quests = new List<QuestData>();
+
+        public Dictionary<int, QuestData> MakeDict()
+        {
+            Dictionary<int, QuestData> dict = new Dictionary<int, QuestData>();
+            foreach (QuestData item in quests)
+            {
+                dict.Add(item.id, item);
+            }
+            return dict;
+        }
+    }
+
+    #endregion
 }

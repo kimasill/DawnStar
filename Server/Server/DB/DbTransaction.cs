@@ -225,13 +225,13 @@ namespace Server.DB
             });
         }
             
-        public static void SaveCompleteQuest(Player player, QuestInfo questInfo)
+        public static void SaveCompleteQuest(Player player, QuestDb questDb, GameRoom room)
         {
-            if (player == null || questInfo == null)
+            if (player == null || questDb == null)
                 return;
 
             // 퀘스트 데이터 읽기
-            Data.QuestData questData = DataManager.QuestDict.GetValueOrDefault(questInfo.TemplateId);
+            Data.QuestData questData = DataManager.QuestDict.GetValueOrDefault(questDb.TemplateId);
             if (questData == null)
                 return;
 
@@ -245,14 +245,14 @@ namespace Server.DB
             {
                 using (AppDbContext db = new AppDbContext())
                 {
-                    QuestDb questDb = db.Quests
-                        .Where(q => q.QuestDbId == questInfo.QuestDbId)
+                    QuestDb existingQuestDb = db.Quests
+                        .Where(q => q.QuestDbId == questDb.QuestDbId)
                         .FirstOrDefault();
 
-                    if (questDb == null || questDb.Completed)
+                    if (existingQuestDb == null || existingQuestDb.Completed)
                         return;
 
-                    questDb.Completed = true;
+                    existingQuestDb.Completed = true;
 
                     bool success = db.SaveChangesEx(); // 저장할 때 예외 처리를 해준다.
                     if (success)
@@ -282,34 +282,86 @@ namespace Server.DB
             });
         }
 
-        public static void SaveStartQuest(Player player, QuestInfo questInfo)
+        public static void SaveStartQuest(Player player, QuestDb questDb, GameRoom room)
         {
-            if (player == null || questInfo == null)
+            if (player == null || questDb == null)
                 return;
 
             Instance.Push(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
-                    QuestDb existingQuestDb = db.Quests.FirstOrDefault(q => q.TemplateId == questInfo.TemplateId && q.OwnerDbId == player.PlayerDbId);
+                    QuestDb existingQuestDb = db.Quests.FirstOrDefault(q => q.TemplateId == questDb.TemplateId && q.OwnerDbId == player.PlayerDbId);
                     if (existingQuestDb != null)
                     {
-                        return;
+                        existingQuestDb.Progress = questDb.Progress;
                     }
-
-                    QuestDb questDb = new QuestDb
+                    else
                     {
-                        OwnerDbId = player.PlayerDbId,
-                        TemplateId = questInfo.TemplateId,
-                        Progress = questInfo.Progress,
-                        Completed = questInfo.Completed
-                    };
+                        db.Quests.Add(questDb);
+                    }                    
+                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                    if (success)
+                    {
+                        room.Push(() =>
+                        {
+                            Quest newQuest = Quest.MakeQuest(questDb);
+                            newQuest.Progress = 1;
+                            player.Quest.Add(newQuest);
+                            player.Quest.CurrentQuest = newQuest;                            
 
-                    db.Quests.Add(questDb);
-                    db.SaveChanges();
+                            //client noti
+                            {
+                                S_StartQuest questPacket = new S_StartQuest();
+                                QuestInfo info = new QuestInfo();
+                                info.MergeFrom(newQuest.Info);
+                                questPacket.Quest = info;
 
-                    // 퀘스트 정보 업데이트
-                    questInfo.QuestDbId = questDb.QuestDbId;
+                                player.Session.Send(questPacket);
+                            }
+                        });
+                    }       
+                }
+            });
+        }
+
+        public static void SaveQuestDB(Player player, QuestDb questDb, GameRoom room)
+        {
+            if (player == null || questDb == null)
+                return;
+
+            Instance.Push(() =>
+            {
+                using (AppDbContext db = new AppDbContext())
+                {
+                    QuestDb existingQuestDb = db.Quests.FirstOrDefault(q => q.TemplateId == questDb.TemplateId && q.OwnerDbId == player.PlayerDbId);
+                    if (existingQuestDb != null)
+                    {
+                        existingQuestDb = questDb;
+                    }
+                    else
+                    {
+                        db.Quests.Add(questDb);
+                    }
+                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                    if (success)
+                    {
+                        room.Push(() =>
+                        {
+                            Quest newQuest = Quest.MakeQuest(questDb);
+                            newQuest.Progress = questDb.Progress;
+                            player.Quest.Add(newQuest);
+                            //client noti
+                            {
+                                S_QuestList questPacket = new S_QuestList();
+                                QuestInfo info = new QuestInfo();
+                                info.MergeFrom(newQuest.Info);
+                                questPacket.Quests.Add(info);
+
+                                player.Session.Send(questPacket);
+                            }
+                        });
+                    }
                 }
             });
         }

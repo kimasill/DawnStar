@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,13 +16,13 @@ public class UI_Loading : UI_Popup
     public override void Init()
     {
         base.Init();
-        Bind<Text>(typeof(Texts));
-        GetText((int)Texts.LoadingText).text = "Loading...";
+        Bind<TMP_Text>(typeof(Texts));
+        Bind<Image>(typeof(Images));
     }
 
     public void SetLoadingText(string text)
     {
-        GetText((int)Texts.LoadingText).text = text;
+        GetTextMeshPro((int)Texts.LoadingText).text = text;
     }
 
     public void SetLoadingImage(string path)

@@ -49,6 +49,7 @@ enum MsgId {
   S_RESPAWN = 41;
   C_RESPAWN = 42;
   S_LOADING = 43;
+  S_QUEST_LIST = 44;
 }
 enum CreatureState{
   IDLE = 0;
@@ -391,6 +392,8 @@ message QuestInfo
   bool completed = 5;
   string questType = 6;
   RewardInfo rewards = 7;
+  string title = 8;
+  string description = 9;
 }
 
 message RewardInfo

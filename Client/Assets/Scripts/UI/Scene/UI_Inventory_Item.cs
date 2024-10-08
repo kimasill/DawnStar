@@ -63,15 +63,19 @@ public class UI_Inventory_Item : UI_Base
         //아이템 정보 저장 : 슬롯에 세팅 시 
         ItemDbId = item.ItemDbId;
         TemplateId = item.TemplateId;
-        Count = item.Count;
+        if(item.Count > 0)
+        {
+            Count = item.Count;
+            _itemCount.text = Count.ToString();
+        }
+            
         Equipped = item.Equipped;
 
         Data.ItemData itemData = null;
         Managers.Data.ItemDict.TryGetValue(TemplateId, out itemData);
 
         Sprite icon = Managers.Resource.Load<Sprite>(itemData.iconPath);
-        _icon.sprite = icon;
-        _itemCount.text = Count.ToString();
+        _icon.sprite = icon;       
 
         _itemCount.gameObject.SetActive(true);
         _icon.gameObject.SetActive(true);

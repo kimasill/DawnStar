@@ -14,7 +14,7 @@ public class UI_Shop : UI_Base
     public Text shopDescription;
     public GameObject grid;
 
-    public enum Buttons 
+    enum Buttons 
     { 
         ShopExitButton
     }
