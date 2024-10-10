@@ -70,7 +70,6 @@ namespace Server.Game
                         List<GameObject> targets = new List<GameObject>();
                         if (skillData.shape.shapeType == ShapeType.ShapeBent)
                         {
-                            skillPos.Add(player.CellPos);
                             skillPos.Add(player.GetFrontCellPos());
                             skillPos.Add(player.GetPosFromLookDir(player.CellPos, info.Position.LookDir));
                         }

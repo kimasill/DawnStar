@@ -75,9 +75,33 @@ public class PlayerController : CreatureController
                     break;
             }
         }
-        else
+        else if(State == CreatureState.Stiff)
         {
-
+            switch (LookDir)
+            {
+                case LookDir.LookLeft:
+                    _animator.Play("HURT");
+                    gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
+                    break;
+                case LookDir.LookRight:
+                    _animator.Play("HURT");
+                    gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
+                    break;
+            }
+        }
+        else if (State == CreatureState.Dead)
+        {
+            switch (LookDir)
+            {
+                case LookDir.LookLeft:
+                    _animator.Play("DEATH");
+                    gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
+                    break;
+                case LookDir.LookRight:
+                    _animator.Play("DEATH");
+                    gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
+                    break;
+            }
         }
     }
 
@@ -128,6 +152,6 @@ public class PlayerController : CreatureController
 	public override void OnDamaged()
 	{
 		Debug.Log("Player HIT !");
-	}
-
+        base.OnDamaged();
+    }
 }

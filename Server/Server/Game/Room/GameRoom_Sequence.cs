@@ -20,10 +20,10 @@ namespace Server.Game
             if (player == null || player.Room == null)
                 return;
 
-            // 클라이언트에 로딩 화면을 띄우라는 신호를 보냅니다.
-            S_Loading loadingPacket = new S_Loading();
-            loadingPacket.Loading = true;
-            player.Session.Send(loadingPacket);
+            //// 클라이언트에 로딩 화면을 띄우라는 신호를 보냅니다.
+            //S_Loading loadingPacket = new S_Loading();
+            //loadingPacket.Loading = true;
+            //player.Session.Send(loadingPacket);
 
             // LeaveGame을 호출하여 현재 게임에서 플레이어를 제거합니다.
             LeaveGame(player.Id);
@@ -56,9 +56,9 @@ namespace Server.Game
             // EnterGame을 호출하여 플레이어를 다시 게임에 추가합니다.
             EnterGame(player, false);
 
-            // 클라이언트에 로딩 화면을 종료하라는 신호를 보냅니다.
-            loadingPacket.Loading = false;
-            player.Session.Send(loadingPacket);
+            //// 클라이언트에 로딩 화면을 종료하라는 신호를 보냅니다.
+            //loadingPacket.Loading = false;
+            //player.Session.Send(loadingPacket);
         }
 
         private Vector2Int FindClosestPortal(MapData mapData, Vector2Int cellPos)

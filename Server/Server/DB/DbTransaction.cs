@@ -133,11 +133,12 @@ namespace Server.DB
                     else
                     {
                         db.Items.Add(itemDb);
-                    }
-
+                    }                    
                     bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                    
                     if (success)
-                    {
+                    {                        
+                        itemDb.ItemDbId = db.Items.FirstOrDefault(i => i.OwnerDbId == itemDb.OwnerDbId && i.Slot == itemDb.Slot).ItemDbId;
                         room.Push(() =>
                         {
                             Item newItem = Item.MakeItem(itemDb);
@@ -306,7 +307,6 @@ namespace Server.DB
                         room.Push(() =>
                         {
                             Quest newQuest = Quest.MakeQuest(questDb);
-                            newQuest.Progress = 1;
                             player.Quest.Add(newQuest);
                             player.Quest.CurrentQuest = newQuest;                            
 

@@ -18,6 +18,8 @@ namespace Server.Game
         public int TemplateId { get; private set; }
         public Vector2Int SpawnPosition { get; set; }
         public int SpawnId { get; set; }
+
+        public bool IsDead = false;
         public Monster()
         {
             ObjectType = GameObjectType.Monster;
@@ -190,7 +192,7 @@ namespace Server.Game
                 DataManager.SkillDict.TryGetValue(1, out skillData);
                 //데미지 판정
                 _target.OnDamaged(this, skillData.damage + TotalAttack);
-
+                
                 //스킬 사용
                 S_Skill skillPacket = new S_Skill() { Info = new SkillInfo()};
                 skillPacket.ObjectId = Id;
@@ -220,10 +222,16 @@ namespace Server.Game
 
         public override void OnDamaged(GameObject attacker, int damage)
         {
+            if (IsDead)
+                return;
+
+            State = CreatureState.Stiff;
             base.OnDamaged(attacker, damage);            
         }
         public override void Ondead(GameObject attacker)
         {
+            IsDead = true;
+
             //죽은 상태로 변경 : job 취소
             if (_job != null)
             {
@@ -252,7 +260,15 @@ namespace Server.Game
                     //DbTransaction.RewardPlayer(player, rewardData, Room);
                 }
             }
-            room.LeaveGame(Id);
+            
+            room.PushAfter(1100, () =>
+            {
+                if (room != null)
+                {
+                    room.LeaveGame(Id);
+                }
+            });
+
             Stat.Hp = Stat.MaxHp;
             PosInfo.State = CreatureState.Idle;
             PosInfo.MoveDir = MoveDir.Down;

@@ -8045,9 +8045,8 @@ GameObject:
   - component: {fileID: 654125115854727825}
   - component: {fileID: 7259313235310420404}
   - component: {fileID: 1848475221832057324}
-  - component: {fileID: 5082690856743262286}
   m_Layer: 0
-  m_Name: QuestFlag
+  m_Name: Quest_4
   m_TagString: Quest
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8165,18 +8164,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.32, y: 0.32}
   m_EdgeRadius: 0
---- !u!114 &5082690856743262286
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5232519881789616668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 654cf5d81b6872d459667586754aa6be, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5726828449805412930
 GameObject:
   m_ObjectHideFlags: 0

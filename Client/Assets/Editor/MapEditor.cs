@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.IO;
+using Unity.VisualScripting;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -13,19 +15,18 @@ public class MapEditor
 
 #if UNITY_EDITOR
 
-	// % (Ctrl), # (Shift), & (Alt)
+    // % (Ctrl), # (Shift), & (Alt)
 
-	[MenuItem("Tools/GenerateMap %#g")]
-	private static void GenerateMap()
-	{
-		GenerateByPath("Assets/Resources/Map");
+    [MenuItem("Tools/GenerateMap %#g")]
+    private static void GenerateMap()
+    {
+        GenerateByPath("Assets/Resources/Map");
         GenerateByPath("../Common/MapData");
-
-
+        GenerateSpawnPointByPath("Assets/Resources/Map");
     }
 
-	private static void GenerateByPath(string pathPrefix)
-	{
+    private static void GenerateByPath(string pathPrefix)
+    {
         GameObject[] gameObjects = Resources.LoadAll<GameObject>("Prefabs/Map");
 
         foreach (GameObject go in gameObjects)
@@ -56,6 +57,100 @@ public class MapEditor
         }
     }
 
+    private static void GenerateSpawnPointByPath(string pathPrefix)
+    {
+        GameObject[] gameObjects = Resources.LoadAll<GameObject>("Prefabs/Map");
+        foreach (var go in gameObjects)
+        {
+            GameObject spawnPoint = go.transform.Find("SpawnPoint")?.gameObject;
+            if (spawnPoint == null)
+            {
+                continue;
+            }
+            Transform spawnPointTransform = spawnPoint.transform;
+
+            List<Tilemap> monsterTilemaps = new List<Tilemap>();
+            Tilemap tmBase = Util.FindChild<Tilemap>(go, "Tilemap_Base", true);
+
+            foreach (Transform child in spawnPointTransform)
+            {
+                Tilemap tilemap = child.GetComponent<Tilemap>();
+                if (tilemap != null)
+                {
+                    monsterTilemaps.Add(tilemap);
+                }
+            }
+
+            if (monsterTilemaps.Count == 0)
+            {
+                Debug.LogError("SpawnPoint 아래에 타일맵이 없습니다.");
+                return;
+            }
+
+            // tmBase의 경계를 사용하여 맵 데이터 초기화
+            BoundsInt bounds = tmBase.cellBounds;
+            int width = bounds.xMax - bounds.xMin + 1;
+            int height = bounds.yMax - bounds.yMin + 1;
+            int[,] mapData = new int[width, height];
+
+            // 모든 위치를 0으로 초기화
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    mapData[x, y] = 0;
+                }
+            }
+            foreach (Tilemap tilemap in monsterTilemaps)
+            {
+                foreach (Vector3Int pos in tilemap.cellBounds.allPositionsWithin)
+                {
+                    TileBase tile = tilemap.GetTile(pos);
+                    if (tile != null)
+                    {
+                        string tileName = tilemap.gameObject.name;
+                        if (tileName.StartsWith("Monster_"))
+                        {
+                            int monsterId = int.Parse(tileName.Substring(8));
+                            Vector3Int cellPosition = new Vector3Int(
+                                pos.x - bounds.xMin,
+                                pos.y - bounds.yMin,
+                                0
+                            );
+                            mapData[cellPosition.x, cellPosition.y] = monsterId;
+                            Debug.Log($"MonsterId: {monsterId}, Position: {cellPosition}");
+                        }
+                    }
+                }
+            }
+
+            string fileName = $"{go.name}_SpawnPoints";
+            SaveMapData(pathPrefix, fileName, mapData, bounds);
+        }
+    }
+    private static void SaveMapData(string pathPrefix, string fileName, int[,] mapData, BoundsInt bounds)
+    {
+        string filePath = Path.Combine(pathPrefix, $"{fileName}.txt");
+
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            writer.WriteLine(bounds.xMin);
+            writer.WriteLine(bounds.xMax);
+            writer.WriteLine(bounds.yMin);
+            writer.WriteLine(bounds.yMax);
+
+            for (int y = bounds.yMax; y >= bounds.yMin; y--)
+            {
+                for (int x = bounds.xMin; x <= bounds.xMax; x++)
+                {
+                    writer.Write(mapData[x - bounds.xMin, y - bounds.yMin]);
+                }
+                writer.WriteLine();
+            }
+        }
+
+        Debug.Log($"맵 데이터가 저장되었습니다: {filePath}");
+    }
 
 #endif
 

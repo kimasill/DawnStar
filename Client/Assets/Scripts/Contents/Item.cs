@@ -22,7 +22,6 @@ public class Item
         get { return Info.TemplateId; }
         set { Info.TemplateId = value; }
     }
-
     public int Count
     {
         get { return Info.Count; }
@@ -88,6 +87,7 @@ public class Item
 
         if (item != null)
         {
+
             item.ItemDbId = itemInfo.ItemDbId;
             item.Count = itemInfo.Count;
             item.Slot = itemInfo.Slot;

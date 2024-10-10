@@ -63,22 +63,22 @@ public class DawnTown_Home : DawnTown
         }
     }
 
-    public override void StartInteractionQuest(Quest quest)
+    public override void StartInteractionQuest(int questId)
     {
-        if(quest.TemplateId == 4)
+        if(questId == 4)
         {
-            Managers.Quest.ShowQuestScript(quest.TemplateId);
+            Managers.Quest.ShowQuestScript(questId);
         }
-        else if(quest.TemplateId == 6)
+        else if(questId == 6)
         {
-            Managers.Quest.ShowQuestScript(quest.TemplateId);
+            Managers.Quest.ShowQuestScript(questId);
             SpawnItemBelowPlayer(3);
         }
     }
-    public override void CheckInteractionQuest(Quest quest)
+    public override void CheckInteractionQuest(int questId)
     {
         int id = Managers.Quest.GetCurrentQuestId();
-        if (id == 4)
+        if (id == questId)
         {
             Managers.Quest.EndQuest();
         }        

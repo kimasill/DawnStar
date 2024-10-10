@@ -1,4 +1,5 @@
 using Google.Protobuf.Protocol;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,7 +45,7 @@ public class BaseController : MonoBehaviour
         }
     }
     protected bool _updated = false;
-
+    private long _stiffEndTick = 0;
     PositionInfo _positionInfo = new PositionInfo();
     public PositionInfo PosInfo
     {
@@ -240,7 +241,15 @@ public class BaseController : MonoBehaviour
                     _sprite.flipX = false;
                     break;
             }
+
+
+            StartCoroutine(DisableAfterDelay(1.0f));
         }
+    }
+    private IEnumerator DisableAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        gameObject.SetActive(false);
     }
 
     void Start()
@@ -289,6 +298,14 @@ public class BaseController : MonoBehaviour
     }
     protected virtual void UpdateStiff()
     {
+        if (_stiffEndTick == 0)
+        {
+            _stiffEndTick = Environment.TickCount + 500;
+        }
+        if (_stiffEndTick > Environment.TickCount)
+            return;
+        _stiffEndTick = 0;
+        State = CreatureState.Idle;
     }
     // 스르륵 이동하는 것을 처리
     protected virtual void UpdateMoving()

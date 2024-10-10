@@ -13,8 +13,7 @@ public class InventoryManager : MonoBehaviour
         Item pItem = Get(item.ItemDbId);
         if (pItem != null)
             pItem.Count += item.Count;
-        Items.Add(item.ItemDbId, item);
-        ItemAdded?.Invoke(item);
+        else Items.Add(item.ItemDbId, item);        
     }
 
     public void Remove(int itemId)

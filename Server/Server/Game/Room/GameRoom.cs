@@ -15,7 +15,7 @@ namespace Server.Game
 {
     public partial class GameRoom : JobSerializer
     {
-        public const int VisionCells = 5;
+        public const int VisionCells = 10;
         public int RoomId { get; set; }
 
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
@@ -356,6 +356,14 @@ namespace Server.Game
                 }
             }
             return zones.ToList();
+        }
+
+        public void ResetSingleRoom(Player player)
+        {
+            foreach (var monster in _monsters) {
+                LeaveGame(monster.Value.Id);
+            }            
+            _projectiles.Clear();
         }
     }
 }

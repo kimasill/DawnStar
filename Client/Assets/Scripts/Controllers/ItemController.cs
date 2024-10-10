@@ -78,27 +78,42 @@ public class ItemController : BaseController
     private IEnumerator BounceEffectCoroutine()
     {
         Vector3 originalPosition = transform.position;
-        Vector3 targetPosition = originalPosition + new Vector3(Random.Range(-1f, 1f), Random.Range(0.5f, 1.5f), 0);
+        Vector3Int targetCellPosition = Managers.Map.CurrentGrid.WorldToCell(originalPosition) + new Vector3Int(Random.Range(-1, 2), Random.Range(-1, 2), 0);
+
+        // MapManager를 통해 targetCellPosition이 유효한지 확인
+        while (!Managers.Map.CanGo(targetCellPosition))
+        {
+            targetCellPosition = Managers.Map.CurrentGrid.WorldToCell(originalPosition) + new Vector3Int(Random.Range(-1, 2), Random.Range(-1, 2), 0);
+        }
+
+        Vector3 targetPosition = Managers.Map.CurrentGrid.CellToWorld(targetCellPosition) + new Vector3(0.5f, 0.5f, 0);
+        Vector3 controlPoint = originalPosition + (targetPosition - originalPosition) / 2 + Vector3.up * 2;
 
         float duration = 0.5f;
         float elapsed = 0f;
 
         while (elapsed < duration)
         {
-            transform.position = Vector3.Lerp(originalPosition, targetPosition, elapsed / duration);
+            float t = elapsed / duration;
+            transform.position = CalculateBezierPoint(t, originalPosition, controlPoint, targetPosition);
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        // 바닥에 떨어지는 애니메이션
-        elapsed = 0f;
-        while (elapsed < duration)
-        {
-            transform.position = Vector3.Lerp(targetPosition, originalPosition, elapsed / duration);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
+        transform.position = targetPosition;
+        CellPos = targetCellPosition;
+    }
 
-        transform.position = originalPosition;
+    private Vector3 CalculateBezierPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2)
+    {
+        float u = 1 - t;
+        float tt = t * t;
+        float uu = u * u;
+
+        Vector3 p = uu * p0; // (1-t)^2 * p0
+        p += 2 * u * t * p1; // 2 * (1-t) * t * p1
+        p += tt * p2; // t^2 * p2
+
+        return p;
     }
 }
