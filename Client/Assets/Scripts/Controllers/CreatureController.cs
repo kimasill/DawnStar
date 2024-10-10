@@ -64,28 +64,6 @@ public class CreatureController : BaseController
     public virtual void OnDead()
     {
         State = CreatureState.Dead;
-        if (this is MonsterController) // Check if the instance is of type MonsterController
-        {
-            StartCoroutine(FadeOut());
-        }
-    }
-
-    private IEnumerator FadeOut()
-    {
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        Color originalColor = spriteRenderer.color;
-        float fadeDuration = 1.0f;
-        float elapsed = 0f;
-
-        while (elapsed < fadeDuration)
-        {
-            float alpha = Mathf.Lerp(1f, 0f, elapsed / fadeDuration);
-            spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0f);
     }
 
     public virtual void UseSkill(int skillId)

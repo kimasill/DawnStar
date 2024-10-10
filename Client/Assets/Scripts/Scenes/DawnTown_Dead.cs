@@ -11,7 +11,7 @@ public class DawnTownDead : DawnTown
 
         Managers.Map.LoadMap(4); // DawnTownDead 맵 로드
 
-        Screen.SetResolution(640, 480, false);
+        Screen.SetResolution(1920, 1080, false);
         _sceneUi.SetActive(_sceneUi.GameWindow, true);
         StartQuest07();
     }

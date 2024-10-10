@@ -48,7 +48,7 @@ class PacketHandler
         
         foreach (ObjectInfo obj in spawnPacket.Objects)
         {
-            Managers.Object.Add(obj, myPlayer: false);
+             Managers.Object.Add(obj, myPlayer: false);
         }
     }
     public static void S_DespawnHandler(PacketSession session, IMessage packet)
@@ -56,11 +56,7 @@ class PacketHandler
         S_Despawn despawnPacket = packet as S_Despawn;
         foreach (int obj in despawnPacket.ObjectId)
         {
-            if (Managers.Object.IsPlayingAnim(obj))
-            {
-                Managers.Object.RemoveAfterAnimation(obj);
-            }
-            else Managers.Object.Remove(obj);
+            Managers.Object.Remove(obj);
         }
     }
 
@@ -122,8 +118,7 @@ class PacketHandler
         if (cc == null)
         {
             return;
-        }
-        Debug.Log($"S_SkillHandler : {skillPacket.Info.SkillId}");
+        }        
         cc.UseSkill(skillPacket.Info.SkillId);
     }
 
@@ -307,16 +302,18 @@ class PacketHandler
     {
 
         S_AddItem itemList = packet as S_AddItem;
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
         //메모리에 아이템 정보 저장
         foreach (ItemInfo itemInfo in itemList.Items)
         {
             Item item = Item.MakeItem(itemInfo);
             Managers.Inventory.Add(item);
+            gameSceneUI.NotificationUI.ShowItemNoti(item);
         }
 
         Debug.Log("S_AddItem");
 
-        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        
         //아이템 획득시 자동 갱신
         gameSceneUI.InvenUI.RefreshUI();
         gameSceneUI.StatUI.RefreshUI();
@@ -406,7 +403,7 @@ class PacketHandler
         Quest quest = Quest.MakeQuest(questPacket.Quest);
         Managers.Quest.Add(quest);
         Debug.Log($"Start Quest : {questPacket.Quest.TemplateId}");
-        Managers.Quest.StartQuest(quest);
+        Managers.Quest.StartQuest(quest.TemplateId);
     }
 
     public static void S_QuestCompleteHandler(PacketSession session, IMessage packet)

@@ -22,6 +22,7 @@ namespace Server.Game
         public VIsionCube Vision { get; private set; }
         public Inventory Inven { get; private set; } = new Inventory();
         public QuestInventory Quest { get; set; } = new QuestInventory();
+        public bool IsDead { get; set; }
         public int Exp {
             get { return Stat.TotalExp; }
             set {
@@ -70,17 +71,25 @@ namespace Server.Game
         {
             ObjectType = GameObjectType.Player;
             Vision = new VIsionCube(this);
+            IsDead = false;
         }
 
         public override void OnDamaged(GameObject target, int damage)
-        {            
+        {
+            if (IsDead)
+                return;
             base.OnDamaged(target, damage);
+            //TODO : 피해를 입었을 때 처리 -> 플레이어 스탯에 따라 딜레이 시간 변경
         }
 
         public override void Ondead(GameObject attacker)
         {
             if (Room == null)
                 return;
+            if (IsDead)
+                return;
+
+            IsDead = true;
 
             S_Die diePacket = new S_Die();
             diePacket.ObjectId = Id;
@@ -126,6 +135,10 @@ namespace Server.Game
                 Room.HandleUpdateQuest(this, Quest.CurrentQuest.TemplateId, 0);
             DbTransaction.SavePlayerStatus_All(this, Room);
             DbTransaction.SavePlayerMap(this, MapInfo);
+            if (Session.ServerState == PlayerServerState.ServerStateSingle)
+            {
+                Room.ResetSingleRoom(this);
+            }
         }
 
         public void HandleEquipItem(C_EquipItem equipPacket)

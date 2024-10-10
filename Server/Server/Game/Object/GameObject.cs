@@ -22,7 +22,6 @@ namespace Server.Game
         public PositionInfo PosInfo { get; private set;} = new PositionInfo();
         public StatInfo Stat { get; private set; } = new StatInfo();
         public MapInfo MapInfo { get; set; } = new MapInfo();
-        
         public virtual int Level
         {
             get { return Stat.Level; }
@@ -145,12 +144,13 @@ namespace Server.Game
             changePacket.Hp = Stat.Hp;
             Console.WriteLine($"OnDamaged : {Id}, {damage}");
             Room.Broadcast(CellPos, changePacket);
-            State = CreatureState.Stiff;
             if (Stat.Hp <= 0)
             {
                 Ondead(attacker);
             }
         }
+
+
 
         public virtual void Ondead(GameObject attacker)
         {

@@ -41,9 +41,10 @@ public class QuestManager
         }
     }
 
-    public void StartQuest(Quest quest)
+    public void StartQuest(int id)
     {
-        if(quest == null)
+        Quest quest = Managers.Quest.GetQuest(id);
+        if (quest == null)
         {
             Debug.LogWarning("퀘스트가 없습니다.");
             return;
@@ -84,7 +85,7 @@ public class QuestManager
                     }
                     break;
                 case "interaction":
-                    currentScene.StartInteractionQuest(quest);
+                    currentScene.StartInteractionQuest(quest.TemplateId);
                     break;
                 case "scene":
                     Debug.Log("Start Story Scene");

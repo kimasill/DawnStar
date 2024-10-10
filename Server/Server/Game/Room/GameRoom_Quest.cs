@@ -61,7 +61,9 @@ namespace Server.Game
                         return;
 
                     if (player.Quest.CurrentQuest.TemplateId == questDb.TemplateId && player.Quest.CurrentQuest.Progress == 1)//메모리에 들고있으면 안함
-                        return;                    
+                        return;               
+                    questDb.Progress = 1;
+                    player.Quest.CurrentQuest = Quest.MakeQuest(questDb);
                 }
                 DbTransaction.SaveStartQuest(player, questDb, player.Room);
             }

@@ -38,7 +38,7 @@ public class MyPlayerController : PlayerController
                 GetDirInput();
                 break;
         }
-
+        
         base.UpdateController();
     }
 
@@ -52,6 +52,7 @@ public class MyPlayerController : PlayerController
             if (invenUI.gameObject.activeSelf)
             {
                 invenUI.gameObject.SetActive(false);
+                Managers.UI.CloseAllPopupUI();
             }
             else
             {
@@ -162,6 +163,8 @@ public class MyPlayerController : PlayerController
     {
         if (_isAttacking)
             return;
+        if (State == CreatureState.Stiff || State == CreatureState.Dead)
+            return;
         // 이동 상태로 갈지 확인
         if (_moveKeyPressed)
         {
@@ -262,8 +265,12 @@ public class MyPlayerController : PlayerController
         GameObject go = Managers.Map.IsPlayerAtQuest(CellPos);
         if (go == null)
             return;
-        Quest quest = go.GetComponent<Quest>();
-        Managers.Scene.CurrentScene.CheckInteractionQuest(quest);
+        string questIdString = go.name.Replace("quest_", "");
+        int questId;
+        if (int.TryParse(questIdString, out questId))
+        {
+            Managers.Scene.CurrentScene.CheckInteractionQuest(questId);
+        }        
     }
 
     private void DetectNearbyNPCs()

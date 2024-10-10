@@ -114,6 +114,12 @@ public class UIManager
             return;
 
         UI_Popup popup = _popupStack.Pop();
+        if (popup == null)
+        { 
+            _order--;
+            return;
+        }
+            
         Managers.Resource.Destroy(popup.gameObject);
         popup = null;
         _order--;

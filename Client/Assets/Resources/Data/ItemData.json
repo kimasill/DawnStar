@@ -56,11 +56,11 @@
   "materials": [
     {
       "id": "1001",
-      "name": "치즈",
+      "name": "양파",
       "maxCount": "9999",
       "materialType": "Food",
       "price": "1",
-      "iconPath": "Textures/Item/Materials/Food/cheese"
+      "iconPath": "Textures/Item/Materials/Food/Onion"
     },
     {
       "id": "1002",
@@ -68,7 +68,7 @@
       "maxCount": "9999",
       "materialType": "Food",
       "price": "1",
-      "iconPath": "Textures/Item/Materials/Food/apple"
+      "iconPath": "Textures/Item/Materials/Food/Apple"
     },
     {
       "id": "1101",
@@ -76,15 +76,15 @@
       "maxCount": "9999",
       "materialType": "Drop",
       "price": "1",
-      "iconPath": "Textures/Item/Materials/Drop/bone"
+      "iconPath": "Textures/Item/Materials/Drop/Bone"
     },
     {
       "id": "1102",
-      "name": "개구리다리",
+      "name": "부리",
       "maxCount": "9999",
       "materialType": "Drop",
       "price": "1",
-      "iconPath": "Textures/Item/Materials/Drop/frog_leg"
+      "iconPath": "Textures/Item/Materials/Drop/Bird_Loot"
     }
   ],
   "goods": [
