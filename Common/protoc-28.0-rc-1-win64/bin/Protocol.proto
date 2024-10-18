@@ -50,6 +50,8 @@ enum MsgId {
   C_RESPAWN = 42;
   S_LOADING = 43;
   S_QUEST_LIST = 44;
+  S_CHANGE_EXP = 45;
+  S_CHANGE_LEVEL = 46;
 }
 enum CreatureState{
   IDLE = 0;
@@ -84,6 +86,13 @@ enum SkillType{
 	SKILL_NONE = 0;
 	SKILL_ATTACK = 1;
 	SKILL_PROJECTILE = 2;
+}
+
+enum MonsterType{
+	MONSTER_NORMAL = 0;
+	MONSTER_ELITE = 1;
+	MONSTER_FLYING = 2;	
+	MONSTER_BOSS = 3;
 }
 
 enum ShapeType{
@@ -248,7 +257,6 @@ message C_Respawn{
 	RespawnType respawnType = 1;
 }
 
-
 message S_ItemList{
 	repeated ItemInfo items = 1;
 }
@@ -308,7 +316,12 @@ message S_RemoveItem{
 message S_ChangeStat{
 	StatInfo statInfo = 1;
 }
-
+message S_ChangeExp{
+	int32 exp = 1;
+}
+message S_ChangeLevel{
+	int32 level = 1;
+}
 message S_ChangePosition{
 	int32 objectId = 1;
 	PositionInfo position = 2;
@@ -335,7 +348,7 @@ message C_StartQuest{
 }
 
 message C_QuestComplete{
-	int32 questDbId = 1;
+	int32 templateId = 1;
 }
 
 message S_QuestList{
@@ -362,6 +375,7 @@ message ObjectInfo {
   PositionInfo position = 3;
   StatInfo statInfo = 4;
   MapInfo mapInfo = 5;
+  int32 templateId = 6;
 }
 
 message PositionInfo{

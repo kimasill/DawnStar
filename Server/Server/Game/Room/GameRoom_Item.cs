@@ -104,15 +104,10 @@ namespace Server.Game
             // 인벤토리에서 해당 아이템 제거                 
         }
 
-        public void DropItem(Player player ,PositionInfo position, int count, ItemRewardData item)
-        {
-            S_DropItem dropItemPacket = new S_DropItem()
-            {
-                TemplateId = item.itemId,
-                Count = count,
-                Position = position
-            };
-            player.Session.Send(dropItemPacket);
+        public void DropItem(Player player ,S_DropItem dropItem)
+        {            
+            player.Session.Send(dropItem);
+            //룸에 처리
         }
     }
 }

@@ -253,7 +253,8 @@ namespace Server.DB
                     if (existingQuestDb == null || existingQuestDb.Completed)
                         return;
 
-                    existingQuestDb.Completed = true;
+                    existingQuestDb.Completed = questDb.Completed;
+                    existingQuestDb.Progress = questDb.Progress;
 
                     bool success = db.SaveChangesEx(); // 저장할 때 예외 처리를 해준다.
                     if (success)

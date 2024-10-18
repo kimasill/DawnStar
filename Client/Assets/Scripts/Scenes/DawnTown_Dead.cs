@@ -11,7 +11,7 @@ public class DawnTownDead : DawnTown
 
         Managers.Map.LoadMap(4); // DawnTownDead 맵 로드
 
-        Screen.SetResolution(1920, 1080, false);
+        Screen.SetResolution(640, 480, false);
         _sceneUi.SetActive(_sceneUi.GameWindow, true);
         StartQuest07();
     }
@@ -59,37 +59,9 @@ public class DawnTownDead : DawnTown
     {
         if(quest.TemplateId == 7)
         {
-            Managers.Quest.ShowQuestScript(7);
-            GameObject  map = Managers.Map.CurrentGrid.gameObject;
-            if (map == null)
-            {
-                Debug.LogError("MapData not found for scene: " + SceneType);
-                return;
-            }
-
-            // 스폰 포인트 오브젝트 찾기
-            GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("Spawn");
-            if (spawnPoints == null || spawnPoints.Length == 0)
-            {
-                Debug.LogError("No spawn points found in the scene.");
-                return;
-            }
-
-            C_RequestMonster spawnMonster = new C_RequestMonster();
-            foreach (GameObject spawnPoint in spawnPoints)
-            {
-                string spawnPointName = spawnPoint.name;                
-                int spawnPointId;
-
-                //오브젝트 이름_숫자 형태로 되어있는 스폰 포인트 이름에서 숫자만 추출
-                if (!int.TryParse(spawnPointName.Substring(spawnPointName.Length - 1), out spawnPointId))
-                {
-                    Debug.LogError("Spawn point name is not in the correct format.");
-                    return;
-                }                
-                spawnMonster.Id.Add(spawnPointId);                               
-            }            
-            Managers.Network.Send(spawnMonster);
+            C_RequestMonster spawnPacket = new C_RequestMonster();
+            spawnPacket.Id.Add(1);
+            Managers.Network.Send(spawnPacket);
         }   
     }
 

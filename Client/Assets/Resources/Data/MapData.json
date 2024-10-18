@@ -96,60 +96,52 @@
       "spawns": [
         {
           "id": "1",
-          "objectId": "2",
-          "posX": "-22",
-          "posY": "-3"
-
+          "monsterId": "2",
+          "count": "10"
+        }
+      ]      
+    },
+    {
+      "id": "005",
+      "name": "EastEnd",
+      "portals": [
+        {
+          "id": "500",
+          "name": "DawnTownDead",
+          "location": "EastEnd",
+          "posX": "-173",
+          "posY": "-46"
+        },
+        {
+          "id": "501",
+          "name": "DawnTown",
+          "location": "EastEnd",
+          "posX": "-173",
+          "posY": "-46"
+        }
+      ],
+      "spawns": [
+        {
+          "id": "1",
+          "monsterId": "3",
+          "count": "25"
         },
         {
           "id": "2",
-          "objectId": "2",
-          "posX": "-3",
-          "posY": "-2"
+          "monsterId": "4",
+          "count": "25"
         },
         {
           "id": "3",
-          "objectId": "2",
-          "posX": "-13",
-          "posY": "-13"
+          "monsterId": "5",
+          "count": "5"
         },
         {
           "id": "4",
-          "objectId": "2",
-          "posX": "-30",
-          "posY": "-10"
-        },
-        {
-          "id": "5",
-          "objectId": "2",
-          "posX": "-46",
-          "posY": "-18"
-        },
-        {
-          "id": "6",
-          "objectId": "2",
-          "posX": "28",
-          "posY": "-13"
-        },
-        {
-          "id": "7",
-          "objectId": "2",
-          "posX": "11",
-          "posY": "-6"
-        },
-        {
-          "id": "8",
-          "objectId": "2",
-          "posX": "10",
-          "posY": "-13"
-        },
-        {
-          "id": "9",
-          "objectId": "2",
-          "posX": "20",
-          "posY": "-14"
+          "monsterId": "6",
+          "count": "5"
         }
-      ]        
+      ]
     }
   ]
-} 
+}

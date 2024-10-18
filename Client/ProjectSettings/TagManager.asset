@@ -12,6 +12,7 @@ TagManager:
   - Door
   - QuestItem
   - Spawn
+  - Camera
   layers:
   - Default
   - TransparentFX

@@ -150,10 +150,25 @@ public class QuestManager
             Quest latestQuest = _quests[latestQuestId];
 
             C_QuestComplete questCompletePacket = new C_QuestComplete();
-            questCompletePacket.QuestDbId = latestQuest.TemplateId;
+            questCompletePacket.TemplateId = latestQuest.TemplateId;
             Managers.Network.Send(questCompletePacket);
         }
     }
+
+    public void EndQuest(int questId)
+    {
+        if (_quests.ContainsKey(questId))
+        {
+            C_QuestComplete questCompletePacket = new C_QuestComplete();
+            questCompletePacket.TemplateId = questId;
+            Managers.Network.Send(questCompletePacket);
+        }
+        else
+        {
+            Debug.LogWarning($"퀘스트 ID {questId}를 찾을 수 없습니다.");
+        }
+    }
+
     //Connection : Next Quest Id
     private void CheckNextQuest(QuestInfo questInfo)
     {

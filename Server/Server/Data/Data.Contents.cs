@@ -173,6 +173,7 @@ namespace Server.Data
     {
         public int id;
         public string name;
+        public MonsterType monsterType;
         public StatInfo stat;
         public List<ItemRewardData> rewards;
     }
@@ -204,12 +205,12 @@ namespace Server.Data
         public float posX;
         public float posY;
     }
+
     public class SpawnData
     {
         public int id;
-        public int objectId;
-        public float posX;
-        public float posY;
+        public int monsterId;
+        public int count;
     }
 
     [Serializable]

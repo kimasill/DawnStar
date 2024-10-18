@@ -38,7 +38,7 @@ RectTransform:
   - {fileID: 7516608802213082574}
   - {fileID: 8050361199860253043}
   - {fileID: 5284838425966205591}
-  - {fileID: 4680921692831174886}
+  - {fileID: 7320237548959365258}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -597,6 +597,11 @@ PrefabInstance:
       propertyPath: m_PresetInfoIsWorld
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6933386620578662794, guid: a8d678b3170bc2649ac44625110695d0,
+        type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7681185033321914374, guid: a8d678b3170bc2649ac44625110695d0,
         type: 3}
       propertyPath: m_Pivot.x
@@ -702,9 +707,9 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8d678b3170bc2649ac44625110695d0, type: 3}
---- !u!224 &4680921692831174886 stripped
+--- !u!224 &7320237548959365258 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 7681185033321914374, guid: a8d678b3170bc2649ac44625110695d0,
+  m_CorrespondingSourceObject: {fileID: 5762990320989931626, guid: a8d678b3170bc2649ac44625110695d0,
     type: 3}
   m_PrefabInstance: {fileID: 3057087000221610208}
   m_PrefabAsset: {fileID: 0}
@@ -848,6 +853,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5962302045281053152, guid: 20d3bcf9de4469a4d889ca6c92dff1b1,
         type: 3}
+      propertyPath: m_Size
+      value: 0.99997324
+      objectReference: {fileID: 0}
+    - target: {fileID: 5962302045281053152, guid: 20d3bcf9de4469a4d889ca6c92dff1b1,
+        type: 3}
       propertyPath: m_Value
       value: 0
       objectReference: {fileID: 0}
@@ -919,7 +929,7 @@ PrefabInstance:
     - target: {fileID: 8445886407060104869, guid: 20d3bcf9de4469a4d889ca6c92dff1b1,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00004196167
+      value: 0.00017899278
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

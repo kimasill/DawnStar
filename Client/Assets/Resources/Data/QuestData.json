@@ -97,7 +97,7 @@
     },
     {
       "id": "8",
-      "title": "TotheEastEnd",
+      "title": "East End",
       "rewards": [
         {
           "rewardType": "Reward_Exp",
@@ -105,12 +105,12 @@
         }
       ],
       "connection": "9",
-      "questType": "interaction",
-      "description": "마을 사람들과 대화를 나누었다."
+      "questType": "epic",
+      "description": "이스트엔드에 진입했다. 미지의 기운이 강하게 느껴진다."
     },
     {
       "id": "9",
-      "title": "tutorial06",
+      "title": "우회",
       "rewards": [
         {
           "rewardType": "Reward_Exp",
@@ -119,7 +119,7 @@
       ],
       "connection": "10",
       "questType": "interaction",
-      "description": "마을 사람들과 대화를 나누었다."
+      "description": "미지의 근원으로 가는 길이 막혀있다. 우회하자."
     },
     {
       "id": "10",

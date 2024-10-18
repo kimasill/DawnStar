@@ -1,4 +1,5 @@
-﻿using Google.Protobuf.Protocol;
+﻿using Data;
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -53,6 +54,7 @@ public class ObjectManager
         else if(type == GameObjectType.Monster)
         {
             GameObject go = Managers.Resource.Instantiate($"Creature/{info.Name}");
+            Managers.Data.MonsterDict.TryGetValue(info.TemplateId, out MonsterData monsterData);
             go.name = info.Name;
             _objects.Add(info.ObjectId, go);
 

@@ -14,6 +14,8 @@ public class MyPlayerController : PlayerController
     public int AttackSpeed { get; private set; }
     public int ArmorDef { get; private set; }
     private NPCController _nearbyNPC;
+    private CameraController _cameraController;
+    public CameraController CameraController { get; private set; }
     public int Gold
     {
         get { return Stat.Gold; }
@@ -23,7 +25,12 @@ public class MyPlayerController : PlayerController
     protected override void Init()
     {
         base.Init();
-        RefreshAdditionalStat();        
+        RefreshAdditionalStat();
+        _cameraController = Camera.main.GetComponent<CameraController>();
+        if (_cameraController != null)
+        {
+            _cameraController.SetTarget(transform);
+        }
     }
 
     protected override void UpdateController() 
@@ -84,11 +91,12 @@ public class MyPlayerController : PlayerController
             if (mapUI.gameObject.activeSelf)
             {
                 mapUI.gameObject.SetActive(false);
-                mapUI.ResetMapSize();
+                mapUI.OnCloseMap();
             }
             else
             {
                 mapUI.gameObject.SetActive(true);
+                mapUI.OnOpenMap();            
             }
         }
         else if (Input.GetKeyDown(KeyCode.G) && _nearbyNPC != null)
@@ -121,7 +129,7 @@ public class MyPlayerController : PlayerController
             UI_Map mapUI = gameSceneUI.MapUI;
             if (mapUI.gameObject.activeSelf)
             {
-                mapUI.ZoomMap(Input.mouseScrollDelta.y * 10); // 스크롤에 따라 지도 크기 조절
+                mapUI.ZoomMap(Input.mouseScrollDelta.y); // 스크롤에 따라 지도 크기 조절
             }
             // 인벤토리가 활성화된 경우 스크롤뷰를 내립니다.
             UI_Inventory invenUI = gameSceneUI.InvenUI;
@@ -189,11 +197,6 @@ public class MyPlayerController : PlayerController
     {
         yield return new WaitForSeconds(time);
         _isAttacking = false;
-    }
-
-    void LateUpdate()
-    {
-        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
     }
 
     protected override void MoveToNextPos()

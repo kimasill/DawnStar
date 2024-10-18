@@ -13,6 +13,7 @@ public class Define
         DawnTownStore,
         DawnTownHome,
         DawnTownDead,
+        EastEnd,
         Game,
     }
 

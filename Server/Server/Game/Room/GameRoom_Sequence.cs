@@ -1,14 +1,10 @@
-using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
-using Server.DB;
 using Server.Game.Job;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using static Server.Game.Item;
 using DbTransaction = Server.DB.DbTransaction;
 
 namespace Server.Game
@@ -73,7 +69,7 @@ namespace Server.Game
                 Vector2Int portalPos = new Vector2Int((int)portal.posX, (int)portal.posY);
 
                 // 현재 위치와 포탈 위치 간의 거리 계산
-                double distance = (cellPos- portalPos).magnitude;
+                double distance = (cellPos - portalPos).magnitude;
 
                 // 가장 가까운 포탈을 업데이트
                 if (distance < closestDistance)
@@ -91,13 +87,10 @@ namespace Server.Game
             if (player == null)
                 return;
 
-            // MapDict에서 포탈 정보 찾기
             MapData mapData = null;
 
             if (!DataManager.MapDict.TryGetValue(mapId, out mapData))
                 return;
-
-            // 플레이어의 이전 맵에서의 위치를 가져옴
             PortalData portalData = null;
             foreach (var portal in mapData.portals)
             {
@@ -121,14 +114,17 @@ namespace Server.Game
             player.MapInfo.MapName = mapData.name;
             player.MapInfo.Scene = mapData.name;
             player.MapInfo.PortalId = portalData.id;
-            // 클라이언트에 맵 이동 정보 전송
-            S_MapChange mapChangePacket = new S_MapChange
-            {
-                MapId = mapId,
-                ObjectInfo = player.Info
-            };
 
-            player.Session.Send(mapChangePacket);
+            LeaveGame(player.Id);
+            GameLogic.Instance.ChangeRoom(player, mapId, this);
+            //// 클라이언트에 맵 이동 정보 전송
+            //S_MapChange mapChangePacket = new S_MapChange
+            //{
+            //    MapId = mapId,
+            //    ObjectInfo = player.Info
+            //};
+
+            //player.Session.Send(mapChangePacket);
 
             // 플레이어의 위치와 맵 정보를 데이터베이스에 저장
             DbTransaction.SavePlayerStatus_All(player, this);
@@ -163,28 +159,50 @@ namespace Server.Game
 
             player.Session.Send(positionPacket);
         }
-        public void HandleSpawnMonster(Player player, List<int> ids)
+        public void HandleSpawnMonster(Player player = null, List<int> ids = null)
         {
-            if (player == null)
-                return;
+            MapData mapData = null;
+            DataManager.MapDict.TryGetValue(Map.MapId, out mapData);
 
-            DataManager.MapDict.TryGetValue(player.MapInfo.TemplateId, out MapData mapData);
             if (mapData == null)
                 return;
 
+            if (ids == null)
+            { 
+                ids = mapData.spawns.Select(x => x.monsterId).Distinct().ToList();
+            }
             foreach (int id in ids)
             {
+                int count = mapData.spawns[id - 1].count;
+                int monsterId = mapData.spawns[id - 1].monsterId;
+                RandomSpawnMonster(monsterId, count);
+            }
+        }
+        int _spawnCount = 0;
+        public void RandomSpawnMonster(int monsterId, int count)
+        {
+            Random random = new Random();
+            List<Vector2Int> spawnPositions = Map.GetSpawnPoints(monsterId);
+            if (spawnPositions.Count == 0 || spawnPositions == null)
+                return;
+            // 랜덤으로 spawnCount만큼의 스폰 포인트를 추출합니다.
+            List<Vector2Int> selectedSpawnPositions = spawnPositions
+                .OrderBy(x => random.Next())
+                .Take(count)
+                .ToList();
+            foreach (Vector2Int spawnPos in selectedSpawnPositions)
+            {
                 Monster monster = ObjectManager.Instance.Add<Monster>();
-                if (monster == null)
-                    return;
 
-                int templateId = mapData.spawns[id - 1].objectId;
-                monster.Init(templateId);
-                monster.PosInfo.PosX = (int)mapData.spawns[id - 1].posX;
-                monster.PosInfo.PosY = (int)mapData.spawns[id - 1].posY;
+                if (monster == null)
+                    continue;
+
+                monster.Init(monsterId);
+                monster.PosInfo.PosX = spawnPos.x;
+                monster.PosInfo.PosY = spawnPos.y;
                 monster.SpawnPosition = monster.CellPos;
-                monster.SpawnId = id;
-                player.Room.Push(EnterGame, monster, false);
+                monster.SpawnId = _spawnCount++;
+                EnterGame(monster, false);
             }
         }
     }

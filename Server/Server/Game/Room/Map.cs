@@ -7,8 +7,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.Game.Room
 {
@@ -104,7 +106,8 @@ namespace Server.Game.Room
 
         bool[,] _collision;
         GameObject[,] _objects;
-
+        int[,] _spawnPoints;
+        public int MapId { get; private set; }
         public bool CanGo(Vector2Int cellPos, bool checkObjects = true)
         {
             if (cellPos.x < MinX || cellPos.x > MaxX)
@@ -236,9 +239,29 @@ namespace Server.Game.Room
                 }
             }
         }
-        
+
+        public List<Vector2Int> GetSpawnPoints(int id)
+        {
+            List<Vector2Int> spawnPoints = new List<Vector2Int>();
+
+            for (int y = 0; y < SizeY; y++)
+            {
+                for (int x = 0; x < SizeX; x++)
+                {
+                    if (_spawnPoints[y, x] == id)
+                    {
+                        int posX = x + MinX;
+                        int posY = MaxY - y;
+                        spawnPoints.Add(new Vector2Int(posX, posY));
+                    }
+                }
+            }
+            return spawnPoints;
+        }
+
         public void LoadMap(int mapId, string pathPrefix = "../../../../../Common/MapData")
         {
+            MapId = mapId;
             string mapName = "Map_" + mapId.ToString("000");
             string text = File.ReadAllText($"{pathPrefix}/{mapName}.txt");
             StringReader reader = new StringReader(text);
@@ -262,6 +285,38 @@ namespace Server.Game.Room
                 }
             }
         }
+        public void LoadSpawnPoints(int mapId, string pathPrefix = "../../../../../Common/MapData")
+        {
+            string mapName = "Map_" + mapId.ToString("000");
+
+            if(File.Exists($"{pathPrefix}/{mapName}_SpawnPoints.txt") == false)
+            {
+                return;
+            }
+            string text = File.ReadAllText($"{pathPrefix}/{mapName}_SpawnPoints.txt");
+            StringReader reader = new StringReader(text);
+            
+            if(MinX != int.Parse(reader.ReadLine())) Console.WriteLine("MinX Error");
+            if(MaxX != int.Parse(reader.ReadLine())) Console.WriteLine("MaxX Error");
+            if(MinY != int.Parse(reader.ReadLine())) Console.WriteLine("MinY Error");
+            if(MaxY != int.Parse(reader.ReadLine())) Console.WriteLine("MaxY Error");
+
+
+            _spawnPoints = new int[SizeY, SizeX]; // 맵 크기에 맞게 배열 초기화
+
+            for (int y = 0; y < SizeY; y++)
+            {
+                string line = reader.ReadLine();
+                for (int x = 0; x < SizeX; x++)
+                {
+                    if (int.TryParse(line[x].ToString(), out int monsterId))
+                    {
+                        _spawnPoints[y, x] = monsterId; // 몬스터 아이디 저장
+                    }
+                }
+            }
+        }
+
         #region A* PathFinding
 
         // U D L R

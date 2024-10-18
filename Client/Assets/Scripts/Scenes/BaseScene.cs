@@ -1,4 +1,5 @@
 ﻿using Data;
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +20,7 @@ public abstract class BaseScene : MonoBehaviour
         Object obj = GameObject.FindObjectOfType(typeof(EventSystem));
         if (obj == null)
             Managers.Resource.Instantiate("UI/EventSystem").name = "@EventSystem";
+        
     }
     protected void RequestShop()
     {
@@ -30,7 +32,20 @@ public abstract class BaseScene : MonoBehaviour
     }
     public virtual void StartInteractionQuest(int questId) { }
     public virtual void CheckInteractionQuest(int questId) { }
-    public virtual void ShowStoryScene(ScriptData scriptData) { }
+    public virtual void CheckOnSceneLoadedQuest() 
+    {
+        C_StartQuest startQuestPacket = new C_StartQuest();
+        startQuestPacket.TemplateId = 0;
+    }
+    public virtual void ShowStoryScene(ScriptData scriptData) 
+    {
+        UI_GameScene gameUI = Managers.UI.SceneUI as UI_GameScene;
+        UI_StoryScene storyScene = gameUI.StoryScene;
+        gameUI.GameWindow.gameObject.SetActive(false);
+        storyScene.gameObject.SetActive(true);
+        storyScene.LoadStoryData(scriptData);
+        storyScene.ShowStory();
+    }
     public virtual void StartBattleQuest(Quest quest) { }
 
     public void AddNPC(int id, GameObject npc)

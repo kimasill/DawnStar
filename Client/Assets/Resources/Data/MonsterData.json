@@ -3,6 +3,7 @@
     {
       "id": "1",
       "name": "도플갱어",
+      "type": "normal",
       "stat": {
         "level": "1",
         "maxHp": "200",
@@ -22,6 +23,7 @@
     {
       "id": "2",
       "name": "스켈레톤",
+      "type": "normal",
       "stat": {
         "level": "2",
         "maxHp": "100",
@@ -41,6 +43,182 @@
           "itemId": "10001",
           "minCount": "1",
           "maxCount": "10"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "파랑새",
+      "type": "flying",
+      "stat": {
+        "level": "3",
+        "maxHp": "100",
+        "attack": "0",
+        "speed": "7.0",
+        "totalExp": "30"
+      },
+      "rewards": [
+        {
+          "probability": "30",
+          "itemId": "1102",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "40",
+          "itemId": "1103",
+          "minCount": "1",
+          "maxCount": "3"
+        },
+        {
+          "probablity": "30",
+          "itemId": "1104",
+          "minCount": "1",
+          "maxCount": "3"
+        },
+        {
+          "probability": "50",
+          "itemId": "10001",
+          "minCount": "1",
+          "maxCount": "5"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "노을새",
+      "type": "flying",
+      "stat": {
+        "level": "4",
+        "maxHp": "120",
+        "attack": "0",
+        "speed": "7.0",
+        "totalExp": "50"
+      },
+      "rewards": [
+        {
+          "probability": "30",
+          "itemId": "1102",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "40",
+          "itemId": "1103",
+          "minCount": "1",
+          "maxCount": "4"
+        },
+        {
+          "probability": "30",
+          "itemId": "1105",
+          "minCount": "1",
+          "maxCount": "3"
+        },
+        {
+          "probability": "50",
+          "itemId": "10001",
+          "minCount": "1",
+          "maxCount": "8"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "name": "불꽃새",
+      "type": "flying",
+      "stat": {
+        "level": "5",
+        "maxHp": "200",
+        "attack": "0",
+        "speed": "8.0",
+        "totalExp": "60"
+      },
+      "rewards": [
+        {
+          "probability": "30",
+          "itemId": "1102",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "40",
+          "itemId": "1103",
+          "minCount": "1",
+          "maxCount": "3"
+        },
+        {
+          "probability": "30",
+          "itemId": "1106",
+          "minCount": "1",
+          "maxCount": "3"
+        },
+        {
+          "probability": "10",
+          "itemId": "1108",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "50",
+          "itemId": "10001",
+          "minCount": "1",
+          "maxCount": "20"
+        },
+        {
+          "probability": "5",
+          "itemId": "1116",
+          "minCount": "1",
+          "maxCount": "1"
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "name": "청동새",
+      "type": "flying",
+      "stat": {
+        "level": "6",
+        "maxHp": "180",
+        "attack": "0",
+        "speed": "10.0",
+        "totalExp": "80"
+      },
+      "rewards": [
+        {
+          "probability": "30",
+          "itemId": "1102",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "40",
+          "itemId": "1103",
+          "minCount": "1",
+          "maxCount": "3"
+        },
+        {
+          "probability": "30",
+          "itemId": "1107",
+          "minCount": "1",
+          "maxCount": "3"
+        },
+        {
+          "probability": "10",
+          "itemId": "1109",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "50",
+          "itemId": "10001",
+          "minCount": "1",
+          "maxCount": "20"
+        },
+        {
+          "probability": "5",
+          "itemId": "1117",
+          "minCount": "1",
+          "maxCount": "1"
         }
       ]
     }
