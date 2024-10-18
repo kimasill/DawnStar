@@ -1,10 +1,8 @@
-using System.Windows.Markup;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
-using static UnityEditor.Progress;
+
 
 public class UI_Quest_Title : UI_Base
 {

@@ -18,7 +18,7 @@ public class QuestInventory
             Quests[quest.TemplateId] = quest;
         }
 
-        if (CurrentQuest == null)
+        if (CurrentQuest == null && !quest.IsCompleted)
             CurrentQuest = quest;
     }
 

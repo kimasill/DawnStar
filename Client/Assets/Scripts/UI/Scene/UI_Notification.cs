@@ -1,15 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UI_Notification : UI_Base
 {
     [SerializeField] private Transform _itemNotiPanel;
+    [SerializeField] private Transform _expNotiPanel;
     [SerializeField] private int _maxNotis = 8;
     [SerializeField] private int _notiHeight = 50;
 
+
     private Queue<UI_ItemNoti> _activeNotis = new Queue<UI_ItemNoti>();
+    private Queue<GameObject> _activeExpNotis = new Queue<GameObject>();
 
     public override void Init()
     {
@@ -21,7 +26,7 @@ public class UI_Notification : UI_Base
         if (_activeNotis.Count >= _maxNotis)
         {
             var oldestNoti = _activeNotis.Dequeue();
-            StartCoroutine(FadeOutAndRemove(oldestNoti));
+            StartCoroutine(FadeOutAndRemove(oldestNoti.gameObject));
         }
 
         Managers.Data.ItemDict.TryGetValue(item.TemplateId, out Data.ItemData itemData);
@@ -42,7 +47,29 @@ public class UI_Notification : UI_Base
             CreateNewItemNoti(icon, itemData.name, item.Count);
         }
     }
-
+    public void ShowExpNoti(int exp)
+    {
+        if (_activeExpNotis.Count >= _maxNotis)
+        {
+            var oldestNoti = _activeExpNotis.Dequeue();
+            StartCoroutine(FadeOutAndRemove(oldestNoti));
+        }
+        CreateNewExpNoti(exp.ToString());
+        if(_activeExpNotis.Count > 0)
+        {
+            StartCoroutine(HideNoti(_activeExpNotis.Dequeue()));
+        }
+    }
+    private void CreateNewExpNoti(string exp)
+    {
+        var expNoti = Managers.Resource.Instantiate("UI/Popup/UI_ExpNoti", _expNotiPanel);
+        expNoti.GetComponent<Text>().text = $"+{exp} Exp";
+        expNoti.GetComponent<RectTransform>().anchoredPosition = new Vector2(
+            Random.Range(0, _expNotiPanel.GetComponent<RectTransform>().rect.width),
+            Random.Range(0, _expNotiPanel.GetComponent<RectTransform>().rect.height)
+        );
+        _activeExpNotis.Enqueue(expNoti);
+    }
     private void CreateNewItemNoti(Sprite icon, string itemName, int itemCount)
     {
         var newItemNoti = Managers.Resource.Instantiate("UI/Popup/UI_ItemNoti", _itemNotiPanel);
@@ -72,6 +99,8 @@ public class UI_Notification : UI_Base
             elapsedTime += Time.deltaTime;
             for (int i = 0; i < _activeNotis.Count; i++)
             {
+                if (i >= startPositions.Count || i >= endPositions.Count)
+                    continue;
                 var noti = _activeNotis.ToArray()[i];
                 noti.transform.localPosition = Vector3.Lerp(startPositions[i], endPositions[i], elapsedTime / slideDuration);
             }
@@ -80,14 +109,29 @@ public class UI_Notification : UI_Base
 
         for (int i = 0; i < _activeNotis.Count; i++)
         {
+            if (i >= endPositions.Count)
+                continue;
             var noti = _activeNotis.ToArray()[i];
             noti.transform.localPosition = endPositions[i];
         }
 
         onComplete?.Invoke();
     }
-
-    private IEnumerator FadeOutAndRemove(UI_ItemNoti noti)
+    private IEnumerator HideNoti(GameObject noti)
+    {
+        CanvasGroup canvasGroup = noti.GetComponent<CanvasGroup>();
+        yield return new WaitForSeconds(2f);
+        float fadeDuration = 1f; // 서서히 사라지는 시간
+        float elapsedTime = 0f;
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            canvasGroup.alpha = Mathf.Lerp(1, 0, elapsedTime / fadeDuration);
+            yield return null;
+        }
+        gameObject.SetActive(false);
+    }
+    private IEnumerator FadeOutAndRemove(GameObject noti)
     {
         CanvasGroup canvasGroup = noti.GetComponent<CanvasGroup>();
         float fadeDuration = 1f;

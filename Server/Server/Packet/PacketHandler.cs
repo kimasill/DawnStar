@@ -117,7 +117,7 @@ class PacketHandler
         if (room == null)
             return;
 
-        room.Push(room.HandleQuestComplete, player, completeQuestPacket.QuestDbId);
+        room.Push(room.HandleQuestComplete, player, completeQuestPacket.TemplateId);
     }
 
     public static void C_StartQuestHandler(PacketSession session, IMessage packet)
@@ -147,10 +147,14 @@ class PacketHandler
         ClientSession clientSession = session as ClientSession;
         C_MapChange mapChangePacket = packet as C_MapChange;
         Player player = clientSession.MyPlayer;
-        if (player == null)
-            return;
         GameRoom room = player.Room;
         if (room == null)
+            return;
+        //GameLogic.Instance.Push(() =>
+        //{
+        //});
+
+        if (player == null)
             return;
         room.Push(room.HandleMapChanged, player, mapChangePacket.MapId);
     }

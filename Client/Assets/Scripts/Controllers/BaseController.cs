@@ -242,7 +242,6 @@ public class BaseController : MonoBehaviour
                     break;
             }
 
-
             StartCoroutine(DisableAfterDelay(1.0f));
         }
     }

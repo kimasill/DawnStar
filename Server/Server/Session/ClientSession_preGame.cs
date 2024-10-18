@@ -10,6 +10,7 @@ using ServerCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 
 namespace Server
@@ -171,7 +172,24 @@ namespace Server
                     }
                 }
                 Send(questListPacket);
+
                 ServerState = PlayerServerState.ServerStateSingle;
+
+                int mapId = 1;
+                using (AppDbContext db = new AppDbContext())
+                {
+                    List<MapDb> maps = db.Maps
+                        .Where(m => m.PlayerDbId == playerInfo.PlayerDbId)
+                        .ToList();
+                    foreach (MapDb mapDb in maps)
+                    {
+                        ChangeServerState(mapDb.TemplateId);
+                        MyPlayer.MapInfo.TemplateId = mapDb.TemplateId;
+                        MyPlayer.MapInfo.Scene = mapDb.Scene;
+                        MyPlayer.MapInfo.MapName = mapDb.MapName;
+                        mapId = mapDb.TemplateId;
+                    }
+                }
                 if (ServerState == PlayerServerState.ServerStateSingle)
                 {
                     if(isFirstLogin)
@@ -180,7 +198,7 @@ namespace Server
                     }
                     GameLogic.Instance.Push(() =>
                     {
-                        GameRoom room = GameLogic.Instance.Add(1);
+                        GameRoom room = GameLogic.Instance.Add(mapId);
                         Console.WriteLine($"Player Room Id:{room.RoomId}");
                         room.Push(room.EnterGame, MyPlayer, false);
                     });
@@ -198,6 +216,17 @@ namespace Server
                 }
             }
         }
+
+        public bool ChangeServerState(int mapId)
+        {
+            if (mapId == 5)
+            {
+                ServerState = PlayerServerState.ServerStateGame;
+                return true;
+            }
+            return false;
+        }
+
         private Player SingleGameSetting(Player player)
         {
             MapData mapData;

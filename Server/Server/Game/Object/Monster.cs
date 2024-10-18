@@ -3,6 +3,7 @@ using Server.Data;
 using Server.DB;
 using Server.Game.Job;
 using Server.Game.Room;
+using Server.Migrations;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -18,8 +19,13 @@ namespace Server.Game
         public int TemplateId { get; private set; }
         public Vector2Int SpawnPosition { get; set; }
         public int SpawnId { get; set; }
+        MonsterType MonsterType { get; set; }
 
         public bool IsDead = false;
+        public bool IsFlying = false;
+        public bool IsAggressive = false;
+        public int _patrolRange = 10;
+        Random _rand = new Random();
         public Monster()
         {
             ObjectType = GameObjectType.Monster;
@@ -31,9 +37,17 @@ namespace Server.Game
             
             MonsterData monsterData = null;
             DataManager.MonsterDict.TryGetValue(TemplateId, out monsterData);
+            if (monsterData == null)
+                return;
+            if(monsterData.stat.Attack == 0)
+                IsAggressive = false;
+            else IsAggressive = true;
+
+            MonsterType = monsterData.monsterType;            
             Info.Name = monsterData.name;
+            Info.TemplateId = TemplateId;
             Stat.MergeFrom(monsterData.stat);
-            Stat.Hp = monsterData.stat.MaxHp;
+            Stat.Hp = monsterData.stat.MaxHp;            
             State = CreatureState.Idle;
         }
         //FSM (Finite State Machine)
@@ -48,7 +62,14 @@ namespace Server.Game
                     UpdateIdle();
                     break;
                 case CreatureState.Moving:
-                    UpdateMoving();
+                    if(IsAggressive == false)
+                    {
+                        UpdatePatrol();
+                    }
+                    else
+                    {
+                        UpdateMoving();
+                    }                    
                     break;
                 case CreatureState.Skill:
                     UpdateSkill();
@@ -71,16 +92,26 @@ namespace Server.Game
         int _chaseRange = 20;
         long _nextSearchTick = 0;
         long _nextMoveTick = 0;
-        
-        protected virtual void UpdateIdle() 
+        long _nextWaitTick = 0;
+
+        protected virtual void UpdateIdle()
         {
             if (_nextSearchTick > Environment.TickCount64)
                 return;
             _nextSearchTick = Environment.TickCount64 + 1000;
 
-            Player target = Room.FindCloesetPlayer(CellPos, _searchRange);
-            
+            if (IsAggressive == false)
+            {
+                // 비공격 몬스터는 3초간 대기
+                if (_nextWaitTick > Environment.TickCount64)
+                    return;
+                _nextWaitTick = Environment.TickCount64 + 3000;
 
+                State = CreatureState.Moving;
+                return;
+            }
+
+            Player target = Room.FindCloesetPlayer(CellPos, _searchRange);
             if (target == null)
                 return;
 
@@ -88,20 +119,25 @@ namespace Server.Game
             State = CreatureState.Moving;
         }
         int _skillRange = 1;
-        protected virtual void UpdateMoving() 
+        protected virtual void UpdateMoving()
         {
-            if(_nextMoveTick > Environment.TickCount64)
+            if(MonsterType == MonsterType.MonsterFlying && IsFlying == false)
+            {
+                IsFlying = true;
+            }
+            if (_nextMoveTick > Environment.TickCount64)
                 return;
             int moveTick = (int)(1000 / Speed);
             _nextMoveTick = Environment.TickCount64 + moveTick;
 
-            if(_target == null || _target.Room != Room)
+            if (_target == null || _target.Room != Room)
             {
                 _target = null;
                 State = CreatureState.Idle;
                 BroadcastMove();
                 return;
             }
+
             Vector2Int dir = _target.CellPos - CellPos;
             int dist = dir.cellDistanceFromZero;
             if (dist == 0 || dist > _chaseRange)
@@ -111,7 +147,8 @@ namespace Server.Game
                 BroadcastMove();
                 return;
             }
-            List<Vector2Int> path = Room.Map.FindPath(CellPos, _target.CellPos, checkObjects: true);
+
+            List<Vector2Int> path = Room.Map.FindPath(CellPos, _target.CellPos, checkObjects: !IsFlying);
             if (path.Count < 2 || path.Count > _chaseRange)
             {
                 _target = null;
@@ -119,15 +156,73 @@ namespace Server.Game
                 BroadcastMove();
                 return;
             }
-            if(dist <= _skillRange && (dir.x == 0 || dir.y == 0))
+
+            if (dist <= _skillRange && (dir.x == 0 || dir.y == 0))
             {
                 _coolTick = 0;
                 State = CreatureState.Skill;
                 return;
             }
+            Room.Map.ApplyMove(this, path[1]);
 
-            //이동
-            Dir = GetDirFromVec(path[1] - CellPos);
+            BroadcastMove();
+        }
+
+        protected virtual void UpdatePatrol()
+        {
+            if (_nextMoveTick > Environment.TickCount64)
+                return;
+            int moveTick = (int)(1000 / Speed);
+            _nextMoveTick = Environment.TickCount64 + moveTick;
+
+            // 스폰 위치에서 일정 거리 이내로 이동
+            Vector2Int dest = new Vector2Int(
+                SpawnPosition.x + _rand.Next(-_patrolRange, _patrolRange + 1),
+                SpawnPosition.y + _rand.Next(-_patrolRange, _patrolRange + 1)
+            );
+
+            if (MonsterType == MonsterType.MonsterFlying)
+            {
+                if (IsFlying)
+                {
+                    // 비행 몬스터가 랜덤으로 착지
+                    if (_rand.Next(0, 2) == 0)
+                    {
+                        IsFlying = false;
+                        State = CreatureState.Idle;
+                        BroadcastMove();
+                        return;
+                    }
+                }
+                else
+                {
+                    if (_rand.Next(0, 2) == 0)
+                    {
+                        IsFlying = false;
+                        State = CreatureState.Idle;
+                        BroadcastMove();
+                        return;
+                    }
+                }
+                IsFlying = true;
+            }
+
+            List<Vector2Int> path = Room.Map.FindPath(CellPos, dest, checkObjects: !IsFlying);
+            if (path.Count < 2)
+            {
+                State = CreatureState.Idle;
+                BroadcastMove();
+                return;
+            }
+
+            UpdateDir(path[1]);
+            Room.Map.ApplyMove(this, path[1]);
+
+            BroadcastMove();
+        }
+        void UpdateDir(Vector2Int path)
+        {
+            Dir = GetDirFromVec(path - CellPos);
 
             if (Dir == MoveDir.Left)
             {
@@ -137,12 +232,7 @@ namespace Server.Game
             {
                 LookDir = LookDir.LookRight;
             }
-
-            Room.Map.ApplyMove(this, path[1]);
-
-            BroadcastMove();
         }
-
         void BroadcastMove()
         {
             S_Move movePacket = new S_Move();
@@ -150,6 +240,7 @@ namespace Server.Game
             movePacket.Position = PosInfo;
             Room.Broadcast(CellPos, movePacket);
         }
+
         long _coolTick = 0;
         protected virtual void UpdateSkill() 
         {
@@ -250,14 +341,24 @@ namespace Server.Game
             GameObject owner = attacker.GetOwner();
             if (owner.ObjectType == GameObjectType.Player)
             {
-
                 ItemRewardData rewardData = GetRandomReward();
                 if (rewardData != null)
                 {
                     int count = GetRewardCount(rewardData);
                     Player player = (Player)owner;
-                    Room.DropItem(player, PosInfo, count, rewardData);
-                    //DbTransaction.RewardPlayer(player, rewardData, Room);
+                    S_DropItem dropItemPacket = new S_DropItem()
+                    {
+                        TemplateId = rewardData.itemId,
+                        Count = count,
+                        Position = PosInfo
+                    };
+                    Room.Push(Room.DropItem, player, dropItemPacket);
+                    DbTransaction.ExpNoti(player, Stat.TotalExp);
+                    S_ChangeExp changeExpPacket = new S_ChangeExp()
+                    {
+                        Exp = Stat.TotalExp
+                    };
+                    player.Session.Send(changeExpPacket);
                 }
             }
             
@@ -271,13 +372,12 @@ namespace Server.Game
 
             Stat.Hp = Stat.MaxHp;
             PosInfo.State = CreatureState.Idle;
-            PosInfo.MoveDir = MoveDir.Down;
-            List<int> spawnIds = [SpawnId];
+            PosInfo.MoveDir = MoveDir.Down;            
             room.PushAfter(_respawnTime, () =>
             {
                 if (room != null)
                 {
-                    room.HandleSpawnMonster((Player)attacker, spawnIds);
+                    room.RandomSpawnMonster(TemplateId, 1);
                 }
             });
         }

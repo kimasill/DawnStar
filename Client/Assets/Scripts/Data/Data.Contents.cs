@@ -140,6 +140,7 @@ namespace Data
     {
         public int id;
         public string name;
+        public MonsterType monsterType;
         public StatInfo stat;
         public List<RewardData> rewards;
     }
@@ -175,7 +176,8 @@ namespace Data
     public class SpawnData
     {
         public int id;
-        public int objectId;
+        public int monsterId;
+        public int count;
     }
 
     [Serializable]

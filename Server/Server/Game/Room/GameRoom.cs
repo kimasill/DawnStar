@@ -52,6 +52,7 @@ namespace Server.Game
         public void Init(int mapId, int zoneCells)
         {
             Map.LoadMap(mapId);
+            Map.LoadSpawnPoints(mapId);
 
             // Zone
             ZoneCells = zoneCells; // 10
@@ -68,13 +69,7 @@ namespace Server.Game
                     Zones[y, x] = new Zone(y, x);
                 }
             }
-            //// TEMP
-            //for (int i = 0; i < 500; i++)
-            //{
-            //    Monster monster = ObjectManager.Instance.Add<Monster>();
-            //    monster.Init(1);
-            //    EnterGame(monster, randPos: true);
-            //}
+            HandleSpawnMonster();
         }
 
         // 누군가 주기적으로 호출해줘야 한다
@@ -115,13 +110,14 @@ namespace Server.Game
                 player = gameObject as Player;
                 if (player == null)
                     return;
+                player.Info.MapInfo = player.MapInfo;     
 
                 _players.Add(gameObject.Id, player);
                 player.Room = this;
-                MergeMapInfo(player);
+                
 
                 player.RefreshAdditionalStat();
-                player.Info.MapInfo = player.MapInfo;
+                
 
                 Map.ApplyMove(player, new Vector2Int(player.CellPos.x, player.CellPos.y));
                 Console.WriteLine($"Player Room Id:{RoomId}");
@@ -163,6 +159,7 @@ namespace Server.Game
                     return;
                 }
                 zone.Monsters.Add(monster);
+                Console.WriteLine($"Monster Id:{monster.Id} Pos:{monster.CellPos} Added");
                 Map.ApplyMove(monster, new Vector2Int(monster.CellPos.x, monster.CellPos.y));
 
                 monster.Update();
@@ -179,31 +176,12 @@ namespace Server.Game
 
             // 타인한테 정보 전송
             // null 전달 변경
-            {
-                S_Spawn spawnPacket = new S_Spawn();
-                spawnPacket.Objects.Add(gameObject.Info);
-                Broadcast(gameObject.CellPos, spawnPacket, player);
-            }
+            S_Spawn spawnPacket = new S_Spawn();
+            spawnPacket.Objects.Add(gameObject.Info);
+            Broadcast(gameObject.CellPos, spawnPacket, player);
         }
 
-        private void MergeMapInfo(Player player)
-        {
-            using (AppDbContext db = new AppDbContext())
-            {
-                MapDb mapDb = db.Maps.FirstOrDefault(m => m.PlayerDbId == player.PlayerDbId);
-                if (mapDb != null)
-                {
-                    player.MapInfo.TemplateId = mapDb.TemplateId;
-                    player.MapInfo.Scene = mapDb.Scene;
-                    player.MapInfo.MapName = mapDb.MapName;
-                }
-                else
-                {
-                    // mapDb가 null인 경우 처리
-                    // 예를 들어, 기본 위치로 설정하거나 오류를 기록
-                }
-            }
-        }
+        
 
         public void LeaveGame(int objectId)
         {
@@ -284,6 +262,10 @@ namespace Server.Game
             }
 
             return null;
+        }
+        public int GetPlayerCount()
+        {
+            return _players.Count;
         }
 
         public void Broadcast(Vector2Int pos, IMessage packet, Player excludePlayer = null)

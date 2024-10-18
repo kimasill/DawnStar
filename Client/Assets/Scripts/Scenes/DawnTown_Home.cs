@@ -144,21 +144,6 @@ public class DawnTown_Home : DawnTown
         }
     }
 
-    public override void ShowStoryScene(ScriptData scriptData)
-    {
-        UI_GameScene gameUI = Managers.UI.SceneUI as UI_GameScene;
-        UI_StoryScene storyScene = gameUI.StoryScene;
-        gameUI.GameWindow.gameObject.SetActive(false);
-        storyScene.gameObject.SetActive(true);
-        storyScene.LoadStoryData(scriptData);
-        storyScene.ShowStory();
-    }
-
-    public void QuestCheck()
-    {
-
-    }
-
     public override void Clear()
     {
         // 필요에 따라 Clear 메서드를 구현

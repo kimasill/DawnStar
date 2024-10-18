@@ -5,6 +5,7 @@ using ServerCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Reflection.Emit;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -238,17 +239,14 @@ class PacketHandler
         }
 
         // 플레이어를 새로운 맵에 다시 생성
-        Managers.Object.Add(objectInfo, myPlayer: true);
-
-        C_StartQuest startQuestPacket = new C_StartQuest();
-        startQuestPacket.TemplateId = 0;
-        Managers.Network.Send(startQuestPacket);
-
+        Managers.Object.Add(objectInfo, myPlayer: true);       
+        
         // 플레이어 정보 업데이트
         if (Managers.Object.MyPlayer != null)
         {
             Managers.Object.MyPlayer.PosInfo = objectInfo.Position;
             Managers.Object.MyPlayer.Stat.MergeFrom(objectInfo.StatInfo);
+            Managers.Scene.CurrentScene.CheckOnSceneLoadedQuest();
         }
 
         // 이벤트 핸들러 제거
@@ -385,9 +383,23 @@ class PacketHandler
 
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
     {
-
         S_ChangeStat statPacket = (S_ChangeStat)packet;
         Managers.Object.MyPlayer.Stat.MergeFrom(statPacket.StatInfo);        
+    }
+
+    public static void S_ChangeExpHandler(PacketSession session, IMessage packet)
+    {        
+        S_ChangeExp expPacket = (S_ChangeExp)packet;
+        Managers.Object.MyPlayer.Stat.TotalExp += expPacket.Exp;
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        gameSceneUI.NotificationUI.ShowExpNoti(expPacket.Exp);
+    }
+
+    public static void S_ChangeLevelHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeLevel levelPacket = (S_ChangeLevel)packet;
+        Managers.Object.MyPlayer.Stat.Level = levelPacket.Level;
+        Managers.Object.MyPlayer.RefreshAdditionalStat();
     }
 
     public static void S_PingHandler(PacketSession session, IMessage packet)

@@ -131,7 +131,7 @@ namespace Server.Game
             // 다른 쓰레드 하나를 만들어서, 데이터베이스에 저장하는 작업을 한다.
             //TODO : 플레이어의 정보를 데이터베이스에 저장한다.
             //위치정보, 레벨, 경험치, 아이템 정보, 퀘스트 정보 등등
-            if(Quest.CurrentQuest.Progress<50)
+            if(Quest.CurrentQuest != null && Quest.CurrentQuest.Progress<50)
                 Room.HandleUpdateQuest(this, Quest.CurrentQuest.TemplateId, 0);
             DbTransaction.SavePlayerStatus_All(this, Room);
             DbTransaction.SavePlayerMap(this, MapInfo);

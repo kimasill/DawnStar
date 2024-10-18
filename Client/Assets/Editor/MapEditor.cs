@@ -5,14 +5,12 @@ using UnityEngine.Tilemaps;
 using System.IO;
 using Unity.VisualScripting;
 
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-public class MapEditor
+public class MapEditor : MonoBehaviour
 {
-
 #if UNITY_EDITOR
 
     // % (Ctrl), # (Shift), & (Alt)
@@ -23,6 +21,7 @@ public class MapEditor
         GenerateByPath("Assets/Resources/Map");
         GenerateByPath("../Common/MapData");
         GenerateSpawnPointByPath("Assets/Resources/Map");
+        GenerateSpawnPointByPath("../Common/MapData");
     }
 
     private static void GenerateByPath(string pathPrefix)
@@ -152,6 +151,12 @@ public class MapEditor
         Debug.Log($"맵 데이터가 저장되었습니다: {filePath}");
     }
 
-#endif
+    private void OnDisable()
+    {
+        // 리소스 정리 코드 추가
+        Resources.UnloadUnusedAssets();
+        System.GC.Collect();
+    }
 
+#endif
 }

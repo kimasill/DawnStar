@@ -83,8 +83,208 @@
       "name": "부리",
       "maxCount": "9999",
       "materialType": "Drop",
-      "price": "1",
+      "price": "5",
       "iconPath": "Textures/Item/Materials/Drop/Bird_Loot"
+    },
+    {
+      "id": "1103",
+      "name": "달걀",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "3",
+      "iconPath": "Textures/Item/Materials/Drop/Egg"
+    },
+    {
+      "id": "1104",
+      "name": "파랑새깃털",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "4",
+      "iconPath": "Textures/Item/Materials/Drop/Feather_Blue"
+    },
+    {
+      "id": "1105",
+      "name": "노을새깃털",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "5",
+      "iconPath": "Textures/Item/Materials/Drop/Feather_Brown"
+    },
+    {
+      "id": "1106",
+      "name": "불꽃새깃털",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "7",
+      "iconPath": "Textures/Item/Materials/Drop/Feather_Red"
+    },
+    {
+      "id": "1107",
+      "name": "청동새깃털",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "8",
+      "iconPath": "Textures/Item/Materials/Drop/Feather_Green"
+    },
+    {
+      "id": "1108",
+      "name": "빛나는불꽃깃털",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "150",
+      "iconPath": "Textures/Item/Materials/Drop/Feather_Special_Red"
+    },
+    {
+      "id": "1109",
+      "name": "빛나는청동깃털",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "200",
+      "iconPath": "Textures/Item/Materials/Drop/Feather_Special_Green"
+    },
+    {
+      "id": "1110",
+      "name": "토파즈",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "2500",
+      "iconPath": "Textures/Item/Materials/Topaz"
+    },
+    {
+      "id": "1111",
+      "name": "루비",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "2700",
+      "iconPath": "Textures/Item/Materials/Ruby"
+    },
+    {
+      "id": "1112",
+      "name": "에메랄드",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "3000",
+      "iconPath": "Textures/Item/Materials/Emerald"
+    },
+    {
+      "id": "1113",
+      "name": "사파이어",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "2800",
+      "iconPath": "Textures/Item/Materials/Sapphire"
+    },
+    {
+      "id": "1114",
+      "name": "다이아몬드",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "13200",
+      "iconPath": "Textures/Item/Materials/Diamond"
+    },
+    {
+      "id": "1115",
+      "name": "토파즈조각",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "250",
+      "iconPath": "Textures/Item/Materials/Topaz_Piece"
+    },
+    {
+      "id": "1116",
+      "name": "루비조각",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "270",
+      "iconPath": "Textures/Item/Materials/Ruby_Piece"
+    },
+    {
+      "id": "1117",
+      "name": "에메랄드조각",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "300",
+      "iconPath": "Textures/Item/Materials/Emerald_Piece"
+    },
+    {
+      "id": "1118",
+      "name": "사파이어조각",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "280",
+      "iconPath": "Textures/Item/Materials/Sapphire_Piece"
+    },
+    {
+      "id": "1119",
+      "name": "다이아몬드조각",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "1320",
+      "iconPath": "Textures/Item/Materials/Diamond_Piece"
+    },
+    {
+      "id": "1120",
+      "name": "토파즈가루",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "25",
+      "iconPath": "Textures/Item/Materials/Topaz_Dust"
+    },
+    {
+      "id": "1121",
+      "name": "루비가루",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "27",
+      "iconPath": "Textures/Item/Materials/Ruby_Dust"
+    },
+    {
+      "id": "1122",
+      "name": "에메랄드가루",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "30",
+      "iconPath": "Textures/Item/Materials/Emerald_Dust"
+    },
+    {
+      "id": "1123",
+      "name": "사파이어가루",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "28",
+      "iconPath": "Textures/Item/Materials/Sapphire_Dust"
+    },
+    {
+      "id": "1124",
+      "name": "다이아몬드가루",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "132",
+      "iconPath": "Textures/Item/Materials/Diamond_Dust"
+    },
+    {
+      "id": "1125",
+      "name": "오닉스",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "5000",
+      "iconPath": "Textures/Item/Materials/Onyx"
+    },
+    {
+      "id": "1126",
+      "name": "오닉스조각",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "500",
+      "iconPath": "Textures/Item/Materials/Onyx_Piece"
+    },
+    {
+      "id": "1127",
+      "name": "오닉스가루",
+      "maxCount": "9999",
+      "materialType": "Material",
+      "price": "50",
+      "iconPath": "Textures/Item/Materials/Onyx_Dust"
     }
   ],
   "goods": [
@@ -98,11 +298,11 @@
     },
     {
       "id": "10002",
-      "name": "다이아몬드",
+      "name": "마장석",
       "maxCount": "9999999",
       "materialType": "Diamond",
       "price": "0",
-      "iconPath": "Textures/Item/Materials/Diamond"
+      "iconPath": "Textures/Item/Materials/ManaStone"
     }
   ]
 } 

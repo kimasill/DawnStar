@@ -4,6 +4,7 @@ using Server.Data;
 using Server.DB;
 using Server.Game.Job;
 using Server.Game.Room;
+using Server.Migrations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,8 +99,8 @@ namespace Server.Game
             if (player == null)
                 return;
 
-                // 퀘스트 완료 처리
-            Quest quest = player.Quest.CurrentQuest; // 현재 퀘스트 정보 가져오기
+            // 퀘스트 완료 처리
+            Quest quest = player.Quest.Get(questId);
             if (quest == null || quest.TemplateId != questId)
                 return;
 
@@ -110,6 +111,7 @@ namespace Server.Game
 
             QuestDb questDb = new QuestDb()
             {
+                QuestDbId = quest.QuestDbId,
                 TemplateId = quest.TemplateId,
                 Progress = quest.Progress,
                 Completed = quest.IsCompleted,

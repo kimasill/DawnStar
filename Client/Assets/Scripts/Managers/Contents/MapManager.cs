@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Deployment.Internal;
 using System.IO;
 using UnityEngine;
 using static SoonsoonData;
@@ -43,6 +44,7 @@ public class MapManager
 	bool[,] _collision;
     private Dictionary<Vector3Int, GameObject> _portalDict = new Dictionary<Vector3Int, GameObject>(); // 문 객체들을 저장할 Dictionary
 	private Dictionary<Vector3Int, GameObject> _questDict = new Dictionary<Vector3Int, GameObject>(); // 문 객체들을 저장할 Dictionary
+    private Dictionary<int, Vector2Int> _cameraDict = new Dictionary<int, Vector2Int>(); // 카메라 포인트를 저장할 Dictionary
     public bool CanGo(Vector3Int cellPos)
 	{
         Vector3Int adjustedPos = new Vector3Int(cellPos.x + 1, cellPos.y + 1, 0);
@@ -90,7 +92,13 @@ public class MapManager
 		return null;
     }
 
-            public void LoadMap(int mapId)
+    public Vector2Int GetCameraPosition(int id)
+    {
+        return _cameraDict[id];
+    }
+    
+
+    public void LoadMap(int mapId)
 	{
 		DestroyMap();
         _portalDict.Clear();
@@ -128,6 +136,7 @@ public class MapManager
 		}
 		FindDoors();
         FindQuests();
+        FindCameraPoints();
     }
 
 	public void DestroyMap()
@@ -145,8 +154,17 @@ public class MapManager
         GameObject[] doorObjects = GameObject.FindGameObjectsWithTag("Door");
         foreach (GameObject doorObject in doorObjects)
         {
-            Vector3Int doorCellPos = CurrentGrid.WorldToCell(doorObject.transform.position);
-            _portalDict[doorCellPos] = doorObject;
+            Bounds bounds = doorObject.GetComponent<Collider2D>().bounds;
+            Vector3Int min = CurrentGrid.WorldToCell(bounds.min);
+            Vector3Int max = CurrentGrid.WorldToCell(bounds.max);
+            for (int x = min.x; x <= max.x; x++)
+            {
+                for (int y = min.y; y <= max.y; y++)
+                {
+                    Vector3Int cellPos = new Vector3Int(x, y, 0);
+                    _portalDict[cellPos] = doorObject;
+                }
+            }
         }
     }
 
@@ -168,6 +186,17 @@ public class MapManager
                     _questDict[cellPos] = questObject;
                 }
             }
+        }
+    }
+
+    private void FindCameraPoints()
+    {
+        GameObject[] cameraObjects = GameObject.FindGameObjectsWithTag("Camera");
+        foreach (GameObject cameraObject in cameraObjects)
+        {
+            int cameraId = int.Parse(cameraObject.name.Replace("Camera_", ""));
+            Vector3Int cameraCellPos = CurrentGrid.WorldToCell(cameraObject.transform.position);
+            _cameraDict[cameraId] = (Vector2Int)cameraCellPos;
         }
     }
 
