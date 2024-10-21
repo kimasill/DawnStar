@@ -21,7 +21,17 @@ public class MyPlayerController : PlayerController
         get { return Stat.Gold; }
         set { Stat.Gold = value; }
     }
-
+    public override StatInfo Stat
+    {
+        get { return base.Stat; }
+        set
+        {
+            base.Stat = value;
+            UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;
+            gameScene.GameWindow.UpdateStateInfo();
+            UpdateHpBar();
+        }
+    }
     protected override void Init()
     {
         base.Init();
@@ -312,7 +322,6 @@ public class MyPlayerController : PlayerController
             _updated = false;
         }
     }
-
     public void RefreshAdditionalStat()
     {
         WeaponDamage = 0;

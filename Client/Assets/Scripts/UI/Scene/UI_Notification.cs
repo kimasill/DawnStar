@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Xml.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,7 @@ public class UI_Notification : UI_Base
 {
     [SerializeField] private Transform _itemNotiPanel;
     [SerializeField] private Transform _expNotiPanel;
+    [SerializeField] private Transform _levelNotiPanel;
     [SerializeField] private int _maxNotis = 8;
     [SerializeField] private int _notiHeight = 50;
 
@@ -19,6 +21,7 @@ public class UI_Notification : UI_Base
     public override void Init()
     {
         if (_itemNotiPanel == null) { _itemNotiPanel = transform.Find("ItemNotiPanel"); }
+        _levelNotiPanel.gameObject.SetActive(false);
     }
 
     public void ShowItemNoti(Item item)
@@ -60,10 +63,15 @@ public class UI_Notification : UI_Base
             StartCoroutine(HideNoti(_activeExpNotis.Dequeue()));
         }
     }
+    public void ShowLevelNoti()
+    {
+        _levelNotiPanel.gameObject.SetActive(true);
+        StartCoroutine(HideNoti(_levelNotiPanel.gameObject));
+    }
     private void CreateNewExpNoti(string exp)
     {
         var expNoti = Managers.Resource.Instantiate("UI/Popup/UI_ExpNoti", _expNotiPanel);
-        expNoti.GetComponent<Text>().text = $"+{exp} Exp";
+        expNoti.GetComponent<TMP_Text>().text = $"+{exp} Exp";
         expNoti.GetComponent<RectTransform>().anchoredPosition = new Vector2(
             Random.Range(0, _expNotiPanel.GetComponent<RectTransform>().rect.width),
             Random.Range(0, _expNotiPanel.GetComponent<RectTransform>().rect.height)

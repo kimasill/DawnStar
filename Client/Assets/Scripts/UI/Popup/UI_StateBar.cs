@@ -2,82 +2,71 @@ using Data;
 using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using static Item;
 
 public class UI_StateBar : UI_Base
 {
+    MyPlayerController _myPlayer;
+    int _nextExp = 0;
+    int _prevExp = 0;
     enum Texts
     {
         NameText,
-        LevelText,        
+        LevelText,
+        ExpText,
     }
     enum Images
     {
-        ProfileImage,
+        Profile_Image,
     }
     bool _init = false;
+    public bool Set = false;
+    ExpBar _expBar;
     public override void Init()
     {
-        //Bind<Text>(typeof(Texts));
-        //Bind<Image>(typeof(Images));
-        //_init = true;
-        //RefreshUI();
+        Bind<TMP_Text>(typeof(Texts));
+        Bind<Image>(typeof(Images));
+        _expBar = GetComponentInChildren<ExpBar>();
+        _init = true;        
     }
 
+    public void SetInfo()
+    {
+        _myPlayer = Managers.Object.MyPlayer;
+        Managers.Data.StatDict.TryGetValue(_myPlayer.Stat.Level, out StatData nextStat);
+        if (nextStat != null)
+        {
+            _nextExp = nextStat.TotalExp;
+        }
+
+        Managers.Data.StatDict.TryGetValue(_myPlayer.Stat.Level - 1, out StatData prevStat);
+        if (prevStat != null)
+        {
+            _prevExp = prevStat.TotalExp;
+        }
+    }
+
+    public void UpdateExpBar()
+    {
+        if (_expBar == null)
+            return;
+        float ratio = 0.0f;
+        if (_myPlayer.Stat.TotalExp > 0)
+        {
+            int nextExp = _nextExp - _prevExp;
+            ratio = ((float)(_myPlayer.Stat.TotalExp - _prevExp) / nextExp);
+        }
+        _expBar.SetExpBar(ratio);
+    }
     public void RefreshUI()
     {
         if (_init == false)
             return;
-
-        ////먼저 items 다 가린다
-        //Get<Image>((int)Images.Slot_Helmet).enabled = false;
-        //Get<Image>((int)Images.Slot_Armor).enabled = false;
-        //Get<Image>((int)Images.Slot_Weapon).enabled = false;
-        //Get<Image>((int)Images.Slot_Shield).enabled = false;
-        //Get<Image>((int)Images.Slot_Boots).enabled = false;
-
-        //foreach(Item item in Managers.Inventory.Items.Values)
-        //{
-        //    if(item.Equipped == false)
-        //        continue;
-        //    ItemData itemData = null;
-        //    Managers.Data.ItemDict.TryGetValue(item.TemplateId, out itemData);
-        //    Sprite icon = Managers.Resource.Load<Sprite>(itemData.iconPath);
-
-        //    if (item.ItemType == ItemType.Weapon)
-        //    {
-        //        Get<Image>((int)Images.Slot_Weapon).enabled = true;
-        //        Get<Image>((int)Images.Slot_Weapon).sprite = icon;
-        //    }
-        //    else if (item.ItemType == ItemType.Armor)
-        //    {
-        //        Armor armor = (Armor)item;
-        //        switch (armor.ArmorType)
-        //        {
-        //            case ArmorType.Helmet:
-        //                Get<Image>((int)Images.Slot_Helmet).enabled = true;
-        //                Get<Image>((int)Images.Slot_Helmet).sprite = icon;
-        //                break;
-        //            case ArmorType.Armor:
-        //                Get<Image>((int)Images.Slot_Armor).enabled = true;
-        //                Get<Image>((int)Images.Slot_Armor).sprite = icon;
-        //                break;
-        //            case ArmorType.Boots:
-        //                Get<Image>((int)Images.Slot_Boots).enabled = true;
-        //                Get<Image>((int)Images.Slot_Boots).sprite = icon;
-        //                break;
-        //        }
-        //    }
-        //    //Text 설정
-        //    MyPlayerController player = Managers.Object.MyPlayer;
-        //    player.RefreshAdditionalStat();
-
-        //    Get<Text>((int)Texts.NameText).text = player.name;
-        //    int totalDamage = player.Stat.Attack + player.WeaponDamage;
-        //    Get<Text>((int)Texts.AttackValueText).text = $"{totalDamage}(+{player.WeaponDamage})";
-        //    Get<Text>((int)Texts.DefenceValueText).text = $"{player.ArmorDef}";
-        //}
+        UpdateExpBar();
+        GetTextMeshPro((int)Texts.ExpText).text = $"Exp:{_myPlayer.Stat.TotalExp - _prevExp}";
+        GetTextMeshPro((int)Texts.LevelText).text = $"Lv. {_myPlayer.Stat.Level}";        
     }
 }

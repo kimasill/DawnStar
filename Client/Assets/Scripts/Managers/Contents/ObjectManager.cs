@@ -19,6 +19,8 @@ public class ObjectManager
 	{ 
 		if(MyPlayer != null && MyPlayer.Id == info.ObjectId) 
             return;
+        if(Managers.Map.CurrentGrid == null)
+            return;
         if (_objects.ContainsKey(info.ObjectId))
             return;
         Debug.Log($" myplayer:{myPlayer}, objectId :{info.ObjectId }");

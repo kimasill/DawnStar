@@ -56,3 +56,6 @@ TagManager:
   - name: Fog
     uniqueID: 1867890455
     locked: 0
+  - name: Object
+    uniqueID: 3469598411
+    locked: 0
