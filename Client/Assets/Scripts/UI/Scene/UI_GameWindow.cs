@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class UI_GameWindow : UI_Base
 {
-    UI_StateBar StateUI { get; set; }
+    public UI_StateBar StateUI { get; set; }
     public UI_StoryPanel StoryPanel { get; set; }
 
     public override void Init()
@@ -15,7 +15,6 @@ public class UI_GameWindow : UI_Base
         StateUI = GetComponentInChildren<UI_StateBar>();
         StoryPanel = GetComponentInChildren<UI_StoryPanel>();
 
-        StateUI.gameObject.SetActive(false);
         StoryPanel.gameObject.SetActive(false);
     }
 
@@ -58,6 +57,22 @@ public class UI_GameWindow : UI_Base
         else
         {
             Debug.LogWarning("StoryPanel을 찾을 수 없습니다.");
+        }
+    }
+    public void UpdateStateInfo()
+    {
+        if (StateUI != null)
+        {
+            if(StateUI.Set == false)
+            {
+                StateUI.SetInfo();
+                StateUI.Set = true;
+            }
+            StateUI.RefreshUI();
+        }
+        else
+        {
+            Debug.LogWarning("StateUI를 찾을 수 없습니다.");
         }
     }
 }

@@ -6,11 +6,12 @@ public class BirdController : MonsterController
 {
     private bool _isTakingOff = false;
     private bool _isLanding = false;
+    private float _idleAnimationTimer = 0f;
+    private float _idleAnimationInterval = 1f; // 1√  ∞£∞›
 
     protected override void Init()
     {
         base.Init();
-        _animator = GetComponent<Animator>();
     }
 
     protected override void UpdateAnimation()
@@ -36,8 +37,13 @@ public class BirdController : MonsterController
             }
             else
             {
-                string idleAnimation = Random.Range(0, 2) == 0 ? "IDLE_1" : "IDLE_2";
-                _animator.Play(idleAnimation);
+                _idleAnimationTimer += Time.deltaTime;
+                if (_idleAnimationTimer >= _idleAnimationInterval)
+                {
+
+                    string idleAnimation = Random.Range(0, 2) == 0 ? "IDLE_1" : "IDLE_2";
+                    _animator.Play(idleAnimation);
+                }
             }
         }
         else if (State == CreatureState.Moving)

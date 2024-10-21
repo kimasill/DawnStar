@@ -62,14 +62,7 @@ namespace Server.Game
                     UpdateIdle();
                     break;
                 case CreatureState.Moving:
-                    if(IsAggressive == false)
-                    {
-                        UpdatePatrol();
-                    }
-                    else
-                    {
-                        UpdateMoving();
-                    }                    
+                    UpdateMoving();                   
                     break;
                 case CreatureState.Skill:
                     UpdateSkill();
@@ -84,39 +77,51 @@ namespace Server.Game
 
             if(Room != null)
             {
-                _job = Room.PushAfter(200, Update);
+                _job = Room.PushAfter(50, Update);
             }
         }
         Player _target;
+        Vector2Int _dest;
         int _searchRange = 10;
         int _chaseRange = 20;
         long _nextSearchTick = 0;
         long _nextMoveTick = 0;
         long _nextWaitTick = 0;
-
         protected virtual void UpdateIdle()
         {
             if (_nextSearchTick > Environment.TickCount64)
                 return;
             _nextSearchTick = Environment.TickCount64 + 1000;
 
-            if (IsAggressive == false)
-            {
-                // 비공격 몬스터는 3초간 대기
-                if (_nextWaitTick > Environment.TickCount64)
-                    return;
-                _nextWaitTick = Environment.TickCount64 + 3000;
-
-                State = CreatureState.Moving;
-                return;
-            }
 
             Player target = Room.FindCloesetPlayer(CellPos, _searchRange);
-            if (target == null)
+            if (target != null)
+            {
+                _target = target;
+                State = CreatureState.Moving;
+                //TODO: 비공격 몬스터의 경우 타겟이 있는경우 도망감
+                _dest = new Vector2Int(
+                    SpawnPosition.x + _rand.Next(-_patrolRange, _patrolRange + 1),
+                    SpawnPosition.y + _rand.Next(-_patrolRange, _patrolRange + 1)
+                );
                 return;
+            }            
 
-            _target = target;
-            State = CreatureState.Moving;
+            if (IsAggressive == false)
+            {
+                if (_rand.NextDouble() < 0.5 && _nextWaitTick<= Environment.TickCount64)
+                {
+                    State = CreatureState.Moving;
+                    _dest = new Vector2Int(
+                        SpawnPosition.x + _rand.Next(-_patrolRange, _patrolRange + 1),
+                        SpawnPosition.y + _rand.Next(-_patrolRange, _patrolRange + 1)
+                    );
+                }
+                else
+                {
+                    _nextWaitTick = Environment.TickCount64 + _rand.Next(5000, 20000);
+                }
+            }
         }
         int _skillRange = 1;
         protected virtual void UpdateMoving()
@@ -127,8 +132,14 @@ namespace Server.Game
             }
             if (_nextMoveTick > Environment.TickCount64)
                 return;
-            int moveTick = (int)(1000 / Speed);
+            int moveTick = (int)(1000 / (Speed*4));
             _nextMoveTick = Environment.TickCount64 + moveTick;
+            
+            if (IsAggressive == false)
+            {                
+                UpdatePatrol();
+                return;
+            }
 
             if (_target == null || _target.Room != Room)
             {
@@ -170,44 +181,24 @@ namespace Server.Game
 
         protected virtual void UpdatePatrol()
         {
-            if (_nextMoveTick > Environment.TickCount64)
-                return;
-            int moveTick = (int)(1000 / Speed);
-            _nextMoveTick = Environment.TickCount64 + moveTick;
-
-            // 스폰 위치에서 일정 거리 이내로 이동
-            Vector2Int dest = new Vector2Int(
-                SpawnPosition.x + _rand.Next(-_patrolRange, _patrolRange + 1),
-                SpawnPosition.y + _rand.Next(-_patrolRange, _patrolRange + 1)
-            );
-
-            if (MonsterType == MonsterType.MonsterFlying)
+            if (CellPos.Equals(_dest))
             {
-                if (IsFlying)
+                if(_rand.NextDouble() < 0.5)
                 {
-                    // 비행 몬스터가 랜덤으로 착지
-                    if (_rand.Next(0, 2) == 0)
-                    {
-                        IsFlying = false;
-                        State = CreatureState.Idle;
-                        BroadcastMove();
-                        return;
-                    }
+                    State = CreatureState.Idle;
+                    BroadcastMove();
+                    return;
                 }
                 else
                 {
-                    if (_rand.Next(0, 2) == 0)
-                    {
-                        IsFlying = false;
-                        State = CreatureState.Idle;
-                        BroadcastMove();
-                        return;
-                    }
-                }
-                IsFlying = true;
+                    _dest = new Vector2Int(
+                        SpawnPosition.x + _rand.Next(-_patrolRange, _patrolRange + 1),
+                        SpawnPosition.y + _rand.Next(-_patrolRange, _patrolRange + 1)
+                    );
+                }               
             }
 
-            List<Vector2Int> path = Room.Map.FindPath(CellPos, dest, checkObjects: !IsFlying);
+            List<Vector2Int> path = Room.Map.FindPath(CellPos, _dest, checkObjects: !IsFlying);
             if (path.Count < 2)
             {
                 State = CreatureState.Idle;
@@ -352,7 +343,7 @@ namespace Server.Game
                         Count = count,
                         Position = PosInfo
                     };
-                    Room.Push(Room.DropItem, player, dropItemPacket);
+                    room.Push(room.DropItem, player, dropItemPacket);
                     DbTransaction.ExpNoti(player, Stat.TotalExp);
                     S_ChangeExp changeExpPacket = new S_ChangeExp()
                     {

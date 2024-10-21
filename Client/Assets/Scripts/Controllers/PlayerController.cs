@@ -3,6 +3,7 @@ using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using static Define;
 
 public class PlayerController : CreatureController
@@ -10,6 +11,7 @@ public class PlayerController : CreatureController
 	protected Coroutine _coSkill;
     protected bool _rangedSkill = false;
     protected EquipmentController _equipmentController;
+    protected SortingGroup _sortingLayer;
 
     public EquipmentController Equipment 
     { 
@@ -25,7 +27,8 @@ public class PlayerController : CreatureController
 
     protected override void Init()
 	{
-        base.Init();        
+        base.Init();
+        _sortingLayer = GetComponent<SortingGroup>();   
     }
 
     protected override void UpdateAnimation()
@@ -153,5 +156,9 @@ public class PlayerController : CreatureController
 	{
 		Debug.Log("Player HIT !");
         base.OnDamaged();
+    }
+    protected override void UpdateSortingLayer()
+    {
+        _sortingLayer.sortingOrder = -CellPos.y;
     }
 }

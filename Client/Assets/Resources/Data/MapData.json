@@ -140,6 +140,26 @@
           "id": "4",
           "monsterId": "6",
           "count": "5"
+        },
+        {
+          "id": "5",
+          "monsterId": "7",
+          "count": "15"
+        },
+        {
+          "id": "6",
+          "monsterId": "8",
+          "count": "5"
+        },
+        {
+          "id": "7",
+          "monsterId": "9",
+          "count": "20"
+        },
+        {
+          "id": "8",
+          "monsterId": "10",
+          "count": "5"
         }
       ]
     }

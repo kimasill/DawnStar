@@ -139,6 +139,7 @@ namespace Server.Game
             StatInfo statInfo = new StatInfo()
             {
                 Level = player.Stat.Level,
+                TotalExp = player.Stat.TotalExp,
                 Hp = player.Stat.Hp,
                 MaxHp = player.Stat.MaxHp,
                 Attack = player.Stat.Attack,
@@ -169,7 +170,7 @@ namespace Server.Game
 
             if (ids == null)
             { 
-                ids = mapData.spawns.Select(x => x.monsterId).Distinct().ToList();
+                ids = mapData.spawns.Select(x => x.id).Distinct().ToList();
             }
             foreach (int id in ids)
             {

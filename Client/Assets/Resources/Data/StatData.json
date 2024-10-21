@@ -40,5 +40,85 @@
       "speed": "5.0",
       "totalExp": "1000"
     },
+    {
+      "level": "6",
+      "maxHp": "600",
+      "attack": "40",
+      "deffense": "25",
+      "speed": "5.0",
+      "totalExp": "2000"
+    },
+    {
+      "level": "7",
+      "maxHp": "720",
+      "attack": "40",
+      "deffense": "25",
+      "speed": "5.0",
+      "totalExp": "3500"
+    },
+    {
+      "level": "8",
+      "maxHp": "840",
+      "attack": "40",
+      "deffense": "25",
+      "speed": "5.0",
+      "totalExp": "5500"
+    },
+    {
+      "level": "9",
+      "maxHp": "960",
+      "attack": "40",
+      "deffense": "25",
+      "speed": "5.0",
+      "totalExp": "8500"
+    },
+    {
+      "level": "10",
+      "maxHp": "1080",
+      "attack": "40",
+      "deffense": "25",
+      "speed": "5.0",
+      "totalExp": "14000"
+    },
+    {
+      "level": "11",
+      "maxHp": "1200",
+      "attack": "40",
+      "deffense": "25",
+      "speed": "5.0",
+      "totalExp": "21000"
+    },
+    {
+      "level": "12",
+      "maxHp": "1350",
+      "attack": "40",
+      "deffense": "25",
+      "speed": "5.0",
+      "totalExp": "30000"
+    },
+    {
+      "level": "13",
+      "maxHp": "1500",
+      "attack": "40",
+      "deffense": "25",
+      "speed": "5.0",
+      "totalExp": "42000"
+    },
+    {
+      "level": "14",
+      "maxHp": "1650",
+      "attack": "40",
+      "deffense": "25",
+      "speed": "5.0",
+      "totalExp": "55000"
+    },
+    {
+      "level": "15",
+      "maxHp": "1800",
+      "attack": "40",
+      "deffense": "25",
+      "speed": "5.0",
+      "totalExp": "70000"
+    },
   ]
 } 

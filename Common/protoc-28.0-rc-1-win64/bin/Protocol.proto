@@ -51,7 +51,6 @@ enum MsgId {
   S_LOADING = 43;
   S_QUEST_LIST = 44;
   S_CHANGE_EXP = 45;
-  S_CHANGE_LEVEL = 46;
 }
 enum CreatureState{
   IDLE = 0;
@@ -153,6 +152,7 @@ enum MaterialType{
 	MATERIAL_TYPE_FOOD = 1;
 	MATERIAL_TYPE_GOLD = 2;
 	MATERIAL_TYPE_DROP = 3;
+	MATERIAL_TYPE_BASE = 4;
 }
 
 enum GoodsType{
@@ -318,9 +318,6 @@ message S_ChangeStat{
 }
 message S_ChangeExp{
 	int32 exp = 1;
-}
-message S_ChangeLevel{
-	int32 level = 1;
 }
 message S_ChangePosition{
 	int32 objectId = 1;

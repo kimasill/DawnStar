@@ -5,7 +5,35 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Data
-{  
+{
+    #region Stat 
+    [Serializable]
+    public class StatData
+    {
+        public int Level;
+        public int MaxHp;
+        public int Attack;
+        public int Defence;
+        public float Speed;
+        public int TotalExp;
+    }
+
+    [Serializable]
+    public class StatLoader : ILoader<int, StatData>
+    {
+        public List<StatData> stats = new List<StatData>();
+
+        public Dictionary<int, StatData> MakeDict()
+        {
+            Dictionary<int, StatData> dict = new Dictionary<int, StatData>();
+            foreach (StatData stat in stats)
+            {
+                dict.Add(stat.Level, stat);
+            }
+            return dict;
+        }
+    }
+    #endregion
     #region Skill
     [Serializable]
     public class Skill

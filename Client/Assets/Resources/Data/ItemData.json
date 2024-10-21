@@ -84,7 +84,7 @@
       "maxCount": "9999",
       "materialType": "Drop",
       "price": "5",
-      "iconPath": "Textures/Item/Materials/Drop/Bird_Loot"
+      "iconPath": "Textures/Item/Materials/Drop/Bird_Loot_A"
     },
     {
       "id": "1103",
@@ -146,7 +146,7 @@
       "id": "1110",
       "name": "토파즈",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "2500",
       "iconPath": "Textures/Item/Materials/Topaz"
     },
@@ -154,7 +154,7 @@
       "id": "1111",
       "name": "루비",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "2700",
       "iconPath": "Textures/Item/Materials/Ruby"
     },
@@ -162,7 +162,7 @@
       "id": "1112",
       "name": "에메랄드",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "3000",
       "iconPath": "Textures/Item/Materials/Emerald"
     },
@@ -170,7 +170,7 @@
       "id": "1113",
       "name": "사파이어",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "2800",
       "iconPath": "Textures/Item/Materials/Sapphire"
     },
@@ -178,7 +178,7 @@
       "id": "1114",
       "name": "다이아몬드",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "13200",
       "iconPath": "Textures/Item/Materials/Diamond"
     },
@@ -186,7 +186,7 @@
       "id": "1115",
       "name": "토파즈조각",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "250",
       "iconPath": "Textures/Item/Materials/Topaz_Piece"
     },
@@ -194,7 +194,7 @@
       "id": "1116",
       "name": "루비조각",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "270",
       "iconPath": "Textures/Item/Materials/Ruby_Piece"
     },
@@ -202,7 +202,7 @@
       "id": "1117",
       "name": "에메랄드조각",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "300",
       "iconPath": "Textures/Item/Materials/Emerald_Piece"
     },
@@ -210,7 +210,7 @@
       "id": "1118",
       "name": "사파이어조각",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "280",
       "iconPath": "Textures/Item/Materials/Sapphire_Piece"
     },
@@ -218,7 +218,7 @@
       "id": "1119",
       "name": "다이아몬드조각",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "1320",
       "iconPath": "Textures/Item/Materials/Diamond_Piece"
     },
@@ -226,7 +226,7 @@
       "id": "1120",
       "name": "토파즈가루",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "25",
       "iconPath": "Textures/Item/Materials/Topaz_Dust"
     },
@@ -234,7 +234,7 @@
       "id": "1121",
       "name": "루비가루",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "27",
       "iconPath": "Textures/Item/Materials/Ruby_Dust"
     },
@@ -242,7 +242,7 @@
       "id": "1122",
       "name": "에메랄드가루",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "30",
       "iconPath": "Textures/Item/Materials/Emerald_Dust"
     },
@@ -250,7 +250,7 @@
       "id": "1123",
       "name": "사파이어가루",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "28",
       "iconPath": "Textures/Item/Materials/Sapphire_Dust"
     },
@@ -258,7 +258,7 @@
       "id": "1124",
       "name": "다이아몬드가루",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "132",
       "iconPath": "Textures/Item/Materials/Diamond_Dust"
     },
@@ -266,7 +266,7 @@
       "id": "1125",
       "name": "오닉스",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "5000",
       "iconPath": "Textures/Item/Materials/Onyx"
     },
@@ -274,7 +274,7 @@
       "id": "1126",
       "name": "오닉스조각",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "500",
       "iconPath": "Textures/Item/Materials/Onyx_Piece"
     },
@@ -282,9 +282,97 @@
       "id": "1127",
       "name": "오닉스가루",
       "maxCount": "9999",
-      "materialType": "Material",
+      "materialType": "Base",
       "price": "50",
       "iconPath": "Textures/Item/Materials/Onyx_Dust"
+    },
+    {
+      "id": "1128",
+      "name": "점액",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "2",
+      "iconPath": "Textures/Item/Materials/Drop/Slime_M"
+    },
+    {
+      "id": "1129",
+      "name": "철",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "1100",
+      "iconPath": "Textures/Item/Materials/Iron"
+    },
+    {
+      "id": "1130",
+      "name": "철조각",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "110",
+      "iconPath": "Textures/Item/Materials/Iron_Piece"
+    },
+    {
+      "id": "1131",
+      "name": "철가루",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "11",
+      "iconPath": "Textures/Item/Materials/Iron_Dust"
+    },
+    {
+      "id": "1132",
+      "name": "은",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "1200",
+      "iconPath": "Textures/Item/Materials/Silver"
+    },
+    {
+      "id": "1133",
+      "name": "은조각",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "120",
+      "iconPath": "Textures/Item/Materials/Silver_Piece"
+    },
+    {
+      "id": "1134",
+      "name": "은가루",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "12",
+      "iconPath": "Textures/Item/Materials/Silver_Dust"
+    },
+    {
+      "id": "1135",
+      "name": "금",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "2200",
+      "iconPath": "Textures/Item/Materials/Gold"
+    },
+    {
+      "id": "1136",
+      "name": "금조각",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "220",
+      "iconPath": "Textures/Item/Materials/Gold_Piece"
+    },
+    {
+      "id": "1137",
+      "name": "금가루",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "22",
+      "iconPath": "Textures/Item/Materials/Gold_Dust"
+    },
+    {
+      "id": "1138",
+      "name": "붉은개구리알",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "75",
+      "iconPath": "Textures/Item/Materials/Drop/FishScales_Red"
     }
   ],
   "goods": [

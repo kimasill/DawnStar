@@ -15,7 +15,7 @@ public class CreatureController : BaseController
 		set
 		{
 			base.Stat = value;
-			UpdateHpBar();
+            UpdateHpBar();
 		}
 	}
 
@@ -38,7 +38,7 @@ public class CreatureController : BaseController
 		UpdateHpBar();
 	}
 
-	void UpdateHpBar()
+	protected void UpdateHpBar()
 	{
 		if (_hpBar == null)
 			return;
@@ -48,7 +48,7 @@ public class CreatureController : BaseController
             ratio = ((float)Hp/ Stat.MaxHp);			
         }
         _hpBar.SetHpBar(ratio);
-    }
+    }	
 
 	protected override void Init()
 	{

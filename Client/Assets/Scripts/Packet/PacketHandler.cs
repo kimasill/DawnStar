@@ -247,6 +247,7 @@ class PacketHandler
             Managers.Object.MyPlayer.PosInfo = objectInfo.Position;
             Managers.Object.MyPlayer.Stat.MergeFrom(objectInfo.StatInfo);
             Managers.Scene.CurrentScene.CheckOnSceneLoadedQuest();
+            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;            
         }
 
         // 이벤트 핸들러 제거
@@ -384,7 +385,12 @@ class PacketHandler
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
     {
         S_ChangeStat statPacket = (S_ChangeStat)packet;
-        Managers.Object.MyPlayer.Stat.MergeFrom(statPacket.StatInfo);        
+        Managers.Object.MyPlayer.Stat.MergeFrom(statPacket.StatInfo);
+        if (Managers.Object.MyPlayer.Stat.Level != statPacket.StatInfo.Level)
+        {
+            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+            gameSceneUI.NotificationUI.ShowLevelNoti();
+        }
     }
 
     public static void S_ChangeExpHandler(PacketSession session, IMessage packet)
@@ -393,13 +399,6 @@ class PacketHandler
         Managers.Object.MyPlayer.Stat.TotalExp += expPacket.Exp;
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
         gameSceneUI.NotificationUI.ShowExpNoti(expPacket.Exp);
-    }
-
-    public static void S_ChangeLevelHandler(PacketSession session, IMessage packet)
-    {
-        S_ChangeLevel levelPacket = (S_ChangeLevel)packet;
-        Managers.Object.MyPlayer.Stat.Level = levelPacket.Level;
-        Managers.Object.MyPlayer.RefreshAdditionalStat();
     }
 
     public static void S_PingHandler(PacketSession session, IMessage packet)

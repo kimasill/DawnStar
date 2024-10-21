@@ -101,24 +101,5 @@ namespace Server.DB
                 }
             });
         }
-
-        public static void LevelNoti(Player player)
-        {
-            if (player == null)
-                return;
-
-            Instance.Push(() =>
-            {
-                using (AppDbContext db = new AppDbContext())
-                {
-                    PlayerDb playerDb = db.Players.FirstOrDefault(p => p.PlayerDbId == player.PlayerDbId);
-                    if (playerDb != null)
-                    {
-                        playerDb.Level = player.Level;
-                        db.SaveChangesEx();
-                    }
-                }
-            });
-        }
     }
 }

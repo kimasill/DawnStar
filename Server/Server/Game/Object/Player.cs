@@ -119,8 +119,9 @@ namespace Server.Game
             Stat.MaxHp = stat.MaxHp;
             Hp = stat.MaxHp;
             Stat.Attack = stat.Attack;
-            Stat.Speed = stat.Speed;            
-            Room.HandleStatChange(this);
+            Stat.Speed = stat.Speed;           
+            DbTransaction.SavePlayerStatus_All(this, Room);
+            Room.Push(Room.HandleStatChange, this);
         }
 
         public void OnLeaveGame()
@@ -132,12 +133,12 @@ namespace Server.Game
             //TODO : 플레이어의 정보를 데이터베이스에 저장한다.
             //위치정보, 레벨, 경험치, 아이템 정보, 퀘스트 정보 등등
             if(Quest.CurrentQuest != null && Quest.CurrentQuest.Progress<50)
-                Room.HandleUpdateQuest(this, Quest.CurrentQuest.TemplateId, 0);
+                Room.Push(Room.HandleUpdateQuest,this, Quest.CurrentQuest.TemplateId, 0);
             DbTransaction.SavePlayerStatus_All(this, Room);
             DbTransaction.SavePlayerMap(this, MapInfo);
             if (Session.ServerState == PlayerServerState.ServerStateSingle)
             {
-                Room.ResetSingleRoom(this);
+                Room.Push(Room.ResetSingleRoom,this);
             }
         }
 

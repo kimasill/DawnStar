@@ -62,6 +62,8 @@ public class BaseController : MonoBehaviour
     }
     public void SyncPos()
     {
+        if (Managers.Map.CurrentGrid == null)
+            return;
         Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
         transform.position = destPos;
     }
@@ -165,7 +167,13 @@ public class BaseController : MonoBehaviour
 
         return cellPos;
     }
+    protected virtual void UpdateSortingLayer()
+    {
+        if (_sprite == null)
+            return;
 
+        _sprite.sortingOrder = -CellPos.y;
+    }
     protected virtual void UpdateAnimation()
     {
         if (_animator == null)
@@ -324,6 +332,7 @@ public class BaseController : MonoBehaviour
             transform.position += moveDir.normalized * Speed * Time.deltaTime;
             State = CreatureState.Moving;
         }
+        UpdateSortingLayer();
     }
 
     protected virtual void MoveToNextPos()
