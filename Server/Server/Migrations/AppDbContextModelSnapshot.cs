@@ -42,6 +42,40 @@ namespace Server.Migrations
                     b.ToTable("Account");
                 });
 
+            modelBuilder.Entity("Server.DB.ChestDb", b =>
+                {
+                    b.Property<int>("ChestDbId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ChestDbId"));
+
+                    b.Property<int>("ChestId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MapDbId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Opened")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PosX")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PosY")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TemplateId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Visible")
+                        .HasColumnType("bit");
+
+                    b.HasKey("ChestDbId");
+
+                    b.ToTable("Chest");
+                });
+
             modelBuilder.Entity("Server.DB.ItemDb", b =>
                 {
                     b.Property<int>("ItemDbId")
@@ -53,8 +87,20 @@ namespace Server.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
+                    b.Property<int>("Damage")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Defense")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Enhance")
+                        .HasColumnType("int");
+
                     b.Property<bool>("Equipped")
                         .HasColumnType("bit");
+
+                    b.Property<string>("OptionsJson")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("OwnerDbId")
                         .HasColumnType("int");
@@ -185,6 +231,61 @@ namespace Server.Migrations
                     b.ToTable("Quest");
                 });
 
+            modelBuilder.Entity("Server.DB.ShopDb", b =>
+                {
+                    b.Property<int>("ShopDbId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShopDbId"));
+
+                    b.Property<int>("PlayerDbId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Scene")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShopName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TemplateId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ShopDbId");
+
+                    b.ToTable("Shop");
+                });
+
+            modelBuilder.Entity("Server.DB.ShopItemDb", b =>
+                {
+                    b.Property<int>("ShopItemDbId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShopItemDbId"));
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ItemType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShopDbId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ShopItemDbId");
+
+                    b.HasIndex("ShopDbId");
+
+                    b.ToTable("ShopItem");
+                });
+
             modelBuilder.Entity("Server.DB.ItemDb", b =>
                 {
                     b.HasOne("Server.DB.PlayerDb", "Owner")
@@ -214,6 +315,15 @@ namespace Server.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("Server.DB.ShopItemDb", b =>
+                {
+                    b.HasOne("Server.DB.ShopDb", null)
+                        .WithMany("ShopItems")
+                        .HasForeignKey("ShopDbId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Server.DB.AccountDb", b =>
                 {
                     b.Navigation("Players");
@@ -224,6 +334,11 @@ namespace Server.Migrations
                     b.Navigation("Items");
 
                     b.Navigation("Quests");
+                });
+
+            modelBuilder.Entity("Server.DB.ShopDb", b =>
+                {
+                    b.Navigation("ShopItems");
                 });
 #pragma warning restore 612, 618
         }

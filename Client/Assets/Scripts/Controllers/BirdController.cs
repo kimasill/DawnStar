@@ -59,7 +59,7 @@ public class BirdController : MonsterController
         }
         else if (State == CreatureState.Dead)
         {
-            StartCoroutine(DisableAfterDelay(1.0f));
+            StartCoroutine(DisableAfterDelay(0.1f));
         }
     }
 

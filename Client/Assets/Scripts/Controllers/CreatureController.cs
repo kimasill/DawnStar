@@ -29,7 +29,7 @@ public class CreatureController : BaseController
 		}
 	}
 
-	protected void AddHpBar()
+	protected virtual void AddHpBar()
 	{
 		GameObject go = Managers.Resource.Instantiate("UI/HpBar", transform);
 		go.transform.localPosition = new Vector3(0, 0.5f, 0);
@@ -38,7 +38,7 @@ public class CreatureController : BaseController
 		UpdateHpBar();
 	}
 
-	protected void UpdateHpBar()
+	protected virtual void UpdateHpBar()
 	{
 		if (_hpBar == null)
 			return;
@@ -47,7 +47,8 @@ public class CreatureController : BaseController
         {
             ratio = ((float)Hp/ Stat.MaxHp);			
         }
-        _hpBar.SetHpBar(ratio);
+        _hpBar.InitializeFrame(Stat.MaxHp);
+        _hpBar.SetHpBar(ratio);		
     }	
 
 	protected override void Init()

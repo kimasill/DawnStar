@@ -41,7 +41,7 @@ public class UI_GameWindow : UI_Base
 
         if (StoryPanel != null)
         {
-            StoryPanel.ShowScriptAndProfile(npcData.scripts, npcData.name);
+            StoryPanel.ShowScriptAndProfile(npcData);
         }
         else
         {
@@ -57,6 +57,17 @@ public class UI_GameWindow : UI_Base
         else
         {
             Debug.LogWarning("StoryPanel을 찾을 수 없습니다.");
+        }
+    }
+    public void UpdateHpUI()
+    {
+        if (StateUI != null)
+        {
+            StateUI.UpdateHpBar();
+        }
+        else
+        {
+            Debug.LogWarning("StateUI를 찾을 수 없습니다.");
         }
     }
     public void UpdateStateInfo()

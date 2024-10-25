@@ -2,6 +2,8 @@
 using Server.Data;
 using Server.DB;
 using Server.Game.Job;
+using System.Collections.Generic;
+using System.Linq;
 using DbTransaction = Server.DB.DbTransaction;
 
 namespace Server.Game
@@ -26,9 +28,8 @@ namespace Server.Game
             DataManager.ItemDict.TryGetValue(buyPacket.TemplateId , out itemData);
             if (itemData == null)
                 return;
-
-            //TODO: 아이템 구매 개수 확인. 현재는 상점에 있는거 다삼
-            int count = 1;
+            
+            int count = buyPacket.Count;
 
             int? slot = player.Inven.GetSlot(buyPacket.TemplateId, count);
             if (slot == null)
@@ -52,7 +53,8 @@ namespace Server.Game
             {
                 TemplateId = itemData.id,
                 Count = count,
-                Gold = player.Gold
+                Gold = player.Gold,
+                ShopId = buyPacket.ShopId,
             };
             player.Session.Send(buyItemPacket);
 
@@ -61,9 +63,23 @@ namespace Server.Game
                 TemplateId = itemData.id,
                 Count = count, //패킷에 개수 추가 
                 OwnerDbId = player.PlayerDbId,
-                Slot = slot.Value
+                Slot = slot.Value,                
+                Options = itemData.options                
+            };
+
+            ShopDb shopDb = new ShopDb()
+            {
+                TemplateId = buyPacket.ShopId,
+                PlayerDbId = player.PlayerDbId,
+            };
+            ShopItemDb shopItemDb = new ShopItemDb()
+            {
+                ItemId = itemData.id,                
+                Count = count,
+                Price = itemData.price
             };
             DbTransaction.SaveItemDB(player, itemDb, this);
+            DbTransaction.RemoveShopDb(player, shopDb, shopItemDb, this);
         }
         public void HandleLootItem(Player player, C_LootItem item)
         {
@@ -74,13 +90,30 @@ namespace Server.Game
             //if (player.Room.Items.ContainsKey(item.ItemDbId) == false)
             //    return;
 
-            ItemRewardData rewardData = new ItemRewardData();
-            rewardData.itemId = item.TemplateId;
+            ItemData itemData = null;
+            DataManager.ItemDict.TryGetValue(item.TemplateId, out itemData);
+            if (itemData == null)
+                return;
+            
             
             // 아이템 보상 처리
-            DbTransaction.RewardPlayer(player, rewardData, item.Count, this);
+            DbTransaction.RewardPlayer(player, itemData, item.Count, this);
         }
-
+        public void HandleOpenChest(Player player, C_OpenChest item)
+        {
+            if (player == null || item == null)
+                return;
+            ChestDb chestDb = new ChestDb
+            {
+                ChestDbId = item.ChestId,
+                TemplateId = item.TemplateId,
+                MapDbId = player.MapInfo.MapDbId,
+                Opened = true,
+                PosX = item.PosX,
+                PosY = item.PosY
+            };
+            DbTransaction.SaveChestDb(player, chestDb, this);
+        }
         public void HandleRemoveItem(Player player, C_RemoveItem removeItem)
         {
             if (player == null)
@@ -109,5 +142,31 @@ namespace Server.Game
             player.Session.Send(dropItem);
             //룸에 처리
         }
+        public void HandleRequestShop(Player player, int shopId)
+        {
+            if (player == null)
+                return;
+
+            DataManager.ShopDict.TryGetValue(shopId, out ShopData shopData);
+            if (shopData == null)
+                return;
+            
+            List<ShopItemDb> shopItemDbs = shopData.itemList.Select(x => new ShopItemDb()
+            {
+                ItemId = x.id,
+                Count = x.count,
+                Price = x.price,
+            }).ToList();
+
+            ShopDb shopDb = new ShopDb()
+            {
+                TemplateId = shopId,
+                PlayerDbId = player.PlayerDbId,
+                ShopItems = shopItemDbs
+            };
+
+            DbTransaction.SaveShopDb(player, shopDb, this);
+        }
+            
     }
 }

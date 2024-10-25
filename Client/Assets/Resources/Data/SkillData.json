@@ -3,7 +3,7 @@
     {
       "id": "1",
       "name": "기본공격",
-      "coolTime": "0.2",
+      "coolTime": "1",
       "damage": "10",
       "skillType": "SkillAttack",
       "shape": {
@@ -13,15 +13,102 @@
     },
     {
       "id": "2",
-      "name": "화살 공격",
+      "name": "화살공격",
       "coolTime": "0.2",
       "damage": "5",
       "skillType": "SkillProjectile",
       "projectile": {
         "speed": "10.0",
         "range": "10",
-        "prefab":  "Creature/Arrow"
+        "prefab": "Creature/Arrow"
       }
+    },
+    {
+      "id": "3",
+      "name": "월광",
+      "coolTime": "15",
+      "damage": "40",
+      "skillType": "SkillAttack",
+      "shape": {
+        "shapeType": "ShapeCircle",
+        "range": "4.0"
+      },
+      "unchartedPoint": "20",
+      "description": "주변 적에게 월광피해를 입힌다."
+    },
+    {
+      "id": "4",
+      "name": "분쇄",
+      "coolTime": "8",
+      "damage": "72",
+      "skillType": "SkillAttack",
+      "shape": {
+        "shapeType": "ShapeLine",
+        "range": "2.0"
+      },
+      "unchartedPoint": "5",
+      "description": "정면의 적을 강하게 찔러 피해를 준다."
+    },
+    {
+      "id": "5",
+      "name": "십자베기",
+      "coolTime": "20",
+      "damage": "50",
+      "skillType": "SkillAttack",
+      "shape": {
+        "shapeType": "ShapeCross",
+        "range": "6.0"
+      },
+      "unchartedPoint": "20",
+      "description": "4방향에 강력한 피해를 입힌다."
+    },
+    {
+      "id": "6",
+      "name": "카덴차",
+      "coolTime": "15",
+      "damage": "30",
+      "skillType": "SkillAttack",
+      "shape": {
+        "shapeType": "ShapeCircle",
+        "range": "5.0"
+      },
+      "buff": {
+        "id": "1",
+        "name": "생명흡수",
+        "duration": "1",
+        "value": "0.2",
+        "isPercent": "false"
+      },
+      "unchartedPoint": "20",
+      "description": "주변적에게 강력한 피해를 줘서 생명력을 흩어지게 하고, 일부분 생명력을 회복한다."
+    },
+    {
+      "id": "7",
+      "name": "데우스 엑스 마키나",
+      "coolTime": "40",
+      "damage": "100",
+      "skillType": "SkillAttack",
+      "shape": {
+        "shapeType": "ShapeRect",
+        "range": "4.0"
+      },
+      "unchartedPoint": "50",
+      "description": "주변적들을 자동으로 지정해서 피해를준다. 적이 최대 지정수보다 적으면 그만큼 중복으로 피해를준다."
+    },
+    {
+      "id": "8",
+      "name": "처형",
+      "coolTime": "60",
+      "skillType": "SkillBuff",
+      "buff": {
+        "id": "1",   
+        "name": "처형",
+        "duration": "30",
+        "value": "0.5",
+        "isPercent": "false"
+      },
+      "unchartedPoint": "100",
+      "description": "가장 가까운 적을 지정하고, 해당 대상을 공격할때 일정시간 피해량이 증가한다."
     }
   ]
 } 

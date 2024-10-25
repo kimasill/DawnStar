@@ -17,6 +17,23 @@
           "price": "1"
         }
       ]
+    },
+    {
+      "id": "2",
+      "mapId": "5",
+      "name": "RockSiteStore",
+      "itemList": [
+        {
+          "id": "1003",
+          "count": "1",
+          "price": "1"
+        },
+        {
+          "id": "1004",
+          "count": "1",
+          "price": "1"
+        }
+      ]
     }
   ]
 } 

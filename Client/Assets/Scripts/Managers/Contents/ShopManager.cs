@@ -1,52 +1,40 @@
+using Data;
 using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Progress;
 
-public class ShopManager : MonoBehaviour
+public class ShopManager
 {
-    public Dictionary<int, Item> Items { get; } = new Dictionary<int, Item>();
-    public event Action OnItemRemoved;
-    public void RequestShop()
-    {
-        C_RequestShop requestShopPacket = new C_RequestShop();
-        Managers.Network.Send(requestShopPacket);
-    }
-    public void Add(Item item)
-    {
-        Items.Add(item.TemplateId, item);
-    }
+    public Dictionary<int, Shop> Shops = new Dictionary<int, Shop>();
 
-    public Item Get(int itemId)
+    public void InitializeShop(int mapId)
     {
-        Item item = null;
-        Items.TryGetValue(itemId, out item);
-        return item;
-    }
-
-    public Item Find(Func<Item, bool> condition)
-    {
-        foreach (var item in Items.Values)
+        Dictionary<int, ShopData> shopDict = Managers.Data.ShopDict;
+        if (shopDict == null)
         {
-            if (condition.Invoke(item))
-                return item;
+            Debug.Log("ShopDict is null");
+            return;
         }
-        return null;
-    }
-
-    public void RemoveItem(int templateId)
-    {
-        if (Items.ContainsKey(templateId))
+        foreach (var shopData in shopDict.Values)
         {
-            Items.Remove(templateId);
-            OnItemRemoved?.Invoke();
+            if (shopData.mapId == mapId)
+            {
+                Shop shop = new Shop();
+                shop.name = shopData.name;
+                shop.shopId = shopData.id;
+                Shops[shop.shopId] = shop;
+
+                C_RequestShop requestShopPacket = new C_RequestShop();
+                requestShopPacket.ShopId = shop.shopId;
+                Managers.Network.Send(requestShopPacket); ;
+            }
         }
     }
-
     public void Clear()
     {
-        Items.Clear();
-        OnItemRemoved?.Invoke();
+        Shops.Clear();
     }
 }

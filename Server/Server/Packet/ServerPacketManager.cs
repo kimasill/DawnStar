@@ -55,7 +55,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CRequestMonster, MakePacket<C_RequestMonster>);
 		_handler.Add((ushort)MsgId.CRequestMonster, PacketHandler.C_RequestMonsterHandler);		
 		_onRecv.Add((ushort)MsgId.CRespawn, MakePacket<C_Respawn>);
-		_handler.Add((ushort)MsgId.CRespawn, PacketHandler.C_RespawnHandler);
+		_handler.Add((ushort)MsgId.CRespawn, PacketHandler.C_RespawnHandler);		
+		_onRecv.Add((ushort)MsgId.COpenChest, MakePacket<C_OpenChest>);
+		_handler.Add((ushort)MsgId.COpenChest, PacketHandler.C_OpenChestHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

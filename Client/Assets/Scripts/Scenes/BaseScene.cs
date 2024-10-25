@@ -2,6 +2,7 @@
 using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -22,10 +23,10 @@ public abstract class BaseScene : MonoBehaviour
             Managers.Resource.Instantiate("UI/EventSystem").name = "@EventSystem";
         
     }
-    protected void RequestShop()
+    protected void RequestShop(int id)
     {
         Managers.Shop.Clear();
-        Managers.Shop.RequestShop();
+        Managers.Shop.InitializeShop(id);
     }
     public virtual void ShowDescriptionUI(List<string> description)
     {        
@@ -47,7 +48,19 @@ public abstract class BaseScene : MonoBehaviour
         storyScene.ShowStory();
     }
     public virtual void StartBattleQuest(Quest quest) { }
-
+    protected void InitializeNPCs()
+    {
+        NPCController[] npcControllers = Managers.Map.CurrentGrid.gameObject.GetComponentsInChildren<NPCController>();
+        if(npcControllers == null)
+            return;
+        Dictionary<string, NPCData> npcDict = Managers.Data.NPCDict;
+        foreach (NPCController npc in npcControllers)
+        {
+            string npcName = npc.gameObject.name;
+            npc.SetNPC(npcName);     
+            AddNPC(npc.TemplateId, npc.gameObject);
+        }
+    }
     public void AddNPC(int id, GameObject npc)
     {
         if (!_npcs.ContainsKey(id))
@@ -62,6 +75,10 @@ public abstract class BaseScene : MonoBehaviour
         {
             _npcs.Remove(id);
         }
+    }
+    public void ClearNPCs()
+    {
+        _npcs.Clear();
     }
 
     public Dictionary<int, GameObject> GetNPCs()

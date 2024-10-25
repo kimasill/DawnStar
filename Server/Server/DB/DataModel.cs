@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using Newtonsoft.Json;
 using Server.Data;
 using Server.Game.Room;
 using System;
@@ -52,6 +53,17 @@ namespace Server.DB
         public int TemplateId { get; set; }
         public int Count { get; set; }
         public int Slot { get; set; }
+        public int Damage { get; set; }
+        public int Defense { get; set; }
+        public int Enhance { get; set; }
+        public string OptionsJson { get; set; }
+
+        [NotMapped]
+        public Dictionary<string, string> Options
+        {
+            get => string.IsNullOrEmpty(OptionsJson) ? new Dictionary<string, string>() : JsonConvert.DeserializeObject<Dictionary<string, string>>(OptionsJson);
+            set => OptionsJson = JsonConvert.SerializeObject(value);
+        }
         public bool Equipped { get; set; } = false;
         [ForeignKey("Owner")]
         public int? OwnerDbId { get; set; }
@@ -78,5 +90,40 @@ namespace Server.DB
         public string MapName { get; set; }
         public string Scene { get; set; }
         public int PlayerDbId { get; set; }
+    }
+
+    [Table("Chest")]
+    public class ChestDb
+    {
+        public int ChestDbId { get; set; }
+        public int ChestId { get; set; }
+        public int TemplateId { get; set; }           
+        public bool Visible { get; set; }
+        public bool Opened { get; set; } 
+        public int MapDbId { get; set; }
+        public int PosX { get; set; }
+        public int PosY { get; set; }
+    }
+
+    [Table("Shop")]
+    public class ShopDb
+    {
+        public int ShopDbId { get; set; }
+        public int TemplateId { get; set; }
+        public string ShopName { get; set; }
+        public string Scene { get; set; }
+        public int PlayerDbId { get; set; }
+        public ICollection<ShopItemDb> ShopItems { get; set; }
+    }
+
+    [Table("ShopItem")]
+    public class ShopItemDb
+    {
+        public int ShopItemDbId { get; set; }
+        public int ShopDbId { get; set; }
+        public int ItemId { get; set; }
+        public int Price { get; set; }
+        public int Count { get; set; }
+        public string ItemType { get; set; }
     }
 }

@@ -18,6 +18,8 @@ public class DataManager
     public Dictionary<int, Data.ScriptData> ScriptDict { get; private set; } = new Dictionary<int, Data.ScriptData>();
     public Dictionary<string, Data.NPCData> NPCDict { get; private set; } = new Dictionary<string, Data.NPCData>();
     public Dictionary<int, Data.QuestData> QuestDict { get; private set; } = new Dictionary<int, Data.QuestData>();
+    public Dictionary<int, Data.AcquireData> AcquireDict {  get; private set; } = new Dictionary<int, Data.AcquireData>();
+    public Dictionary<int, Data.ShopData> ShopDict { get; private set; } = new Dictionary<int, Data.ShopData>();
 
     public void Init()
     {
@@ -29,6 +31,8 @@ public class DataManager
         ScriptDict = LoadJson<Data.ScriptLoader, int, Data.ScriptData>("QuestScriptData").MakeDict();
         QuestDict = LoadJson<Data.QuestLoader, int, Data.QuestData>("QuestData").MakeDict();
         NPCDict = LoadJson<Data.NPCLoader, string, Data.NPCData>("NPCData").MakeDict();
+        AcquireDict = LoadJson<Data.AcquireLoader, int, Data.AcquireData>("AcquireData").MakeDict();
+        ShopDict = LoadJson<Data.ShopLoader, int, Data.ShopData>("ShopData").MakeDict();
     }
 
     Loader LoadJson<Loader, Key, Value>(string path) where Loader : ILoader<Key, Value>

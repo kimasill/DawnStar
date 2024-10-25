@@ -45,6 +45,7 @@ namespace Data
         public SkillType skillType;
         public ShapeInfo shape;
         public ProjectileInfo projectile;
+        public BuffInfo buff;
     }
     public class ShapeInfo
     {
@@ -57,6 +58,15 @@ namespace Data
         public float speed;
         public float range;
         public string prefab;
+    }
+
+    public class BuffInfo
+    {
+        public int id;
+        public string name;
+        public int duration;
+        public int value;
+        public bool isPercent;
     }
 
     [Serializable]
@@ -83,12 +93,16 @@ namespace Data
         public int price;
         public ItemType itemType;
         public string iconPath;
+        public string description;
+        public Dictionary<string, string> options = new Dictionary<string, string>();
     }
 
     public class WeaponData : ItemData
     {
         public WeaponType weaponType;
         public int damage;
+        public int range;
+        public float attackSpeed;
     }
 
     public class ArmorData : ItemData
@@ -282,7 +296,9 @@ namespace Data
     public class NPCData
     {
         public int id;
-        public string name;        
+        public string name;
+        public NPCType npcType;
+        public int shopId;
         public List<NPCScript> scripts;
     }
 
@@ -338,5 +354,65 @@ namespace Data
         }
     }
 
+    #endregion
+
+    #region Acquire
+    [Serializable]
+    public class AcquireData
+    {
+        public int id;
+        public string name;
+        public AcquireType type;
+        public List<RewardData> rewards;
+    }
+    [Serializable]
+    public class AcquireLoader : ILoader<int, AcquireData>
+    {
+        public List<AcquireData> acquires = new List<AcquireData>();
+
+        public Dictionary<int, AcquireData> MakeDict()
+        {
+            Dictionary<int, AcquireData> dict = new Dictionary<int, AcquireData>();
+            foreach (AcquireData acquire in acquires)
+            {
+                dict.Add(acquire.id, acquire);
+            }
+            return dict;
+        }
+    }
+    #endregion
+    #region Shop
+    [Serializable]
+    public class ShopItemData
+    {
+        public int id;
+        public int count;
+        public int price;
+    }
+
+    [Serializable]
+    public class ShopData
+    {
+        public int id;
+        public int mapId;
+        public string name;
+        public List<ShopItemData> itemList;
+    }
+
+    [Serializable]
+    public class ShopLoader : ILoader<int, ShopData>
+    {
+        public List<ShopData> shops = new List<ShopData>();
+
+        public Dictionary<int, ShopData> MakeDict()
+        {
+            Dictionary<int, ShopData> dict = new Dictionary<int, ShopData>();
+            foreach (ShopData shop in shops)
+            {
+                dict.Add(shop.id, shop);
+            }
+            return dict;
+        }
+    }
     #endregion
 }
