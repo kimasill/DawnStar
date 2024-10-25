@@ -120,37 +120,5 @@ namespace Server.Game
             // DB에 퀘스트 완료 상태 저장
             DbTransaction.SaveCompleteQuest(player, questDb, player.Room);                
         }
-
-        public void HandleRequestShop(Player player)
-        {
-            if (player == null)
-                return;
-
-            MapInfo mapInfo = player.MapInfo;
-            if (mapInfo == null)
-                return;
-
-            ShopData shopData = null;
-            foreach (var shop in DataManager.ShopDict)
-            {
-                if (shop.Value.mapId == mapInfo.TemplateId)
-                    shopData = shop.Value;
-            }             
-            if (shopData != null)
-            {
-                S_ShopList shopListPacket = new S_ShopList();
-                foreach (ShopItemData item in shopData.itemList)
-                {
-                    ItemInfo itemInfo = new ItemInfo()
-                    {
-                        TemplateId = item.id,
-                        Count = item.count,
-                        Price = item.price
-                    };
-                    shopListPacket.Items.Add(itemInfo);
-                }                
-                player.Session.Send(shopListPacket);
-            }                
-        }
     }
 }

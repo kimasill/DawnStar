@@ -1,5 +1,6 @@
 using Data;
 using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -67,7 +68,7 @@ public class UI_ItemDescription : UI_Popup
         {
             GetImage((int)Images.ItemPopup_Image).sprite = Managers.Resource.Load<Sprite>(itemData.iconPath);
             GetTextMeshPro((int)Texts.ItemPopup_Name).text = itemData.name;
-            //_description.text = item.Info.Description;
+            GetTextMeshPro((int)Texts.ItemDescriptionText).text = itemData.description;
         }
 
         switch (item.ItemType)
@@ -86,14 +87,58 @@ public class UI_ItemDescription : UI_Popup
                 break;
         }
 
+        Dictionary<string, string> options = itemData.options;
+        foreach (var option in options)
+        {
+            string key = ConvertSpecialOptions(option.Key);
+            AddStat($"{key}: {option.Value}");
+        }
+
         // StatPanel과 ItemPanel의 크기 조정
         LayoutRebuilder.ForceRebuildLayoutImmediate(_statPanelRectTransform);
         LayoutRebuilder.ForceRebuildLayoutImmediate(_itemPanelRectTransform);
     }
-
+    public string ConvertSpecialOptions(string option)
+    {
+        switch(option) {
+            case "Critical":
+                option = "치명타 확률";
+                break;
+            case "CriticalDamage":
+                option = "치명타 피해";
+                break;
+            case "AttackSpeed":
+                option = "공격 속도";
+                break;
+            case "MoveSpeed":
+                option = "이동 속도";
+                break;
+            case "HPRegen":
+                option = "체력 회복";
+                break;
+            case "UPRegen":
+                option = "미지력 회복";
+                break;
+            case "Skill":
+                option = "특수기술";
+                break;
+            case "SkillDamage":
+                option = "특수기술 피해";
+                break;
+            case "SkillUP":
+                option = "특수기술 미지력 소모량";
+                break;
+            case "SkillDescription":
+                option = "특수기술 설명";
+                break;
+            default:
+                break;
+        }
+        return option;
+    }
     private void SetConsumableItem(Item.Consumable item)
     {
-        AddStat($"수량: {item.MaxCount}");
+        AddStat($"수량: {item.Count}");
     }
 
     private void SetWeaponItem(Item.Weapon item)
@@ -108,7 +153,7 @@ public class UI_ItemDescription : UI_Popup
 
     private void SetGoodsItem(Item.Goods item)
     {
-        AddStat($"수량: {item.MaxCount}");
+        AddStat($"수량: {item.Count}");
     }
 
     private void AddStat(string statText)

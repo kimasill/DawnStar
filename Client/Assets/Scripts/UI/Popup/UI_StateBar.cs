@@ -14,23 +14,30 @@ public class UI_StateBar : UI_Base
     int _prevExp = 0;
     enum Texts
     {
-        NameText,
         LevelText,
         ExpText,
     }
     enum Images
     {
-        Profile_Image,
+        ProfileImage,
     }
     bool _init = false;
     public bool Set = false;
-    ExpBar _expBar;
+    UI_ExpBar _expBar;
+    UI_HpBar _hpBar;
+    UI_UpBar _upBar;
+    RectTransform _hpBarRect;
+    RectTransform _upBarRect;
     public override void Init()
     {
         Bind<TMP_Text>(typeof(Texts));
         Bind<Image>(typeof(Images));
-        _expBar = GetComponentInChildren<ExpBar>();
-        _init = true;        
+        _expBar = GetComponentInChildren<UI_ExpBar>();
+        _hpBar = GetComponentInChildren<UI_HpBar>();
+        _upBar = GetComponentInChildren<UI_UpBar>();
+        _hpBarRect = _hpBar.GetComponent<RectTransform>();
+        _upBarRect = _upBar.GetComponent<RectTransform>();
+        _init = true;
     }
 
     public void SetInfo()
@@ -57,9 +64,38 @@ public class UI_StateBar : UI_Base
         if (_myPlayer.Stat.TotalExp > 0)
         {
             int nextExp = _nextExp - _prevExp;
-            ratio = ((float)(_myPlayer.Stat.TotalExp - _prevExp) / nextExp);
+            ratio = (float)(_myPlayer.Stat.TotalExp - _prevExp) / nextExp;
         }
-        _expBar.SetExpBar(ratio);
+        _expBar.SetUIExpBar(ratio);
+    }
+    public void UpdateHpBar()
+    {
+        if (_hpBar == null)
+            return;
+        if (_myPlayer == null)
+        {
+            _myPlayer = Managers.Object.MyPlayer;
+        }
+        float ratio = 0.0f;
+        if (_myPlayer.Stat.MaxHp > 0)
+        {
+            ratio = ((float)_myPlayer.Stat.Hp / _myPlayer.Stat.MaxHp);
+        }
+        _hpBar.InitializeFrame(_myPlayer.Stat.MaxHp);
+        _hpBar.SetHpBar(ratio);
+    }
+    public void UpdateUpBar()
+    {
+        if (_upBar == null) return;
+        if (_myPlayer == null)
+        {
+            _myPlayer = Managers.Object.MyPlayer;
+        }
+        //TODO: UpBar
+        //if (_myPlayer.Stat.MaxUp > 0)
+        //{
+        //    ratio = ((float)_myPlayer.Stat.Up / _myPlayer.Stat.MaxUp);
+        //}
     }
     public void RefreshUI()
     {
@@ -67,6 +103,6 @@ public class UI_StateBar : UI_Base
             return;
         UpdateExpBar();
         GetTextMeshPro((int)Texts.ExpText).text = $"Exp:{_myPlayer.Stat.TotalExp - _prevExp}";
-        GetTextMeshPro((int)Texts.LevelText).text = $"Lv. {_myPlayer.Stat.Level}";        
+        GetTextMeshPro((int)Texts.LevelText).text = $"Lv. {_myPlayer.Stat.Level}";
     }
 }

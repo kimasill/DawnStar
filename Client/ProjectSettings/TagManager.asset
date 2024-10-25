@@ -13,6 +13,8 @@ TagManager:
   - QuestItem
   - Spawn
   - Camera
+  - Enemies
+  - Chest
   layers:
   - Default
   - TransparentFX

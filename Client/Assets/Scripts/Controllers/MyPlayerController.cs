@@ -1,3 +1,5 @@
+using Data;
+using Google.Protobuf.Collections;
 using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
 using System;
@@ -11,15 +13,32 @@ public class MyPlayerController : PlayerController
 {
     bool _moveKeyPressed = false;    
     public int WeaponDamage { get; private set; }
-    public int AttackSpeed { get; private set; }
     public int ArmorDef { get; private set; }
-    private NPCController _nearbyNPC;
+    private Queue<NPCController> _nearbyNPCs;
     private CameraController _cameraController;
+    private Queue<ChestController> _chestControllers;
     public CameraController CameraController { get; private set; }
+
     public int Gold
     {
         get { return Stat.Gold; }
         set { Stat.Gold = value; }
+    }
+
+    public override int Exp
+    {
+        get { return Stat.TotalExp; }
+        set 
+        { 
+            Stat.TotalExp = value;
+            UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;
+            gameScene.GameWindow.UpdateStateInfo();
+        }
+    }
+    protected override void UpdateHpBar()
+    {
+        UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;
+        gameScene.GameWindow.UpdateHpUI();
     }
     public override StatInfo Stat
     {
@@ -35,6 +54,8 @@ public class MyPlayerController : PlayerController
     protected override void Init()
     {
         base.Init();
+
+        RefreshExpBar();
         RefreshAdditionalStat();
         _cameraController = Camera.main.GetComponent<CameraController>();
         if (_cameraController != null)
@@ -104,14 +125,19 @@ public class MyPlayerController : PlayerController
                 mapUI.OnCloseMap();
             }
             else
-            {
+            {                
                 mapUI.gameObject.SetActive(true);
                 mapUI.OnOpenMap();            
             }
         }
-        else if (Input.GetKeyDown(KeyCode.G) && _nearbyNPC != null)
+        else if (Input.GetKeyDown(KeyCode.G))
         {
-            _nearbyNPC.StartInteraction();
+            if(_chestControllers.Count > 0)
+            {
+                _chestControllers.Dequeue().OpenChest();
+            }
+            else if(_nearbyNPCs.Count > 0)
+                _nearbyNPCs.Dequeue().StartInteraction();
         }
         else if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -195,14 +221,16 @@ public class MyPlayerController : PlayerController
         {
             _isAttacking = true;
             Debug.Log("기본공격");
+            //TODO: 무기따라 ID선택
             C_Skill skill = new C_Skill() { Info = new SkillInfo()};
             skill.Info.SkillId = 1;
             Managers.Network.Send(skill); 
             
-            _coInputCooltime = StartCoroutine(CoInputCooltime(0.2f));
+            _coInputCooltime = StartCoroutine(CoInputCooltime(0.1f));
         }
     }
     Coroutine _coInputCooltime;
+    
     IEnumerator CoInputCooltime(float time)
     {
         yield return new WaitForSeconds(time);
@@ -244,7 +272,8 @@ public class MyPlayerController : PlayerController
                 CheckIfPlayerAtPortal(destPos);
                 CheckIfPlayerAtItem();
                 DetectNearbyNPCs();
-                CheckQuest();
+                DetectNearbyChests();
+                CheckQuest();                
             }
         }
         CheckUpdatedFlag();
@@ -301,13 +330,47 @@ public class MyPlayerController : PlayerController
             if (distance <= 5.0f)
             {
                 npcController.ActivateNotification();
-                _nearbyNPC = npcController;
+                _nearbyNPCs.Enqueue(npcController);
             }
             else
             {
-                npcController.DeactivateNotification();
-                _nearbyNPC = null;
+                foreach (var nearbyNPC in _nearbyNPCs)
+                {
+                    nearbyNPC.DeactivateNotification();
+                    _nearbyNPCs.Clear();
+                }                
             }
+        }
+    }
+
+    private void DetectNearbyChests()
+    {
+        //플레이어 주변 3x3 영역에 상자가 있는지 확인
+        Vector3Int playerCellPos = CellPos;
+        ChestController cc = null;
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                Vector3Int checkPos = playerCellPos + new Vector3Int(x, y, 0);
+                cc = Managers.Map.GetChest((Vector2Int)checkPos);
+                if (cc != null)
+                {   
+                    _chestControllers.Enqueue(cc);                    
+                }
+            }
+        }
+        if (cc == null)
+        {
+            foreach (var chest in _chestControllers)
+            {
+                chest.DeactivateNotification();
+            }
+            _chestControllers.Clear();
+        }
+        else
+        {
+            _chestControllers.Peek().ActivateNotification();
         }
     }
 
@@ -326,16 +389,35 @@ public class MyPlayerController : PlayerController
     {
         WeaponDamage = 0;
         ArmorDef = 0;
-
+        AttackSpeed = 0;
+        Console.WriteLine($"AttackSpeed:{AttackSpeed}");
         foreach (Item item in Managers.Inventory.Items.Values)
         {
             if (item.Equipped == false)
                 continue;
-
+            MapField<string, string> options = item.Info.Options;
+            if (options == null)
+                continue;
+            foreach (var option in options)
+            {
+                switch (option.Key)
+                {  
+                    case "WeaponDamage":
+                        WeaponDamage += int.Parse(option.Value);
+                        break;
+                    case "ArmorDef":
+                        ArmorDef += int.Parse(option.Value);
+                        break;
+                    case "AttackSpeed":
+                        AttackSpeed += int.Parse(option.Value);
+                        break;
+                }
+            }
             switch (item.ItemType)
             {
                 case ItemType.Weapon:
                     WeaponDamage += ((Weapon)item).Damage;
+                    AttackSpeed += ((Weapon)item).AttackSpeed;
                     break;
                 case ItemType.Armor:
                     ArmorDef += ((Armor)item).Defense;
@@ -343,5 +425,14 @@ public class MyPlayerController : PlayerController
             }
 
         }
+    }
+    public void RefreshExpBar()
+    {
+        UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;
+        gameScene.GameWindow.UpdateStateInfo();
+    }
+    protected override void AddHpBar()
+    {
+        UpdateHpBar();
     }
 }

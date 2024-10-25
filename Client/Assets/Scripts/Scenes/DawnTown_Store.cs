@@ -18,7 +18,7 @@ public class DawnTown_Store : DawnTown
         _sceneUi.SetActive(_sceneUi.GameWindow, true);
         // 추가적인 초기화 작업이 필요하면 여기에 작성        
         InitializeNPCs();
-        RequestShop();
+        RequestShop(2);
         CheckQuestAndShowScript(3); //Quest id
     }
 

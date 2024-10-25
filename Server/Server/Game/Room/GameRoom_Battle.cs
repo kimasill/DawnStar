@@ -1,18 +1,15 @@
-﻿using Google.Protobuf;
-using Google.Protobuf.Protocol;
+﻿using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game.Job;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 
 namespace Server.Game
 {
     public partial class GameRoom : JobSerializer
-    {    
+    {
+        
         public void HandleMove(Player player, C_Move movePacket)
         {
             if (player == null)
@@ -56,12 +53,15 @@ namespace Server.Game
             S_Skill skill = new S_Skill() { Info = new SkillInfo() };
             skill.ObjectId = info.ObjectId;
             skill.Info.SkillId = skillPacket.Info.SkillId;
-            Broadcast(player.CellPos, skill);
 
-            Data.Skill skillData = null;
+            SkillData skillData = null;
             if (DataManager.SkillDict.TryGetValue(skillPacket.Info.SkillId, out skillData) == false)
                 return;
-
+            if(player.HandleSkillCool(skillData)==false)
+            {
+                return;
+            }
+            Broadcast(player.CellPos, skill);
             switch (skillData.skillType)
             {
                 case SkillType.SkillAttack:
@@ -70,19 +70,20 @@ namespace Server.Game
                         List<GameObject> targets = new List<GameObject>();
                         if (skillData.shape.shapeType == ShapeType.ShapeBent)
                         {
-                            skillPos.Add(player.GetFrontCellPos());
-                            skillPos.Add(player.GetPosFromLookDir(player.CellPos, info.Position.LookDir));
+                            Vector2Int center = player.GetFrontCellPos();
+                            Vector2Int lookDir = player.GetPosFromLookDir(player.CellPos, info.Position.LookDir);
+                            skillPos.AddRange(SkillLogic.GetBentAttackTiles(center, lookDir, (int)skillData.shape.range));                            
                         }
                         foreach (Vector2Int pos in skillPos)
                         {
                             GameObject target = Map.Find(pos);
                             if (target != null)
-                            {
-                                // LookDir에 따라 공격 방향 처리
-                                // TODO : 데미지 계산
-                                // TODO : MoveDir 방향에도 공격 처리
-                                Console.WriteLine("Hit GameObject !");
-                                target.OnDamaged(player, player.TotalAttack); //피격판정      
+                            {                 
+                                if(target == player)
+                                {
+                                    continue;
+                                }
+                                target.OnDamaged(player, player.TotalAttack); //피격판정(공격력)  
                             }
                         }
                         break;
@@ -104,6 +105,37 @@ namespace Server.Game
                     }
                     break;
             }
+        }
+        
+        public int CalculateDamage(GameObject attacker,int id, int damage)
+        {
+            if (attacker == null)            
+                return damage;
+
+            S_Damage damagePacket = new S_Damage();
+
+            if (attacker is Player player)
+            {
+                // TODO: critical 확률 계산
+                if (player.TotalCriticalChance > 0)
+                {
+                    Random random = new Random();
+                    int randomValue = random.Next(0, 100);
+                    if (randomValue < player.TotalCriticalChance)
+                    {
+                        // critical 공격
+                        damage *= player.TotalCriticalDamage;
+                        damagePacket.Critical = true;
+                    }
+                }
+            }
+            damage = Math.Max(damage - attacker.TotalDefense, 0);
+            if (damage > 0) {
+                damagePacket.Damage = damage;
+                damagePacket.ObjectId = id;
+                Broadcast(attacker.CellPos, damagePacket);
+            }
+            return damage;
         }
     }
 }

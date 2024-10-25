@@ -19,8 +19,7 @@ public class GameScene : BaseScene
     }
 
     public override void Clear()
-    {
-        
+    {        
     }
     protected virtual void InitializeNPCs()
     {        

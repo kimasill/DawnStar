@@ -29,6 +29,9 @@ namespace Server.Game
         }
         public virtual int TotalAttack { get { return Stat.Attack; } }
         public virtual int TotalDefense { get { return 0; } }
+        public virtual float TotalAttackSpeed { get { return Stat.AttackSpeed; } }
+        public virtual int TotalAvoidance { get { return Stat.Avoid; } } 
+        public virtual int TotalAccuracy { get { return Stat.Accuracy; } }
 
         public int Hp
         {
@@ -135,8 +138,7 @@ namespace Server.Game
         {
             if (Room == null)
                 return;
-
-            damage = Math.Max(damage - TotalDefense, 0);
+            damage = Room.CalculateDamage(attacker,Id, damage);            
             Stat.Hp = Math.Max(Stat.Hp - damage, 0);
             Stat.Hp -= damage;
             S_ChangeHp changePacket = new S_ChangeHp();
@@ -150,7 +152,33 @@ namespace Server.Game
             }
         }
 
+        public virtual void OnHealed(int heal, GameObject healer)
+        {
+            if (Room == null)
+                return;
 
+            Stat.Hp = Math.Min(Stat.Hp + heal, Stat.MaxHp);
+            S_ChangeHp changePacket = new S_ChangeHp();
+            changePacket.ObjectId = Id;
+            changePacket.Hp = Stat.Hp;
+            Room.Broadcast(CellPos, changePacket);
+        }
+
+        public virtual void OnBuffed(SkillData skillData)
+        {
+            if (Room == null)
+                return;
+
+            // TODO : 버프 적용
+        }
+
+        public virtual void OnDebuffed(SkillData skillData)
+        {
+            if (Room == null)
+                return;
+
+            // TODO : 디버프 적용
+        }
 
         public virtual void Ondead(GameObject attacker)
         {

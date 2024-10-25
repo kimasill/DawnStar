@@ -270,7 +270,7 @@ namespace Server.Game
                     }
                     BroadcastMove();
                 }
-                Skill skillData = null;
+                SkillData skillData = null;
                 DataManager.SkillDict.TryGetValue(1, out skillData);
                 //데미지 판정
                 _target.OnDamaged(this, skillData.damage + TotalAttack);
@@ -332,24 +332,29 @@ namespace Server.Game
             GameObject owner = attacker.GetOwner();
             if (owner.ObjectType == GameObjectType.Player)
             {
-                ItemRewardData rewardData = GetRandomReward();
+                MonsterData monsterData = null;
+                DataManager.MonsterDict.TryGetValue(TemplateId, out monsterData);
+                List<ItemRewardData> rewardData = ItemLogic.GetRandomReward(monsterData.rewards);
                 if (rewardData != null)
                 {
-                    int count = GetRewardCount(rewardData);
-                    Player player = (Player)owner;
-                    S_DropItem dropItemPacket = new S_DropItem()
+                    foreach (var item in rewardData)
                     {
-                        TemplateId = rewardData.itemId,
-                        Count = count,
-                        Position = PosInfo
-                    };
-                    room.Push(room.DropItem, player, dropItemPacket);
-                    DbTransaction.ExpNoti(player, Stat.TotalExp);
-                    S_ChangeExp changeExpPacket = new S_ChangeExp()
-                    {
-                        Exp = Stat.TotalExp
-                    };
-                    player.Session.Send(changeExpPacket);
+                        int count = ItemLogic.GetRewardCount(item);
+                        Player player = (Player)owner;
+                        S_DropItem dropItemPacket = new S_DropItem()
+                        {
+                            TemplateId = item.itemId,
+                            Count = count,
+                            Position = PosInfo
+                        };
+                        room.Push(room.DropItem, player, dropItemPacket);
+                        DbTransaction.ExpNoti(player, Stat.TotalExp);
+                        S_ChangeExp changeExpPacket = new S_ChangeExp()
+                        {
+                            Exp = Stat.TotalExp
+                        };
+                        player.Session.Send(changeExpPacket);
+                    }                    
                 }
             }
             
@@ -371,31 +376,6 @@ namespace Server.Game
                     room.RandomSpawnMonster(TemplateId, 1);
                 }
             });
-        }
-
-        ItemRewardData GetRandomReward()
-        {
-            MonsterData monsterData = null;
-            DataManager.MonsterDict.TryGetValue(TemplateId, out monsterData);
-
-            int rand = new Random().Next(0, 101);
-            int sum = 0;
-            foreach(ItemRewardData rewardData in monsterData.rewards)
-            {
-                sum+=rewardData.probability;
-                if(rand <= sum)
-                {
-                    return rewardData;
-                }
-            }
-            return null;
-        }
-
-        int GetRewardCount(ItemRewardData rewardData)
-        {
-            int min = rewardData.minCount;
-            int max = rewardData.maxCount;
-            return new Random().Next(min, max + 1);
         }
     }
 }

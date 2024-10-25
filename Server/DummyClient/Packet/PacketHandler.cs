@@ -165,4 +165,36 @@ class PacketHandler
     {
         S_ChangePosition inventory = packet as S_ChangePosition;
     }
+    public static void S_DropItemHandler(PacketSession session, IMessage packet)
+    {
+        S_DropItem dropItem = packet as S_DropItem;
+    }
+    public static void S_RemoveItemHandler(PacketSession session, IMessage packet)
+    {
+        S_RemoveItem removeItem = packet as S_RemoveItem;
+    }
+    public static void S_RespawnHandler(PacketSession session, IMessage packet)
+    {
+        S_Respawn respawn = packet as S_Respawn;
+    }
+    public static void S_LoadingHandler(PacketSession session, IMessage packet)
+    {
+        S_Loading loading = packet as S_Loading;
+    }
+    public static void S_QuestListHandler(PacketSession session, IMessage packet)
+    {
+        S_QuestList questList = packet as S_QuestList;
+    }
+    public static void S_ChangeExpHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeExp changeExp = packet as S_ChangeExp;
+    }
+    public static void S_DamageHandler(PacketSession session, IMessage packet)
+    {
+        S_Damage damage = packet as S_Damage;
+    }
+    public static void S_ChestListHandler(PacketSession session, IMessage packet)
+    {
+        S_ChestList chestList = packet as S_ChestList;
+    }
 }

@@ -15,10 +15,8 @@ public class DawnTown : BaseScene
 
     protected override void Init()
     {
-        base.Init();
-
         SceneType = Define.Scene.DawnTown;
-
+        base.Init();
         Managers.Map.LoadMap(1);
 
         Screen.SetResolution(640, 480, false);
@@ -33,20 +31,7 @@ public class DawnTown : BaseScene
         _description.gameObject.SetActive(true);      
         _description.ShowDescription(description);
     }
-    protected void InitializeNPCs()
-    {
-        NPCController[] npcControllers = Managers.Map.CurrentGrid.gameObject.GetComponentsInChildren<NPCController>();
-        Dictionary<string, NPCData> npcDict = Managers.Data.NPCDict;
-        foreach (NPCController npc in npcControllers)
-        {
-            string npcName = npc.gameObject.name;
-            if (npcDict.TryGetValue(npcName, out NPCData npcData))
-            {
-                npc.TemplateId = npcData.id;
-                AddNPC(npcData.id, npc.gameObject);
-            }
-        }
-    }
+    
     protected void InitializeShop()
     {        
     }

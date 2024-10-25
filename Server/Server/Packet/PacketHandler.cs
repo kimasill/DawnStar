@@ -181,7 +181,7 @@ class PacketHandler
         GameRoom room = player.Room;
         if (room == null)
             return;
-        room.Push(room.HandleRequestShop, player);
+        room.Push(room.HandleRequestShop, player, requestShopPacket.ShopId);
     }
 
     public static void C_BuyItemHandler(PacketSession session, IMessage packet)
@@ -236,5 +236,20 @@ class PacketHandler
             return;
 
         room.HandleSpawnMonster(clientSession.MyPlayer, spawnPacket.Id.ToList());
+    }
+
+    public static void C_OpenChestHandler(PacketSession session, IMessage packet)
+    {
+        C_OpenChest openChestPacket = packet as C_OpenChest;
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession == null || clientSession.MyPlayer == null)
+            return;
+
+        GameRoom room = clientSession.MyPlayer.Room;
+        if (room == null)
+            return;
+
+        //room.HandleOpenChest(clientSession.MyPlayer, openChestPacket.ChestId);
     }
 }

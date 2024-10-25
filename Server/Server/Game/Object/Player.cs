@@ -1,5 +1,7 @@
-﻿using Google.Protobuf.Protocol;
+﻿using Google.Protobuf.Collections;
+using Google.Protobuf.Protocol;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Server.Data;
 using Server.DB;
 using Server.Game.Room;
@@ -22,6 +24,7 @@ namespace Server.Game
         public VIsionCube Vision { get; private set; }
         public Inventory Inven { get; private set; } = new Inventory();
         public QuestInventory Quest { get; set; } = new QuestInventory();
+        private Dictionary<int, long> _skillCooldowns = new Dictionary<int, long>();
         public bool IsDead { get; set; }
         public int Exp {
             get { return Stat.TotalExp; }
@@ -29,9 +32,10 @@ namespace Server.Game
                 if (value >= 0)
                 {
                     Stat.TotalExp = value;
-                }                
-                
-                StatData stat = DataManager.StatDict.GetValueOrDefault(Level);
+                }
+
+                StatData stat = null;
+                DataManager.StatDict.TryGetValue(Level + 1, out stat);
                 if (stat != null && Stat.TotalExp >= stat.TotalExp)
                     Level += 1;
             } 
@@ -63,10 +67,19 @@ namespace Server.Game
         }
         public int WeaponDamage { get; private set; }
         public int ArmorDef { get; private set; }
+        public int AdditionalAvoidance { get; private set; }
+        public int AdditionalAccuracy { get; private set; }
+        public int AdditionalCriticalChance { get; private set; }
+        public int AdditionalCriticalDamage { get; private set; }
+        public float AdditionalAttackSpeed { get; private set; }
 
         public override int TotalAttack { get { return Stat.Attack + WeaponDamage; } }
         public override int TotalDefense { get { return ArmorDef; } }        
-
+        public virtual int TotalCriticalChance { get {return Stat.CriticalChance + AdditionalCriticalChance ; } }
+        public virtual int TotalCriticalDamage { get { return Stat.CriticalDamage + AdditionalCriticalDamage; } }
+        public override int TotalAvoidance { get { return Stat.Avoid + AdditionalAvoidance; } }
+        public override int TotalAccuracy { get { return Stat.Accuracy + AdditionalAccuracy; } }
+        public override float TotalAttackSpeed { get { return Stat.AttackSpeed + AdditionalAttackSpeed; } }
         public Player()
         {
             ObjectType = GameObjectType.Player;
@@ -106,7 +119,27 @@ namespace Server.Game
                 }
             });
         }
+        public bool HandleSkillCool(SkillData skillData)
+        {
+            if (_skillCooldowns.TryGetValue(skillData.id, out long cooldownEnd))
+            {
+                if (cooldownEnd > Environment.TickCount64)
+                {
+                    // 쿨타임이 끝나지 않았음
+                    return false;
+                }
+            }
 
+            if (skillData.id<3)
+            {
+                _skillCooldowns[skillData.id] = (long)(Environment.TickCount64 + 1000 /TotalAttackSpeed);
+            }
+            else
+            {
+                _skillCooldowns[skillData.id] = (long)(Environment.TickCount64 + skillData.coolTime);
+            }
+            return true;
+        }
         public void SendRespawnPacket()
         {
             S_Respawn respawnPacket = new S_Respawn();            
@@ -201,21 +234,50 @@ namespace Server.Game
             RefreshAdditionalStat();
         }
 
+        
 
         public void RefreshAdditionalStat()
         {
             WeaponDamage = 0;
             ArmorDef = 0;
+            AdditionalAvoidance = 0;
+            AdditionalAccuracy = 0;
+            AdditionalCriticalChance = 0;
+            AdditionalCriticalDamage = 0;
+            AdditionalAttackSpeed = 0;
 
-            foreach(Item item in Inven.Items.Values)
+            foreach (Item item in Inven.Items.Values)
             {
-                if(item.Equipped == false)
+                if (item.Equipped == false)
                     continue;
 
+                MapField<string, string> options = item.Info.Options;
+                if (options == null)
+                    continue;
+                foreach (var option in options)
+                {
+                    switch (option.Key)
+                    {
+                        case "Avoid":
+                            AdditionalAvoidance += int.Parse(option.Value);
+                            break;
+                        case "Acc":
+                            AdditionalAccuracy += int.Parse(option.Value);
+                            break;
+                        case "CriticalChance":
+                            AdditionalCriticalChance += int.Parse(option.Value);
+                            break;
+                        case "CriticalDamage":
+                            AdditionalCriticalDamage += int.Parse(option.Value);
+                            break;
+                    }
+                }
+
                 switch (item.ItemType)
-                { 
+                {
                     case ItemType.Weapon:
                         WeaponDamage += ((Weapon)item).Damage;
+                        AdditionalAttackSpeed += ((Weapon)item).AttackSpeed;
                         break;
                     case ItemType.Armor:
                         ArmorDef += ((Armor)item).Defense;

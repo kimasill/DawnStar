@@ -4,6 +4,7 @@ using Server.DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,7 +43,7 @@ namespace Server.Game
             get { return Info.Equipped; }
             set { Info.Equipped = value; }
         }
-
+        public Dictionary<string, string> Options { get; set; } = new Dictionary<string, string>();
         public ItemType ItemType { get; private set; }
         public bool Stackable { get; protected set; }
 
@@ -85,6 +86,8 @@ namespace Server.Game
                 item.Count = itemDb.Count;     
                 item.Slot = itemDb.Slot;
                 item.Equipped = itemDb.Equipped;
+                if (itemDb.Options != null)
+                    item.Options = itemDb.Options;
             }
 
             return item;
@@ -93,6 +96,8 @@ namespace Server.Game
         {
             public WeaponType WeaponType { get; private set; }
             public int Damage { get; private set; }
+            public int Range { get; private set; }            
+            public float AttackSpeed { get; private set; }
             public Weapon(int templateId) : base(ItemType.Weapon)
             {
                 Init(templateId);
@@ -113,6 +118,7 @@ namespace Server.Game
                     Count = 1;
                     WeaponType = data.weaponType;
                     Damage = data.damage;
+                    Range = data.range;
                     Stackable = false;
                 }
             }

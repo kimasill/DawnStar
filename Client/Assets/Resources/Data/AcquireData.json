@@ -1,0 +1,29 @@
+{
+  "acquires": [
+    {
+      "id": "1",
+      "name": "나무 상자",
+      "type": "chest",
+      "rewards": [
+        {
+          "probability": "100",
+          "itemId": "10001",
+          "minCount": "100",
+          "maxCount": "150"
+        },
+        {
+          "probability": "100",
+          "itemId": "1130",
+          "minCount": "2",
+          "maxCount": "5"
+        },
+        {
+          "probability": "100",
+          "itemId": "10002",
+          "minCount": "5",
+          "maxCount": "5"
+        }
+      ]
+    }
+  ]
+}

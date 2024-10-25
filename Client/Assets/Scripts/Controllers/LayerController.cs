@@ -25,26 +25,15 @@ public class LayerController : MonoBehaviour
             return;
         }
 
-        Tilemap[] tilemaps = _grid.GetComponentsInChildren<Tilemap>();
-        foreach (Tilemap tilemap in tilemaps)
+        // Grid 내의 모든 자식 오브젝트를 가져옴
+        SpriteRenderer[] spriteRenderers = _grid.GetComponentsInChildren<SpriteRenderer>();
+        foreach (SpriteRenderer spriteRenderer in spriteRenderers)
         {
-            if (tilemap.gameObject.layer == LayerMask.NameToLayer("Block"))
+            // sortingLayerName이 "Object"인 오브젝트만 정렬
+            if (spriteRenderer.sortingLayerName == "Object")
             {
-                foreach (var pos in tilemap.cellBounds.allPositionsWithin)
-                {
-                    if (tilemap.HasTile(pos))
-                    {
-                        // 타일을 개별 GameObject로 변환
-                        GameObject tileGameObject = new GameObject("Tile_" + pos);
-                        tileGameObject.transform.position = tilemap.CellToWorld(pos) + tilemap.tileAnchor;
-                        tileGameObject.transform.SetParent(tilemap.transform);
-
-                        // SpriteRenderer 추가 및 설정
-                        SpriteRenderer spriteRenderer = tileGameObject.AddComponent<SpriteRenderer>();
-                        spriteRenderer.sprite = tilemap.GetSprite(pos);
-                        spriteRenderer.sortingOrder = -pos.y;
-                    }
-                }
+                Vector3Int cellPosition = _grid.WorldToCell(spriteRenderer.transform.position);
+                spriteRenderer.sortingOrder = -cellPosition.y;
             }
         }
     }

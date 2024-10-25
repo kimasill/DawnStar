@@ -19,7 +19,7 @@ public class BaseController : MonoBehaviour
         }
     }
 
-    public int Exp
+    public virtual int Exp
     {
         get { return Stat.TotalExp; }
         set { Stat.TotalExp = value; }
@@ -333,6 +333,14 @@ public class BaseController : MonoBehaviour
             State = CreatureState.Moving;
         }
         UpdateSortingLayer();
+    }
+
+    public void ShowDamage(int damage, bool isCritical)
+    {
+        GameObject go = Managers.Resource.Instantiate("UI/Damage");
+        Damage uiDamage = go.GetComponent<Damage>();
+        uiDamage.SetDamage(damage, isCritical);
+        uiDamage.ShowDamage(transform.position);
     }
 
     protected virtual void MoveToNextPos()

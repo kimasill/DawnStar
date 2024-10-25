@@ -148,6 +148,26 @@ class PacketHandler
         }
         cc.Hp = changePacket.Hp;
     }
+
+    public static void S_DamageHandler(PacketSession session, IMessage packet)
+    {
+        S_Damage damagePacket = packet as S_Damage;
+        GameObject go = Managers.Object.FindById(damagePacket.ObjectId);
+        if (go == null)
+        {
+            return;
+        }
+        CreatureController cc = go.GetComponent<CreatureController>();
+        if (cc == null)
+        {
+            return;
+        }
+        if (cc.Hp > damagePacket.Damage)
+        {
+            cc.ShowDamage(damagePacket.Damage, damagePacket.Critical);
+        }
+    }
+
     public static void S_DieHandler(PacketSession session, IMessage packet)
     {
         S_Die diePacket = packet as S_Die;
@@ -369,17 +389,16 @@ class PacketHandler
     public static void S_ShopListHandler(PacketSession session, IMessage packet)
     {
         S_ShopList shopList = packet as S_ShopList;
-        Managers.Shop.Clear();
-
+        Shop shop = Managers.Shop.Shops[shopList.ShopId];
+        shop.ShopDbId = shopList.ShopDbId;
         foreach (ItemInfo itemInfo in shopList.Items)
         {            
             Item item = Item.MakeItem(itemInfo);
-            Managers.Shop.Add(item);
+            shop.Add(item);
         }
 
         Debug.Log("S_ShopListHandler");
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-        gameSceneUI.ShopUI.RefreshUI();
     }
 
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
@@ -396,7 +415,7 @@ class PacketHandler
     public static void S_ChangeExpHandler(PacketSession session, IMessage packet)
     {        
         S_ChangeExp expPacket = (S_ChangeExp)packet;
-        Managers.Object.MyPlayer.Stat.TotalExp += expPacket.Exp;
+        Managers.Object.MyPlayer.Exp += expPacket.Exp;
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
         gameSceneUI.NotificationUI.ShowExpNoti(expPacket.Exp);
     }
@@ -444,13 +463,14 @@ class PacketHandler
 
         Debug.Log("S_BuyItemHandler");
         // 상점에서 아이템 제거
-        Managers.Shop.RemoveItem(buyItemPacket.TemplateId);
+        Shop shop = Managers.Shop.Shops[buyItemPacket.ShopId];
+        shop.RemoveItem(buyItemPacket.TemplateId);
 
         // 상점 UI 갱신
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
         if (gameSceneUI != null)
         {
-            gameSceneUI.ShopUI.RefreshUI();
+            gameSceneUI.ShopUI.RefreshUI(buyItemPacket.ShopId);
         }
     }
 

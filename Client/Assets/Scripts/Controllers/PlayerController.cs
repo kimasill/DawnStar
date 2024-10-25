@@ -13,6 +13,7 @@ public class PlayerController : CreatureController
     protected EquipmentController _equipmentController;
     protected SortingGroup _sortingLayer;
 
+    protected float AttackSpeed { get;  set; }
     public EquipmentController Equipment 
     { 
         get {
@@ -118,7 +119,7 @@ public class PlayerController : CreatureController
 	{
 		if (skillId == 1)
 		{
-			_coSkill = StartCoroutine("CoStartPunch");
+			_coSkill = StartCoroutine("CoStartBasicAttack");
 		}
 		else if (skillId == 2)
         {
@@ -130,13 +131,15 @@ public class PlayerController : CreatureController
         }
 	}
 
-	IEnumerator CoStartPunch()
+	IEnumerator CoStartBasicAttack()
 	{
 		// 대기 시간
 		_rangedSkill = false;
 		State = CreatureState.Skill;
-		yield return new WaitForSeconds(0.5f);//서버에서도 체크해야함
-		State = CreatureState.Idle;
+        _animator.speed = AttackSpeed;
+        float animationLength = _animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(animationLength);
+        State = CreatureState.Idle;
 		_coSkill = null;
 		CheckUpdatedFlag();
 
@@ -146,8 +149,10 @@ public class PlayerController : CreatureController
 		// 대기 시간
 		_rangedSkill = true;
 		State = CreatureState.Skill;
-		yield return new WaitForSeconds(0.3f);
-		State = CreatureState.Idle;
+        _animator.speed = AttackSpeed;
+        float animationLength = _animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(animationLength);
+        State = CreatureState.Idle;
 		_coSkill = null;
 		CheckUpdatedFlag();
 	}

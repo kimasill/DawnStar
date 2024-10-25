@@ -51,6 +51,9 @@ enum MsgId {
   S_LOADING = 43;
   S_QUEST_LIST = 44;
   S_CHANGE_EXP = 45;
+  S_DAMAGE = 46;
+  C_OPEN_CHEST = 47;
+  S_CHEST_LIST = 48;
 }
 enum CreatureState{
   IDLE = 0;
@@ -89,9 +92,14 @@ enum SkillType{
 
 enum MonsterType{
 	MONSTER_NORMAL = 0;
-	MONSTER_ELITE = 1;
-	MONSTER_FLYING = 2;	
-	MONSTER_BOSS = 3;
+	MONSTER_FLYING = 1;
+}
+
+enum MonsterGrade{
+	MONSTER_GRADE_NORMAL = 0;
+	MONSTER_GRADE_ELITE = 1;
+	MONSTER_GRADE_BOSS = 2;
+	MONSTER_GRADE_ANIMAL = 3;
 }
 
 enum ShapeType{
@@ -114,6 +122,13 @@ enum PlayerServerState{
 	SERVER_STATE_LOBBY = 1;
 	SERVER_STATE_SINGLE = 2;
 	SERVER_STATE_GAME = 3;
+}
+
+enum AcquireType{
+	ACQUIRE_TYPE_NONE = 0;
+	ACQUIRE_TYPE_QUEST = 1;
+	ACQUIRE_TYPE_REWARD = 2;
+	ACQUIRE_TYPE_CHEST = 3;
 }
 
 enum ItemType
@@ -167,6 +182,14 @@ enum RespawnType{
 	RESPAWN_TYPE_REPEAT = 2;
 }
 
+enum NPCType{
+	NPC_TYPE_NONE = 0;
+	NPC_TYPE_TALK = 1;
+	NPC_TYPE_SHOP = 2;
+	NPC_TYPE_QUEST = 3;
+	NPC_TYPE_SMITH = 4;
+}
+
 message S_EnterGame {
   ObjectInfo player = 1;
   PlayerServerState serverState = 2;
@@ -182,6 +205,17 @@ message S_Spawn {
 
 message C_RequestMonster {
   repeated int32 id = 1;
+}
+
+message C_OpenChest{
+  int32 chestId = 1;
+  int32 templateId = 2;
+  int32 posX = 3;
+  int32 posY = 4;
+}
+
+message S_ChestList{
+  repeated int32 chestId = 1;
 }
 
 message S_Despawn {
@@ -203,14 +237,18 @@ message C_Skill {
 
 message S_Skill {
   int32 objectId = 1;
-  SkillInfo info = 2;  
+  SkillInfo info = 2;
 }
 
 message S_ChangeHp {
   int32 objectId = 1;
   int32 hp = 2;
 }
-
+message S_Damage{
+	int32 objectId = 1;
+	int32 damage = 2;
+	bool critical = 3;
+}
 message S_Ping{
 }
 
@@ -266,10 +304,13 @@ message S_AddItem{
 }
 
 message C_RequestShop{
+	int32 shopId = 1;
 }
 
 message S_ShopList{
-	repeated ItemInfo items = 1;
+	int32 shopId = 1;
+	int32 shopDbId = 2;
+	repeated ItemInfo items = 3;
 }
 
 message C_EquipItem{
@@ -285,12 +326,14 @@ message S_EquipItem{
 message C_BuyItem{
 	int32 templateId = 1;
 	int32 count = 2;
+	int32 shopId = 3;
 }
 
 message S_BuyItem{
 	int32 templateId = 1;
 	int32 count = 2;
 	int32 gold = 3;
+	int32 shopId = 4;
 }
 
 message C_LootItem{
@@ -392,6 +435,11 @@ message StatInfo{
   float speed = 6;
   int32 totalExp = 7;
   int32 gold = 8;
+  int32 criticalChance = 9;
+  int32 criticalDamage = 10;
+  int32 avoid = 11;
+  int32 accuracy = 12;
+  int32 attackSpeed = 13;
 }
 
 message QuestInfo
@@ -424,6 +472,7 @@ message ItemInfo{
 	int32 slot = 4;
 	bool equipped = 5;
 	int32 price = 6;
+	map<string, string> options = 7;
 }
 
 message MapInfo{

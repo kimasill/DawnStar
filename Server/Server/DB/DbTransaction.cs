@@ -60,7 +60,6 @@ namespace Server.DB
             });
         }
 
-
         public static void SavePlayerStatus_Step1(Player player, GameRoom room)
         {
             if (player == null || room == null)
@@ -83,7 +82,7 @@ namespace Server.DB
         {
             using (AppDbContext db = new AppDbContext())
             {
-                db.Entry(playerDb).State = EntityState.Modified;
+                db.Entry(playerDb).State = EntityState.Unchanged;
                 db.Entry(playerDb).Property(nameof(playerDb.Hp)).IsModified = true;
                 bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
                 if (success)
@@ -98,22 +97,23 @@ namespace Server.DB
             //Console.WriteLine($"save hp{hp}");
         }
 
-        public static void RewardPlayer(Player player, ItemRewardData rewardData, int count, GameRoom room)
+        public static void RewardPlayer(Player player, ItemData itemData, int count, GameRoom room)
         {
-            if (player == null || rewardData == null || room == null)
+            if (player == null || itemData == null || room == null)
             {
                 return;
             }
-            int? slot = player.Inven.GetSlot(rewardData.itemId, count);            
+            int? slot = player.Inven.GetSlot(itemData.id, count);            
             if (slot == null)
                 return;
 
             ItemDb itemDb = new ItemDb()
             {
-                TemplateId = rewardData.itemId,
+                TemplateId = itemData.id,
                 Count = count,
                 OwnerDbId = player.PlayerDbId,
-                Slot = slot.Value
+                Slot = slot.Value,
+                Options = itemData.options
             };
             SaveItemDB(player, itemDb, room);
         }
@@ -366,5 +366,157 @@ namespace Server.DB
                 }
             });
         }
+
+        public static void SaveChestDb(Player player, ChestDb chestDb, GameRoom room)
+        {
+            if (player == null || chestDb == null)
+                return;
+            
+            bool reward = false;
+
+            Instance.Push(() =>
+            {
+                using (AppDbContext db = new AppDbContext())
+                {
+                    ChestDb chest = db.Chests
+                        .Where(c => c.MapDbId == player.MapInfo.MapDbId && c.ChestDbId == chestDb.ChestId)
+                        .FirstOrDefault();
+                    if (chest != null )
+                    {
+                        chest.Opened = chestDb.Opened;
+                        reward = false;
+                    }
+                    else
+                    {
+                        chestDb.Opened = false;
+                        reward = true;
+                        db.Chests.Add(chestDb);                                   
+                    }
+                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                    if (success && reward)
+                    {
+                        AcquireData acquireData = DataManager.AcquireDict.GetValueOrDefault(chestDb.TemplateId);
+                        if (acquireData == null)
+                            return;
+
+                        room.Push(() =>
+                        {                            
+                            {
+                                List<ItemRewardData> datas = ItemLogic.GetRandomReward(acquireData.rewards);
+                                foreach (ItemRewardData rewardData in datas)
+                                {
+                                    S_DropItem dropItem = new S_DropItem();
+                                    dropItem.Position = new PositionInfo
+                                    {
+                                        PosX = chestDb.PosX,
+                                        PosY = chestDb.PosY
+                                    };
+                                    dropItem.TemplateId = rewardData.itemId;
+                                    dropItem.Count = ItemLogic.GetRewardCount(rewardData);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        public static void SaveShopDb(Player player, ShopDb shopDb, GameRoom room)
+        {
+            if (player == null || shopDb == null)
+                return;
+
+            Instance.Push(() =>
+            {
+                using (AppDbContext db = new AppDbContext())
+                {
+                    ShopDb existingShopDb = db.Shops
+                        .Where(s => s.TemplateId == shopDb.TemplateId && s.PlayerDbId == player.PlayerDbId)
+                        .FirstOrDefault();
+                    if (existingShopDb == null)
+                    {
+                            db.Shops.Add(shopDb);
+                            existingShopDb = shopDb;   
+                    }
+                    else
+                    {
+                        existingShopDb.ShopItems = shopDb.ShopItems;
+                    }
+                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                    if (success)
+                    {
+                        room.Push(() =>
+                        {
+                            {
+                                S_ShopList shopPacket = new S_ShopList();
+                                shopPacket.ShopId = existingShopDb.TemplateId;
+                                shopPacket.ShopDbId = existingShopDb.ShopDbId;
+                                List<ItemInfo> items = (List<ItemInfo>)existingShopDb.ShopItems.Select(x => new ItemInfo()
+                                {
+                                    TemplateId = x.ItemId,
+                                    Count = x.Count,
+                                    Price = x.Price,                                  
+                                });
+                                shopPacket.Items.AddRange(items);
+                                player.Session.Send(shopPacket);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        public static void RemoveShopDb(Player player, ShopDb shopDb, ShopItemDb shopItemDb, GameRoom room)
+        {
+            if (player == null || shopDb == null)
+                return;
+
+            Instance.Push(() =>
+            {
+                using (AppDbContext db = new AppDbContext())
+                {                    
+                    ShopDb existingShopDb = db.Shops
+                        .Where(s => s.TemplateId == shopDb.TemplateId && s.PlayerDbId == player.PlayerDbId)
+                        .FirstOrDefault();
+                    
+                    if (existingShopDb == null)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        ShopItemDb existingshopItemDb = existingShopDb.ShopItems.Where(i => i.ItemId == shopItemDb.id).FirstOrDefault();
+                        if (shopItemDb == null)
+                        {
+                            return;
+                        }
+                        shopItemDb.Count -= shopItemDb.Count;
+                        if (shopItemDb.Count <= 0)
+                        {
+                            existingShopDb.ShopItems.Remove(shopItemDb);
+                        }
+                    }
+                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                    if (success)
+                    {
+                        room.Push(() =>
+                        {
+                            {
+                                S_ShopList shopPacket = new S_ShopList();
+                                shopPacket.ShopDbId = existingShopDb.ShopDbId;
+                                shopPacket.ShopId = shopDb.TemplateId;
+                                List<ItemInfo> items = (List<ItemInfo>)shopDb.ShopItems.Select(x => new ItemInfo()
+                                {
+                                    TemplateId = x.ItemId,
+                                    Count = x.Count,
+                                    Price = x.Price,
+                                });
+                                shopPacket.Items.AddRange(items);
+                                player.Session.Send(shopPacket);
+                            }
+                        });
+                    }
+                }
+            });
+        }
     }
+
 }

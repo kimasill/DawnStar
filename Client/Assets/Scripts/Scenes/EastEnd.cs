@@ -24,6 +24,7 @@ class EastEnd : BaseScene
 
 
         // 추가 초기화 로직
+        RequestShop(5);
         InitializeNPCs();
         InitializeShop();
     }

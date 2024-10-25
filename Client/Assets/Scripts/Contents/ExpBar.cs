@@ -10,5 +10,6 @@ public class ExpBar : MonoBehaviour
     {
         ratio = Mathf.Clamp(ratio, 0, 1);
         _expBar.localScale = new Vector3(ratio, 1, 1);
+
     }
 }

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Deployment.Internal;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 using static SoonsoonData;
 
@@ -45,6 +46,7 @@ public class MapManager
     private Dictionary<Vector3Int, GameObject> _portalDict = new Dictionary<Vector3Int, GameObject>(); // 문 객체들을 저장할 Dictionary
 	private Dictionary<Vector3Int, GameObject> _questDict = new Dictionary<Vector3Int, GameObject>(); // 문 객체들을 저장할 Dictionary
     private Dictionary<int, Vector2Int> _cameraDict = new Dictionary<int, Vector2Int>(); // 카메라 포인트를 저장할 Dictionary
+    private Dictionary<Vector2Int, ChestController> _chestDict = new Dictionary<Vector2Int, ChestController>(); // 상자 위치를 저장할 Dictionary
     public bool CanGo(Vector3Int cellPos)
 	{
         Vector3Int adjustedPos = new Vector3Int(cellPos.x + 1, cellPos.y + 1, 0);
@@ -91,7 +93,14 @@ public class MapManager
         }
 		return null;
     }
-
+    public ChestController GetChest(Vector2Int cellPos)
+    {
+        if (_chestDict.TryGetValue(cellPos, out var result))
+        {
+            return result;
+        }
+        return null;
+    }
     public Vector2Int GetCameraPosition(int id)
     {
         return _cameraDict[id];
@@ -137,6 +146,7 @@ public class MapManager
 		FindDoors();
         FindQuests();
         FindCameraPoints();
+        FindChests();
     }
 
 	public void DestroyMap()
@@ -197,6 +207,26 @@ public class MapManager
             int cameraId = int.Parse(cameraObject.name.Replace("Camera_", ""));
             Vector3Int cameraCellPos = CurrentGrid.WorldToCell(cameraObject.transform.position);
             _cameraDict[cameraId] = (Vector2Int)cameraCellPos;
+        }
+    }
+
+    private void FindChests()
+    {
+        GameObject[] chestObjects = GameObject.FindGameObjectsWithTag("Chest");
+        foreach (GameObject chestObject in chestObjects)
+        {
+            ChestController cc = chestObject.GetComponent<ChestController>();
+            if(cc != null)
+            {
+                string[] str = chestObject.name.Split('_');
+                string name = str[0];
+                int templateId = str.Length > 1 ? int.Parse(str[1]) : 0;
+                int chestId = str.Length > 2 ? int.Parse(str[2]) : 0;
+                cc.SetChest(chestId, templateId);
+                cc.CellPos = CurrentGrid.WorldToCell(chestObject.transform.position);
+                Vector3Int chestPos = cc.CellPos;
+                _chestDict[(Vector2Int)chestPos] = cc;
+            }            
         }
     }
 

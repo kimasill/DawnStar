@@ -1,4 +1,5 @@
 using Data;
+using Google.Protobuf.Collections;
 using Google.Protobuf.Protocol;
 using JetBrains.Annotations;
 using System;
@@ -49,6 +50,10 @@ public class Item
         set { Info.Price = value; }
     }
 
+    public MapField<string, string> Options
+    {
+        get { return Info.Options; }
+    }
     public ItemType ItemType { get; private set; }
     public bool Stackable { get; protected set; }
 
@@ -87,13 +92,20 @@ public class Item
 
         if (item != null)
         {
-
             item.ItemDbId = itemInfo.ItemDbId;
             item.Count = itemInfo.Count;
             item.Slot = itemInfo.Slot;
             item.Equipped = itemInfo.Equipped;
             item.Price = itemInfo.Price;
+
+            // Clear existing options and add new ones
+            item.Info.Options.Clear();
+            foreach (var option in itemInfo.Options)
+            {
+                item.Info.Options.Add(option.Key, option.Value);
+            }
         }
+        
 
         return item;
     }
@@ -101,6 +113,8 @@ public class Item
     {
         public WeaponType WeaponType { get; private set; }
         public int Damage { get; private set; }
+        public int Range { get; private set; }      
+        public float AttackSpeed { get; private set; }
         public Weapon(int templateId) : base(ItemType.Weapon)
         {
             Init(templateId);
@@ -121,6 +135,8 @@ public class Item
                 Count = 1;
                 WeaponType = data.weaponType;
                 Damage = data.damage;
+                Range = data.range;
+                AttackSpeed = data.attackSpeed;
                 Stackable = false;
             }
         }

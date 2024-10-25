@@ -36,17 +36,16 @@ public class UI_Shop : UI_Base
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.ShopExitButton).gameObject.BindEvent(OnClick);
         //Managers.Shop.OnItemRemoved += RefreshUI;
-        RefreshUI();
     }
 
-    public void RefreshUI()
+    public void RefreshUI(int shopId)
     {
         if (Items.Count == 0)
         {
             return;
         }
 
-        List<Item> items = Managers.Shop.Items.Values.ToList();
+        List<Item> items = Managers.Shop.Shops[shopId].Items.Values.ToList();
         List<Item> sortedItems = items
             .Where(item => item.Slot >= 0 && item.Slot < 20)
             .OrderBy(item => item.Slot)

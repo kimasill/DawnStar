@@ -137,7 +137,7 @@ public class UI_Notification : UI_Base
             canvasGroup.alpha = Mathf.Lerp(1, 0, elapsedTime / fadeDuration);
             yield return null;
         }
-        gameObject.SetActive(false);
+        noti.SetActive(false);
     }
     private IEnumerator FadeOutAndRemove(GameObject noti)
     {

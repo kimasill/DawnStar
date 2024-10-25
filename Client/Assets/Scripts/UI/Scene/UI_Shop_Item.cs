@@ -22,13 +22,15 @@ public class UI_Shop_Item : UI_Base
     Image _frame = null;
 
     [SerializeField]
-    TMP_Text _price = null;
+    TMP_Text _price = null;    
+
 
     public int ItemDbId { get; private set; }
     public int TemplateId { get; private set; }
     public int Count { get; private set; }
     public int Price { get; private set; }
     public bool Equipped { get; private set; }
+    public int ShopId { get; private set; }
 
     public override void Init()
     {
@@ -43,7 +45,9 @@ public class UI_Shop_Item : UI_Base
             
             // 구매 패킷 넘겨주기
             C_BuyItem buyItemPacket = new C_BuyItem();
-            buyItemPacket.TemplateId = TemplateId;
+            buyItemPacket.TemplateId = TemplateId;            
+            buyItemPacket.Count = 1;
+            buyItemPacket.ShopId = ShopId;
             Managers.Network.Send(buyItemPacket);
         });
 

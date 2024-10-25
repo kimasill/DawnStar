@@ -3,6 +3,7 @@
     {
       "id": "1",
       "name": "Lucy",
+      "npcType": "Talk",
       "scripts": [
         {
           "id": "10001",
@@ -17,10 +18,28 @@
     {
       "id": "2",
       "name": "Rollang",
+      "npcType": "Shop",
+      "shopId": "1",
       "scripts": [
         {
           "id": "20001",
           "name": "새벽상점",
+          "type": "UI_Shop",
+          "script": [
+            "어서오세요."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "보따리상인",
+      "npcType": "Shop",
+      "shopId": "2",
+      "scripts": [
+        {
+          "id": "30001",
+          "name": "바위상점",
           "type": "UI_Shop",
           "script": [
             "어서오세요."
