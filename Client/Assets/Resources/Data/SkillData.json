@@ -20,7 +20,7 @@
       "projectile": {
         "speed": "10.0",
         "range": "10",
-        "prefab": "Creature/Arrow"
+        "prefab": "Item/Arrow"
       }
     },
     {
@@ -101,7 +101,7 @@
       "coolTime": "60",
       "skillType": "SkillBuff",
       "buff": {
-        "id": "1",   
+        "id": "1",
         "name": "처형",
         "duration": "30",
         "value": "0.5",
@@ -109,6 +109,90 @@
       },
       "unchartedPoint": "100",
       "description": "가장 가까운 적을 지정하고, 해당 대상을 공격할때 일정시간 피해량이 증가한다."
+    },
+    {
+      "id": "9",
+      "name": "강공",
+      "coolTime": "5",
+      "damage": "40",
+      "skillType": "SkillAttack",
+      "shape": {
+        "shapeType": "ShapeRect",
+        "range": "2.0"
+      },
+      "unchartedPoint": "10",
+      "description": "정면의 적에게 강력한 피해를 준다."
+    },
+    {
+      "id": "10",
+      "name": "분노의회전",
+      "coolTime": "20",
+      "damage": "15",
+      "skillType": "SkillAttack",
+      "shape": {
+        "shapeType": "ShapeCircle",
+        "range": "3.0"
+      },
+      "unchartedPoint": "20",
+      "description": "주변적에게 강력한 피해를 준다."
+    },
+    {
+      "id": "11",
+      "name": "폭발성독구체",
+      "coolTime": "15",
+      "damage": "30",
+      "skillType": "SkillProjectile",
+      "skillLogicType": "MagicBall",
+      "projectile": {
+        "speed": "5.0",
+        "range": "7",
+        "prefab": "Effect/PoisonExplosion"
+      },
+      "debuff": {
+        "id": "1",
+        "name": "독",
+        "duration": "5",
+        "value": "0.1",
+        "isPercent": "false"
+      },
+      "unchartedPoint": "20",
+      "description": "닿는순간 폭발하여 독성피해를 준다."
+    },
+    {
+      "id": "12",
+      "name": "맹독충격",
+      "coolTime": "20",
+      "damage": "40",
+      "skillType": "SkillSpot",
+      "skillLogicType": "SpotAttack",
+      "spot": {
+        "speed": "5.0",
+        "range": "7",
+        "delay": "1.0",
+        "prefab": "Effect/FireExplosion"
+      },
+      "debuff": {
+        "id": "1",
+        "name": "독",
+        "duration": "5",
+        "value": "0.1",
+        "isPercent": "false"
+      },
+      "unchartedPoint": "20",
+      "description": "닿는순간 폭발하여 화염피해를 준다."
+    },
+    {
+      "id": "13",
+      "name": "밀치기",
+      "coolTime": "5",
+      "damage": "10",
+      "skillType": "SkillAttack",
+      "shape": {
+        "shapeType": "ShapeLine",
+        "range": "2.0"
+      },
+      "unchartedPoint": "10",
+      "description": "정면의 적을 밀쳐낸다."
     }
   ]
 } 

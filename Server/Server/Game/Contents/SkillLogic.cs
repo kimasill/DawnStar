@@ -1,5 +1,9 @@
-﻿using Server.Game.Room;
+﻿using Google.Protobuf.Protocol;
+using Server.Data;
+using Server.Game.Room;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Server.Game
 {
@@ -25,6 +29,24 @@ namespace Server.Game
                 }
             }
             return tiles;
+        }
+
+        public static List<Vector2Int> GetRandomSpots(GameObject user, SkillData skillData, GameRoom room)
+        {
+            Random rand = new Random();
+            List<Vector2Int> skillPos = new List<Vector2Int>();
+
+            int count = rand.Next(skillData.spot.minCount, skillData.spot.maxCount + 1);
+
+            for (int i = 0; i < count; i++)
+            {
+                Vector2Int pos = new Vector2Int(rand.Next((int)-skillData.spot.range, (int)(skillData.spot.range + 1)), rand.Next((int)-skillData.spot.range, (int)(skillData.spot.range + 1)));
+                if (room.Map.CanGo(pos, false))
+                    skillPos.Add(user.CellPos + pos);
+                else
+                    i--;
+            }
+            return skillPos;
         }
     }
 }

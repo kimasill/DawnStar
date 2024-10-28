@@ -63,12 +63,6 @@ public class BirdController : MonsterController
         }
     }
 
-    private IEnumerator DisableAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        gameObject.SetActive(false);
-    }
-
     private IEnumerator PlayTakeOffAnimation()
     {
         _isTakingOff = true;

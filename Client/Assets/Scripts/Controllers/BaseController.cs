@@ -68,6 +68,13 @@ public class BaseController : MonoBehaviour
         transform.position = destPos;
     }
 
+
+    public virtual void UpdatePositionSmooth()
+    {
+        Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
+        transform.position = Vector3.Lerp(transform.position, destPos, 0.2f);
+    }
+
     public Vector3Int CellPos
     {
         get
@@ -85,6 +92,7 @@ public class BaseController : MonoBehaviour
     }
 
     protected Animator _animator;
+    protected float _animatorSpeed;
     protected SpriteRenderer _sprite;
 
     [SerializeField]
@@ -250,10 +258,10 @@ public class BaseController : MonoBehaviour
                     break;
             }
 
-            StartCoroutine(DisableAfterDelay(1.0f));
+            StartCoroutine(DisableAfterDelay(_animator.GetCurrentAnimatorStateInfo(0).length));
         }
     }
-    private IEnumerator DisableAfterDelay(float delay)
+    protected virtual IEnumerator DisableAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
         gameObject.SetActive(false);
@@ -272,6 +280,7 @@ public class BaseController : MonoBehaviour
     protected virtual void Init()
     {
         _animator = GetComponent<Animator>();
+        _animatorSpeed = _animator.speed;
         _sprite = GetComponent<SpriteRenderer>();
         Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
         transform.position = pos;
@@ -333,6 +342,12 @@ public class BaseController : MonoBehaviour
             State = CreatureState.Moving;
         }
         UpdateSortingLayer();
+    }
+    protected IEnumerator AdjustAnimation(float speed)
+    {
+        _animator.speed = speed;
+        float animationLength = _animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(animationLength);
     }
 
     public void ShowDamage(int damage, bool isCritical)

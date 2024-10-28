@@ -11,6 +11,7 @@ namespace Server.Game
     public class Arrow : Projectile
     {
         public GameObject Owner { get; set; }
+        public int _distance = 0;
         public override void Update()
         {
             if (Data == null || Data.projectile == null || Owner == null || Room == null)
@@ -20,13 +21,14 @@ namespace Server.Game
             Room.PushAfter(tick, Update);
 
             Vector2Int destPos = GetFrontCellPos();
-            if (Room.Map.ApplyMove(this, destPos, collision:false))
+            if (Room.Map.ApplyMove(this, destPos, collision:false) && _distance<Data.projectile.range)
             {
                 CellPos = destPos;
                 S_Move movePacket = new S_Move();
                 movePacket.ObjectId = Id;
                 movePacket.Position = PosInfo;
                 Room.Broadcast(CellPos, movePacket);                
+                _distance++;
             }
             else
             {

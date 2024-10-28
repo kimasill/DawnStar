@@ -62,6 +62,7 @@ namespace Server.Game
                 return;
             }
             Broadcast(player.CellPos, skill);
+            player.Skill.StartSkill(player, skillData);
             switch (skillData.skillType)
             {
                 case SkillType.SkillAttack:
@@ -102,6 +103,23 @@ namespace Server.Game
                         arrow.PosInfo.PosY = player.PosInfo.PosY;
                         arrow.Speed = skillData.projectile.speed;
                         Push(EnterGame, arrow, false);
+                    }
+                    break;
+                case SkillType.SkillSpot:
+                    {
+                        List<Vector2Int> skillPos = SkillLogic.GetRandomSpots(player, skillData, this);                        
+                        foreach (Vector2Int pos in skillPos)
+                        {
+                            SpotAttack spot = ObjectManager.Instance.Add<SpotAttack>();
+                            spot.Data = skillData;
+                            spot.Owner = player;
+                            spot.Room = this;
+                            spot.PosInfo.State = CreatureState.Moving;
+                            spot.PosInfo.MoveDir = player.PosInfo.MoveDir;
+                            spot.PosInfo.PosX = pos.x;
+                            spot.PosInfo.PosY = pos.y;
+                            Push(EnterGame, spot, false);
+                        }
                     }
                     break;
             }

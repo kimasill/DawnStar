@@ -81,9 +81,7 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SChangeExp, MakePacket<S_ChangeExp>);
 		_handler.Add((ushort)MsgId.SChangeExp, PacketHandler.S_ChangeExpHandler);		
 		_onRecv.Add((ushort)MsgId.SDamage, MakePacket<S_Damage>);
-		_handler.Add((ushort)MsgId.SDamage, PacketHandler.S_DamageHandler);		
-		_onRecv.Add((ushort)MsgId.SChestList, MakePacket<S_ChestList>);
-		_handler.Add((ushort)MsgId.SChestList, PacketHandler.S_ChestListHandler);
+		_handler.Add((ushort)MsgId.SDamage, PacketHandler.S_DamageHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)
