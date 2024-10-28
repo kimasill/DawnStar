@@ -48,10 +48,4 @@ public class AnimalController : MonsterController
             StartCoroutine(DisableAfterDelay(1.0f));
         }
     }
-
-    private IEnumerator DisableAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        gameObject.SetActive(false);
-    }
 }

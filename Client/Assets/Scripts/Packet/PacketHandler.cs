@@ -277,8 +277,19 @@ class PacketHandler
     public static void S_ChangePositionHandler(PacketSession session, IMessage packet)
     {
         S_ChangePosition changePosPacket = (S_ChangePosition)packet;
-        Managers.Object.MyPlayer.PosInfo = changePosPacket.Position;
-        Managers.Object.MyPlayer.SyncPos();
+        if(changePosPacket.Position.State == CreatureState.Skill)
+        {
+            Managers.Object.MyPlayer.PosInfo.PosX = changePosPacket.Position.PosX;
+            Managers.Object.MyPlayer.PosInfo.PosY = changePosPacket.Position.PosY;
+            Managers.Object.MyPlayer.PosInfo.LookDir = changePosPacket.Position.LookDir;
+            Managers.Object.MyPlayer.UpdatePositionSmooth();
+        }
+        else
+        {
+            Managers.Object.MyPlayer.PosInfo = changePosPacket.Position;
+            Managers.Object.MyPlayer.SyncPos();
+        }
+        
     }
 
     public static void S_CreatePlayerHandler(PacketSession session, IMessage packet)

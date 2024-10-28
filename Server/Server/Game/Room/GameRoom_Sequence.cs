@@ -198,12 +198,12 @@ namespace Server.Game
                 if (monster == null)
                     continue;
 
-                monster.Init(monsterId);
-                monster.PosInfo.PosX = spawnPos.x;
-                monster.PosInfo.PosY = spawnPos.y;
-                monster.SpawnPosition = monster.CellPos;
-                monster.SpawnId = _spawnCount++;
-                EnterGame(monster, false);
+                Monster newMonster = Monster.CreateMonster(monsterId);
+                newMonster.PosInfo.PosX = spawnPos.x;
+                newMonster.PosInfo.PosY = spawnPos.y;
+                newMonster.SpawnPosition = monster.CellPos;
+                newMonster.SpawnId = _spawnCount++;
+                EnterGame(newMonster, false);
             }
         }
     }

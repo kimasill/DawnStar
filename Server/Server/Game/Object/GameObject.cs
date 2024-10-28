@@ -13,6 +13,7 @@ namespace Server.Game
     {
         public ObjectInfo Info { get; private set;} = new ObjectInfo();
         public GameRoom Room { get; set; }
+        public Skill Skill { get; set; }
         public GameObjectType ObjectType { get; protected set; } = GameObjectType.None;
         public int Id 
         { 
@@ -27,6 +28,7 @@ namespace Server.Game
             get { return Stat.Level; }
             set { Stat.Level = value; }
         }
+        public virtual int TotalInvokeSpeed { get { return Stat.InvokeSpeed; } }
         public virtual int TotalAttack { get { return Stat.Attack; } }
         public virtual int TotalDefense { get { return 0; } }
         public virtual float TotalAttackSpeed { get { return Stat.AttackSpeed; } }
@@ -134,10 +136,10 @@ namespace Server.Game
             return pos;
         }
 
-        public virtual void OnDamaged(GameObject attacker, int damage)
+        public virtual int OnDamaged(GameObject attacker, int damage)
         {
             if (Room == null)
-                return;
+                return 0;
             damage = Room.CalculateDamage(attacker,Id, damage);            
             Stat.Hp = Math.Max(Stat.Hp - damage, 0);
             Stat.Hp -= damage;
@@ -150,6 +152,7 @@ namespace Server.Game
             {
                 Ondead(attacker);
             }
+            return damage;
         }
 
         public virtual void OnHealed(int heal, GameObject healer)

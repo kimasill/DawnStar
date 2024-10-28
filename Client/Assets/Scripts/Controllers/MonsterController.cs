@@ -7,8 +7,8 @@ using static Define;
 
 public class MonsterController : CreatureController
 {
-    
-    //Coroutine _coSkill;
+
+    protected Coroutine _coSkill;
     protected override void Init()
 	{
 		base.Init();
@@ -34,5 +34,6 @@ public class MonsterController : CreatureController
         {
 			State = CreatureState.Skill;
         }
+        _skillId = skillId;
     }
 }

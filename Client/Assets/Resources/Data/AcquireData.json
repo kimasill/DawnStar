@@ -12,8 +12,20 @@
           "maxCount": "150"
         },
         {
-          "probability": "100",
+          "probability": "50",
           "itemId": "1130",
+          "minCount": "2",
+          "maxCount": "5"
+        },
+        {
+          "probability": "40",
+          "itemId": "1133",
+          "minCount": "2",
+          "maxCount": "5"
+        },
+        {
+          "probability": "30",
+          "itemId": "1136",
           "minCount": "2",
           "maxCount": "5"
         },
@@ -22,6 +34,55 @@
           "itemId": "10002",
           "minCount": "5",
           "maxCount": "5"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "정예상자(오크대족장)",
+      "type": "chest",
+      "rewards": [
+        {
+          "probability": "100",
+          "itemId": "200",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "1115",
+          "minCount": "1",
+          "maxCount": "5"
+        },
+        {
+          "probability": "100",
+          "itemId": "1117",
+          "minCount": "1",
+          "maxCount": "5"
+        },
+        {
+          "probability": "100",
+          "itemId": "1139",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "1147",
+          "minCount": "4",
+          "maxCount": "8"
+        },        
+        {
+          "probability": "100",
+          "itemId": "10001",
+          "minCount": "100",
+          "maxCount": "200"
+        },
+        {
+          "probability": "100",
+          "itemId": "10002",
+          "minCount": "20",
+          "maxCount": "20"
         }
       ]
     }

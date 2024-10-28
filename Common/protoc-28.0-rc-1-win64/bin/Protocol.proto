@@ -53,7 +53,6 @@ enum MsgId {
   S_CHANGE_EXP = 45;
   S_DAMAGE = 46;
   C_OPEN_CHEST = 47;
-  S_CHEST_LIST = 48;
 }
 enum CreatureState{
   IDLE = 0;
@@ -81,18 +80,29 @@ enum GameObjectType{
 	MONSTER = 2;
 	PROJECTILE = 3;
 	NPC = 4;
-	ITEM = 5;
+	ITEM = 5;	
+	MAGIC = 6;
 }
 
 enum SkillType{
 	SKILL_NONE = 0;
 	SKILL_ATTACK = 1;
 	SKILL_PROJECTILE = 2;
+	SKILL_SPOT = 3;
+}
+
+enum SkillLogicType{
+	BASICATTACK = 0;
+	MAGICBALL = 1;
+	SPOTATTACK = 2;
 }
 
 enum MonsterType{
-	MONSTER_NORMAL = 0;
-	MONSTER_FLYING = 1;
+	MONSTER_TYPE_NORMAL = 0;
+	MONSTER_TYPE_FLYING = 1;
+	MONSTER_TYPE_GOBLIN = 2;
+	MONSTER_TYPE_ORC = 3;
+	MONSTER_TYPE_ORCMAGE = 4;
 }
 
 enum MonsterGrade{
@@ -139,6 +149,7 @@ enum ItemType
 	ITEM_TYPE_CONSUMABLE = 3;
 	ITEM_TYPE_MATERIAL = 4;
 	ITEM_TYPE_GOODS = 5;
+	ITEM_TYPE_JEWELRY = 6;
 }
 
 enum WeaponType {
@@ -155,6 +166,13 @@ enum ArmorType{
 	ARMOR_TYPE_ARMOR = 2;
 	ARMOR_TYPE_BOOTS = 3;
 	ARMOR_TYPE_BACK = 4;
+}
+
+enum JewelryType{
+	JEWELRY_TYPE_NONE = 0;
+	JEWELRY_TYPE_RING = 1;
+	JEWELRY_TYPE_NECKLACE = 2;
+	JEWELRY_TYPE_EARRING = 3;
 }
 
 enum ConsumableType{
@@ -214,9 +232,6 @@ message C_OpenChest{
   int32 posY = 4;
 }
 
-message S_ChestList{
-  repeated int32 chestId = 1;
-}
 
 message S_Despawn {
   repeated int32 objectId = 1;
@@ -440,6 +455,7 @@ message StatInfo{
   int32 avoid = 11;
   int32 accuracy = 12;
   int32 attackSpeed = 13;
+  int32 invokeSpeed = 14;  
 }
 
 message QuestInfo

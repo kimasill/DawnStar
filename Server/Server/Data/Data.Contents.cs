@@ -16,6 +16,8 @@ namespace Server.Data
         public int Attack;
         public int Defence;
         public float Speed;
+        public float AttackSpeed;
+        public float InvokeSpeed;
         public int TotalExp;        
     }
 
@@ -45,22 +47,54 @@ namespace Server.Data
         public float coolTime;
         public int damage;
         public SkillType skillType;
-        public ProjectileInfo projectile;
+        public SkillLogicType skillLogicType;
         public ShapeInfo shape;
+        public ProjectileInfo projectile;
+        public SpotInfo spot;
+        public BuffInfo buff;
+        public DebuffInfo debuff;
     }
-
     public class ShapeInfo
     {
         public ShapeType shapeType;
         public float range;
     }
-
     public class ProjectileInfo
     {
-        public string name;        
+        public string name;
         public float speed;
         public float range;
+        public bool isHoming;
         public string prefab;
+    }
+    public class SpotInfo
+    {
+        public string name;
+        public float range;
+        public float delay;
+        public bool isHoming;
+        public int maxCount;
+        public int minCount;
+        public string prefab;
+    }
+
+
+    public class BuffInfo
+    {
+        public int id;
+        public string name;
+        public int duration;
+        public int value;
+        public bool isPercent;
+    }
+
+    public class DebuffInfo
+    {
+        public int id;
+        public string name;
+        public int duration;
+        public int value;
+        public bool isPercent;
     }
 
 
@@ -98,7 +132,6 @@ namespace Server.Data
         public int damage;
         public int range;
     }
-
     public class ArmorData : ItemData
     {
         public ArmorType armorType;
@@ -176,7 +209,8 @@ namespace Server.Data
     {
         public int id;
         public string name;
-        public MonsterType monsterType;
+        public MonsterType type;
+        public MonsterGrade grade;
         public StatInfo stat;
         public List<ItemRewardData> rewards;
     }

@@ -9,7 +9,8 @@ public class CreatureController : BaseController
 {
 	HpBar _hpBar;
 	StatInfo _stat = new StatInfo();
-	public override StatInfo Stat
+    protected int _skillId;
+    public override StatInfo Stat
 	{
 		get { return base.Stat; }
 		set

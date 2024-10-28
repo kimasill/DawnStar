@@ -428,7 +428,7 @@ namespace Server.Game.Room
             {
                 Pos best = new Pos();
                 int bestDist = Int32.MaxValue;
-
+                
                 foreach (Pos p in parent.Keys)
                 {
                     int dist = Math.Abs(dest.Y - p.Y) + Math.Abs(dest.X - p.X);

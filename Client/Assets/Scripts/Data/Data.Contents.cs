@@ -36,7 +36,7 @@ namespace Data
     #endregion
     #region Skill
     [Serializable]
-    public class Skill
+    public class SkillData
     {
         public int id;
         public string name;
@@ -45,7 +45,9 @@ namespace Data
         public SkillType skillType;
         public ShapeInfo shape;
         public ProjectileInfo projectile;
+        public SpotInfo spot;
         public BuffInfo buff;
+        public DebuffInfo debuff;
     }
     public class ShapeInfo
     {
@@ -57,6 +59,17 @@ namespace Data
         public string name;
         public float speed;
         public float range;
+        public bool isHoming;
+        public string prefab;
+    }
+
+    public class SpotInfo
+    {
+        public string name;
+        public float range;
+        public float duration;
+        public int maxCount;
+        public int minCount;
         public string prefab;
     }
 
@@ -69,15 +82,24 @@ namespace Data
         public bool isPercent;
     }
 
-    [Serializable]
-    public class SkillData : ILoader<int, Skill>
+    public class DebuffInfo
     {
-        public List<Skill> skills = new List<Skill>();
+        public int id;
+        public string name;
+        public int duration;
+        public int value;
+        public bool isPercent;
+    }
 
-        public Dictionary<int, Skill> MakeDict()
+    [Serializable]
+    public class SkillLoader : ILoader<int, SkillData>
+    {
+        public List<SkillData> skills = new List<SkillData>();
+
+        public Dictionary<int, SkillData> MakeDict()
         {
-            Dictionary<int, Skill> dict = new Dictionary<int, Skill>();
-            foreach (Skill skill in skills)
+            Dictionary<int, SkillData> dict = new Dictionary<int, SkillData>();
+            foreach (SkillData skill in skills)
                 dict.Add(skill.id, skill);
             return dict;
         }
@@ -182,7 +204,8 @@ namespace Data
     {
         public int id;
         public string name;
-        public MonsterType monsterType;
+        public MonsterType type;
+        public MonsterGrade grade;
         public StatInfo stat;
         public List<RewardData> rewards;
     }

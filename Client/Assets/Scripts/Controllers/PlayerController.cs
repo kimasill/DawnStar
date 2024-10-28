@@ -130,33 +130,27 @@ public class PlayerController : CreatureController
             Debug.Log("Invalid skill ID");
         }
 	}
-
-	IEnumerator CoStartBasicAttack()
-	{
-		// 대기 시간
-		_rangedSkill = false;
-		State = CreatureState.Skill;
-        _animator.speed = AttackSpeed;
-        float animationLength = _animator.GetCurrentAnimatorStateInfo(0).length;
-        yield return new WaitForSeconds(animationLength);
+    private IEnumerator CoStartShootArrow()
+    {
+        // 대기 시간
+        _rangedSkill = true;
+        State = CreatureState.Skill;
+        yield return StartCoroutine(AdjustAnimation(AttackSpeed));
         State = CreatureState.Idle;
-		_coSkill = null;
-		CheckUpdatedFlag();
-
+        _coSkill = null;
+        CheckUpdatedFlag();
     }
-	IEnumerator CoStartShootArrow()
-	{
-		// 대기 시간
-		_rangedSkill = true;
-		State = CreatureState.Skill;
-        _animator.speed = AttackSpeed;
-        float animationLength = _animator.GetCurrentAnimatorStateInfo(0).length;
-        yield return new WaitForSeconds(animationLength);
+    IEnumerator CoStartBasicAttack()
+    {
+        // 대기 시간
+        _rangedSkill = false;
+        State = CreatureState.Skill;
+        yield return StartCoroutine(AdjustAnimation(AttackSpeed));
         State = CreatureState.Idle;
-		_coSkill = null;
-		CheckUpdatedFlag();
-	}
-	protected virtual void CheckUpdatedFlag(){ }
+        _coSkill = null;
+        CheckUpdatedFlag();
+    }
+    protected virtual void CheckUpdatedFlag(){ }
 	public override void OnDamaged()
 	{
 		Debug.Log("Player HIT !");

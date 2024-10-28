@@ -118,7 +118,7 @@
         "Critical": "20",
         "Skill": "7"
       }
-    }    
+    }
   ],
   "armors": [
     {
@@ -140,9 +140,24 @@
       "description": "뼈로 만든 투구. 가볍고 방어력이 높다."
     }
   ],
-  "consumables": [
+  "jewelry": [
     {
       "id": "200",
+      "name": "주술사의 목걸이",
+      "jewelryType": "Necklace",
+      "price": "1000",
+      "iconPath": "Textures/Item/jewelry",
+      "description": "오크 대족장이 사용하던 목걸이. 미지의 기운이 깃들어 있다.",
+      "options": {
+        "UpBonous": "10",
+        "UpRegen" : "5",
+        "Skill": "12"
+      }
+    }
+  ],
+  "consumables": [
+    {
+      "id": "300",
       "name": "HP 물약",
       "consumableType": "Potion",
       "maxCount": "5",
@@ -564,6 +579,42 @@
       "materialType": "Drop",
       "price": "75",
       "iconPath": "Textures/Item/Materials/Drop/FishScales"
+    },
+    {
+      "id": "1145",
+      "name": "나무조각",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "7",
+      "iconPath": "Textures/Item/Materials/Drop/Tree_Scrpb",
+      "description": "가면에서 떨어진 조각"
+    },
+    {
+      "id": "1146",
+      "name": "오크워리어의 무기",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "120",
+      "iconPath": "Textures/Item/Materials/Drop/Orc_Spear",
+      "description": "오크워리어가 사용하던 거대한 창"
+    },
+    {
+      "id": "1147",
+      "name": "미지의파편",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "310",
+      "iconPath": "Textures/Item/Materials/Uncharted_Fragment",
+      "description": "미지의 기운이 담긴 파편. 정제하여 미지의 기운을 역이용할 수 있다."
+    },
+    {
+      "id": "1148",
+      "name": "오브(초록)",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "500",
+      "iconPath": "Textures/Item/Materials/Orb_Green",
+      "description": "오크 대족장의 초록색 오브"
     }
   ],
   "goods": [

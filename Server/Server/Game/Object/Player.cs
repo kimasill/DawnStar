@@ -87,11 +87,11 @@ namespace Server.Game
             IsDead = false;
         }
 
-        public override void OnDamaged(GameObject target, int damage)
+        public override int OnDamaged(GameObject target, int damage)
         {
             if (IsDead)
-                return;
-            base.OnDamaged(target, damage);
+                return 0;
+            return base.OnDamaged(target, damage);
             //TODO : 피해를 입었을 때 처리 -> 플레이어 스탯에 따라 딜레이 시간 변경
         }
 

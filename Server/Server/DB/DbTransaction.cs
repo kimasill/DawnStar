@@ -413,6 +413,7 @@ namespace Server.DB
                                     };
                                     dropItem.TemplateId = rewardData.itemId;
                                     dropItem.Count = ItemLogic.GetRewardCount(rewardData);
+                                    player.Session.Send(dropItem);
                                 }
                             }
                         });
@@ -483,7 +484,7 @@ namespace Server.DB
                     }
                     else
                     {
-                        ShopItemDb existingshopItemDb = existingShopDb.ShopItems.Where(i => i.ItemId == shopItemDb.id).FirstOrDefault();
+                        ShopItemDb existingshopItemDb = existingShopDb.ShopItems.Where(i => i.ItemId == shopItemDb.ItemId).FirstOrDefault();
                         if (shopItemDb == null)
                         {
                             return;
