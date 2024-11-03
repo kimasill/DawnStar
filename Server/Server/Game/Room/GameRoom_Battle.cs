@@ -57,72 +57,14 @@ namespace Server.Game
             SkillData skillData = null;
             if (DataManager.SkillDict.TryGetValue(skillPacket.Info.SkillId, out skillData) == false)
                 return;
-            if(player.HandleSkillCool(skillData)==false)
+           
+            player.Skill.Owner = player;
+            if (!player.Skill.HandleSkillCool(skillData, true))
             {
                 return;
             }
             Broadcast(player.CellPos, skill);
             player.Skill.StartSkill(player, skillData);
-            switch (skillData.skillType)
-            {
-                case SkillType.SkillAttack:
-                    {
-                        List<Vector2Int> skillPos = new List<Vector2Int>();
-                        List<GameObject> targets = new List<GameObject>();
-                        if (skillData.shape.shapeType == ShapeType.ShapeBent)
-                        {
-                            Vector2Int center = player.GetFrontCellPos();
-                            Vector2Int lookDir = player.GetPosFromLookDir(player.CellPos, info.Position.LookDir);
-                            skillPos.AddRange(SkillLogic.GetBentAttackTiles(center, lookDir, (int)skillData.shape.range));                            
-                        }
-                        foreach (Vector2Int pos in skillPos)
-                        {
-                            GameObject target = Map.Find(pos);
-                            if (target != null)
-                            {                 
-                                if(target == player)
-                                {
-                                    continue;
-                                }
-                                target.OnDamaged(player, player.TotalAttack); //피격판정(공격력)  
-                            }
-                        }
-                        break;
-                    }
-                case SkillType.SkillProjectile:
-                    {
-                        Arrow arrow = ObjectManager.Instance.Add<Arrow>();
-                        if (arrow == null)
-                            return;
-
-                        arrow.Owner = player;
-                        arrow.Data = skillData;
-                        arrow.PosInfo.State = CreatureState.Moving;
-                        arrow.PosInfo.MoveDir = player.PosInfo.MoveDir;
-                        arrow.PosInfo.PosX = player.PosInfo.PosX;
-                        arrow.PosInfo.PosY = player.PosInfo.PosY;
-                        arrow.Speed = skillData.projectile.speed;
-                        Push(EnterGame, arrow, false);
-                    }
-                    break;
-                case SkillType.SkillSpot:
-                    {
-                        List<Vector2Int> skillPos = SkillLogic.GetRandomSpots(player, skillData, this);                        
-                        foreach (Vector2Int pos in skillPos)
-                        {
-                            SpotAttack spot = ObjectManager.Instance.Add<SpotAttack>();
-                            spot.Data = skillData;
-                            spot.Owner = player;
-                            spot.Room = this;
-                            spot.PosInfo.State = CreatureState.Moving;
-                            spot.PosInfo.MoveDir = player.PosInfo.MoveDir;
-                            spot.PosInfo.PosX = pos.x;
-                            spot.PosInfo.PosY = pos.y;
-                            Push(EnterGame, spot, false);
-                        }
-                    }
-                    break;
-            }
         }
         
         public int CalculateDamage(GameObject attacker,int id, int damage)

@@ -119,6 +119,7 @@ namespace Server.Game
                     WeaponType = data.weaponType;
                     Damage = data.damage;
                     Range = data.range;
+                    AttackSpeed = data.attackSpeed;
                     Stackable = false;
                 }
             }

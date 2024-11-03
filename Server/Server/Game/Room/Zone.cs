@@ -15,6 +15,7 @@ namespace Server.Game
         public HashSet<Player> Players { get; set; } = new HashSet<Player>();
         public HashSet<Monster> Monsters { get; set; } = new HashSet<Monster>();
         public HashSet<Projectile> Projectiles { get; set; } = new HashSet<Projectile>();
+        public HashSet<Magic> Magics { get; set; } = new HashSet<Magic>();
         public Zone(int y, int x)
         {
             IndexY = y;
@@ -35,6 +36,9 @@ namespace Server.Game
                     break;
                 case GameObjectType.Projectile:
                     Projectiles.Remove((Projectile)gameObject);
+                    break;
+                case GameObjectType.Magic:
+                    Magics.Remove((Magic)gameObject);
                     break;
             }
         }

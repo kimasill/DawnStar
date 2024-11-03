@@ -12,8 +12,6 @@ public class PlayerController : CreatureController
     protected bool _rangedSkill = false;
     protected EquipmentController _equipmentController;
     protected SortingGroup _sortingLayer;
-
-    protected float AttackSpeed { get;  set; }
     public EquipmentController Equipment 
     { 
         get {
@@ -127,7 +125,7 @@ public class PlayerController : CreatureController
         }
         else
         {
-            Debug.Log("Invalid skill ID");
+            base.UseSkill(skillId);
         }
 	}
     private IEnumerator CoStartShootArrow()
@@ -140,7 +138,7 @@ public class PlayerController : CreatureController
         _coSkill = null;
         CheckUpdatedFlag();
     }
-    IEnumerator CoStartBasicAttack()
+    private IEnumerator CoStartBasicAttack()
     {
         // 대기 시간
         _rangedSkill = false;

@@ -99,7 +99,26 @@ public class MapManager
         {
             return result;
         }
+        else return null;
+    }
+
+    public ChestController GetChestById(int id)
+    {
+        foreach (var chest in _chestDict.Values)
+        {
+            if (chest.ChestId == id)
+                return chest;
+        }
         return null;
+    }
+
+    public void SetChests(List<int> chestIds)
+    {
+        foreach (var chest in _chestDict.Values)
+        {
+            if (chestIds.Contains(chest.ChestId)) continue;
+            else chest.gameObject.SetActive(false);
+        }
     }
     public Vector2Int GetCameraPosition(int id)
     {

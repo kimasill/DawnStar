@@ -42,12 +42,14 @@
       "coolTime": "8",
       "damage": "72",
       "skillType": "SkillAttack",
+      "skillLogicType": "Combat",
       "shape": {
         "shapeType": "ShapeLine",
         "range": "2.0"
       },
+      "prefab": "Effect/Crossslash",
       "unchartedPoint": "5",
-      "description": "정면의 적을 강하게 찔러 피해를 준다."
+      "description": "정면의 적을 두차례 찔러 피해를 준다."
     },
     {
       "id": "5",
@@ -187,6 +189,7 @@
       "coolTime": "5",
       "damage": "10",
       "skillType": "SkillAttack",
+      "skillLogicType": "KnockBack",
       "shape": {
         "shapeType": "ShapeLine",
         "range": "2.0"

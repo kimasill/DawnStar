@@ -8,7 +8,7 @@
       "price": "50",
       "iconPath": "Textures/Item/Weapons/Bastard",
       "range": "1",
-      "attackSpeed": "0.6",
+      "attackSpeed": "0.9",
       "description": "기본적인 검."
     },
     {
@@ -19,18 +19,18 @@
       "price": "10",
       "iconPath": "Textures/Item/Weapons/ShortSword",
       "range": "1",
-      "attackSpeed": "1",
+      "attackSpeed": "1.4",
       "description": "짧지만 가벼운 검"
     },
     {
       "id": "3",
       "name": "그레이트 소드",
       "weaponType": "Sword",
-      "damage": "14",
+      "damage": "12",
       "price": "70",
       "iconPath": "Textures/Item/Weapons/GreatSword",
       "range": "3",
-      "attackSpeed": "0.4",
+      "attackSpeed": "0.7",
       "description": "케일라드가 사용한 검. 무겁지만 사거리가 길다."
     },
     {
@@ -41,7 +41,7 @@
       "price": "200",
       "iconPath": "Textures/Item/Weapons/Scimitar",
       "range": "2",
-      "attackSpeed": "0.5",
+      "attackSpeed": "0.8",
       "description": "긴 칼날을 가진 곡검. 범위가 넓고 절삭력이 강하다."
     },
     {
@@ -52,11 +52,11 @@
       "price": "2300",
       "iconPath": "Textures/Item/Weapons/MoonLightGreatSword",
       "range": "3",
-      "attackSpeed": "0.3",
+      "attackSpeed": "0.6",
       "description": "달빛을 받아들인 대검. 강력한 공격력을 자랑한다.",
       "options": {
         "Critical": "10",
-        "SkillId": "3"
+        "Skill": "3"
       }
     },
     {
@@ -67,7 +67,7 @@
       "price": "1500",
       "iconPath": "Textures/Item/Weapons/Gladius",
       "range": "1",
-      "attackSpeed": "0.7",
+      "attackSpeed": "1.1",
       "description": "제국 남쪽의 국가인 카르타고에서 주로 사용하는 검. 강력한 공격력을 자랑한다.  찌르기에 특화되어있다.",
       "options": {
         "Critical": "5",
@@ -82,7 +82,7 @@
       "price": "4000",
       "iconPath": "Textures/Item/Weapons/Executioner",
       "range": "2",
-      "attackSpeed": "0.6",
+      "attackSpeed": "1",
       "description": "대괴수용으로 제작된 특수검.",
       "options": {
         "Critical": "10",
@@ -97,7 +97,7 @@
       "price": "5000",
       "iconPath": "Textures/Item/Weapons/Traicion",
       "range": "1",
-      "attackSpeed": "1",
+      "attackSpeed": "1.3",
       "description": "붉은 이빨에서 나온재료로 만들어진 검. 강력한 기운을 지녔다.",
       "options": {
         "Critical": "15",
@@ -112,7 +112,7 @@
       "price": "6000",
       "iconPath": "Textures/Item/Weapons/Glare",
       "range": "2",
-      "attackSpeed": "0.5",
+      "attackSpeed": "1.2",
       "description": "미지의 기운에 의해 자연 발생하고, 수백년간 벼려진 검.",
       "options": {
         "Critical": "20",
@@ -158,12 +158,15 @@
   "consumables": [
     {
       "id": "300",
-      "name": "HP 물약",
+      "name": "치유포션",
       "consumableType": "Potion",
       "maxCount": "5",
       "price": "20",
-      "iconPath": "Textures/Item/hp",
-      "description": "체력을 50 회복한다."
+      "iconPath": "Textures/Item/Consumables/Potion_Health",
+      "description": "체력을 회복한다.",
+      "options": {
+        "Heal": "50"
+      }
     }
   ],
   "materials": [
@@ -272,7 +275,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "2500",
-      "iconPath": "Textures/Item/Materials/Topaz",
+      "iconPath": "Textures/Item/Materials/Base/Topaz",
       "description": "연금술의 주재료"
     },
     {
@@ -281,7 +284,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "2700",
-      "iconPath": "Textures/Item/Materials/Ruby",
+      "iconPath": "Textures/Item/Materials/Base/Ruby",
       "description": "연금술의 주재료"
     },
     {
@@ -290,7 +293,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "3000",
-      "iconPath": "Textures/Item/Materials/Emerald",
+      "iconPath": "Textures/Item/Materials/Base/Emerald",
       "description": "연금술의 주재료"
     },
     {
@@ -299,7 +302,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "2800",
-      "iconPath": "Textures/Item/Materials/Sapphire",
+      "iconPath": "Textures/Item/Materials/Base/Sapphire",
       "description": "연금술의 주재료"
     },
     {
@@ -308,7 +311,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "13200",
-      "iconPath": "Textures/Item/Materials/Diamond",
+      "iconPath": "Textures/Item/Materials/Base/Diamond",
       "description": "연금술의 주재료"
     },
     {
@@ -317,7 +320,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "250",
-      "iconPath": "Textures/Item/Materials/Topaz_Piece",
+      "iconPath": "Textures/Item/Materials/Base/Topaz_Piece",
       "description": "가공하여 사용할 수 있는 토파즈의 조각"
     },
     {
@@ -326,7 +329,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "270",
-      "iconPath": "Textures/Item/Materials/Ruby_Piece",
+      "iconPath": "Textures/Item/Materials/Base/Ruby_Piece",
       "description": "가공하여 사용할 수 있는 루비의 조각"
     },
     {
@@ -335,7 +338,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "300",
-      "iconPath": "Textures/Item/Materials/Emerald_Piece",
+      "iconPath": "Textures/Item/Materials/Base/Emerald_Piece",
       "description": "가공하여 사용할 수 있는 에메랄드의 조각"
     },
     {
@@ -344,7 +347,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "280",
-      "iconPath": "Textures/Item/Materials/Sapphire_Piece",
+      "iconPath": "Textures/Item/Materials/Base/Sapphire_Piece",
       "description": "가공하여 사용할 수 있는 사파이어의 조각"
     },
     {
@@ -353,7 +356,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "1320",
-      "iconPath": "Textures/Item/Materials/Diamond_Piece",
+      "iconPath": "Textures/Item/Materials/Base/Diamond_Piece",
       "description": "가공하여 사용할 수 있는 다이아몬드의 조각"
     },
     {
@@ -371,7 +374,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "27",
-      "iconPath": "Textures/Item/Materials/Ruby_Dust",
+      "iconPath": "Textures/Item/Materials/Base/Ruby_Dust",
       "description": "다용도로 사용된다."
     },
     {
@@ -380,7 +383,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "30",
-      "iconPath": "Textures/Item/Materials/Emerald_Dust",
+      "iconPath": "Textures/Item/Materials/Base/Emerald_Dust",
       "description": "다용도로 사용된다."
     },
     {
@@ -389,7 +392,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "28",
-      "iconPath": "Textures/Item/Materials/Sapphire_Dust",
+      "iconPath": "Textures/Item/Materials/Base/Sapphire_Dust",
       "description": "다용도로 사용된다."
     },
     {
@@ -407,7 +410,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "5000",
-      "iconPath": "Textures/Item/Materials/Onyx",
+      "iconPath": "Textures/Item/Materials/Base/Onyx",
       "description": "신비한 기운을 머금은 보석."
     },
     {
@@ -416,7 +419,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "500",
-      "iconPath": "Textures/Item/Materials/Onyx_Piece",
+      "iconPath": "Textures/Item/Materials/Base/Onyx_Piece",
       "description": "가공하여 사용할 수 있는 오닉스의 조각"
     },
     {
@@ -425,7 +428,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "50",
-      "iconPath": "Textures/Item/Materials/Onyx_Dust",
+      "iconPath": "Textures/Item/Materials/Base/Onyx_Dust",
       "description": "오닉스의 가루"
     },
     {
@@ -443,7 +446,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "1100",
-      "iconPath": "Textures/Item/Materials/Iron",
+      "iconPath": "Textures/Item/Materials/Base/Iron",
       "description": "제작 재료"
     },
     {
@@ -452,7 +455,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "110",
-      "iconPath": "Textures/Item/Materials/Iron_Piece",
+      "iconPath": "Textures/Item/Materials/Base/Iron_Piece",
       "description": "가공하여 사용할 수 있는 철의 조각"
     },
     {
@@ -461,7 +464,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "11",
-      "iconPath": "Textures/Item/Materials/Iron_Dust",
+      "iconPath": "Textures/Item/Materials/Base/Iron_Dust",
       "description": "다용도로 사용된다."
     },
     {
@@ -470,7 +473,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "1200",
-      "iconPath": "Textures/Item/Materials/Silver",
+      "iconPath": "Textures/Item/Materials/Base/Silver",
       "description": "제작 재료"
     },
     {
@@ -479,7 +482,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "120",
-      "iconPath": "Textures/Item/Materials/Silver_Piece",
+      "iconPath": "Textures/Item/Materials/Base/Silver_Piece",
       "description": "가공하여 사용할 수 있는 은의 조각"
     },
     {
@@ -488,7 +491,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "12",
-      "iconPath": "Textures/Item/Materials/Silver_Dust",
+      "iconPath": "Textures/Item/Materials/Base/Silver_Dust",
       "description": "다용도로 사용된다."
     },
     {
@@ -497,7 +500,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "2200",
-      "iconPath": "Textures/Item/Materials/Gold",
+      "iconPath": "Textures/Item/Materials/Base/Gold",
       "description": "제작 재료"
     },
     {
@@ -506,7 +509,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "220",
-      "iconPath": "Textures/Item/Materials/Gold_Piece",
+      "iconPath": "Textures/Item/Materials/Base/Gold_Piece",
       "description": "가공하여 사용할 수 있는 금의 조각"
     },
     {
@@ -515,7 +518,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "22",
-      "iconPath": "Textures/Item/Materials/Gold_Dust",
+      "iconPath": "Textures/Item/Materials/Base/Gold_Dust",
       "description": "다용도로 사용된다."
     },
     {
@@ -533,7 +536,7 @@
       "maxCount": "9999",
       "materialType": "Drop",
       "price": "1000",
-      "iconPath": "Textures/Item/Materials/Scroll_Weapon",
+      "iconPath": "Textures/Item/Consumables/Scroll_Weapon",
       "description": "무기에 랜덤으로 마법을 부여한다."
     },
     {
@@ -542,7 +545,7 @@
       "maxCount": "9999",
       "materialType": "Drop",
       "price": "1000",
-      "iconPath": "Textures/Item/Materials/Scroll_Armory",
+      "iconPath": "Textures/Item/Consumables/Scroll_Armory",
       "description": "방어구에 랜덤으로 마법을 부여한다."
     },
     {
@@ -551,7 +554,7 @@
       "maxCount": "9999",
       "materialType": "Drop",
       "price": "1000",
-      "iconPath": "Textures/Item/Materials/Scroll_Jewelry",
+      "iconPath": "Textures/Item/Consumables/Scroll_Jewelry",
       "description": "장신구에 랜덤으로 마법을 부여한다."
     },
     {
@@ -560,7 +563,7 @@
       "maxCount": "9999",
       "materialType": "Drop",
       "price": "7500",
-      "iconPath": "Textures/Item/Materials/Scroll_Arcane",
+      "iconPath": "Textures/Item/Consumables/Scroll_Arcane",
       "description": ""
     },
     {
@@ -569,7 +572,7 @@
       "maxCount": "9999",
       "materialType": "Drop",
       "price": "42000",
-      "iconPath": "Textures/Item/Materials/Drop/FishScales_Red",
+      "iconPath": "Textures/Item/Consumables/Scroll_Mighty",
       "description": ""
     },
     {
@@ -578,7 +581,7 @@
       "maxCount": "9999",
       "materialType": "Drop",
       "price": "75",
-      "iconPath": "Textures/Item/Materials/Drop/FishScales"
+      "iconPath": "Textures/Item/Consumables/Scroll_Mystical"
     },
     {
       "id": "1145",

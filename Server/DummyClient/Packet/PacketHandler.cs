@@ -193,8 +193,8 @@ class PacketHandler
     {
         S_Damage damage = packet as S_Damage;
     }
-    public static void S_ChestListHandler(PacketSession session, IMessage packet)
+    public static void S_MakeChestHandler(PacketSession session, IMessage packet)
     {
-        S_ChestList chestList = packet as S_ChestList;
+        S_MakeChest chest = packet as S_MakeChest;
     }
 }

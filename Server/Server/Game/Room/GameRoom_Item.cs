@@ -2,6 +2,8 @@
 using Server.Data;
 using Server.DB;
 using Server.Game.Job;
+using Server.Migrations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DbTransaction = Server.DB.DbTransaction;
@@ -48,24 +50,6 @@ namespace Server.Game
             }                
 
             player.Gold -= itemData.price;
-            // 클라이언트에 아이템 구매 패킷 전송
-            S_BuyItem buyItemPacket = new S_BuyItem()
-            {
-                TemplateId = itemData.id,
-                Count = count,
-                Gold = player.Gold,
-                ShopId = buyPacket.ShopId,
-            };
-            player.Session.Send(buyItemPacket);
-
-            ItemDb itemDb = new ItemDb()
-            {
-                TemplateId = itemData.id,
-                Count = count, //패킷에 개수 추가 
-                OwnerDbId = player.PlayerDbId,
-                Slot = slot.Value,                
-                Options = itemData.options                
-            };
 
             ShopDb shopDb = new ShopDb()
             {
@@ -78,7 +62,7 @@ namespace Server.Game
                 Count = count,
                 Price = itemData.price
             };
-            DbTransaction.SaveItemDB(player, itemDb, this);
+            DbTransaction.RewardPlayer(player, itemData, count, this);
             DbTransaction.RemoveShopDb(player, shopDb, shopItemDb, this);
         }
         public void HandleLootItem(Player player, C_LootItem item)
@@ -105,7 +89,7 @@ namespace Server.Game
                 return;
             ChestDb chestDb = new ChestDb
             {
-                ChestDbId = item.ChestId,
+                ChestId = item.ChestId,
                 TemplateId = item.TemplateId,
                 MapDbId = player.MapInfo.MapDbId,
                 Opened = true,
@@ -160,13 +144,90 @@ namespace Server.Game
 
             ShopDb shopDb = new ShopDb()
             {
-                TemplateId = shopId,
+                TemplateId = shopId,                
                 PlayerDbId = player.PlayerDbId,
                 ShopItems = shopItemDbs
             };
 
             DbTransaction.SaveShopDb(player, shopDb, this);
         }
-            
+        public void CheckBossRewards(Player player, int rewardId)
+        {
+            if (player == null)
+                return;
+            DataManager.AcquireDict.TryGetValue(rewardId, out AcquireData acquireData);
+            if (acquireData == null) return;
+            using (AppDbContext db = new AppDbContext())
+            {
+                ChestDb chestDb = db.Chests
+                   .Where(s => s.TemplateId == rewardId && s.MapDbId == player.MapInfo.MapDbId)
+                   .FirstOrDefault();
+                if((chestDb != null && chestDb.Opened == false) || chestDb == null)
+                {
+                    S_MakeChest makeChest = new S_MakeChest();
+                    makeChest.ChestId = chestDb.ChestId;
+                    makeChest.TemplateId = chestDb.TemplateId;
+                    player.Session.Send(makeChest);
+                }
+            }
+        }
+
+        public void HandleUseItem(Player player, C_UseItem useItemPacket)
+        {
+            if (player == null)
+                return;
+
+            Item item = player.Inven.Get(useItemPacket.ItemDbId);
+            if (item == null)
+                return;
+
+            ItemData itemData = null;
+            DataManager.ItemDict.TryGetValue(item.TemplateId, out itemData);
+            if (itemData == null)
+                return;
+
+            // 아이템 타입에 따라 처리
+            switch (item.ItemType)
+            {
+                case ItemType.Consumable:
+                    UseConsumableItem(player, item, itemData);
+                    break;
+                case ItemType.Material:
+                    // 재료 아이템은 사용 불가
+                    break;
+                case ItemType.Goods:
+                    // 기타 아이템은 사용 불가
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void UseConsumableItem(Player player, Item item, ItemData itemData)
+        {
+            foreach (var option in itemData.options)
+            {
+                if (option.Key == "Heal")
+                {
+                    int healAmount = int.Parse(option.Value);
+                    player.Hp = Math.Min(player.Stat.MaxHp, player.Stat.Hp + healAmount);
+                    S_ChangeHp changeHpPacket = new S_ChangeHp()
+                    {
+                        ObjectId = player.PlayerDbId,
+                        Hp = player.Hp
+                    };
+                    Broadcast(player.CellPos, changeHpPacket);
+                    player.Inven.Remove(item.ItemDbId, 1);
+                    ItemDb itemDb = new ItemDb()
+                    {
+                        TemplateId = item.TemplateId,
+                        Count = 1,
+                        OwnerDbId = player.PlayerDbId,
+                        Slot = item.Slot
+                    };
+                    DbTransaction.SaveRemovedItemDB(player, itemDb, this);
+                }
+            }
+        }
     }
 }

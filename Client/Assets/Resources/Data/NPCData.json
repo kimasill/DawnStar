@@ -33,7 +33,7 @@
     },
     {
       "id": "3",
-      "name": "보따리상인",
+      "name": "RockSiteShop",
       "npcType": "Shop",
       "shopId": "2",
       "scripts": [

@@ -84,7 +84,7 @@ namespace Server.Data
         public int id;
         public string name;
         public int duration;
-        public int value;
+        public float value;
         public bool isPercent;
     }
 
@@ -93,7 +93,7 @@ namespace Server.Data
         public int id;
         public string name;
         public int duration;
-        public int value;
+        public float value;
         public bool isPercent;
     }
 
@@ -131,6 +131,7 @@ namespace Server.Data
         public WeaponType weaponType;
         public int damage;
         public int range;
+        public float attackSpeed;
     }
     public class ArmorData : ItemData
     {
@@ -210,9 +211,10 @@ namespace Server.Data
         public int id;
         public string name;
         public MonsterType type;
-        public MonsterGrade grade;
+        public MonsterGrade grade;        
         public StatInfo stat;
         public List<ItemRewardData> rewards;
+        public int rewardBoxId;
     }
     [Serializable]
     public class MonsterLoader : ILoader<int, MonsterData>
@@ -250,16 +252,21 @@ namespace Server.Data
         public int count;
     }
 
+    public class ChestData 
+    {
+        public int chestId;
+        public int templateId;
+    }
+
     [Serializable]
     public class MapData
     {
         public int id;
-        public string name;
+        public string name;        
         public List<PortalData> portals;
         public List<SpawnData> spawns;
+        public List<ChestData> chests;
     }
-
-
 
     [Serializable]
     public class MapLoader : ILoader<int, MapData>

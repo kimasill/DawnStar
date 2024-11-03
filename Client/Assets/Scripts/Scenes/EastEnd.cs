@@ -42,12 +42,6 @@ class EastEnd : BaseScene
         }
         _description.ShowDescription(description);
     }
-
-    protected void InitializeNPCs()
-    {
-        // NPC 초기화 로직
-    }
-
     protected void InitializeShop()
     {
         // 상점 초기화 로직

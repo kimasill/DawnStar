@@ -124,12 +124,12 @@
         {
           "id": "1",
           "monsterId": "3",
-          "count": "25"
+          "count": "10"
         },
         {
           "id": "2",
           "monsterId": "4",
-          "count": "25"
+          "count": "10"
         },
         {
           "id": "3",
@@ -160,6 +160,24 @@
           "id": "8",
           "monsterId": "10",
           "count": "5"
+        }
+      ],
+      "chests": [
+        {
+          "chestId": "1",
+          "templateId": "1"
+        },
+        {
+          "chestId": "2",
+          "templateId": "1"
+        },
+        {
+          "chestId": "3",
+          "templateId": "2"
+        },
+        {
+          "chestId": "4",
+          "templateId": "3"
         }
       ]
     }

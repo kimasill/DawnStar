@@ -9,25 +9,29 @@ namespace Server.Game
 {
     public class SkillLogic
     {
-        public static List<Vector2Int> GetBentAttackTiles(Vector2Int center, Vector2Int lookDir, int range)
+        public static List<Vector2Int> GetBentAttackTiles(Vector2Int center, LookDir lookDir, int range)
         {
             List<Vector2Int> tiles = new List<Vector2Int>();
-            int nX = lookDir.x != 0 ? (lookDir.x > 0 ? 1 : -1) : 0;
-            int nY = center.y != 0 ? (center.y > 0 ? 1 : -1) : 0;
-            for (int x = 0; x < range; x++)
+            int nX = 0;            
+            if (lookDir == LookDir.LookLeft)
             {
-                for (int y = 0; y < range; y++)
+                nX = -1;
+            }
+            else if (lookDir == LookDir.LookRight)
+            {
+                nX = 1;
+            }
+
+
+            for (int x = 0; x <= range; x++)
+            {
+                for (int y = -range/2; y <= range/2; y++)
                 {
-                    Vector2Int tile = new Vector2Int(x, y);
-                    if (nY > 0 || nY < 0)
-                    {
-                        tile = new Vector2Int(center.x + x * nX, center.y + y * -nY);
-                    }
-                    else
-                        tile = new Vector2Int(center.x + x * -nX, center.y);
+                    Vector2Int tile = new Vector2Int(center.x + x * nX, center.y + y);
                     tiles.Add(tile);
                 }
             }
+
             return tiles;
         }
 

@@ -94,6 +94,7 @@ MonoBehaviour:
   shopTitle: {fileID: 7108166213529431268}
   shopDescription: {fileID: 0}
   grid: {fileID: 0}
+  _isInit: 0
 --- !u!1 &3350480736947093141
 GameObject:
   m_ObjectHideFlags: 0

@@ -23,6 +23,7 @@ namespace Server.Game
         public ClientSession Session { get; set; }
         public VIsionCube Vision { get; private set; }
         public Inventory Inven { get; private set; } = new Inventory();
+        
         public QuestInventory Quest { get; set; } = new QuestInventory();
         private Dictionary<int, long> _skillCooldowns = new Dictionary<int, long>();
         public bool IsDead { get; set; }
@@ -62,6 +63,39 @@ namespace Server.Game
                 if (value >= 0)
                 {
                     Inven.SetInvenProperty(value,10001,this);
+                }
+            }
+        }
+        int _maxPotion = 3;
+        public int MaxPotion
+        {
+            get 
+            { 
+                if(Stat.MaxPotion >= _maxPotion)
+                {
+                    return Stat.MaxPotion;
+                }
+                else
+                {
+                    return _maxPotion;
+                }
+            }
+            set
+            {
+                if (value >= _maxPotion)
+                {
+                    Stat.MaxPotion = value;
+                }
+            }
+        }
+        public int StatPoint
+        {
+            get { return Stat.StatPoint; }
+            set
+            {
+                if (value >= 0)
+                {
+                    Stat.StatPoint = value;
                 }
             }
         }
@@ -118,27 +152,6 @@ namespace Server.Game
                     SendRespawnPacket();
                 }
             });
-        }
-        public bool HandleSkillCool(SkillData skillData)
-        {
-            if (_skillCooldowns.TryGetValue(skillData.id, out long cooldownEnd))
-            {
-                if (cooldownEnd > Environment.TickCount64)
-                {
-                    // 쿨타임이 끝나지 않았음
-                    return false;
-                }
-            }
-
-            if (skillData.id<3)
-            {
-                _skillCooldowns[skillData.id] = (long)(Environment.TickCount64 + 1000 /TotalAttackSpeed);
-            }
-            else
-            {
-                _skillCooldowns[skillData.id] = (long)(Environment.TickCount64 + skillData.coolTime);
-            }
-            return true;
         }
         public void SendRespawnPacket()
         {

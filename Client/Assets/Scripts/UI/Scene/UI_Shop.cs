@@ -14,6 +14,7 @@ public class UI_Shop : UI_Base
     public Text shopDescription;
     public GameObject grid;
 
+    public bool _isInit;
     enum Buttons 
     { 
         ShopExitButton
@@ -36,15 +37,15 @@ public class UI_Shop : UI_Base
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.ShopExitButton).gameObject.BindEvent(OnClick);
         //Managers.Shop.OnItemRemoved += RefreshUI;
+        _isInit = true;
     }
 
     public void RefreshUI(int shopId)
     {
-        if (Items.Count == 0)
+        if (Items.Count == 0 && _isInit == false)
         {
             return;
         }
-
         List<Item> items = Managers.Shop.Shops[shopId].Items.Values.ToList();
         List<Item> sortedItems = items
             .Where(item => item.Slot >= 0 && item.Slot < 20)
@@ -68,6 +69,7 @@ public class UI_Shop : UI_Base
             if (i >= 20)
                 break;
             Items[i].SetItem(sortedItems[i]);
+            Items[i].ShopId = shopId;
         }
 
         for (int i = sortedItems.Count; i < Items.Count; i++)

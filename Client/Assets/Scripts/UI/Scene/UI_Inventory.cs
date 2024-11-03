@@ -11,6 +11,7 @@ public class UI_Inventory : UI_Base
     [SerializeField]
     public GameObject grid = null;
     public ScrollRect ScrollRect { get; private set; }
+    UI_GameScene _gameScene = null;
     public override void Init()
     {
         Items.Clear();
@@ -20,13 +21,15 @@ public class UI_Inventory : UI_Base
         {
             Destroy(child.gameObject);
         }
-
+        _gameScene = Managers.UI.SceneUI as UI_GameScene;
         for (int i = 0; i < 20; i++)
         {
             GameObject go = Managers.Resource.Instantiate("UI/Scene/UI_Inventory_Item", grid.transform);
             UI_Inventory_Item item = go.GetOrAddComponent<UI_Inventory_Item>();
-            Items.Add(item);
+            item.GameWindow = _gameScene.GameWindow;
+            Items.Add(item);            
         }
+        
         RefreshUI();
     }
     //문제 : Init 타이밍 이슈. UI_GameScene에서 Stat_UI, Inven_UI를 false로 바꾸기 때문에 해당 클래스 Init이 호출되지 않음

@@ -28,7 +28,7 @@ namespace Server.Game
             get { return Stat.Level; }
             set { Stat.Level = value; }
         }
-        public virtual int TotalInvokeSpeed { get { return Stat.InvokeSpeed; } }
+        public virtual float TotalInvokeSpeed { get { return Stat.InvokeSpeed; } }
         public virtual int TotalAttack { get { return Stat.Attack; } }
         public virtual int TotalDefense { get { return 0; } }
         public virtual float TotalAttackSpeed { get { return Stat.AttackSpeed; } }
@@ -75,7 +75,7 @@ namespace Server.Game
                 PosInfo.PosY = value.y;
             }
         }
-        
+        public bool DespawnAnim { get; set; } = false;
         public GameObject()
         {
             Info.Position = PosInfo;

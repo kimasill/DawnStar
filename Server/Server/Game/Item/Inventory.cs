@@ -33,6 +33,19 @@ namespace Server.Game
             Items.Remove(itemId);
         }
 
+        public void Remove(int itemId, int count)
+        {
+            Item item = Get(itemId);
+            if (item != null)
+            {
+                item.Count -= count;
+                if (item.Count <= 0)
+                {
+                    Remove(itemId);
+                }
+            }
+        }
+
         public void UpdateItem(int itemId, int count)
         {
             Item item = Get(itemId);
@@ -60,7 +73,7 @@ namespace Server.Game
         }
         public int? GetSlot(int itemId, int count)
         {
-            var existingItem = Find(i => i.TemplateId == itemId && (i.ItemType == ItemType.Goods || i.ItemType == ItemType.Material));
+            var existingItem = Find(i => i.TemplateId == itemId && (i.ItemType == ItemType.Goods || i.ItemType == ItemType.Material|| i.ItemType == ItemType.Consumable));
             if (existingItem != null)
             {
                 if (existingItem.Stackable)
@@ -93,10 +106,32 @@ namespace Server.Game
                             return existingItem.Slot;
                         }
                     }
+                    else if(existingItem.ItemType == ItemType.Consumable)
+                    {
+                        ConsumableData consumableData = DataManager.ItemDict[itemId] as ConsumableData;
+                        if (consumableData == null)
+                            return null;
+                        if (existingItem.Count + count > consumableData.maxCount)
+                        {
+                            return GetEmptySlot();
+                        }
+                        else
+                        {
+                            return existingItem.Slot;
+                        }
+                    }
                 }
             }
             return GetEmptySlot();
         }
+        public int? GetItemCount(int itemId)
+        {
+            Item item = Find(i => i.TemplateId == itemId);
+            if (item != null)
+                return item.Count;
+            return null;
+        }
+
         public int? GetEmptySlot()
         {
             for (int slot = 0; slot<20; slot++)

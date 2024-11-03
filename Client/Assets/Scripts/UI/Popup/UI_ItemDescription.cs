@@ -18,6 +18,11 @@ public class UI_ItemDescription : UI_Popup
     [SerializeField]
     private GameObject _itemPopup = null;
 
+    [SerializeField]
+    private GameObject _skillPanel = null;
+
+    private SkillData _skillData;
+
     private RectTransform _statPanelRectTransform;
     private RectTransform _itemPanelRectTransform;
     enum Images
@@ -28,7 +33,9 @@ public class UI_ItemDescription : UI_Popup
     enum Texts
     {
         ItemPopup_Name,
-        ItemDescriptionText
+        ItemDescriptionText,
+        ItemSkillName,
+        ItemSkillDescription
     }
 
     public override void Init()
@@ -44,7 +51,7 @@ public class UI_ItemDescription : UI_Popup
 
         Bind<Image>(typeof(Images));
         Bind<TMP_Text>(typeof(Texts));
-
+        _skillPanel.gameObject.SetActive(false);
         _statPanelRectTransform = _grid.gameObject.transform as RectTransform;
         _itemPanelRectTransform = _itemPopup.GetComponent<RectTransform>();
     }
@@ -89,11 +96,24 @@ public class UI_ItemDescription : UI_Popup
 
         Dictionary<string, string> options = itemData.options;
         foreach (var option in options)
-        {
+        {            
+            if (option.Key == "Skill")
+            {
+                _skillPanel.SetActive(true);
+
+                SkillData skilldata = null;
+                Managers.Data.SkillDict.TryGetValue(int.Parse(option.Value), out skilldata);
+                _skillData = skilldata;
+                if (_skillData != null)
+                {
+                    GetTextMeshPro((int)Texts.ItemSkillName).text = _skillData.name;
+                    GetTextMeshPro((int)Texts.ItemSkillDescription).text = _skillData.description;
+                    continue;
+                }
+            }
             string key = ConvertSpecialOptions(option.Key);
             AddStat($"{key}: {option.Value}");
         }
-
         // StatPanel과 ItemPanel의 크기 조정
         LayoutRebuilder.ForceRebuildLayoutImmediate(_statPanelRectTransform);
         LayoutRebuilder.ForceRebuildLayoutImmediate(_itemPanelRectTransform);
@@ -115,6 +135,9 @@ public class UI_ItemDescription : UI_Popup
                 break;
             case "HPRegen":
                 option = "체력 회복";
+                break;
+            case "Heal":
+                option = "회복량";
                 break;
             case "UPRegen":
                 option = "미지력 회복";
@@ -138,7 +161,6 @@ public class UI_ItemDescription : UI_Popup
     }
     private void SetConsumableItem(Item.Consumable item)
     {
-        AddStat($"수량: {item.Count}");
     }
 
     private void SetWeaponItem(Item.Weapon item)
@@ -153,7 +175,6 @@ public class UI_ItemDescription : UI_Popup
 
     private void SetGoodsItem(Item.Goods item)
     {
-        AddStat($"수량: {item.Count}");
     }
 
     private void AddStat(string statText)

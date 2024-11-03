@@ -23,10 +23,10 @@ public abstract class BaseScene : MonoBehaviour
             Managers.Resource.Instantiate("UI/EventSystem").name = "@EventSystem";
         
     }
-    protected void RequestShop(int id)
+    protected void RequestShop(int mapId)
     {
         Managers.Shop.Clear();
-        Managers.Shop.InitializeShop(id);
+        Managers.Shop.InitializeShop(mapId);
     }
     public virtual void ShowDescriptionUI(List<string> description)
     {        

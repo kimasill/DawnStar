@@ -9,12 +9,12 @@ public class UI_GameWindow : UI_Base
 {
     public UI_StateBar StateUI { get; set; }
     public UI_StoryPanel StoryPanel { get; set; }
-
+    public UI_QuickSlot QuickSlot { get; set; }
     public override void Init()
     {
         StateUI = GetComponentInChildren<UI_StateBar>();
         StoryPanel = GetComponentInChildren<UI_StoryPanel>();
-
+        QuickSlot = GetComponentInChildren<UI_QuickSlot>();
         StoryPanel.gameObject.SetActive(false);
     }
 
