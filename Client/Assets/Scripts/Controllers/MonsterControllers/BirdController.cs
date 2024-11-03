@@ -1,13 +1,16 @@
 using Google.Protobuf.Protocol;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class BirdController : MonsterController
 {
     private bool _isTakingOff = false;
-    private bool _isLanding = false;
+    private CreatureState _prev = CreatureState.Idle;
     private float _idleAnimationTimer = 0f;
     private float _idleAnimationInterval = 1f; // 1ÃÊ °£°Ý
+    [SerializeField]
+    CreatureState CreatureState = CreatureState.Idle;
 
     protected override void Init()
     {
@@ -31,51 +34,50 @@ public class BirdController : MonsterController
 
         if (State == CreatureState.Idle)
         {
-            if (_isLanding)
+            CreatureState = CreatureState.Idle;
+            if (_prev == CreatureState.Moving)
             {
-                StartCoroutine(PlayLandingAnimation());
+                StartCoroutine(PlayLandingAndIdleAnimation());
             }
             else
             {
-                _idleAnimationTimer += Time.deltaTime;
-                if (_idleAnimationTimer >= _idleAnimationInterval)
-                {
-
-                    string idleAnimation = Random.Range(0, 2) == 0 ? "IDLE_1" : "IDLE_2";
-                    _animator.Play(idleAnimation);
-                }
+                string idleAnimation = Random.Range(0, 2) == 0 ? "IDLE1" : "IDLE2";
+                _animator.Play(idleAnimation);
             }
+            _prev = CreatureState.Idle;
         }
         else if (State == CreatureState.Moving)
         {
-            if (!_isTakingOff)
-            {
-                StartCoroutine(PlayTakeOffAnimation());
+            CreatureState = CreatureState.Moving;
+            if (_prev == CreatureState.Idle)
+            {                
+                StartCoroutine(PlayLiftingAndWalkAnimation());
             }
             else
             {
-                _animator.Play("WALK");
+                _animator.Play("WALK");                
             }
+            _prev = CreatureState.Moving;
         }
         else if (State == CreatureState.Dead)
         {
             StartCoroutine(DisableAfterDelay(0.1f));
         }
     }
-
-    private IEnumerator PlayTakeOffAnimation()
+    private IEnumerator PlayLandingAndIdleAnimation()
     {
-        _isTakingOff = true;
-        _animator.Play("LIFTING");
+        _animator.Play("LANDING", 0, 0);
+        yield return new WaitForSeconds(0.01f);
         yield return new WaitForSeconds(_animator.GetCurrentAnimatorStateInfo(0).length);
-        _isTakingOff = false;
+        string idleAnimation = Random.Range(0, 2) == 0 ? "IDLE1" : "IDLE2";
+        _animator.Play(idleAnimation);
     }
 
-    private IEnumerator PlayLandingAnimation()
+    private IEnumerator PlayLiftingAndWalkAnimation()
     {
-        _isLanding = true;
-        _animator.Play("LANDING");
+        _animator.Play("LIFTING", 0, 0);
+        yield return new WaitForSeconds(0.01f);
         yield return new WaitForSeconds(_animator.GetCurrentAnimatorStateInfo(0).length);
-        _isLanding = false;
+        _animator.Play("WALK");
     }
 }

@@ -54,9 +54,8 @@ public class ObjectManager
             }
         }
         else if(type == GameObjectType.Monster)
-        {
-            GameObject go = Managers.Resource.Instantiate($"Creature/{info.Name}");
-            Managers.Data.MonsterDict.TryGetValue(info.TemplateId, out MonsterData monsterData);
+        {             
+            GameObject go = Managers.Resource.Instantiate($"Creature/{info.Name}");            
             go.name = info.Name;
             _objects.Add(info.ObjectId, go);
 
@@ -129,16 +128,12 @@ public class ObjectManager
     public IEnumerator RemoveAfterAnimation(int id)
     {
         GameObject go = FindById(id);
-        CreatureController cc = go.GetComponent<CreatureController>();
+        BaseController cc = go.GetComponent<BaseController>();
         Animator animator = cc.GetComponent<Animator>();
         if (animator != null)
         {
-            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            while (stateInfo.IsName("DEATH") && stateInfo.normalizedTime < 1.0f)
-            {
-                yield return null;
-                stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            }
+            animator.Play("START");
+            yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
         }
         Remove(id);
     }

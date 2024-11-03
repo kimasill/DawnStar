@@ -1,5 +1,4 @@
-﻿using Server.Game.Object;
-using Server.Game.Room;
+﻿using Server.Game.Room;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,12 +20,9 @@ namespace Server.Game
         private GameRoom _room;
         public override void Update()
         {
-            if (Data == null || Data.projectile == null || Owner == null || Room == null)
+            if (Data == null || Data.spot == null || Owner == null || Room == null)
                 return;
-            if (_delay > Environment.TickCount64)
-            {                
-                return;
-            }
+            Task.Delay((int)Delay);
             Vector2Int destPos = CellPos;
             GameObject target = Room.Map.Find(destPos);
             if (target != null)
@@ -34,7 +30,6 @@ namespace Server.Game
                 target.OnDamaged(this, Data.damage + Owner.TotalAttack); //피격판정                    
             }
             Room.Push(Room.LeaveGame, Id);
-            _delay = ((int)(Environment.TickCount64 + _delay));
         }
     }
 }

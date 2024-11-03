@@ -42,6 +42,8 @@ namespace Server.DB
         public int PosX { get; set; }
         public int PosY { get; set; }
         public int Gold { get; set; }
+        public int MaxPotion { get; set; }
+        public int StatPoint { get; set; }
         public ICollection<QuestDb> Quests { get; set; }
         public int MapDbId { get; set; }
     }

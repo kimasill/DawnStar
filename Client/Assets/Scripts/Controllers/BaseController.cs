@@ -46,7 +46,9 @@ public class BaseController : MonoBehaviour
     }
     protected bool _updated = false;
     private long _stiffEndTick = 0;
+    protected float _attackTime;
     PositionInfo _positionInfo = new PositionInfo();
+    protected UI_GameScene GameScene { get; private set; }
     public PositionInfo PosInfo
     {
         get { return _positionInfo; }
@@ -280,10 +282,13 @@ public class BaseController : MonoBehaviour
     protected virtual void Init()
     {
         _animator = GetComponent<Animator>();
-        _animatorSpeed = _animator.speed;
+        if(_animator != null)
+            _animatorSpeed = _animator.speed;
         _sprite = GetComponent<SpriteRenderer>();
         Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
         transform.position = pos;
+
+        GameScene = Managers.UI.SceneUI as UI_GameScene;
         UpdateAnimation();
     }
 
@@ -345,9 +350,11 @@ public class BaseController : MonoBehaviour
     }
     protected IEnumerator AdjustAnimation(float speed)
     {
-        _animator.speed = speed;
-        float animationLength = _animator.GetCurrentAnimatorStateInfo(0).length;
-        yield return new WaitForSeconds(animationLength);
+        _animator.speed = speed;        
+        yield return new WaitForSeconds(0.01f);
+        _attackTime = _animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(_attackTime);
+        _animator.speed = _animatorSpeed;
     }
 
     public void ShowDamage(int damage, bool isCritical)

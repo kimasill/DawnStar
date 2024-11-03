@@ -53,6 +53,8 @@ enum MsgId {
   S_CHANGE_EXP = 45;
   S_DAMAGE = 46;
   C_OPEN_CHEST = 47;
+  S_MAKE_CHEST = 48;
+  C_USE_ITEM = 49;
 }
 enum CreatureState{
   IDLE = 0;
@@ -89,12 +91,15 @@ enum SkillType{
 	SKILL_ATTACK = 1;
 	SKILL_PROJECTILE = 2;
 	SKILL_SPOT = 3;
+	SKILL_BUFF = 4;
 }
 
 enum SkillLogicType{
 	BASICATTACK = 0;
 	MAGICBALL = 1;
 	SPOTATTACK = 2;
+	KNOCKBACK = 3;
+	COMBAT = 4;
 }
 
 enum MonsterType{
@@ -115,7 +120,7 @@ enum MonsterGrade{
 enum ShapeType{
 	SHAPE_NONE = 0;
 	SHAPE_CIRCLE = 1;
-	SHAPE_RECTANGLE = 2;
+	SHAPE_RECT = 2;
 	SHAPE_LINE = 3;
 	SHAPE_BENT = 4;
 	SHAPE_CROSS = 5;
@@ -231,10 +236,14 @@ message C_OpenChest{
   int32 posX = 3;
   int32 posY = 4;
 }
-
+message S_MakeChest{
+  int32 chestId = 1;
+  int32 templateId = 2;  
+}
 
 message S_Despawn {
   repeated int32 objectId = 1;
+  bool despawnAnim = 2;
 }
 
 message C_Move {
@@ -337,7 +346,10 @@ message S_EquipItem{
 	int32 ItemDbId = 1;
 	bool equipped = 2;
 }
-
+message C_UseItem{
+	int32 itemDbId = 1;
+	int32 templateId = 2;
+}
 message C_BuyItem{
 	int32 templateId = 1;
 	int32 count = 2;
@@ -454,8 +466,10 @@ message StatInfo{
   int32 criticalDamage = 10;
   int32 avoid = 11;
   int32 accuracy = 12;
-  int32 attackSpeed = 13;
-  int32 invokeSpeed = 14;  
+  float attackSpeed = 13;
+  float invokeSpeed = 14;  
+  int32 maxPotion = 15;
+  int32 statPoint = 16;
 }
 
 message QuestInfo
@@ -497,6 +511,7 @@ message MapInfo{
 	string mapName = 3;
 	int32 portalId = 4;
 	string scene = 5;
+	repeated int32 chestIds = 6;
 }
 
 message TutorialInfo {

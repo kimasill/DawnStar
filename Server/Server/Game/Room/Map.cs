@@ -174,10 +174,9 @@ namespace Server.Game.Room
                 return false;
 
             PositionInfo posInfo = gameObject.Info.Position;
-            
-            if (CanGo(dest, true) == false)
+            if (CanGo(dest, checkObjects) == false)
                 return false;
-            if(collision)
+            if (collision)
             {
                 {
                     int x = posInfo.PosX - MinX;

@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using System.Reflection.Emit;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -26,16 +27,6 @@ class PacketHandler
             SceneManager.sceneLoaded += (scene, mode) => OnSceneLoaded(enterGamePacket.Player);                  
         }
 	}
-
-    public static void OnFirstSceneLoaded(ObjectInfo objectInfo)
-    {
-        Managers.Object.Add(objectInfo, myPlayer: true);
-        C_StartQuest startQuestPacket = new C_StartQuest();
-        startQuestPacket.TemplateId = 0;
-        Managers.Network.Send(startQuestPacket);
-        SceneManager.sceneLoaded -= (s, m) => OnFirstSceneLoaded(objectInfo);
-    }
-
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)
     {
         S_LeaveGame leaveGameHandler = packet as S_LeaveGame;
@@ -57,7 +48,14 @@ class PacketHandler
         S_Despawn despawnPacket = packet as S_Despawn;
         foreach (int obj in despawnPacket.ObjectId)
         {
-            Managers.Object.Remove(obj);
+            if (despawnPacket.DespawnAnim)
+            {
+                Managers.Object.RemoveAfterAnimation(obj);
+            }
+            else
+            {
+                Managers.Object.Remove(obj);
+            }
         }
     }
 
@@ -144,7 +142,7 @@ class PacketHandler
         }
         else if (cc.Hp < changePacket.Hp)
         {
-            //TODO 회복
+            cc.OnHealed();
         }
         cc.Hp = changePacket.Hp;
     }
@@ -266,6 +264,7 @@ class PacketHandler
         {
             Managers.Object.MyPlayer.PosInfo = objectInfo.Position;
             Managers.Object.MyPlayer.Stat.MergeFrom(objectInfo.StatInfo);
+            Managers.Map.SetChests(objectInfo.MapInfo.ChestIds.ToList());
             Managers.Scene.CurrentScene.CheckOnSceneLoadedQuest();
             UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;            
         }
@@ -368,6 +367,7 @@ class PacketHandler
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
         gameSceneUI.InvenUI.RefreshUI();
         gameSceneUI.StatUI.RefreshUI();
+        gameSceneUI.GameWindow.QuickSlot.RefreshUI();
         if (Managers.Object.MyPlayer != null)
         {
             Managers.Object.MyPlayer.RefreshAdditionalStat();
@@ -402,6 +402,7 @@ class PacketHandler
         S_ShopList shopList = packet as S_ShopList;
         Shop shop = Managers.Shop.Shops[shopList.ShopId];
         shop.ShopDbId = shopList.ShopDbId;
+        shop.Clear();
         foreach (ItemInfo itemInfo in shopList.Items)
         {            
             Item item = Item.MakeItem(itemInfo);
@@ -410,6 +411,7 @@ class PacketHandler
 
         Debug.Log("S_ShopListHandler");
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        gameSceneUI.ShopUI.RefreshUI(shopList.ShopId);
     }
 
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
@@ -471,18 +473,6 @@ class PacketHandler
 
         if (buyItemPacket == null || buyItemPacket.Count == 0)
             return;
-
-        Debug.Log("S_BuyItemHandler");
-        // 상점에서 아이템 제거
-        Shop shop = Managers.Shop.Shops[buyItemPacket.ShopId];
-        shop.RemoveItem(buyItemPacket.TemplateId);
-
-        // 상점 UI 갱신
-        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-        if (gameSceneUI != null)
-        {
-            gameSceneUI.ShopUI.RefreshUI(buyItemPacket.ShopId);
-        }
     }
 
     public static void S_DropItemHandler(PacketSession session, IMessage packet)
@@ -524,5 +514,15 @@ class PacketHandler
                 itemController.HandleDropItem(dropItemPacket.Position); // 아이템이 튀어나오는 것처럼 보이게 설정
             }
         }
+    }
+
+    public static void S_MakeChestHandler(PacketSession session, IMessage packet)
+    {
+        S_MakeChest makeChestPacket = packet as S_MakeChest;
+        ChestController chestController = Managers.Map.GetChestById(makeChestPacket.ChestId);
+        if (chestController != null)
+        {
+            chestController.gameObject.SetActive(true);
+        }        
     }
 }

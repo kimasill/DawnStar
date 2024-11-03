@@ -15,7 +15,7 @@ namespace Server.Game
         private const int BasicAttackLimit = 5;
         private int _skillRange = 1;
 
-        public Goblin(MonsterData data)
+        public Goblin(MonsterData data) : base(data)
         {
             TemplateId = data.id;
             MonsterType = data.type;

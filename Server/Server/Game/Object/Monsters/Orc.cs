@@ -15,7 +15,7 @@ namespace Server.Game
         private const int BasicAttackLimit = 5;
         private int _skillRange = 2;
 
-        public Orc(MonsterData data)
+        public Orc(MonsterData data) : base(data)
         {
             TemplateId = data.id;
             MonsterType = data.type;

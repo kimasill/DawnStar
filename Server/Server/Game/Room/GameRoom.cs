@@ -21,6 +21,7 @@ namespace Server.Game
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
         Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
         Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
+        Dictionary<int, Magic> _magics = new Dictionary<int, Magic>();
         public Zone[,] Zones { get; private set ; }
         public int ZoneCells { get; private set; }
 
@@ -110,14 +111,14 @@ namespace Server.Game
                 player = gameObject as Player;
                 if (player == null)
                     return;
-                player.Info.MapInfo = player.MapInfo;     
+                player.Info.MapInfo = player.MapInfo;
 
                 _players.Add(gameObject.Id, player);
                 player.Room = this;
-                
+
 
                 player.RefreshAdditionalStat();
-                
+
 
                 Map.ApplyMove(player, new Vector2Int(player.CellPos.x, player.CellPos.y));
                 Console.WriteLine($"Player Room Id:{RoomId}");
@@ -173,6 +174,19 @@ namespace Server.Game
                 GetZone(projectile.CellPos).Projectiles.Add(projectile);
                 projectile.Update();
             }
+            else if (type == GameObjectType.Magic)
+            {
+                Magic magic = gameObject as Magic;
+                _magics.Add(gameObject.Id, magic);
+                magic.Room = this;
+
+                GetZone(magic.CellPos).Magics.Add(magic);
+                magic.Update();
+            }
+            else
+            {
+                return;
+            }
 
             // 타인한테 정보 전송
             // null 전달 변경
@@ -187,6 +201,8 @@ namespace Server.Game
         {
             GameObjectType type = ObjectManager.GetObjectType(objectId);
             Vector2Int cellPos;
+            bool despawnAnim = false;
+
             if (type == GameObjectType.Player)
             {
                 Player player = null;
@@ -220,13 +236,24 @@ namespace Server.Game
                     return;
                 cellPos = projectile.CellPos;
                 Map.ApplyLeave(projectile);
+                despawnAnim = projectile.DespawnAnim;
                 projectile.Room = null;
+            }
+            else if(type == GameObjectType.Magic)
+            {
+                Magic magic = null;
+                if (_magics.Remove(objectId, out magic) == false)
+                    return;
+                cellPos = magic.CellPos;
+                Map.ApplyLeave(magic);
+                magic.Room = null;
             }
             else return;
             //타인한테 정보 전송
             {
                 S_Despawn despawnPacket = new S_Despawn();
                 despawnPacket.ObjectId.Add(objectId);
+                despawnPacket.DespawnAnim = despawnAnim;
                 Broadcast(cellPos, despawnPacket);
             }
         }        

@@ -377,7 +377,7 @@
       ]
     },
     {
-      "id": "11",
+      "id": "12",
       "name": "철가면고블린",
       "type": "Goblin",
       "grade": "Normal",
@@ -426,7 +426,9 @@
         "maxHp": "500",
         "attack": "24",
         "speed": "2.1",
-        "totalExp": "370"
+        "totalExp": "370",
+        "attackSpeed": "0.3",
+        "invokeSpeed": "1"
       },
       "rewards": [
         {
@@ -465,9 +467,9 @@
         "maxHp": "1200",
         "attack": "31",
         "speed": "2.5",
+        "totalExp": "650",
         "attackSpeed": "0.2",
-        "invokeSpeed": "1.7",
-        "totalExp": "650" 
+        "invokeSpeed": "1.7"
       },
       "rewards": [
         {
@@ -494,7 +496,8 @@
           "minCount": "5",
           "maxCount": "10"
         }
-      ]
+      ],
+      "rewardBoxId": "2"
     }
   ]
 } 

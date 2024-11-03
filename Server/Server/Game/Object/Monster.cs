@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using DbTransaction = Server.DB.DbTransaction;
@@ -25,29 +26,46 @@ namespace Server.Game
         protected Dictionary<int, long> _skillCooldowns = new Dictionary<int, long>();
         public bool IsDead = false;
         public bool IsFlying = false;
-        public bool IsAggressive = false;
         public int _patrolRange = 10;
         Random _rand = new Random();
-        public Monster()
+        public Monster(MonsterData monsterData)
         {
             ObjectType = GameObjectType.Monster;
+            MonsterGrade = monsterData.grade;
+            MonsterType = monsterData.type;
+            Info.Name = monsterData.name;
+            TemplateId = monsterData.id;
+            Stat.MergeFrom(monsterData.stat);
+            Stat.Hp = monsterData.stat.MaxHp;
+            Stat.Hp = monsterData.stat.MaxHp;
+            State = CreatureState.Idle;
+            if(MonsterType == MonsterType.Flying)
+            {
+                IsFlying = true;
+            }
         }
         public static Monster CreateMonster(int templateId)
         {
             MonsterData monsterData = null;
-            DataManager.MonsterDict.TryGetValue(templateId, out monsterData);
+            Monster monster = null;
+            DataManager.MonsterDict.TryGetValue(templateId, out monsterData);            
             switch (monsterData.type)
             {
                 case MonsterType.Goblin:
-                    return new Goblin(monsterData);
+                    monster = new Goblin(monsterData);
+                    break;
                 case MonsterType.Orc:
-                    return new Orc(monsterData);
+                    monster = new Orc(monsterData);
+                    break;
                 case MonsterType.Orcmage:
-                    return new OrcMage(monsterData);
-                // 다른 몬스터 타입 추가 가능
+                    monster = new OrcMage(monsterData);
+                    break;
                 default:
-                    return new Monster { TemplateId = templateId, MonsterType = monsterData.type };
+                    monster = new Monster(monsterData);
+                    break;
             }
+            monster.Id = ObjectManager.Instance.GenerateId(GameObjectType.Monster);
+            return monster;
         }
         //FSM (Finite State Machine)
         IJob _job;
@@ -76,7 +94,7 @@ namespace Server.Game
 
             if(Room != null)
             {
-                _job = Room.PushAfter(50, Update);
+                _job = Room.PushAfter(200, Update);
             }
         }
         protected Player _target;
@@ -92,48 +110,22 @@ namespace Server.Game
                 return;
             _nextSearchTick = Environment.TickCount64 + 1000;
 
+            _dest = CellPos;
 
             Player target = Room.FindCloesetPlayer(CellPos, _searchRange);
             if (target != null)
             {
-                _target = target;
+                _target = target;                
                 State = CreatureState.Moving;
-                if(MonsterGrade == MonsterGrade.Animal)
-                {
-                    _dest = new Vector2Int(
-                    SpawnPosition.x + _rand.Next(-_patrolRange, _patrolRange + 1),
-                    SpawnPosition.y + _rand.Next(-_patrolRange, _patrolRange + 1)
-                    );
-                }                
-                return;
-            }            
-
-            if (MonsterGrade == MonsterGrade.Animal)
-            {
-                if (_rand.NextDouble() < 0.5 && _nextWaitTick<= Environment.TickCount64)
-                {
-                    State = CreatureState.Moving;
-                    _dest = new Vector2Int(
-                        SpawnPosition.x + _rand.Next(-_patrolRange, _patrolRange + 1),
-                        SpawnPosition.y + _rand.Next(-_patrolRange, _patrolRange + 1)
-                    );
-                }
-                else
-                {
-                    _nextWaitTick = Environment.TickCount64 + _rand.Next(5000, 20000);
-                }
+                return;                
             }
         }
         int _skillRange = 1;
         protected virtual void UpdateMoving()
         {
-            if(MonsterType == MonsterType.Flying && IsFlying == false)
-            {
-                IsFlying = true;
-            }
             if (_nextMoveTick > Environment.TickCount64)
                 return;
-            int moveTick = (int)(1000 / (Speed*4));
+            int moveTick = (int)(1000 / Speed);
             _nextMoveTick = Environment.TickCount64 + moveTick;
             
             if (MonsterGrade == MonsterGrade.Animal)
@@ -176,59 +168,51 @@ namespace Server.Game
                 return;
             }
             Room.Map.ApplyMove(this, path[1]);
-
             BroadcastMove();
-        }
-        public bool HandleSkillCool(SkillData skillData, bool attackSpeed)
-        {
-            if (_skillCooldowns.TryGetValue(skillData.id, out long cooldownEnd))
-            {
-                if (cooldownEnd > Environment.TickCount64)
-                {
-                    // 쿨타임이 끝나지 않았음
-                    return false;
-                }
-            }
-
-            if (attackSpeed)
-            {
-                _skillCooldowns[skillData.id] = (long)(Environment.TickCount64 + 1000 / TotalAttackSpeed);
-            }
-            else
-            {
-                _skillCooldowns[skillData.id] = (long)(Environment.TickCount64 + skillData.coolTime);
-            }
-            return true;
         }
         protected virtual void UpdatePatrol()
         {
-            if (CellPos.Equals(_dest))
+            if (_dest.Equals(default(Vector2Int)) || _dest.Equals(CellPos))
             {
-                if(_rand.NextDouble() < 0.5)
-                {
-                    State = CreatureState.Idle;
-                    BroadcastMove();
-                    return;
-                }
-                else
+                // 새로운 목적지를 설정
+                while (true)
                 {
                     _dest = new Vector2Int(
                         SpawnPosition.x + _rand.Next(-_patrolRange, _patrolRange + 1),
                         SpawnPosition.y + _rand.Next(-_patrolRange, _patrolRange + 1)
                     );
-                }               
+                    if (Room.Map.CanGo(_dest, false))
+                    {
+                        break;
+                    }
+                }
             }
-
-            List<Vector2Int> path = Room.Map.FindPath(CellPos, _dest, checkObjects: !IsFlying);
-            if (path.Count < 2)
+            if (_target == null || _target.Room != Room)
             {
+                _target = null;
                 State = CreatureState.Idle;
                 BroadcastMove();
                 return;
             }
 
+            Vector2Int dir = _dest - CellPos;
+            int dist = dir.cellDistanceFromZero;
+            if (dist == 0 || dist > _chaseRange)
+            {
+                State = CreatureState.Idle;
+                BroadcastMove();
+                return;
+            }
+            List<Vector2Int> path = Room.Map.FindPath(CellPos, _dest, checkObjects: !IsFlying);
+            if (path.Count < 2 || path.Count > _chaseRange)
+            {
+                _target = null;
+                State = CreatureState.Idle;
+                BroadcastMove();
+                return;
+            }
             UpdateDir(path[1]);
-            Room.Map.ApplyMove(this, path[1]);
+            Room.Map.ApplyMove(this, path[1], false,false);
 
             BroadcastMove();
         }
@@ -367,10 +351,10 @@ namespace Server.Game
 
             GameRoom room = Room;//Room이 null이 될 수 있으므로 미리 저장  
             GameObject owner = attacker.GetOwner();
+            MonsterData monsterData = null;
+            DataManager.MonsterDict.TryGetValue(TemplateId, out monsterData);
             if (owner.ObjectType == GameObjectType.Player)
             {
-                MonsterData monsterData = null;
-                DataManager.MonsterDict.TryGetValue(TemplateId, out monsterData);
                 List<ItemRewardData> rewardData = ItemLogic.GetRandomReward(monsterData.rewards);
                 if (rewardData != null)
                 {
@@ -402,10 +386,20 @@ namespace Server.Game
                     room.LeaveGame(Id);
                 }
             });
-
+            if(monsterData.grade == MonsterGrade.Elite)
+            {
+                Room.CheckBossRewards(_target, monsterData.rewardBoxId);
+                _respawnTime = _respawnTime * 10;
+            }                
+            else if (monsterData.grade == MonsterGrade.Boss)
+            {
+                Room.CheckBossRewards(_target, monsterData.rewardBoxId);
+                return;
+            }
+                
             Stat.Hp = Stat.MaxHp;
             PosInfo.State = CreatureState.Idle;
-            PosInfo.MoveDir = MoveDir.Down;            
+            PosInfo.MoveDir = MoveDir.Down;
             room.PushAfter(_respawnTime, () =>
             {
                 if (room != null)

@@ -22,39 +22,44 @@ public class UI_Inventory_Item : UI_Base, IPointerEnterHandler, IPointerExitHand
     [SerializeField]
     private UI_ItemDescription _itemDescription = null;
 
-    private bool _isDescription = false;
+    public UI_GameWindow GameWindow { get; set; }
 
+    UI_QuickSlot _quickSlot = null;
+    private bool _isDescription = false;
     public int ItemDbId { get; private set; }
     public int TemplateId { get; private set; }
     public int Count { get; private set; }
     public bool Equipped { get; private set; }
-
+    Item _item = null;
     public override void Init()
     {
-
         //클릭했을때 패킷
-        _icon.gameObject.BindEvent((e) =>
+        gameObject.BindEvent((e) =>
         {
-            Debug.Log("아이템 사용");
-
             Data.ItemData itemData = null;
             Managers.Data.ItemDict.TryGetValue(TemplateId, out itemData);
             
             if(itemData == null)
                 return;
             //TODO : 패킷 넘겨주기
-            if (itemData.itemType == ItemType.Consumable || itemData.itemType == ItemType.Goods)
+            if (itemData.itemType == ItemType.Goods)
                 return;
+            if(itemData.itemType == ItemType.Consumable)
+            {
+                GameWindow.QuickSlot.RegisterItem(_item as Item.Consumable);
+            }
+            else
+            {
+                C_EquipItem equipItemPacket = new C_EquipItem();
+                equipItemPacket.ItemDbId = ItemDbId;
+                equipItemPacket.Equipped = !Equipped;
 
-            C_EquipItem equipItemPacket = new C_EquipItem();
-            equipItemPacket.ItemDbId = ItemDbId;
-            equipItemPacket.Equipped = !Equipped;
-
-            Managers.Network.Send(equipItemPacket);
+                Managers.Network.Send(equipItemPacket);
+            }
         });
 
-        _icon.gameObject.BindEvent(OnPointerEnter, Define.UIEvent.MouseOver);
-        _icon.gameObject.BindEvent(OnPointerExit, Define.UIEvent.MouseOut);
+        gameObject.BindEvent(OnPointerEnter, Define.UIEvent.MouseOver);
+        gameObject.BindEvent(OnPointerExit, Define.UIEvent.MouseOut);
     }
 
     public void SetItem(Item item)
@@ -70,7 +75,7 @@ public class UI_Inventory_Item : UI_Base, IPointerEnterHandler, IPointerExitHand
             _icon.gameObject.SetActive(false);
             _frame.gameObject.SetActive(false);
         }
-
+        _item = item;
         //아이템 정보 저장 : 슬롯에 세팅 시 
         ItemDbId = item.ItemDbId;
         TemplateId = item.TemplateId;

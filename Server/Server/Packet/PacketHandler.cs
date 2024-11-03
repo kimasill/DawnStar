@@ -250,6 +250,21 @@ class PacketHandler
         if (room == null)
             return;
 
-        //room.HandleOpenChest(clientSession.MyPlayer, openChestPacket.ChestId);
+        room.HandleOpenChest(clientSession.MyPlayer, openChestPacket);
+    }
+
+    public static void C_UseItemHandler(PacketSession session, IMessage packet)
+    {
+        C_UseItem useItemPacket = packet as C_UseItem;
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession == null || clientSession.MyPlayer == null)
+            return;
+
+        GameRoom room = clientSession.MyPlayer.Room;
+        if (room == null)
+            return;
+
+        room.HandleUseItem(clientSession.MyPlayer, useItemPacket);
     }
 }

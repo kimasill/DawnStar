@@ -81,8 +81,8 @@ public class UI_StoryPanel : UI_Popup
                     UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
                     if (gameSceneUI != null && gameSceneUI.ShopUI != null)
                     {
+                        gameSceneUI.ShopUI.OpenShop(script.name, "");
                         gameSceneUI.ShopUI.RefreshUI(npcData.shopId);
-                        gameSceneUI.ShopUI.OpenShop(script.name, ""); // 타이틀을 script.name으로 설정
                     }
                 };
             }

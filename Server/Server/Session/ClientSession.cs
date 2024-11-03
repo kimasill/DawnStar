@@ -53,40 +53,64 @@ namespace Server
         #region Network
         public void Send(IMessage packet)
         {
-            string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
-            MsgId msgId = (MsgId)Enum.Parse(typeof(MsgId), msgName);
-
-            ushort size = (ushort)packet.CalculateSize();
-            byte[] sendBuffer = new byte[size + 4];
-            Array.Copy(BitConverter.GetBytes(size + 4), 0, sendBuffer, 0, sizeof(ushort));
-            ushort protocolId = (ushort)msgId;
-            Array.Copy(BitConverter.GetBytes(protocolId), 0, sendBuffer, 2, sizeof(ushort));
-            Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
-
-            lock(_lock)
+            try
             {
-                _reserverQueue.Add(sendBuffer);
-                _reservedSentByte += sendBuffer.Length;//지금 까지 보낸 패킷의 크기
+                string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
+                MsgId msgId = (MsgId)Enum.Parse(typeof(MsgId), msgName);
+
+                ushort size = (ushort)packet.CalculateSize();
+                byte[] sendBuffer = new byte[size + 4];
+
+                // 버퍼 크기 확인
+                if (sendBuffer.Length < size + 4)
+                {
+                    throw new InvalidOperationException("Buffer size is smaller than expected.");
+                }
+
+                Array.Copy(BitConverter.GetBytes(size + 4), 0, sendBuffer, 0, sizeof(ushort));
+                ushort protocolId = (ushort)msgId;
+                Array.Copy(BitConverter.GetBytes(protocolId), 0, sendBuffer, 2, sizeof(ushort));
+                Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
+
+                lock (_lock)
+                {
+                    _reserverQueue.Add(sendBuffer);
+                    _reservedSentByte += sendBuffer.Length; // 지금 까지 보낸 패킷의 크기
+                }
+                // Send(new ArraySegment<byte>(sendBuffer));
             }
-            //Send(new ArraySegment<byte>(sendBuffer));
+            catch (Exception ex)
+            {
+                // 예외 로그 출력
+                Console.WriteLine($"Exception in Send method: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
+            }
         }
         //Queue에 있는 패킷을 보낸다.
         public void FlushSend()
         {
             List<ArraySegment<byte>> sendList = null;
-            lock (_lock)
+            try
             {
-                long delta =(System.Environment.TickCount64 - _lastSendTick);
-                if (delta < 100 && _reservedSentByte < 10240)//10KB
-                    return;
-                //패킷이 많이 모일 때 한번에 보내기 위해 Queue에 넣어둔다.
+                lock (_lock)
+                {
+                    long delta = (System.Environment.TickCount64 - _lastSendTick);
+                    if (delta < 100 && _reservedSentByte < 10240) // 10KB
+                        return;
 
-                _reservedSentByte = 0;
-                _lastSendTick = System.Environment.TickCount64;
-                sendList = _reserverQueue;
-                _reserverQueue = new List<ArraySegment<byte>>();
+                    _reservedSentByte = 0;
+                    _lastSendTick = System.Environment.TickCount64;
+                    sendList = _reserverQueue;
+                    _reserverQueue = new List<ArraySegment<byte>>();
+                }
+                Send(sendList);
             }
-            Send(sendList);
+            catch (Exception ex)
+            {
+                // 예외 로그 출력
+                Console.WriteLine($"Exception in FlushSend method: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
+            }
         }
 		public override void OnConnected(EndPoint endPoint)
 		{

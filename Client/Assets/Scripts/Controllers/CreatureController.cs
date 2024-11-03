@@ -1,7 +1,9 @@
-﻿using Google.Protobuf.Protocol;
+﻿using Data;
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing.Text;
 using UnityEngine;
 using static Define;
 
@@ -9,6 +11,11 @@ public class CreatureController : BaseController
 {
 	HpBar _hpBar;
 	StatInfo _stat = new StatInfo();
+    public float TotalAttackSpeed 
+	{
+		get { return Stat.AttackSpeed + AttackSpeed; }		
+	}
+	protected float AttackSpeed { get; set; } = 0.0f;
     protected int _skillId;
     public override StatInfo Stat
 	{
@@ -67,9 +74,29 @@ public class CreatureController : BaseController
     {
         State = CreatureState.Dead;
     }
+	public virtual IEnumerator OnHealed()
+	{
+		GameObject heal = Managers.Resource.Instantiate("Effect/Heal", transform);
+        heal.transform.position = transform.position + new Vector3(0, 0.5f, 0);
+		Animator animator = heal.GetComponent<Animator>();
+        animator.Play("START");
+        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+        Managers.Resource.Destroy(heal);
+    }
 
     public virtual void UseSkill(int skillId)
     {
+		SkillData skillData = null;
+		Managers.Data.SkillDict.TryGetValue(skillId, out skillData);
+        if (skillData == null)
+            return;
+        GameObject skill = Managers.Resource.Instantiate($"{skillData.prefab}", transform);
+        SkillController skillController = skill.GetComponent<SkillController>();
+        if (skillController == null)
+            return;
+        skillController.Init(skillData, gameObject);
+        skillController.ExecuteSkill();
     }
 
     public bool IsPlayingDieAnimation()

@@ -43,11 +43,15 @@ namespace Data
         public float coolTime;
         public int damage;
         public SkillType skillType;
+        public SkillLogicType skillLogicType;
         public ShapeInfo shape;
         public ProjectileInfo projectile;
         public SpotInfo spot;
         public BuffInfo buff;
         public DebuffInfo debuff;
+        public int unchartedPoint;
+        public string description;
+        public string prefab;
     }
     public class ShapeInfo
     {
@@ -62,23 +66,22 @@ namespace Data
         public bool isHoming;
         public string prefab;
     }
-
     public class SpotInfo
     {
         public string name;
         public float range;
-        public float duration;
+        public float delay;
+        public bool isHoming;
         public int maxCount;
         public int minCount;
         public string prefab;
     }
-
     public class BuffInfo
     {
         public int id;
         public string name;
         public int duration;
-        public int value;
+        public float value;
         public bool isPercent;
     }
 
@@ -87,7 +90,7 @@ namespace Data
         public int id;
         public string name;
         public int duration;
-        public int value;
+        public float value;
         public bool isPercent;
     }
 

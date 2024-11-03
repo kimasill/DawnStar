@@ -178,6 +178,9 @@ namespace Server.Migrations
                     b.Property<int>("MaxHp")
                         .HasColumnType("int");
 
+                    b.Property<int>("MaxPotion")
+                        .HasColumnType("int");
+
                     b.Property<string>("PlayerName")
                         .HasColumnType("nvarchar(450)");
 
@@ -192,6 +195,9 @@ namespace Server.Migrations
 
                     b.Property<float>("Speed")
                         .HasColumnType("real");
+
+                    b.Property<int>("StatPoint")
+                        .HasColumnType("int");
 
                     b.HasKey("PlayerDbId");
 

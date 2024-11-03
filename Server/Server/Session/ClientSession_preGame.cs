@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.DB;
@@ -184,12 +185,15 @@ namespace Server
                     foreach (MapDb mapDb in maps)
                     {
                         ChangeServerState(mapDb.TemplateId);
+                        MyPlayer.MapInfo.MapDbId = mapDb.MapDbId;
                         MyPlayer.MapInfo.TemplateId = mapDb.TemplateId;
                         MyPlayer.MapInfo.Scene = mapDb.Scene;
                         MyPlayer.MapInfo.MapName = mapDb.MapName;
                         mapId = mapDb.TemplateId;
                     }
                 }
+                UpdateMapChests(mapId);
+                MyPlayer.Skill = new Skill();
                 if (ServerState == PlayerServerState.ServerStateSingle)
                 {
                     if(isFirstLogin)
@@ -223,7 +227,7 @@ namespace Server
             {
                 ServerState = PlayerServerState.ServerStateGame;
                 return true;
-            }
+            }            
             return false;
         }
 
@@ -250,7 +254,45 @@ namespace Server
             }
             return null;
         }
+        public void UpdateMapChests(int mapId)
+        {
+            List<int> chestIds = new List<int>();
+            DataManager.MapDict.TryGetValue(mapId, out MapData mapData);
+            if (mapData == null)
+                return;
 
+            
+            using (AppDbContext db = new AppDbContext())
+            {
+                
+                List<ChestDb> chests = db.Chests
+                    .Where(c => c.MapDbId == MyPlayer.MapInfo.MapDbId)
+                    .ToList();
+                foreach (var chest in mapData.chests)
+                {
+                    ChestDb chestDb = chests.FirstOrDefault(c => c.ChestId == chest.chestId);
+                    if (chestDb == null)
+                    {
+                        chestDb = new ChestDb()
+                        {
+                            TemplateId = chest.templateId,
+                            MapDbId = MyPlayer.MapInfo.MapDbId,
+                            ChestId = chest.chestId,
+                            Opened = false
+                        };
+                        chestIds.Add(chest.chestId);
+                        db.Add(chestDb);
+                    }
+                    else
+                    {
+                        if (chestDb.Opened == false)
+                            chestIds.Add(chestDb.ChestId);
+                    }
+                }
+            }
+            MyPlayer.MapInfo.ChestIds.Clear();
+            MyPlayer.MapInfo.ChestIds.AddRange(chestIds);
+        }
         public void HandleCreatePlayer(C_CreatePlayer createPacket)
         {
             // TODO : 이런 저런 보안 체크

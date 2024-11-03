@@ -1,5 +1,6 @@
 using Google.Protobuf.Protocol;
 using Server.Data;
+using Server.DB;
 using Server.Game.Job;
 using Server.Game.Room;
 using System;
@@ -113,8 +114,8 @@ namespace Server.Game
             player.MapInfo.TemplateId = mapData.id;
             player.MapInfo.MapName = mapData.name;
             player.MapInfo.Scene = mapData.name;
-            player.MapInfo.PortalId = portalData.id;
-
+            player.MapInfo.PortalId = portalData.id;        
+            player.Session.UpdateMapChests(mapId);
             LeaveGame(player.Id);
             GameLogic.Instance.ChangeRoom(player, mapId, this);
             //// 클라이언트에 맵 이동 정보 전송
@@ -193,16 +194,12 @@ namespace Server.Game
                 .ToList();
             foreach (Vector2Int spawnPos in selectedSpawnPositions)
             {
-                Monster monster = ObjectManager.Instance.Add<Monster>();
-
-                if (monster == null)
-                    continue;
-
-                Monster newMonster = Monster.CreateMonster(monsterId);
+                Monster newMonster = Monster.CreateMonster(monsterId);                                
                 newMonster.PosInfo.PosX = spawnPos.x;
                 newMonster.PosInfo.PosY = spawnPos.y;
-                newMonster.SpawnPosition = monster.CellPos;
+                newMonster.SpawnPosition = newMonster.CellPos;
                 newMonster.SpawnId = _spawnCount++;
+                
                 EnterGame(newMonster, false);
             }
         }

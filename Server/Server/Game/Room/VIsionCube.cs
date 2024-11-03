@@ -73,6 +73,19 @@ namespace Server.Game.Room
                     }
                     objects.Add(projectile);
                 }
+
+                foreach (Magic magic in zone.Magics)
+                {
+                    if (magic == null)
+                        continue;
+                    int dx = magic.CellPos.x - cellPos.x;
+                    int dy = magic.CellPos.y - cellPos.y;
+                    if (Math.Abs(dx) > GameRoom.VisionCells || Math.Abs(dy) > GameRoom.VisionCells)
+                    {
+                        continue;
+                    }
+                    objects.Add(magic);
+                }
             }
             return objects;
         }

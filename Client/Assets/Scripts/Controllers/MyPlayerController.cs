@@ -14,9 +14,9 @@ public class MyPlayerController : PlayerController
     bool _moveKeyPressed = false;    
     public int WeaponDamage { get; private set; }
     public int ArmorDef { get; private set; }
-    private Queue<NPCController> _nearbyNPCs;
+    private NPCController _NPCController;
     private CameraController _cameraController;
-    private Queue<ChestController> _chestControllers;
+    private ChestController _chestController;
     public CameraController CameraController { get; private set; }
 
     public int Gold
@@ -31,23 +31,20 @@ public class MyPlayerController : PlayerController
         set 
         { 
             Stat.TotalExp = value;
-            UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;
-            gameScene.GameWindow.UpdateStateInfo();
+            GameScene.GameWindow.UpdateStateInfo();
         }
     }
     protected override void UpdateHpBar()
     {
-        UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;
-        gameScene.GameWindow.UpdateHpUI();
+        GameScene.GameWindow.UpdateHpUI();
     }
     public override StatInfo Stat
     {
         get { return base.Stat; }
         set
         {
-            base.Stat = value;
-            UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;
-            gameScene.GameWindow.UpdateStateInfo();
+            base.Stat = value;            
+            GameScene.GameWindow.UpdateStateInfo();
             UpdateHpBar();
         }
     }
@@ -61,7 +58,7 @@ public class MyPlayerController : PlayerController
         if (_cameraController != null)
         {
             _cameraController.SetTarget(transform);
-        }
+        }       
     }
 
     protected override void UpdateController() 
@@ -83,9 +80,8 @@ public class MyPlayerController : PlayerController
     void GetUIKeyInput()
     {
         if (Input.GetKeyDown(KeyCode.I))
-        {
-            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-            UI_Inventory invenUI = gameSceneUI.InvenUI;
+        {            
+            UI_Inventory invenUI = GameScene.InvenUI;
 
             if (invenUI.gameObject.activeSelf)
             {
@@ -97,12 +93,10 @@ public class MyPlayerController : PlayerController
                 invenUI.gameObject.SetActive(true);
                 invenUI.RefreshUI();
             }
-
         }
         else if (Input.GetKeyDown(KeyCode.C))
-        {
-            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-            UI_Stat statUI = gameSceneUI.StatUI;
+        {            
+            UI_Stat statUI = GameScene.StatUI;
 
             if (statUI.gameObject.activeSelf)
             {
@@ -115,9 +109,8 @@ public class MyPlayerController : PlayerController
             }
         }
         else if (Input.GetKeyDown(KeyCode.M))
-        {
-            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-            UI_Map mapUI = gameSceneUI.MapUI;
+        {            
+            UI_Map mapUI = GameScene.MapUI;
 
             if (mapUI.gameObject.activeSelf)
             {
@@ -132,17 +125,16 @@ public class MyPlayerController : PlayerController
         }
         else if (Input.GetKeyDown(KeyCode.G))
         {
-            if(_chestControllers.Count > 0)
+            if(_chestController != null)
             {
-                _chestControllers.Dequeue().OpenChest();
+                _chestController.OpenChest();
             }
-            else if(_nearbyNPCs.Count > 0)
-                _nearbyNPCs.Dequeue().StartInteraction();
+            else if(_NPCController!= null)
+                _NPCController.StartInteraction();
         }
         else if (Input.GetKeyDown(KeyCode.Q))
-        {
-            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-            UI_Quest questUI = gameSceneUI.QuestUI;
+        {            
+            UI_Quest questUI = GameScene.QuestUI;
 
             if (questUI.gameObject.activeSelf)
             {
@@ -154,21 +146,30 @@ public class MyPlayerController : PlayerController
                 questUI.RefreshUI();
             }
         }
+        else if (Input.GetKeyDown(KeyCode.Alpha1))
+             GameScene.GameWindow.QuickSlot.UseItem(0);
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+            GameScene.GameWindow.QuickSlot.UseItem(1);
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+            GameScene.GameWindow.QuickSlot.UseItem(2);
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+            GameScene.GameWindow.QuickSlot.UseItem(3);
+
+
 
         if (Input.mouseScrollDelta.y != 0)
         {
-            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;            
-            if(gameSceneUI.MapUI == null)
+            if (GameScene.MapUI == null)
             {
                 return;
             }
-            UI_Map mapUI = gameSceneUI.MapUI;
+            UI_Map mapUI = GameScene.MapUI;
             if (mapUI.gameObject.activeSelf)
             {
                 mapUI.ZoomMap(Input.mouseScrollDelta.y); // 스크롤에 따라 지도 크기 조절
             }
             // 인벤토리가 활성화된 경우 스크롤뷰를 내립니다.
-            UI_Inventory invenUI = gameSceneUI.InvenUI;
+            UI_Inventory invenUI = GameScene.InvenUI;
             if (invenUI.gameObject.activeSelf && invenUI.ScrollRect != null)
             {
                 float scrollDelta = Input.mouseScrollDelta.y * 0.1f; // 스크롤 속도 조절
@@ -204,11 +205,13 @@ public class MyPlayerController : PlayerController
     }
     private bool _isAttacking = false;
     protected override void UpdateIdle()
-    {
+    {        
         if (_isAttacking)
             return;
         if (State == CreatureState.Stiff || State == CreatureState.Dead)
             return;
+        _updated = true;
+        CheckUpdatedFlag();
         // 이동 상태로 갈지 확인
         if (_moveKeyPressed)
         {
@@ -226,7 +229,7 @@ public class MyPlayerController : PlayerController
             skill.Info.SkillId = 1;
             Managers.Network.Send(skill); 
             
-            _coInputCooltime = StartCoroutine(CoInputCooltime(0.1f));
+            _coInputCooltime = StartCoroutine(CoInputCooltime(_attackTime));
         }
     }
     Coroutine _coInputCooltime;
@@ -320,26 +323,33 @@ public class MyPlayerController : PlayerController
         BaseScene currentScene = Managers.Scene.CurrentScene as BaseScene;
         if (currentScene == null)
             return;
-
+        bool npcFound = false;
         Dictionary<int, GameObject> npcs = currentScene.GetNPCs();
         foreach (var npc in npcs.Values)
         {
             Vector3Int npcCellPos = Managers.Map.CurrentGrid.WorldToCell(npc.transform.position);
             float distance = Vector3Int.Distance(CellPos, npcCellPos);
-            NPCController npcController = npc.GetComponent<NPCController>();
-            if (distance <= 5.0f)
+            if (distance <= 3.0f)
             {
-                npcController.ActivateNotification();
-                _nearbyNPCs.Enqueue(npcController);
-            }
-            else
-            {
-                foreach (var nearbyNPC in _nearbyNPCs)
+                NPCController npcController = npc.GetComponent<NPCController>();
+                if(npcController != _NPCController)
                 {
-                    nearbyNPC.DeactivateNotification();
-                    _nearbyNPCs.Clear();
+                    npcController.ActivateNotification();
+                    if (_NPCController != null)
+                    {
+                        _NPCController.DeactivateNotification();
+                    }
+                    _NPCController = npcController;
                 }                
+                npcFound = true;
+                break;
             }
+        }
+
+        if (!npcFound && _NPCController != null)
+        {
+            _NPCController.DeactivateNotification();
+            _NPCController = null;
         }
     }
 
@@ -348,6 +358,7 @@ public class MyPlayerController : PlayerController
         //플레이어 주변 3x3 영역에 상자가 있는지 확인
         Vector3Int playerCellPos = CellPos;
         ChestController cc = null;
+        bool chestFound = false;
         for (int x = -1; x <= 1; x++)
         {
             for (int y = -1; y <= 1; y++)
@@ -355,22 +366,29 @@ public class MyPlayerController : PlayerController
                 Vector3Int checkPos = playerCellPos + new Vector3Int(x, y, 0);
                 cc = Managers.Map.GetChest((Vector2Int)checkPos);
                 if (cc != null)
-                {   
-                    _chestControllers.Enqueue(cc);                    
+                {
+                    if (_chestController != cc)
+                    {
+                        cc.ActivateNotification();
+                        if (_chestController != null)
+                        {
+                            _chestController.DeactivateNotification();
+                        }
+                        _chestController = cc;
+                    }
+                    chestFound = true;
+                    Debug.Log($"Chest Detected: {checkPos}");
+                    break;
                 }
             }
+            if (chestFound)
+                break;
         }
-        if (cc == null)
+
+        if (!chestFound && _chestController != null)
         {
-            foreach (var chest in _chestControllers)
-            {
-                chest.DeactivateNotification();
-            }
-            _chestControllers.Clear();
-        }
-        else
-        {
-            _chestControllers.Peek().ActivateNotification();
+            _chestController.DeactivateNotification();
+            _chestController = null;
         }
     }
 
@@ -390,7 +408,6 @@ public class MyPlayerController : PlayerController
         WeaponDamage = 0;
         ArmorDef = 0;
         AttackSpeed = 0;
-        Console.WriteLine($"AttackSpeed:{AttackSpeed}");
         foreach (Item item in Managers.Inventory.Items.Values)
         {
             if (item.Equipped == false)

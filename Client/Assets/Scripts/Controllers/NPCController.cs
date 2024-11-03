@@ -34,10 +34,10 @@ public class NPCController : CreatureController
     }
 
     public void ActivateNotification()
-    {
-        _headUpIcon = Managers.Resource.Instantiate("UI/HeadUpIcon", transform);
+    {        
         if (_headUpIcon == null)
-            return;        
+            _headUpIcon = Managers.Resource.Instantiate("UI/HeadUpIcon", transform);
+        
         Sprite iconSprite = null;
             // NPC 타입에 따라 아이콘 설정
         switch (Type)
@@ -46,7 +46,7 @@ public class NPCController : CreatureController
                 iconSprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Talk");
                 break;
             case NPCType.Shop:
-                iconSprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Shop");
+                iconSprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Store");
                 break;
             case NPCType.Quest:
                 iconSprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Quest");
@@ -57,11 +57,14 @@ public class NPCController : CreatureController
             default:
                 iconSprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Frame");
                 break;
-        }        
-        _headUpIcon.GetComponent<SpriteRenderer>().sprite = iconSprite;
-        _headUpIcon.transform.localPosition = new Vector3(0, 1f, 0);
+        }
         _headUpIcon.SetActive(true);
-        _headUpText = _headUpIcon.GetComponentInChildren<TextMeshPro>();
+        _headUpIcon.GetComponent<SpriteRenderer>().sprite = iconSprite;
+        _headUpIcon.transform.position = new Vector3(transform.position.x, transform.position.y + 1f, 0);
+
+        if (_headUpText == null)
+            _headUpText = _headUpIcon.GetComponentInChildren<TextMeshPro>();
+
         StartCoroutine(BlinkText(_headUpText));
     }
 

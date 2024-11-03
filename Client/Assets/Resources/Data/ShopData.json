@@ -24,14 +24,14 @@
       "name": "RockSiteStore",
       "itemList": [
         {
-          "id": "1003",
+          "id": "6",
           "count": "1",
-          "price": "1"
+          "price": "1500"
         },
         {
-          "id": "1004",
-          "count": "1",
-          "price": "1"
+          "id": "300",
+          "count": "100",
+          "price": "20"
         }
       ]
     }
