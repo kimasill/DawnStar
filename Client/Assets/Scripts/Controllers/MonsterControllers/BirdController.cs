@@ -19,7 +19,7 @@ public class BirdController : MonsterController
 
     protected override void UpdateAnimation()
     {
-        if (_animator == null)
+        if (Animator == null)
             return;
 
         switch (LookDir)
@@ -42,7 +42,7 @@ public class BirdController : MonsterController
             else
             {
                 string idleAnimation = Random.Range(0, 2) == 0 ? "IDLE1" : "IDLE2";
-                _animator.Play(idleAnimation);
+                Animator.Play(idleAnimation);
             }
             _prev = CreatureState.Idle;
         }
@@ -55,7 +55,7 @@ public class BirdController : MonsterController
             }
             else
             {
-                _animator.Play("WALK");                
+                Animator.Play("WALK");                
             }
             _prev = CreatureState.Moving;
         }
@@ -66,18 +66,18 @@ public class BirdController : MonsterController
     }
     private IEnumerator PlayLandingAndIdleAnimation()
     {
-        _animator.Play("LANDING", 0, 0);
+        Animator.Play("LANDING", 0, 0);
         yield return new WaitForSeconds(0.01f);
-        yield return new WaitForSeconds(_animator.GetCurrentAnimatorStateInfo(0).length);
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
         string idleAnimation = Random.Range(0, 2) == 0 ? "IDLE1" : "IDLE2";
-        _animator.Play(idleAnimation);
+        Animator.Play(idleAnimation);
     }
 
     private IEnumerator PlayLiftingAndWalkAnimation()
     {
-        _animator.Play("LIFTING", 0, 0);
+        Animator.Play("LIFTING", 0, 0);
         yield return new WaitForSeconds(0.01f);
-        yield return new WaitForSeconds(_animator.GetCurrentAnimatorStateInfo(0).length);
-        _animator.Play("WALK");
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
+        Animator.Play("WALK");
     }
 }

@@ -93,7 +93,7 @@ public class BaseController : MonoBehaviour
         }
     }
 
-    protected Animator _animator;
+    public Animator Animator;
     protected float _animatorSpeed;
     protected SpriteRenderer _sprite;
 
@@ -186,7 +186,7 @@ public class BaseController : MonoBehaviour
     }
     protected virtual void UpdateAnimation()
     {
-        if (_animator == null)
+        if (Animator == null)
         {
             return;
         }
@@ -195,11 +195,11 @@ public class BaseController : MonoBehaviour
             switch (LookDir)
             {
                 case LookDir.LookLeft:                    
-                    _animator.Play("IDLE");
+                    Animator.Play("IDLE");
                     _sprite.flipX = true;
                     break;
                 case LookDir.LookRight:
-                    _animator.Play("IDLE");
+                    Animator.Play("IDLE");
                     _sprite.flipX = false;
                     break;
             }
@@ -209,11 +209,11 @@ public class BaseController : MonoBehaviour
             switch (LookDir)
             {
                 case LookDir.LookLeft:
-                    _animator.Play("WALK");
+                    Animator.Play("WALK");
                     _sprite.flipX = true;
                     break;
                 case LookDir.LookRight:
-                    _animator.Play("WALK");
+                    Animator.Play("WALK");
                     _sprite.flipX = false;
                     break;
             }
@@ -223,11 +223,11 @@ public class BaseController : MonoBehaviour
             switch (LookDir)
             {
                 case LookDir.LookLeft:
-                    _animator.Play("ATTACK");
+                    Animator.Play("ATTACK");
                     _sprite.flipX = true;
                     break;
                 case LookDir.LookRight:
-                    _animator.Play("ATTACK");
+                    Animator.Play("ATTACK");
                     _sprite.flipX = false;
                     break;
             }
@@ -237,11 +237,11 @@ public class BaseController : MonoBehaviour
             switch (LookDir)
             {
                 case LookDir.LookLeft:
-                    _animator.Play("HURT");
+                    Animator.Play("HURT");
                     _sprite.flipX = true;
                     break;
                 case LookDir.LookRight:
-                    _animator.Play("HURT");
+                    Animator.Play("HURT");
                     _sprite.flipX = false;
                     break;
             }
@@ -251,22 +251,34 @@ public class BaseController : MonoBehaviour
             switch (LookDir)
             {
                 case LookDir.LookLeft:
-                    _animator.Play("DEATH");
+                    Animator.Play("DEATH");
                     _sprite.flipX = true;
                     break;
                 case LookDir.LookRight:
-                    _animator.Play("DEATH");
+                    Animator.Play("DEATH");
                     _sprite.flipX = false;
                     break;
             }
 
-            StartCoroutine(DisableAfterDelay(_animator.GetCurrentAnimatorStateInfo(0).length));
+            StartCoroutine(DisableAfterDelay(Animator.GetCurrentAnimatorStateInfo(0).length));
         }
     }
     protected virtual IEnumerator DisableAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
         gameObject.SetActive(false);
+    }
+
+    public IEnumerator WaitAnimationRunningTime(Action action)
+    {
+        AnimatorStateInfo stateInfo = Animator.GetCurrentAnimatorStateInfo(0);
+        float clipLength = stateInfo.length;
+        float animationSpeed = Animator.speed;
+        float currentPlayTime = stateInfo.normalizedTime * clipLength;
+
+        float remainingTime = (clipLength - currentPlayTime) / animationSpeed;
+        yield return new WaitForSeconds(remainingTime);
+        action?.Invoke();
     }
 
     void Start()
@@ -281,9 +293,9 @@ public class BaseController : MonoBehaviour
 
     protected virtual void Init()
     {
-        _animator = GetComponent<Animator>();
-        if(_animator != null)
-            _animatorSpeed = _animator.speed;
+        Animator = GetComponent<Animator>();
+        if(Animator != null)
+            _animatorSpeed = Animator.speed;
         _sprite = GetComponent<SpriteRenderer>();
         Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
         transform.position = pos;
@@ -347,14 +359,6 @@ public class BaseController : MonoBehaviour
             State = CreatureState.Moving;
         }
         UpdateSortingLayer();
-    }
-    protected IEnumerator AdjustAnimation(float speed)
-    {
-        _animator.speed = speed;        
-        yield return new WaitForSeconds(0.01f);
-        _attackTime = _animator.GetCurrentAnimatorStateInfo(0).length;
-        yield return new WaitForSeconds(_attackTime);
-        _animator.speed = _animatorSpeed;
     }
 
     public void ShowDamage(int damage, bool isCritical)

@@ -11,12 +11,15 @@ public class CreatureController : BaseController
 {
 	HpBar _hpBar;
 	StatInfo _stat = new StatInfo();
+    protected Coroutine _coSkill;
+    protected bool _rangedSkill = false;
     public float TotalAttackSpeed 
 	{
 		get { return Stat.AttackSpeed + AttackSpeed; }		
 	}
 	protected float AttackSpeed { get; set; } = 0.0f;
     protected int _skillId;
+    protected string _animation;
     public override StatInfo Stat
 	{
 		get { return base.Stat; }
@@ -74,11 +77,16 @@ public class CreatureController : BaseController
     {
         State = CreatureState.Dead;
     }
-	public virtual IEnumerator OnHealed()
+	public virtual void OnHealed()
 	{
-		GameObject heal = Managers.Resource.Instantiate("Effect/Heal", transform);
+		_coSkill = StartCoroutine("StartHeal");
+    }
+
+	protected IEnumerator StartHeal()
+	{
+        GameObject heal = Managers.Resource.Instantiate("Effect/Heal", transform);
         heal.transform.position = transform.position + new Vector3(0, 0.5f, 0);
-		Animator animator = heal.GetComponent<Animator>();
+        Animator animator = heal.GetComponent<Animator>();
         animator.Play("START");
         yield return new WaitForSeconds(0.01f);
         yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
@@ -87,10 +95,16 @@ public class CreatureController : BaseController
 
     public virtual void UseSkill(int skillId)
     {
-		SkillData skillData = null;
+        _rangedSkill = false;
+        SkillData skillData = null;
 		Managers.Data.SkillDict.TryGetValue(skillId, out skillData);
         if (skillData == null)
             return;
+
+        State = CreatureState.Skill;
+        if (skillData.skillType == SkillType.SkillAttack) _animation = "ATTACK";
+        else if (skillData.skillType == SkillType.SkillBuff) _animation = "BUFF";
+        else if (skillData.skillType == SkillType.SkillProjectile) _animation = "PROJECTILE";
         GameObject skill = Managers.Resource.Instantiate($"{skillData.prefab}", transform);
         SkillController skillController = skill.GetComponent<SkillController>();
         if (skillController == null)

@@ -15,8 +15,8 @@ public class ChestController : BaseController
     protected override void Init()
     {
         base.Init();
-        _animator.Play("OPEN_H",0,0);
-        _animator.speed = 0;
+        Animator.Play("OPEN_H",0,0);
+        Animator.speed = 0;
     }
     public void SetChest(int chsetId, int templateId)
     {
@@ -66,7 +66,7 @@ public class ChestController : BaseController
         if (_isOpened)
             return;
         _isOpened = true;
-        _animator.speed = 1;
+        Animator.speed = 1;
         DeactivateNotification();
         Destroy(_headUpIcon);
         C_OpenChest packet = new C_OpenChest() 
@@ -83,12 +83,12 @@ public class ChestController : BaseController
 
     private IEnumerator CoOpenChest()
     {
-        _animator.Play("OPEN_H");
+        Animator.Play("OPEN_H");
         // 애니메이션 재생 시간 동안 대기
         yield return new WaitForSeconds(0.01f);
-        yield return new WaitForSeconds(_animator.GetCurrentAnimatorStateInfo(0).length);        
-        _animator.Play("CLOSE_H", 0, 0);
-        _animator.speed = 0;
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);        
+        Animator.Play("CLOSE_H", 0, 0);
+        Animator.speed = 0;
         yield return new WaitForSeconds(3f);
         
         yield return StartCoroutine(CoCloseChest());
@@ -96,10 +96,10 @@ public class ChestController : BaseController
 
     private IEnumerator CoCloseChest()
     {
-        _animator.speed = 1;
-        _animator.Play("CLOSE_H");
+        Animator.speed = 1;
+        Animator.Play("CLOSE_H");
         yield return new WaitForSeconds(0.01f);
-        yield return new WaitForSeconds(_animator.GetCurrentAnimatorStateInfo(0).length - 0.05f);
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length - 0.05f);
         gameObject.SetActive(false);
         Destroy(gameObject);
     }

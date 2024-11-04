@@ -52,6 +52,7 @@ namespace Data
         public int unchartedPoint;
         public string description;
         public string prefab;
+        public string icon;
     }
     public class ShapeInfo
     {
@@ -135,6 +136,12 @@ namespace Data
         public ArmorType armorType;
         public int defence;
     }
+
+    public class JewelryData : ItemData
+    {
+        public JewelryType jewelType;        
+    }
+
     public class ConsumableData : ItemData
     {
         public ConsumableType consumableType;

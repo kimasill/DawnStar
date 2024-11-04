@@ -138,6 +138,7 @@ public class UI_Notification : UI_Base
             yield return null;
         }
         noti.SetActive(false);
+
     }
     private IEnumerator FadeOutAndRemove(GameObject noti)
     {

@@ -16,6 +16,7 @@ public class UI_QuickSlot : UI_Base
             UI_QuickSlotItem quickSlotItem = transform.GetChild(i).GetComponent<UI_QuickSlotItem>();
             quickSlotItem.Index = i;            
             QuickSlotItems.Add(quickSlotItem);
+            quickSlotItem.Init();
         }
         RefreshUI();
     }
@@ -24,12 +25,16 @@ public class UI_QuickSlot : UI_Base
     {
         foreach (var quickSlotItem in QuickSlotItems)
         {
-            if(quickSlotItem.Item != null && quickSlotItem.gameObject.activeSelf == false)
+            if(quickSlotItem.Item != null && Managers.Inventory.Get(quickSlotItem.Item.ItemDbId) == null)
+            {
+                quickSlotItem.ClearItem();
+            }
+            if (quickSlotItem.Item != null && quickSlotItem.gameObject.activeSelf == false)
             {                
                 quickSlotItem.gameObject.SetActive(true);                
             }
-            else
-            {
+            else if(quickSlotItem.Item == null && quickSlotItem.gameObject.activeSelf == true)
+            {                
                 quickSlotItem.gameObject.SetActive(false);
             }
         }
@@ -42,7 +47,7 @@ public class UI_QuickSlot : UI_Base
             if (quickSlotItem.Item == null)
             {
                 quickSlotItem.SetItem(item);
-                return;
+                break;
             }
         }
         RefreshUI();

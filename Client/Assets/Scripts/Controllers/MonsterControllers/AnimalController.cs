@@ -15,7 +15,7 @@ public class AnimalController : MonsterController
 
     protected override void UpdateAnimation()
     {
-        if (_animator == null)
+        if (Animator == null)
             return;
 
         switch (LookDir)
@@ -36,12 +36,12 @@ public class AnimalController : MonsterController
                 _idleAnimationTimer = 0f;
                 // 3개의 IDLE 상태 랜덤 출력
                 string idleAnimation = Random.Range(0, 3) == 0 ? "IDLE_1" : Random.Range(0, 3) == 1 ? "IDLE_2" : "IDLE_3";
-                _animator.Play(idleAnimation);
+                Animator.Play(idleAnimation);
             }
         }
         else if (State == CreatureState.Moving)
         {
-            _animator.Play("WALK");
+            Animator.Play("WALK");
         }
         else if (State == CreatureState.Dead)
         {

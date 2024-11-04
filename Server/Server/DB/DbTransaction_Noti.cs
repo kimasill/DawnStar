@@ -95,10 +95,20 @@ namespace Server.DB
                     PlayerDb playerDb = db.Players.FirstOrDefault(p => p.PlayerDbId == player.PlayerDbId);
                     if (playerDb != null)
                     {
-                        playerDb.Exp = player.Exp;
-                        db.SaveChangesEx();
+                        playerDb.Exp = player.Exp;                        
                     }
-                }
+                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+
+                    if (success)
+                    {
+                        player.Room.Push(() =>
+                        {
+                            S_ChangeExp expPacket = new S_ChangeExp();
+                            expPacket.Exp = playerDb.Exp;
+                            player.Session.Send(expPacket);
+                        });
+                    }
+                }            
             });
         }
     }

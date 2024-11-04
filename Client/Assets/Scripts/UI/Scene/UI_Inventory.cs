@@ -22,7 +22,7 @@ public class UI_Inventory : UI_Base
             Destroy(child.gameObject);
         }
         _gameScene = Managers.UI.SceneUI as UI_GameScene;
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 100; i++)
         {
             GameObject go = Managers.Resource.Instantiate("UI/Scene/UI_Inventory_Item", grid.transform);
             UI_Inventory_Item item = go.GetOrAddComponent<UI_Inventory_Item>();
@@ -44,9 +44,16 @@ public class UI_Inventory : UI_Base
 
         foreach (Item item in items)
         {
-            if (item.Slot < 0 || item.Slot >= 20 )
+            if (item.Slot < 0 || item.Slot >= 100 )
                 continue;
             Items[item.Slot].SetItem(item);
+        }
+        foreach (UI_Inventory_Item item in Items)
+        {
+            if (Managers.Inventory.Get(item.ItemDbId) == null)
+            {
+                item.SetItem(null);
+            }
         }
     }
 }

@@ -24,11 +24,11 @@ public class InventoryManager : MonoBehaviour
     public void RemoveOrUpdate(ItemInfo item)
     {
         Item tItem = Get(item.ItemDbId);
-        if (tItem.Count > item.Count)
+        if (item.Count>0)
         {
-            tItem.Count -= item.Count;
+            tItem.Count = item.Count;
         }
-        else
+        else if(item.Count == 0)
         {
             Remove(item.ItemDbId);
         }

@@ -79,6 +79,9 @@ public class Item
             case ItemType.Armor:
                 item = new Armor(itemInfo.TemplateId);
                 break;
+            case ItemType.Jewelry:
+                item = new Jewelry(itemInfo.TemplateId);
+                break;
             case ItemType.Consumable:
                 item = new Consumable(itemInfo.TemplateId);
                 break;
@@ -166,6 +169,33 @@ public class Item
                 Count = 1;
                 ArmorType = data.armorType;
                 Defense = data.defence;
+                Stackable = false;
+            }
+        }
+    }
+
+    public class Jewelry : Item
+    {
+        public JewelryType JewelryType { get; private set; }        
+        public Jewelry(int templateId) : base(ItemType.Jewelry)
+        {
+            Init(templateId);
+        }
+
+        void Init(int templateId)
+        {
+            ItemData itemData = null;
+            Managers.Data.ItemDict.TryGetValue(templateId, out itemData);
+            if (itemData.itemType != ItemType.Jewelry)
+            {
+                return;
+            }
+
+            JewelryData data = (JewelryData)itemData;
+            {
+                TemplateId = data.id;
+                Count = 1;
+                JewelryType = data.jewelType;
                 Stackable = false;
             }
         }

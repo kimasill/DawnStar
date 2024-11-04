@@ -19,6 +19,10 @@ public class UI_QuickSlotItem : UI_Base, IPointerClickHandler
 
     public override void Init()
     {
+        if(_init == true)
+        {
+            return;
+        }
         Bind<Image>(typeof(Images));
         transform.gameObject.BindEvent(OnPointerClick, Define.UIEvent.Click);
         if (_init == false)
@@ -28,7 +32,6 @@ public class UI_QuickSlotItem : UI_Base, IPointerClickHandler
     }
     public void SetItem(Item.Consumable item)
     {
-     
         if(_init == false)
         {
             return;

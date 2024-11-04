@@ -8,8 +8,7 @@ using static Define;
 
 public class PlayerController : CreatureController
 {
-	protected Coroutine _coSkill;
-    protected bool _rangedSkill = false;
+	
     protected EquipmentController _equipmentController;
     protected SortingGroup _sortingLayer;
     public EquipmentController Equipment 
@@ -32,7 +31,7 @@ public class PlayerController : CreatureController
 
     protected override void UpdateAnimation()
     {
-        if (_animator == null)
+        if (Animator == null)
         {
             return;
         }
@@ -41,11 +40,11 @@ public class PlayerController : CreatureController
             switch (LookDir)
             {
                 case LookDir.LookLeft:
-                    _animator.Play("IDLE");
+                    Animator.Play("IDLE");
                     gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
                     break;
                 case LookDir.LookRight:
-                    _animator.Play("IDLE");
+                    Animator.Play("IDLE");
                     gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
                     break;
             }
@@ -55,11 +54,11 @@ public class PlayerController : CreatureController
             switch (LookDir)
             {
                 case LookDir.LookLeft:
-                    _animator.Play("WALK");
+                    Animator.Play("WALK");
                     gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
                     break;
                 case LookDir.LookRight:
-                    _animator.Play("WALK");
+                    Animator.Play("WALK");
                     gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
                     break;
             }
@@ -70,10 +69,10 @@ public class PlayerController : CreatureController
             switch (LookDir)
             {
                 case LookDir.LookLeft:
-                    _animator.Play(_rangedSkill ? "ATTACK_WEAPON_RIGHT" : "ATTACK");
+                    Animator.Play(_rangedSkill ? "ATTACK_WEAPON_RIGHT" : "ATTACK");
                     break;
                 case LookDir.LookRight:
-                    _animator.Play(_rangedSkill ? "ATTACK_WEAPON_RIGHT" : "ATTACK");
+                    Animator.Play(_rangedSkill ? "ATTACK_WEAPON_RIGHT" : "ATTACK");
                     break;
             }
         }
@@ -82,11 +81,11 @@ public class PlayerController : CreatureController
             switch (LookDir)
             {
                 case LookDir.LookLeft:
-                    _animator.Play("HURT");
+                    Animator.Play("HURT");
                     gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
                     break;
                 case LookDir.LookRight:
-                    _animator.Play("HURT");
+                    Animator.Play("HURT");
                     gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
                     break;
             }
@@ -96,11 +95,11 @@ public class PlayerController : CreatureController
             switch (LookDir)
             {
                 case LookDir.LookLeft:
-                    _animator.Play("DEATH");
+                    Animator.Play("DEATH");
                     gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
                     break;
                 case LookDir.LookRight:
-                    _animator.Play("DEATH");
+                    Animator.Play("DEATH");
                     gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
                     break;
             }
@@ -133,7 +132,10 @@ public class PlayerController : CreatureController
         // 대기 시간
         _rangedSkill = true;
         State = CreatureState.Skill;
-        yield return StartCoroutine(AdjustAnimation(AttackSpeed));
+        Animator.speed = AttackSpeed;
+        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
+        Animator.speed = 1.0f;
         State = CreatureState.Idle;
         _coSkill = null;
         CheckUpdatedFlag();
@@ -143,7 +145,10 @@ public class PlayerController : CreatureController
         // 대기 시간
         _rangedSkill = false;
         State = CreatureState.Skill;
-        yield return StartCoroutine(AdjustAnimation(AttackSpeed));
+        Animator.speed = AttackSpeed;
+        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
+        Animator.speed = 1.0f;
         State = CreatureState.Idle;
         _coSkill = null;
         CheckUpdatedFlag();

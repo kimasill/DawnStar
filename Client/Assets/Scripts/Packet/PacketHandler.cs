@@ -393,6 +393,7 @@ class PacketHandler
         if (Managers.Object.MyPlayer != null)
         {
             Managers.Object.MyPlayer.Equipment.SetItemInSlot(item);
+            gameSceneUI.GameWindow.SkillSlot.SetSkill(item);
             Managers.Object.MyPlayer.RefreshAdditionalStat();
         }            
     }
@@ -428,9 +429,11 @@ class PacketHandler
     public static void S_ChangeExpHandler(PacketSession session, IMessage packet)
     {        
         S_ChangeExp expPacket = (S_ChangeExp)packet;
-        Managers.Object.MyPlayer.Exp += expPacket.Exp;
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-        gameSceneUI.NotificationUI.ShowExpNoti(expPacket.Exp);
+
+        int exp = expPacket.Exp - Managers.Object.MyPlayer.Exp;
+        Managers.Object.MyPlayer.Exp = expPacket.Exp;
+        gameSceneUI.NotificationUI.ShowExpNoti(exp);
     }
 
     public static void S_PingHandler(PacketSession session, IMessage packet)

@@ -199,9 +199,4 @@ public class UI_ItemDescription : UI_Popup
 
         _itemPopup.GetComponent<RectTransform>().localPosition = localPoint;
     }
-
-    public override void ClosePopupUI()
-    {
-        _itemPopup.SetActive(false);
-    }
 }

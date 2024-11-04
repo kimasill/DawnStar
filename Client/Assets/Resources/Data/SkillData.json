@@ -48,6 +48,7 @@
         "range": "2.0"
       },
       "prefab": "Effect/Crossslash",
+      "icon": "Images/Icons/Skill/Crossslash",
       "unchartedPoint": "5",
       "description": "정면의 적을 두차례 찔러 피해를 준다."
     },

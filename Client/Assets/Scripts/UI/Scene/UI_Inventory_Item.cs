@@ -33,6 +33,8 @@ public class UI_Inventory_Item : UI_Base, IPointerEnterHandler, IPointerExitHand
     Item _item = null;
     public override void Init()
     {
+        gameObject.BindEvent(OnPointerEnter, Define.UIEvent.MouseOver);
+        gameObject.BindEvent(OnPointerExit, Define.UIEvent.MouseOut);
         //클릭했을때 패킷
         gameObject.BindEvent((e) =>
         {
@@ -57,9 +59,6 @@ public class UI_Inventory_Item : UI_Base, IPointerEnterHandler, IPointerExitHand
                 Managers.Network.Send(equipItemPacket);
             }
         });
-
-        gameObject.BindEvent(OnPointerEnter, Define.UIEvent.MouseOver);
-        gameObject.BindEvent(OnPointerExit, Define.UIEvent.MouseOut);
     }
 
     public void SetItem(Item item)
@@ -74,6 +73,7 @@ public class UI_Inventory_Item : UI_Base, IPointerEnterHandler, IPointerExitHand
             _itemCount.gameObject.SetActive(false);
             _icon.gameObject.SetActive(false);
             _frame.gameObject.SetActive(false);
+            return;
         }
         _item = item;
         //아이템 정보 저장 : 슬롯에 세팅 시 
