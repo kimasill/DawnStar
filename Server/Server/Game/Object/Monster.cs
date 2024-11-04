@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -355,13 +356,15 @@ namespace Server.Game
             DataManager.MonsterDict.TryGetValue(TemplateId, out monsterData);
             if (owner.ObjectType == GameObjectType.Player)
             {
+                Player player = (Player)owner;
+                DbTransaction.ExpNoti(player, Stat.TotalExp);
+
                 List<ItemRewardData> rewardData = ItemLogic.GetRandomReward(monsterData.rewards);
                 if (rewardData != null)
                 {
                     foreach (var item in rewardData)
                     {
-                        int count = ItemLogic.GetRewardCount(item);
-                        Player player = (Player)owner;
+                        int count = ItemLogic.GetRewardCount(item);                        
                         S_DropItem dropItemPacket = new S_DropItem()
                         {
                             TemplateId = item.itemId,
@@ -369,14 +372,8 @@ namespace Server.Game
                             Position = PosInfo
                         };
                         room.Push(room.DropItem, player, dropItemPacket);
-                        DbTransaction.ExpNoti(player, Stat.TotalExp);
-                        S_ChangeExp changeExpPacket = new S_ChangeExp()
-                        {
-                            Exp = Stat.TotalExp
-                        };
-                        player.Session.Send(changeExpPacket);
-                    }                    
-                }
+                    }                                        
+                }                
             }
             
             room.PushAfter(1100, () =>

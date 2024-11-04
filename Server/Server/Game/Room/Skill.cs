@@ -55,23 +55,33 @@ namespace Server.Game
         }
         public bool HandleSkillCool(SkillData skillData, bool attackSpeed)
         {
+            bool coolDown = true;
             if (_skillCooldowns.TryGetValue(skillData.id, out long cooldownEnd))
             {
                 if (cooldownEnd > Environment.TickCount64)
                 {
                     // 쿨타임이 끝나지 않았음
-                    return false;
+                    coolDown = false;
                 }
             }
-            if (attackSpeed)
+            if (coolDown)
             {
-                _skillCooldowns[skillData.id] = (long)(Environment.TickCount64 + 1000 / Owner.TotalAttackSpeed);
+                if (attackSpeed)
+                {
+                    _skillCooldowns[skillData.id] = (long)(Environment.TickCount64 + 1000 / Owner.TotalAttackSpeed);
+                }
+                else _skillCooldowns[skillData.id] = (long)(Environment.TickCount64 + skillData.coolTime);
             }
-            else
+            if(Owner is Player)
             {
-                _skillCooldowns[skillData.id] = (long)(Environment.TickCount64 + skillData.coolTime);
+                Room.Push(() => 
+                (Owner as Player).Session.Send (new S_SkillCool()
+                {
+                    SkillId = skillData.id,
+                    CoolTime = (int)(_skillCooldowns[skillData.id] - Environment.TickCount64)
+                }));
             }
-            return true;
+            return coolDown;
         }
 
         public void HandleAttackSkill()

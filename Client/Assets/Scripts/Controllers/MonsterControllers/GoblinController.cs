@@ -11,7 +11,7 @@ public class GoblinController : MonsterController
     }
     protected override void UpdateAnimation()
     {
-        if (_animator == null)
+        if (Animator == null)
         {
             return;
         }
@@ -27,9 +27,9 @@ public class GoblinController : MonsterController
                     break;
             }
             if (_skillId == 1)
-                _animator.Play("ATTACK");
+                Animator.Play("ATTACK");
             else if (_skillId == 9)
-                _animator.Play("ATTACK_STRONG");
+                Animator.Play("ATTACK_STRONG");
         }
         else
         {

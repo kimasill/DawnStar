@@ -107,10 +107,13 @@ namespace Server.DB
             int? slot = player.Inven.GetSlot(itemData.id, count);            
             if (slot == null)
                 return;
-            if (player.Inven.GetItemCount(itemData.id) + count > player.MaxPotion && (itemData as ConsumableData).consumableType == ConsumableType.Potion)
+            if(itemData.itemType == ItemType.Consumable)
             {
-                //포션 최대 개수 초과 로직
-                return;
+                if((itemData as ConsumableData).consumableType == ConsumableType.Potion && player.Inven.GetItemCount(itemData.id) + count > player.MaxPotion)
+                {
+                    //포션 최대 개수 초과 로직
+                    return;
+                }
             }
             ItemDb itemDb = new ItemDb()
             {
@@ -183,17 +186,21 @@ namespace Server.DB
                                 .Where(i => i.TemplateId == itemDb.TemplateId && i.OwnerDbId == player.PlayerDbId)
                                 .FirstOrDefault();
                         }
-                        if (tItemDb.Count > remainingCount)
+                        if (tItemDb != null)
                         {
-                            // Count를 감소시킨다.
-                            tItemDb.Count -= remainingCount;
-                            remainingCount = 0;
-                        }
-                        else
-                        {
-                            // Count가 0 이하가 되면 아이템을 제거한다.
-                            remainingCount -= tItemDb.Count;
-                            db.Items.Remove(tItemDb);
+                            if (tItemDb.Count > remainingCount)
+                            {
+                                // Count를 감소시킨다.
+                                tItemDb.Count -= remainingCount;
+                                remainingCount = 0;
+                            }
+                            else
+                            {
+                                // Count가 0 이하가 되면 아이템을 제거한다.
+                                remainingCount -= tItemDb.Count;
+                                tItemDb.Count = 0;
+                                db.Items.Remove(tItemDb);
+                            }
                         }
 
                         bool success = db.SaveChangesEx(); // 저장할 때 예외 처리를 해준다.
@@ -204,15 +211,8 @@ namespace Server.DB
                                 Item iItem = player.Inven.Find(i => i.ItemDbId == tItemDb.ItemDbId);
                                 if (iItem != null)
                                 {
-                                    if (iItem.Count > remainingCount)
-                                    {
-                                        int rCount = iItem.Count - remainingCount;
-                                        player.Inven.UpdateItem(iItem.ItemDbId, rCount);
-                                    }
-                                    else
-                                    {
-                                        player.Inven.Remove(iItem.ItemDbId);
-                                    }
+                                    iItem.Count = tItemDb.Count;                              
+                                    player.Inven.UpdateItem(iItem.ItemDbId, iItem.Count);
                                 }
                                 Item rItem = Item.MakeItem(tItemDb);
                                 //client noti

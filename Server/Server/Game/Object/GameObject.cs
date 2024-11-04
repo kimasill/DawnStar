@@ -38,7 +38,7 @@ namespace Server.Game
         public int Hp
         {
             get { return Stat.Hp; }
-            set { Stat.Hp = Math.Clamp(value, 0, Stat.Hp); }
+            set { Stat.Hp = Math.Clamp(value, 0, Stat.MaxHp); }
         }
         public MoveDir Dir
         {

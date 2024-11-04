@@ -210,10 +210,10 @@ namespace Server.Game
                 if (option.Key == "Heal")
                 {
                     int healAmount = int.Parse(option.Value);
-                    player.Hp = Math.Min(player.Stat.MaxHp, player.Stat.Hp + healAmount);
+                    player.Hp = player.Stat.Hp + healAmount;
                     S_ChangeHp changeHpPacket = new S_ChangeHp()
                     {
-                        ObjectId = player.PlayerDbId,
+                        ObjectId = player.Id,
                         Hp = player.Hp
                     };
                     Broadcast(player.CellPos, changeHpPacket);

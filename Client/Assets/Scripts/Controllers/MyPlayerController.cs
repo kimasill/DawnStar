@@ -19,6 +19,8 @@ public class MyPlayerController : PlayerController
     private ChestController _chestController;
     public CameraController CameraController { get; private set; }
 
+    public KeyCode[] SkillKeys { get; private set;} = new KeyCode[4];
+
     public int Gold
     {
         get { return Stat.Gold; }
@@ -58,7 +60,10 @@ public class MyPlayerController : PlayerController
         if (_cameraController != null)
         {
             _cameraController.SetTarget(transform);
-        }       
+        }
+        SkillKeys[0] = KeyCode.E;
+        SkillKeys[1] = KeyCode.R;
+        SkillKeys[2] = KeyCode.F;
     }
 
     protected override void UpdateController() 
@@ -155,8 +160,6 @@ public class MyPlayerController : PlayerController
         else if (Input.GetKeyDown(KeyCode.Alpha4))
             GameScene.GameWindow.QuickSlot.UseItem(3);
 
-
-
         if (Input.mouseScrollDelta.y != 0)
         {
             if (GameScene.MapUI == null)
@@ -204,10 +207,26 @@ public class MyPlayerController : PlayerController
         }
     }
     private bool _isAttacking = false;
-    protected override void UpdateIdle()
-    {        
-        if (_isAttacking)
+
+    protected override void UpdateSkill()
+    {
+        if (State == CreatureState.Stiff || State == CreatureState.Dead)
             return;
+        for(int i = 0; i < SkillKeys.Length; i ++)
+        {
+            if (Input.GetKeyDown(SkillKeys[i]))
+            {
+                _isAttacking = true;
+                SkillData skill = GameScene.GameWindow.SkillSlot.GetSkill(i);
+                C_Skill skillPacket = new C_Skill() { Info = new SkillInfo() };
+                skillPacket.Info.SkillId = skill.id;
+                Managers.Network.Send(skillPacket);
+                StartCoroutine(WaitAnimationRunningTime(() => _isAttacking = false));
+            }
+        }
+    }
+    protected override void UpdateIdle()
+    {
         if (State == CreatureState.Stiff || State == CreatureState.Dead)
             return;
         _updated = true;
@@ -219,6 +238,22 @@ public class MyPlayerController : PlayerController
             return;
         }
 
+        for (int i = 0; i < SkillKeys.Length; i++)
+        {
+            if (Input.GetKeyDown(SkillKeys[i]))
+            {
+                _isAttacking = true;
+                SkillData skill = GameScene.GameWindow.SkillSlot.GetSkill(i);
+                C_Skill skillPacket = new C_Skill() { Info = new SkillInfo() };
+                skillPacket.Info.SkillId = skill.id;
+                Managers.Network.Send(skillPacket);
+                StartCoroutine(WaitAnimationRunningTime(() => _isAttacking = false));
+            }
+        }
+
+        if (_isAttacking)
+            return;
+
         // 스킬 상태로 갈지 확인
         if (Input.GetKey(KeyCode.Space))
         {
@@ -227,17 +262,9 @@ public class MyPlayerController : PlayerController
             //TODO: 무기따라 ID선택
             C_Skill skill = new C_Skill() { Info = new SkillInfo()};
             skill.Info.SkillId = 1;
-            Managers.Network.Send(skill); 
-            
-            _coInputCooltime = StartCoroutine(CoInputCooltime(_attackTime));
+            Managers.Network.Send(skill);
+            StartCoroutine(WaitAnimationRunningTime(() => _isAttacking = false));
         }
-    }
-    Coroutine _coInputCooltime;
-    
-    IEnumerator CoInputCooltime(float time)
-    {
-        yield return new WaitForSeconds(time);
-        _isAttacking = false;
     }
 
     protected override void MoveToNextPos()

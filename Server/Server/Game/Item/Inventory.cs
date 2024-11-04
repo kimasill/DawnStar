@@ -51,7 +51,15 @@ namespace Server.Game
             Item item = Get(itemId);
             if (item != null)
             {
-                item.Count = count;
+                if(item.Count > 0)
+                {
+                    item.Count = count;
+                }                    
+                else if (item.Count <= 0)
+                {
+                    Remove(itemId);
+                    return;
+                }
             }
         }
 
@@ -167,16 +175,17 @@ namespace Server.Game
             if(slot == null)
                 return;
 
+            int remainingCount = count - GetInvenProperty(templateId);
+            int amount = (int)MathF.Abs(remainingCount);
+
             ItemDb itemDb = new ItemDb()
             {
                 TemplateId = templateId,
-                Count = count,
+                Count = amount,
                 OwnerDbId = player.PlayerDbId,
                 Slot = slot.Value
             };
-
-            int remainingCount = count - GetInvenProperty(templateId);
-            if(remainingCount > 0)
+            if (remainingCount > 0)
             {
                 DbTransaction.SaveItemDB(player, itemDb, player.Room);
             }

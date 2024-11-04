@@ -11,7 +11,7 @@ public class OrcController : MonsterController
     }
     protected override void UpdateAnimation()
     {
-        if (_animator == null)
+        if (Animator == null)
         {
             return;
         }
@@ -27,7 +27,7 @@ public class OrcController : MonsterController
                     break;
             }
             if (_skillId == 1)
-                _animator.Play("ATTACK");
+                Animator.Play("ATTACK");
             else if (_skillId == 10)
             {
                 PlaySkill10Animation();
@@ -42,17 +42,17 @@ public class OrcController : MonsterController
     private IEnumerator PlaySkill10Animation()
     {
         // 첫 번째 애니메이션 실행
-        _animator.Play("ATTACK_SPIN_START");
+        Animator.Play("ATTACK_SPIN_START");
         // 첫 번째 애니메이션이 끝날 때까지 대기
-        yield return new WaitForSeconds(_animator.GetCurrentAnimatorStateInfo(0).length);
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
 
         // 두 번째 애니메이션 실행 (2초간)
-        _animator.Play("ATTACK_SPIN_LOOP");
+        Animator.Play("ATTACK_SPIN_LOOP");
         yield return new WaitForSeconds(2.0f);
 
         // 세 번째 애니메이션 실행
-        _animator.Play("ATTACK_SPIN_END");
+        Animator.Play("ATTACK_SPIN_END");
         // 세 번째 애니메이션이 끝날 때까지 대기
-        yield return new WaitForSeconds(_animator.GetCurrentAnimatorStateInfo(0).length);
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
     }
 }

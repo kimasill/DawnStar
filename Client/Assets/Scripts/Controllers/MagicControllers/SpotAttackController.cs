@@ -12,6 +12,6 @@ public class SpotAttackController : BaseController
 
     protected override void UpdateAnimation()
     {
-        _animator.Play("START");
+        Animator.Play("START");
     }
 }

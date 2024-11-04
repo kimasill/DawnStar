@@ -15,22 +15,23 @@ public class SkillController : MonoBehaviour
     {
         SkillData = skillData;
         User = user.GetComponent<CreatureController>();
-        _animator = User.GetComponent<Animator>();
         _sprite = User.GetComponent<SpriteRenderer>();
+        _animator = GetComponent<Animator>();
     }
     public void ExecuteSkill()
     {
         if (SkillData == null || User == null)
-            return;        
+            return;
+
+        User.Animator.StopPlayback(); // Stop the current animation
         UpdateAnimation();
-        Destroy(this);
+        Managers.Resource.Destroy(gameObject);
     }
 
     public IEnumerator UpdateAnimation()
     {
         _animator.speed = User.TotalAttackSpeed;
-
-        if(User.PosInfo.LookDir == LookDir.LookLeft)
+        if (User.PosInfo.LookDir == LookDir.LookLeft)
         {
             transform.localPosition = new Vector3(-SkillData.shape.range, 0, 0);
             _sprite.flipX = true;
@@ -43,7 +44,6 @@ public class SkillController : MonoBehaviour
 
         _animator.Play("START");
         yield return new WaitForSeconds(0.01f);
-        yield return new WaitForSeconds(_animator.GetCurrentAnimatorStateInfo(0).length);
-        _animator.speed = 1.0f;
+        yield return new WaitForSeconds(User.Animator.GetCurrentAnimatorStateInfo(0).length);
     }
 }
