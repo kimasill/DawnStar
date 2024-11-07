@@ -40,6 +40,7 @@ namespace Server.Game
             Stat.Hp = monsterData.stat.MaxHp;
             Stat.Hp = monsterData.stat.MaxHp;
             State = CreatureState.Idle;
+            Skill = new Skill(this);            
             if(MonsterType == MonsterType.Flying)
             {
                 IsFlying = true;
@@ -65,6 +66,7 @@ namespace Server.Game
                     monster = new Monster(monsterData);
                     break;
             }
+            monster.ObjectType = GameObjectType.Monster;
             monster.Id = ObjectManager.Instance.GenerateId(GameObjectType.Monster);
             return monster;
         }
@@ -92,7 +94,6 @@ namespace Server.Game
                     UpdateDead();
                     break;
             }
-
             if(Room != null)
             {
                 _job = Room.PushAfter(200, Update);
@@ -153,7 +154,7 @@ namespace Server.Game
                 return;
             }
 
-            List<Vector2Int> path = Room.Map.FindPath(CellPos, _target.CellPos, checkObjects: !IsFlying);
+            List<Vector2Int> path = Room.Map.FindPath(CellPos, _target.CellPos);
             if (path.Count < 2 || path.Count > _chaseRange)
             {
                 _target = null;
@@ -168,6 +169,7 @@ namespace Server.Game
                 State = CreatureState.Skill;
                 return;
             }
+            UpdateDir(path[1]);
             Room.Map.ApplyMove(this, path[1]);
             BroadcastMove();
         }
@@ -204,7 +206,7 @@ namespace Server.Game
                 BroadcastMove();
                 return;
             }
-            List<Vector2Int> path = Room.Map.FindPath(CellPos, _dest, checkObjects: !IsFlying);
+            List<Vector2Int> path = Room.Map.FindPath(CellPos, _dest);
             if (path.Count < 2 || path.Count > _chaseRange)
             {
                 _target = null;
@@ -213,7 +215,7 @@ namespace Server.Game
                 return;
             }
             UpdateDir(path[1]);
-            Room.Map.ApplyMove(this, path[1], false,false);
+            Room.Map.ApplyMove(this, path[1], checkObjects:false);
 
             BroadcastMove();
         }
@@ -275,7 +277,7 @@ namespace Server.Game
 
                 //쿨타임
                 int coolTick = (int)(skillData.coolTime * 1000);
-                _coolTick += Environment.TickCount64 + coolTick;
+                _coolTick = Environment.TickCount64 + coolTick;
             }
             if (_coolTick > Environment.TickCount64)
                 return;
@@ -287,10 +289,16 @@ namespace Server.Game
             {
                 _stiffEndTick = Environment.TickCount64 + 1000;
             }
+
             if (_stiffEndTick > Environment.TickCount64)
+            {
                 return;
+            }
+
+            // 1초가 지나면 Idle 상태로 전환
             _stiffEndTick = 0;
             State = CreatureState.Idle;
+            BroadcastMove();
         }
         protected virtual void UpdateDead() { }
 

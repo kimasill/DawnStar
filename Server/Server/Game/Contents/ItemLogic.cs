@@ -12,20 +12,18 @@ namespace Server.Game
         public static List<ItemRewardData> GetRandomReward(List<ItemRewardData> rewards)
         {
             int rand = new Random().Next(0, 101);
-            int sum = 0;
+            
             List<ItemRewardData> itemsToAdd = new List<ItemRewardData>();
 
             foreach (ItemRewardData rewardData in rewards)
             {
-                sum += rewardData.probability;
-                if (rand <= sum)
+                if (rand <= rewardData.probability)
                 {
                     itemsToAdd.Add(rewardData);
                 }
             }
 
-            rewards.AddRange(itemsToAdd);
-            return rewards;
+            return itemsToAdd;
         }
 
         public static int GetRewardCount(ItemRewardData rewardData)

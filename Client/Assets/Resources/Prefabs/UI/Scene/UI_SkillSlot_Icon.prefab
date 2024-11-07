@@ -244,7 +244,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _skillIcon: {fileID: 8610646366648947388}
-  _keyText: {fileID: 0}
+  _cooldownImage: {fileID: 8610646366648947388}
+  KeyText: {fileID: 7370319499849047388}
+  IsInit: 0
 --- !u!1 &8369941315772568052
 GameObject:
   m_ObjectHideFlags: 0

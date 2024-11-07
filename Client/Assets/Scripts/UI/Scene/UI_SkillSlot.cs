@@ -20,6 +20,11 @@ public class UI_SkillSlot : UI_Base
         SkillSlots.Add(0, _weaponSkill);
         SkillSlots.Add(1, _helmetSkill);
         SkillSlots.Add(2, _ringSkill);
+        foreach (var skillSlot in SkillSlots)
+        {
+            if(skillSlot.Value.IsInit == false)
+                skillSlot.Value.Init();
+        }
         RefreshUI();
     }
 
@@ -27,7 +32,6 @@ public class UI_SkillSlot : UI_Base
     {
         for(int i = 0; i<SkillSlots.Count; i++)
         {
-            SkillSlots[i].KeyText.text = Managers.Object.MyPlayer.SkillKeys[i].ToString();
             if(SkillSlots[i].SkillData == null)
             {
                 SkillSlots[i].ClearSlot();
@@ -35,6 +39,36 @@ public class UI_SkillSlot : UI_Base
             else
             {
                 SkillSlots[i].gameObject.SetActive(true);
+            }
+        }
+        if (Managers.Object.MyPlayer)
+        {
+            foreach (var item in Managers.Inventory.Items)
+            {
+                if (item.Value.Options.ContainsKey("Skill") && item.Value.Equipped)
+                {
+                    if (item.Value is Item.Weapon)
+                    {
+                        _weaponSkill.KeyText.text = Managers.Object.MyPlayer.SkillKeys[0].ToString();
+                        if(_weaponSkill.KeyText.text == "None")
+                            _weaponSkill.KeyText.text = "E";
+                    }
+                    else if (item.Value is Item.Armor)
+                    {
+                        if (((Item.Armor)item.Value).ArmorType == ArmorType.Helmet)
+                            _helmetSkill.KeyText.text = Managers.Object.MyPlayer.SkillKeys[1].ToString();
+                        if (_helmetSkill.KeyText.text == "None")
+                            _helmetSkill.KeyText.text = "R";
+                    }
+                    else if (item.Value is Item.Jewelry)
+                    {
+                        if (((Item.Jewelry)item.Value).JewelryType == JewelryType.Ring)
+                            _ringSkill.KeyText.text = Managers.Object.MyPlayer.SkillKeys[2].ToString();
+                        if (_ringSkill.KeyText.text == "None")
+                            _ringSkill.KeyText.text = "F";
+                    }
+                    SetSkill(item.Value);
+                }                
             }
         }
     }
@@ -84,5 +118,16 @@ public class UI_SkillSlot : UI_Base
     public SkillData GetSkill(int index)
     {        
         return SkillSlots[index].SkillData;
+    }
+
+    public void StartCooldown(int skillId, float cooldownTime)
+    {
+        foreach (var skillSlot in SkillSlots)
+        {
+            if (skillSlot.Value.SkillData != null && skillSlot.Value.SkillData.id == skillId)
+            {
+                skillSlot.Value.StartCooldown(cooldownTime);
+            }
+        }
     }
 }

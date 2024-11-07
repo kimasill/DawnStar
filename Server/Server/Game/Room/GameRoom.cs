@@ -115,7 +115,7 @@ namespace Server.Game
 
                 _players.Add(gameObject.Id, player);
                 player.Room = this;
-
+                player.IsDead = false;
 
                 player.RefreshAdditionalStat();
 
@@ -130,7 +130,7 @@ namespace Server.Game
                     return;
                 }
                 zone.Players.Add(player);
-
+                player.Vision.Update();
                 // 본인한테 정보 전송
                 {
                     S_EnterGame enterPacket = new S_EnterGame();
@@ -143,16 +143,13 @@ namespace Server.Game
                     {
                         Console.WriteLine("Error: player.Session is null");
                     }
-
-                    player.Vision.Update();
                 }
             }
             else if (type == GameObjectType.Monster)
             {
                 Monster monster = gameObject as Monster;
                 _monsters.Add(gameObject.Id, monster);
-                monster.Room = this;
-
+                monster.Room = this;                
                 var zone = GetZone(monster.CellPos);
                 if (zone == null)
                 {
@@ -160,7 +157,7 @@ namespace Server.Game
                     return;
                 }
                 zone.Monsters.Add(monster);
-                Console.WriteLine($"Monster Id:{monster.Id} Pos:{monster.CellPos} Added");
+                Console.WriteLine($"Monster Id:{monster.Id} Type:{monster.MonsterType} Pos:{monster.CellPos} Added");
                 Map.ApplyMove(monster, new Vector2Int(monster.CellPos.x, monster.CellPos.y));
 
                 monster.Update();

@@ -39,6 +39,8 @@ public class ObjectManager
 				MyPlayer.Stat.MergeFrom(info.StatInfo);			            				
                 MyPlayer.SyncPos();
                 Managers.Inventory.RefreshEquipment(MyPlayer.Equipment);
+                UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+                gameSceneUI.GameWindow.SkillSlot.RefreshUI();
             }
             else
             {
@@ -67,14 +69,45 @@ public class ObjectManager
         }
 		else if(type == GameObjectType.Projectile)
         {
-            GameObject go = Managers.Resource.Instantiate("Creature/Arrow");
+            GameObject go = null;
+            Managers.Data.SkillDict.TryGetValue(info.TemplateId, out SkillData skillData);
+            if (skillData != null)
+            {
+                go = Managers.Resource.Instantiate($"{skillData.projectile.prefab}");
+            }
+            else
+            {
+                go = Managers.Resource.Instantiate("Projectile/Arrow");
+            }
+            if (go == null)
+                return;
             go.name = info.Name;
             _objects.Add(info.ObjectId, go);
 
-            ArrowController ac = go.GetComponent<ArrowController>();
-			ac.PosInfo = info.Position;
-			ac.Stat = info.StatInfo;			
-            ac.SyncPos();
+            BaseController bc = go.GetComponent<BaseController>();
+            bc.PosInfo = info.Position;
+            bc.Stat = info.StatInfo;
+            bc.SyncPos();
+        }
+        else if(type == GameObjectType.Magic)
+        {
+            GameObject go = null;
+            Managers.Data.SkillDict.TryGetValue(info.TemplateId, out SkillData skillData);
+            if (skillData != null)
+            {
+                go = Managers.Resource.Instantiate($"{skillData.prefab}");
+            }
+            else
+            {
+                go = Managers.Resource.Instantiate("Magic/PoisonShock");
+            }
+            go.name = info.Name;
+            _objects.Add(info.ObjectId, go);
+
+            MagicController mc = go.GetComponent<MagicController>();
+            mc.Id = info.ObjectId;
+            mc.PosInfo = info.Position;
+            mc.SyncPos();
         }
         else if(type == GameObjectType.Item)
         {
@@ -155,7 +188,11 @@ public class ObjectManager
 
 	public GameObject FindCreature(Vector3Int cellPos)
 	{
-		foreach (GameObject obj in _objects.Values)
+        if(_objects == null)
+        {
+            return null;
+        }
+        foreach (GameObject obj in _objects.Values)
 		{
 			CreatureController cc = obj.GetComponent<CreatureController>();
 			if (cc == null)

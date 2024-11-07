@@ -43,19 +43,18 @@ public class UI_StateBar : UI_Base
     public void SetInfo()
     {
         _myPlayer = Managers.Object.MyPlayer;
-        Managers.Data.StatDict.TryGetValue(_myPlayer.Stat.Level, out StatData nextStat);
+        Managers.Data.StatDict.TryGetValue(_myPlayer.Stat.Level + 1, out StatData nextStat);
         if (nextStat != null)
         {
             _nextExp = nextStat.TotalExp;
         }
 
-        Managers.Data.StatDict.TryGetValue(_myPlayer.Stat.Level - 1, out StatData prevStat);
+        Managers.Data.StatDict.TryGetValue(_myPlayer.Stat.Level, out StatData prevStat);
         if (prevStat != null)
         {
             _prevExp = prevStat.TotalExp;
         }
     }
-
     public void UpdateExpBar()
     {
         if (_expBar == null)

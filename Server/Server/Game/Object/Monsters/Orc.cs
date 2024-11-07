@@ -46,8 +46,9 @@ namespace Server.Game
                     return;
                 }
                 //스킬 사용 가능한지
+
                 Vector2Int dir = _target.CellPos - CellPos;
-                int dist = dir.cellDistanceFromZero;
+                float dist = dir.cellDistanceFromZero;
                 bool canUseSkill = dist <= _skillRange && (dir.x == 0 || dir.y == 0);
                 if (canUseSkill == false)
                 {
@@ -72,14 +73,18 @@ namespace Server.Game
                     S_ChangePosition changePacket = new S_ChangePosition();
                     changePacket.ObjectId = Id;
                     Vector2Int targetDir = _target.CellPos - CellPos;
-                    float minAbs = Math.Min(targetDir.cellDistanceFromZero, 3);
+                    float minAbs = Math.Min(targetDir.magnitude, 3);
                     Vector2Int moveDir = targetDir.normalized;
 
                     Task.Run(async () =>
                     {
+                        // 첫 데미지를 주기 전에 0.5초 대기
+                        await Task.Delay(500);
+
                         for (int i = 0; i < 3; i++)
                         {
-                            if (_target != null && _target.CellPos.cellDistanceFromZero <= skillData.shape.range)
+                            Vector2Int targetDir = _target.CellPos - CellPos;
+                            if (_target != null && targetDir.magnitude <= skillData.shape.range)
                             {
                                 int damage = _target.OnDamaged(this, skillData.damage + TotalAttack);
                                 Hp += damage / 2;
@@ -87,19 +92,24 @@ namespace Server.Game
 
                             // 타겟 방향으로 이동
                             CellPos += moveDir;
-                            changePacket.Position = PosInfo;
+                            changePacket.Position = PosInfo;   
                             Room.Broadcast(CellPos, changePacket);
                             await Task.Delay(1000);
                         }
                     });
-
                     coolTick = (int)(1000 / TotalAttackSpeed) * 3;
                 }
                 else
                 {
-                    AttackBySkill(1);
+                    SkillData skillData = null;
+                    DataManager.SkillDict.TryGetValue(1, out skillData);
+                    S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
+                    skillPacket.ObjectId = Id;
+                    skillPacket.Info.SkillId = skillData.id;
+                    Room.Broadcast(CellPos, skillPacket);
+                    Skill.StartSkill(this, skillData, target:_target, range:2);
                 }
-                _coolTick += Environment.TickCount64 + coolTick;
+                _coolTick = Environment.TickCount64 + coolTick;
             }
             if (_coolTick > Environment.TickCount64)
                 return;

@@ -218,6 +218,8 @@ public class MyPlayerController : PlayerController
             {
                 _isAttacking = true;
                 SkillData skill = GameScene.GameWindow.SkillSlot.GetSkill(i);
+                if (skill == null)
+                    return;
                 C_Skill skillPacket = new C_Skill() { Info = new SkillInfo() };
                 skillPacket.Info.SkillId = skill.id;
                 Managers.Network.Send(skillPacket);
@@ -244,6 +246,8 @@ public class MyPlayerController : PlayerController
             {
                 _isAttacking = true;
                 SkillData skill = GameScene.GameWindow.SkillSlot.GetSkill(i);
+                if (skill == null)
+                    return;
                 C_Skill skillPacket = new C_Skill() { Info = new SkillInfo() };
                 skillPacket.Info.SkillId = skill.id;
                 Managers.Network.Send(skillPacket);

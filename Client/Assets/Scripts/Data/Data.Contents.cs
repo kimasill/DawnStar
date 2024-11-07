@@ -75,7 +75,6 @@ namespace Data
         public bool isHoming;
         public int maxCount;
         public int minCount;
-        public string prefab;
     }
     public class BuffInfo
     {

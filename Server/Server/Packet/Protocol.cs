@@ -344,7 +344,7 @@ namespace Google.Protobuf.Protocol {
   }
 
   public enum SkillLogicType {
-    [pbr::OriginalName("BASICATTACK")] Basicattack = 0,
+    [pbr::OriginalName("BASICATTACK")] BasicAttack = 0,
     [pbr::OriginalName("MAGICBALL")] Magicball = 1,
     [pbr::OriginalName("SPOTATTACK")] Spotattack = 2,
     [pbr::OriginalName("KNOCKBACK")] Knockback = 3,

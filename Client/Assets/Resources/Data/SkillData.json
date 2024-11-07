@@ -6,6 +6,7 @@
       "coolTime": "1",
       "damage": "10",
       "skillType": "SkillAttack",
+      "skillLogicType": "BasicAttack",
       "shape": {
         "shapeType": "ShapeBent",
         "range": "2.0"
@@ -48,7 +49,7 @@
         "range": "2.0"
       },
       "prefab": "Effect/Crossslash",
-      "icon": "Images/Icons/Skill/Crossslash",
+      "icon": "Textures/Images/Icons/Skill/Crossslash",
       "unchartedPoint": "5",
       "description": "정면의 적을 두차례 찔러 피해를 준다."
     },
@@ -118,7 +119,8 @@
       "name": "강공",
       "coolTime": "5",
       "damage": "40",
-      "skillType": "SkillAttack",
+      "skillType": "SkillAttack",   
+      "skillLogicType": "BasicAttack",
       "shape": {
         "shapeType": "ShapeRect",
         "range": "2.0"
@@ -149,7 +151,8 @@
       "projectile": {
         "speed": "5.0",
         "range": "7",
-        "prefab": "Effect/PoisonExplosion"
+        "prefab": "Effect/PoisonExplosion",
+        "isHoming": "false"
       },
       "debuff": {
         "id": "1",

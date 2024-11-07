@@ -101,7 +101,6 @@ public class CreatureController : BaseController
         if (skillData == null)
             return;
 
-        State = CreatureState.Skill;
         if (skillData.skillType == SkillType.SkillAttack) _animation = "ATTACK";
         else if (skillData.skillType == SkillType.SkillBuff) _animation = "BUFF";
         else if (skillData.skillType == SkillType.SkillProjectile) _animation = "PROJECTILE";
@@ -110,7 +109,7 @@ public class CreatureController : BaseController
         if (skillController == null)
             return;
         skillController.Init(skillData, gameObject);
-        skillController.ExecuteSkill();
+        StartCoroutine(skillController.ExecuteSkill());
     }
 
     public bool IsPlayingDieAnimation()

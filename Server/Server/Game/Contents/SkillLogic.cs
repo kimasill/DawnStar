@@ -12,27 +12,59 @@ namespace Server.Game
         public static List<Vector2Int> GetBentAttackTiles(Vector2Int center, LookDir lookDir, int range)
         {
             List<Vector2Int> tiles = new List<Vector2Int>();
-            int nX = 0;            
-            if (lookDir == LookDir.LookLeft)
-            {
-                nX = -1;
-            }
-            else if (lookDir == LookDir.LookRight)
-            {
-                nX = 1;
-            }
 
-
-            for (int x = 0; x <= range; x++)
+            // 스킬 범위 내의 타일 계산
+            for (int x = 0; x < range; x++)
             {
-                for (int y = -range/2; y <= range/2; y++)
+                for(int y = -range/2; y < range/2 + 1; y++)
                 {
-                    Vector2Int tile = new Vector2Int(center.x + x * nX, center.y + y);
+                    Vector2Int xOffset = GetOffsetByDirection(lookDir, x);
+                    Vector2Int yOffset = new Vector2Int(0, y);
+                    Vector2Int tile = center + xOffset + yOffset;
+                    tiles.Add(tile);                    
+                }
+            }
+
+            return tiles;
+        }
+        public static List<Vector2Int> GetRectAttackTiles(Vector2Int center, MoveDir moveDir, int range)
+        {
+            List<Vector2Int> tiles = new List<Vector2Int>();
+            Vector2Int start = center;
+
+            // 사각형의 중심을 이동
+            if (moveDir == MoveDir.Left || moveDir == MoveDir.Right)
+            {
+                start.x -= range / 2;
+            }
+            else if (moveDir == MoveDir.Up || moveDir == MoveDir.Down)
+            {
+                start.y -= range / 2;
+            }
+
+            // 사각형 범위 내의 타일 계산
+            for (int x = 0; x < range; x++)
+            {
+                for (int y = 0; y < range; y++)
+                {
+                    Vector2Int tile = start + new Vector2Int(x, y);
                     tiles.Add(tile);
                 }
             }
 
             return tiles;
+        }
+        private static Vector2Int GetOffsetByDirection(LookDir lookDir, int distance)
+        {
+            switch (lookDir)
+            {
+                case LookDir.LookLeft:
+                    return new Vector2Int(-distance, 0);
+                case LookDir.LookRight:
+                    return new Vector2Int(distance, 0);
+                default:
+                    return new Vector2Int(0, 0);
+            }
         }
 
         public static List<Vector2Int> GetRandomSpots(GameObject user, SkillData skillData, GameRoom room)

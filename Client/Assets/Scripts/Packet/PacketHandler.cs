@@ -12,6 +12,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEditor.Progress;
 using Random = UnityEngine.Random;
 
 
@@ -276,17 +277,23 @@ class PacketHandler
     public static void S_ChangePositionHandler(PacketSession session, IMessage packet)
     {
         S_ChangePosition changePosPacket = (S_ChangePosition)packet;
-        if(changePosPacket.Position.State == CreatureState.Skill)
+        GameObject go = Managers.Object.FindById(changePosPacket.ObjectId);
+        if (go == null)
         {
-            Managers.Object.MyPlayer.PosInfo.PosX = changePosPacket.Position.PosX;
-            Managers.Object.MyPlayer.PosInfo.PosY = changePosPacket.Position.PosY;
-            Managers.Object.MyPlayer.PosInfo.LookDir = changePosPacket.Position.LookDir;
-            Managers.Object.MyPlayer.UpdatePositionSmooth();
+            return;
+        }
+        CreatureController cc = go.GetComponent<CreatureController>();
+        if (changePosPacket.Position.State == CreatureState.Skill)
+        {
+            cc.PosInfo.PosX = changePosPacket.Position.PosX;
+            cc.PosInfo.PosY = changePosPacket.Position.PosY;
+            cc.PosInfo.LookDir = changePosPacket.Position.LookDir;
+            cc.UpdatePositionSmooth();
         }
         else
         {
-            Managers.Object.MyPlayer.PosInfo = changePosPacket.Position;
-            Managers.Object.MyPlayer.SyncPos();
+            cc.PosInfo = changePosPacket.Position;
+            cc.SyncPos();
         }
         
     }
@@ -324,6 +331,9 @@ class PacketHandler
             Managers.Object.MyPlayer.RefreshAdditionalStat();
             EquipmentController equipment = Managers.Object.MyPlayer.Equipment;
             Managers.Inventory.RefreshEquipment(equipment);
+
+            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+            gameSceneUI.GameWindow.SkillSlot.RefreshUI();
         }
     }
 
@@ -393,8 +403,8 @@ class PacketHandler
         if (Managers.Object.MyPlayer != null)
         {
             Managers.Object.MyPlayer.Equipment.SetItemInSlot(item);
-            gameSceneUI.GameWindow.SkillSlot.SetSkill(item);
             Managers.Object.MyPlayer.RefreshAdditionalStat();
+            gameSceneUI.GameWindow.SkillSlot.RefreshUI();
         }            
     }
 
@@ -527,5 +537,13 @@ class PacketHandler
         {
             chestController.gameObject.SetActive(true);
         }        
+    }
+
+    public static void S_SkillCoolHandler(PacketSession session, IMessage packet)
+    {
+        S_SkillCool skillCoolPacket = packet as S_SkillCool;
+        UI_GameScene ui = Managers.UI.SceneUI as UI_GameScene; 
+        Debug.Log($"SkillCool : {skillCoolPacket.SkillId} {skillCoolPacket.CoolTime}");
+        ui.GameWindow.SkillSlot.StartCooldown(skillCoolPacket.SkillId, skillCoolPacket.CoolTime);
     }
 }

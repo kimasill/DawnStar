@@ -26,11 +26,15 @@ public class OrcController : MonsterController
                     _sprite.flipX = false;
                     break;
             }
+
             if (_skillId == 1)
+            {
                 Animator.Play("ATTACK");
+            }                
             else if (_skillId == 10)
             {
-                PlaySkill10Animation();
+                StartCoroutine(PlaySkill10Animation());
+                _skillId = 0;
             }
         }
         else

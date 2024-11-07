@@ -57,9 +57,16 @@ namespace Server.Game
             SkillData skillData = null;
             if (DataManager.SkillDict.TryGetValue(skillPacket.Info.SkillId, out skillData) == false)
                 return;
-           
-            player.Skill.Owner = player;
-            if (!player.Skill.HandleSkillCool(skillData, true))
+            bool isCool;
+            if(skillPacket.Info.SkillId == 1)
+            {
+                isCool = player.Skill.HandleSkillCool(skillData, true);                
+            }
+            else
+            {
+                isCool = player.Skill.HandleSkillCool(skillData);
+            }
+            if (!isCool)
             {
                 return;
             }

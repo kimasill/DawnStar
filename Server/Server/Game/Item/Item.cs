@@ -1,4 +1,5 @@
-﻿using Google.Protobuf.Protocol;
+﻿using Google.Protobuf.Collections;
+using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.DB;
 using System;
@@ -43,7 +44,10 @@ namespace Server.Game
             get { return Info.Equipped; }
             set { Info.Equipped = value; }
         }
-        public Dictionary<string, string> Options { get; set; } = new Dictionary<string, string>();
+        public MapField<string, string> Options
+        {
+            get { return Info.Options; }
+        }
         public ItemType ItemType { get; private set; }
         public bool Stackable { get; protected set; }
 
@@ -86,10 +90,17 @@ namespace Server.Game
                 item.Count = itemDb.Count;     
                 item.Slot = itemDb.Slot;
                 item.Equipped = itemDb.Equipped;
-                if (itemDb.Options != null)
-                    item.Options = itemDb.Options;
+                MapField<string, string> options = new MapField<string, string>();
+                if (itemDb.Options.Count > 0)
+                {
+                    item.Options.Clear();
+                    foreach (var option in itemDb.Options)
+                    {
+                        options.Add(option.Key, option.Value);
+                    }
+                    item.Options.Add(options);
+                }                
             }
-
             return item;
         }
         public class Weapon : Item
