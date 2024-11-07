@@ -90,14 +90,14 @@ public class MapEditor : MonoBehaviour
             BoundsInt bounds = tmBase.cellBounds;
             int width = bounds.xMax - bounds.xMin + 1;
             int height = bounds.yMax - bounds.yMin + 1;
-            int[,] mapData = new int[width, height];
+            string[,] mapData = new string[width, height];
 
             // 모든 위치를 0으로 초기화
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    mapData[x, y] = 0;
+                    mapData[x, y] = "0";
                 }
             }
             foreach (Tilemap tilemap in monsterTilemaps)
@@ -116,7 +116,7 @@ public class MapEditor : MonoBehaviour
                                 pos.y - bounds.yMin,
                                 0
                             );
-                            mapData[cellPosition.x, cellPosition.y] = monsterId;
+                            mapData[cellPosition.x, cellPosition.y] = monsterId.ToString();
                             Debug.Log($"MonsterId: {monsterId}, Position: {cellPosition}");
                         }
                     }
@@ -127,7 +127,7 @@ public class MapEditor : MonoBehaviour
             SaveMapData(pathPrefix, fileName, mapData, bounds);
         }
     }
-    private static void SaveMapData(string pathPrefix, string fileName, int[,] mapData, BoundsInt bounds)
+    private static void SaveMapData(string pathPrefix, string fileName, string[,] mapData, BoundsInt bounds)
     {
         string filePath = Path.Combine(pathPrefix, $"{fileName}.txt");
 
@@ -143,6 +143,10 @@ public class MapEditor : MonoBehaviour
                 for (int x = bounds.xMin; x <= bounds.xMax; x++)
                 {
                     writer.Write(mapData[x - bounds.xMin, y - bounds.yMin]);
+                    if (x < bounds.xMax)
+                    {
+                        writer.Write(","); // 쉼표를 구분자로 사용
+                    }
                 }
                 writer.WriteLine();
             }

@@ -2,6 +2,7 @@
 using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using static Define;
@@ -124,9 +125,32 @@ public class PlayerController : CreatureController
         }
         else
         {
-            base.UseSkill(skillId);
+            _coSkill = StartCoroutine("CoStartSkill", skillId);
         }
-	}
+    }
+    private IEnumerator CoStartSkill(int skillId)
+    {
+        _rangedSkill = false;
+        SkillData skillData = null;
+        Managers.Data.SkillDict.TryGetValue(skillId, out skillData);
+        if (skillData == null)
+            yield break;
+
+        State = CreatureState.Skill;
+        if (skillData.skillType == SkillType.SkillAttack) _animation = "ATTACK";
+        else if (skillData.skillType == SkillType.SkillBuff) _animation = "BUFF";
+        else if (skillData.skillType == SkillType.SkillProjectile) _animation = "PROJECTILE";
+        GameObject skill = Managers.Resource.Instantiate($"{skillData.prefab}", transform);
+        SkillController skillController = skill.GetComponent<SkillController>();
+        if (skillController == null)
+            yield break;
+
+        skillController.Init(skillData, gameObject);
+        yield return StartCoroutine(skillController.ExecuteSkill());
+        State = CreatureState.Idle;
+        _coSkill = null;
+        CheckUpdatedFlag();
+    }
     private IEnumerator CoStartShootArrow()
     {
         // 대기 시간

@@ -99,6 +99,7 @@ namespace Server.Game
                 }
             }
         }
+        public int WeaponRange { get; private set; }
         public int WeaponDamage { get; private set; }
         public int ArmorDef { get; private set; }
         public int AdditionalAvoidance { get; private set; }
@@ -110,7 +111,7 @@ namespace Server.Game
         public override int TotalAttack { get { return Stat.Attack + WeaponDamage; } }
         public override int TotalDefense { get { return ArmorDef; } }        
         public virtual int TotalCriticalChance { get {return Stat.CriticalChance + AdditionalCriticalChance ; } }
-        public virtual int TotalCriticalDamage { get { return Stat.CriticalDamage + AdditionalCriticalDamage; } }
+        public virtual int TotalCriticalDamage { get { return (int)MathF.Max(Stat.CriticalDamage + AdditionalCriticalDamage, 2); } }
         public override int TotalAvoidance { get { return Stat.Avoid + AdditionalAvoidance; } }
         public override int TotalAccuracy { get { return Stat.Accuracy + AdditionalAccuracy; } }
         public override float TotalAttackSpeed { get { return Stat.AttackSpeed + AdditionalAttackSpeed; } }
@@ -123,8 +124,7 @@ namespace Server.Game
 
         public override int OnDamaged(GameObject target, int damage)
         {
-            if (IsDead)
-                return 0;
+            if (IsDead) { return 0; }
             return base.OnDamaged(target, damage);
             //TODO : 피해를 입었을 때 처리 -> 플레이어 스탯에 따라 딜레이 시간 변경
         }
@@ -290,6 +290,7 @@ namespace Server.Game
                 {
                     case ItemType.Weapon:
                         WeaponDamage += ((Weapon)item).Damage;
+                        WeaponRange = ((Weapon)item).Range;
                         AdditionalAttackSpeed += ((Weapon)item).AttackSpeed;
                         break;
                     case ItemType.Armor:

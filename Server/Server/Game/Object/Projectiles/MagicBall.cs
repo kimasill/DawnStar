@@ -12,6 +12,7 @@ namespace Server.Game
     {
         public GameObject Owner { get; set; }
         public GameObject Target { get; set; }
+        int _moveRange = 0;
         public override void Update()
         {
             if (Data == null || Data.projectile == null || Owner == null || Room == null)
@@ -27,7 +28,7 @@ namespace Server.Game
                     Vector2Int direction = (Target.CellPos - CellPos).normalized;
                     Vector2Int destPos = CellPos + direction;
 
-                    if (Room.Map.ApplyMove(this, destPos, collision: false))
+                    if (Room.Map.ApplyMove(this, destPos, collision: false) || _moveRange > Data.projectile.range)
                     {
                         CellPos = destPos;
                         S_Move movePacket = new S_Move();
@@ -35,7 +36,7 @@ namespace Server.Game
                         movePacket.Position = PosInfo;
                         Room.Broadcast(CellPos, movePacket);
                     }
-                    else
+                    else if (_moveRange > Data.projectile.range)
                     {
                         GameObject target = Room.Map.Find(destPos);
                         if (target != null)
@@ -58,7 +59,7 @@ namespace Server.Game
                     movePacket.Position = PosInfo;
                     Room.Broadcast(CellPos, movePacket);
                 }
-                else
+                else if(_moveRange > Data.projectile.range)
                 {
                     GameObject target = Room.Map.Find(destPos);
                     if (target != null)
@@ -68,7 +69,7 @@ namespace Server.Game
                     Room.Push(Room.LeaveGame, Id);
                 }
             }
-
+            _moveRange += 1;
         }
 
         public override GameObject GetOwner()

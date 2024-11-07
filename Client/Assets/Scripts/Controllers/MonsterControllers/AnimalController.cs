@@ -21,10 +21,10 @@ public class AnimalController : MonsterController
         switch (LookDir)
         {
             case LookDir.LookLeft:
-                _sprite.flipX = true;
+                _sprite.flipX = false;
                 break;
             case LookDir.LookRight:
-                _sprite.flipX = false;
+                _sprite.flipX = true;
                 break;
         }
 

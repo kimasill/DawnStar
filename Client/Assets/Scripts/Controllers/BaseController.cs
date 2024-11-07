@@ -237,7 +237,7 @@ public class BaseController : MonoBehaviour
             switch (LookDir)
             {
                 case LookDir.LookLeft:
-                    Animator.Play("HURT");
+                    Animator.Play("HURT");                    
                     _sprite.flipX = true;
                     break;
                 case LookDir.LookRight:

@@ -284,38 +284,71 @@ namespace Server.Game.Room
                 }
             }
         }
+        
+        //public void LoadSpawnPoints(int mapId, string pathPrefix = "../../../../../Common/MapData")
+        //{
+        //    string mapName = "Map_" + mapId.ToString("000");
+        //    string path = $"{pathPrefix}/{mapName}_SpawnPoints.txt";
+        //    if (File.Exists(path) == false)
+        //    {
+        //        return;
+        //    }
+        //    string text = File.ReadAllText($"{pathPrefix}/{mapName}_SpawnPoints.txt");
+        //    StringReader reader = new StringReader(text);
+            
+        //    if(MinX != int.Parse(reader.ReadLine())) Console.WriteLine("MinX Error");
+        //    if(MaxX != int.Parse(reader.ReadLine())) Console.WriteLine("MaxX Error");
+        //    if(MinY != int.Parse(reader.ReadLine())) Console.WriteLine("MinY Error");
+        //    if(MaxY != int.Parse(reader.ReadLine())) Console.WriteLine("MaxY Error");
+
+
+        //    _spawnPoints = new int[SizeY, SizeX]; // 맵 크기에 맞게 배열 초기화
+
+        //    for (int y = 0; y < SizeY; y++)
+        //    {
+        //        string line = reader.ReadLine();
+        //        for (int x = 0; x < SizeX; x++)
+        //        {
+        //            if (int.TryParse(line[x].ToString(), out int monsterId))
+        //            {
+        //                _spawnPoints[y, x] = monsterId; // 몬스터 아이디 저장
+        //            }
+        //        }
+        //    }
+        //}
         public void LoadSpawnPoints(int mapId, string pathPrefix = "../../../../../Common/MapData")
         {
             string mapName = "Map_" + mapId.ToString("000");
-
-            if(File.Exists($"{pathPrefix}/{mapName}_SpawnPoints.txt") == false)
-            {
+            string path = $"{pathPrefix}/{mapName}_SpawnPoints.txt";
+            if (!File.Exists(path))
                 return;
-            }
-            string text = File.ReadAllText($"{pathPrefix}/{mapName}_SpawnPoints.txt");
-            StringReader reader = new StringReader(text);
-            
-            if(MinX != int.Parse(reader.ReadLine())) Console.WriteLine("MinX Error");
-            if(MaxX != int.Parse(reader.ReadLine())) Console.WriteLine("MaxX Error");
-            if(MinY != int.Parse(reader.ReadLine())) Console.WriteLine("MinY Error");
-            if(MaxY != int.Parse(reader.ReadLine())) Console.WriteLine("MaxY Error");
 
-
-            _spawnPoints = new int[SizeY, SizeX]; // 맵 크기에 맞게 배열 초기화
-
-            for (int y = 0; y < SizeY; y++)
+            using (StreamReader reader = new StreamReader(path))
             {
-                string line = reader.ReadLine();
-                for (int x = 0; x < SizeX; x++)
+                MinX = int.Parse(reader.ReadLine());
+                MaxX = int.Parse(reader.ReadLine());
+                MinY = int.Parse(reader.ReadLine());
+                MaxY = int.Parse(reader.ReadLine());
+
+                int xCount = MaxX - MinX + 1;
+                int yCount = MaxY - MinY + 1;                
+                _spawnPoints = new int[yCount, xCount];
+
+                for (int y = 0; y < yCount; y++)
                 {
-                    if (int.TryParse(line[x].ToString(), out int monsterId))
+                    string line = reader.ReadLine();
+                    string[] tokens = line.Split(',');
+
+                    for (int x = 0; x < xCount; x++)
                     {
-                        _spawnPoints[y, x] = monsterId; // 몬스터 아이디 저장
+                        if (int.TryParse(tokens[x], out int monsterId))
+                        {
+                            _spawnPoints[y, x] = monsterId; // 몬스터 아이디 저장
+                        }
                     }
                 }
             }
         }
-
         #region A* PathFinding
 
         // U D L R

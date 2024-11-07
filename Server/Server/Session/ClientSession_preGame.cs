@@ -193,7 +193,7 @@ namespace Server
                     }
                 }
                 UpdateMapChests(mapId);
-                MyPlayer.Skill = new Skill();
+                MyPlayer.Skill = new Skill(MyPlayer);
                 if (ServerState == PlayerServerState.ServerStateSingle)
                 {
                     if(isFirstLogin)

@@ -53,6 +53,14 @@ public class Item
     public MapField<string, string> Options
     {
         get { return Info.Options; }
+        set
+        {
+            Info.Options.Clear();
+            foreach (var option in value)
+            {
+                Info.Options.Add(option.Key, option.Value);
+            }
+        }
     }
     public ItemType ItemType { get; private set; }
     public bool Stackable { get; protected set; }
@@ -100,13 +108,7 @@ public class Item
             item.Slot = itemInfo.Slot;
             item.Equipped = itemInfo.Equipped;
             item.Price = itemInfo.Price;
-
-            // Clear existing options and add new ones
-            item.Info.Options.Clear();
-            foreach (var option in itemInfo.Options)
-            {
-                item.Info.Options.Add(option.Key, option.Value);
-            }
+            item.Options = itemInfo.Options;            
         }
         
 

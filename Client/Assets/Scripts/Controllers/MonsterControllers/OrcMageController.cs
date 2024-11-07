@@ -26,9 +26,9 @@ public class OrcMageController : MonsterController
                     _sprite.flipX = false;
                     break;
             }
-            if (_skillId == 1)
+            if (_skillId == 11)
                 Animator.Play("ATTACK");
-            else if (_skillId == 9)
+            else if (_skillId == 12 || _skillId == 13)
                 Animator.Play("ATTACK_STRONG");
         }
         else

@@ -15,35 +15,33 @@ public class SkillController : MonoBehaviour
     {
         SkillData = skillData;
         User = user.GetComponent<CreatureController>();
-        _sprite = User.GetComponent<SpriteRenderer>();
+        _sprite = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
     }
-    public void ExecuteSkill()
+    public IEnumerator ExecuteSkill()
     {
         if (SkillData == null || User == null)
-            return;
-
-        User.Animator.StopPlayback(); // Stop the current animation
+            yield break; 
         UpdateAnimation();
+        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(User.Animator.GetCurrentAnimatorStateInfo(0).length);
+        
         Managers.Resource.Destroy(gameObject);
     }
 
-    public IEnumerator UpdateAnimation()
+    public void UpdateAnimation()
     {
         _animator.speed = User.TotalAttackSpeed;
+        float range = SkillData.shape.range;
         if (User.PosInfo.LookDir == LookDir.LookLeft)
         {
-            transform.localPosition = new Vector3(-SkillData.shape.range, 0, 0);
+            transform.localPosition = new Vector3(-range, 0, 0);
             _sprite.flipX = true;
         }
-        else
+        else if((User.PosInfo.LookDir == LookDir.LookRight))
         {
-            transform.localPosition = new Vector3(SkillData.shape.range, 0, 0);
+            transform.localPosition = new Vector3(-range, 0, 0);
             _sprite.flipX = false;
-        }
-
-        _animator.Play("START");
-        yield return new WaitForSeconds(0.01f);
-        yield return new WaitForSeconds(User.Animator.GetCurrentAnimatorStateInfo(0).length);
+        } 
     }
 }

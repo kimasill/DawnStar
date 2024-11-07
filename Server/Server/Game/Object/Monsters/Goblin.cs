@@ -16,7 +16,7 @@ namespace Server.Game
         private int _skillRange = 1;
 
         public Goblin(MonsterData data) : base(data)
-        {
+        {            
             TemplateId = data.id;
             MonsterType = data.type;
             MonsterGrade = data.grade;
@@ -55,37 +55,27 @@ namespace Server.Game
                     BroadcastMove();
                     return;
                 }
-                //방향주시
-                MoveDir lookDir = GetDirFromVec(dir);
-                int coolTick = (int)(1000 / TotalAttackSpeed);
-                if (Dir != lookDir)
-                {
-                    Dir = lookDir;
-                    if (Dir == MoveDir.Left)
-                    {
-                        LookDir = LookDir.LookLeft;
-                    }
-                    else if (Dir == MoveDir.Right)
-                    {
-                        LookDir = LookDir.LookRight;
-                    }
-                    BroadcastMove();
-                }
+                LookAt(dir);
+                SkillData skillData = null;
                 if (_basicAttackCount < BasicAttackLimit)
-                {
-                    AttackBySkill(1);
-                    _basicAttackCount++;
+                {                    
+                    DataManager.SkillDict.TryGetValue(1, out skillData);
+                    Skill.StartSkill(this,skillData, _target);
+                    _basicAttackCount+=1;
                 }
                 else
                 {
-                    AttackBySkill(9);
+                    DataManager.SkillDict.TryGetValue(9, out skillData);
+                    Skill.StartSkill(this, skillData, _target);
                     _basicAttackCount = 0;
-                    coolTick = (int)((int)(1000 / TotalAttackSpeed) * 1.2);
                 }
-
+                S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
+                skillPacket.ObjectId = Id;
+                skillPacket.Info.SkillId = skillData.id;
+                Room.Broadcast(CellPos, skillPacket);
                 //쿨타임
-
-                _coolTick += Environment.TickCount64 + coolTick;
+                int coolTick = (int)(1000 / TotalAttackSpeed);
+                _coolTick = Environment.TickCount64 + coolTick;
             }
             if (_coolTick > Environment.TickCount64)
                 return;

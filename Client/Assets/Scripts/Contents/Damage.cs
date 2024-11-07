@@ -11,6 +11,7 @@ public class Damage : MonoBehaviour
     {
         damageText.text = damage.ToString();
         damageText.color = isCritical ? Color.red : Color.white;
+        damageText.fontSize = isCritical ? 4 : 3;
     }
 
     public void ShowDamage(Vector3 position)
