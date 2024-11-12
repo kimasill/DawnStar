@@ -47,6 +47,28 @@ namespace Server.DB
                 }
             });
         }
+        public static void HpNoti(Player player, int hp)
+        {
+            if (player == null || hp == 0)
+                return;
+
+            PlayerDb playerDb = new PlayerDb()
+            {
+                PlayerDbId = player.PlayerDbId,
+                Hp = hp
+            };
+
+            using (AppDbContext db = new AppDbContext())
+            {
+                db.Entry(playerDb).State = EntityState.Unchanged;
+                db.Entry(playerDb).Property(nameof(playerDb.Hp)).IsModified = true;
+
+                bool success = db.SaveChangesEx(); // 저장할 때 예외처리를 해준다.
+                if (success)
+                {                    
+                }
+            }
+        }
         public static void SavePlayerMap(Player player, MapInfo map)
         {
             if (player == null)

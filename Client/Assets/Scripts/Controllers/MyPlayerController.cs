@@ -319,8 +319,19 @@ public class MyPlayerController : PlayerController
         if (portal != null)
         {
             int id = Managers.Map.GetPortalId(portal);
-            C_MapChange mapPacket = new C_MapChange { MapId = id };
-            Managers.Network.Send(mapPacket);
+            Managers.Data.MapDict.TryGetValue(id, out MapData mapData);
+            if (mapData == null)
+                return;
+
+            if(mapData.type == MapType.Dungeon)
+            {
+                //던전 입장 UI
+            }
+            else
+            {
+                C_MapChange mapPacket = new C_MapChange { MapId = id };
+                Managers.Network.Send(mapPacket);
+            }            
         }
     }
 

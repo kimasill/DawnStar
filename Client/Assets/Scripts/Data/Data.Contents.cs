@@ -138,7 +138,7 @@ namespace Data
 
     public class JewelryData : ItemData
     {
-        public JewelryType jewelType;        
+        public JewelryType jewelType;
     }
 
     public class ConsumableData : ItemData
@@ -254,13 +254,24 @@ namespace Data
         public int count;
     }
 
+    public class DungeonData
+    {        
+        public string name;
+        public int level;
+        public int maxPlayer;
+        public List<int> monsters;
+        public List<int> rewards;
+    }
+
     [Serializable]
     public class MapData
     {
         public int id;
         public string name;
+        public MapType type;
         public List<PortalData> portals;
         public List<SpawnData> spawns;
+        public DungeonData dungeon;
     }
 
     [Serializable]
@@ -447,4 +458,35 @@ namespace Data
         }
     }
     #endregion
+    #region SpecialStat
+    [Serializable]
+    public class SpecialStatData
+    {
+        public int point;
+        public string name;
+        public float value;
+    }
+    public class RealizationData
+    {
+        public int id;
+        public string name;
+        public List<string> script;
+        public List<SpecialStatData> specialStatDatas;
+    }
+    public class RealizationLoader : ILoader<int, RealizationData>
+    {
+        public List<RealizationData> realizations = new List<RealizationData>();
+
+        public Dictionary<int, RealizationData> MakeDict()
+        {
+            Dictionary<int, RealizationData> dict = new Dictionary<int, RealizationData>();
+            foreach (RealizationData realization in realizations)
+            {
+                dict.Add(realization.id, realization);
+            }
+            return dict;
+        }
+    }
+    #endregion
 }
+

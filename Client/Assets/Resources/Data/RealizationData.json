@@ -1,0 +1,136 @@
+{
+  "realizations": [
+    {
+      "id": "1",
+      "name": "Rage",
+      "script": [
+        "분노한다. 참을 수 없이 화가나지만, 이것을 잘 통제하면 힘을 얻을 것이다.",
+        "1. _point_포인트 마다 _stat_ _value_",
+        "2. _point_포인트 마다 _stat_ _value_",
+        "3. _point_포인트 마다 _stat_ _value_",
+        "4. _point_포인트 마다 _stat_ _value_"
+      ],
+      "specialStatDatas": [
+        {
+          "point": "1",
+          "name": "생명력",
+          "value": "10.0"
+        },
+        {
+          "point": "2",
+          "name": "명중률",
+          "value": "-1.0"
+        },
+        {
+          "point": "3",
+          "name": "공격력",
+          "value": "2.0"
+        },
+        {
+          "point": "5",
+          "name": "공격속도",
+          "value": "1.0"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Reason",
+      "script": [
+        "이성적으로 생각한다. 나아갈 길에 대해 강한 통찰력을 얻게된다.",
+        "1. _point_포인트 마다 _stat_ _value_",
+        "2. _point_포인트 마다 _stat_ _value_",
+        "3. _point_포인트 마다 _stat_ _value_",
+        "4. _point_포인트 마다 _stat_ _value_",
+        "5. _point_포인트 마다 _stat_ _value_"
+      ],
+      "specialStatDatas": [
+        {
+          "point": "1",
+          "name": "공격력",
+          "value": "-1"
+        },
+        {
+          "point": "2",
+          "name": "명중률",
+          "value": "1.0"
+        },
+        {
+          "point": "3",
+          "name": "치명타 피해량",
+          "value": "1.0"
+        },
+        {
+          "point": "5",
+          "name": "치명타 확률",
+          "value": "1.0"
+        },
+        {
+          "point": "7",
+          "name": "회피율",
+          "value": "1.0"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Uncharted",
+      "script": [
+        "미지의 기운을 받아들인다. 미지를 통해 강력한 힘을 사용할 수 있게된다.",
+        "1. _point_포인트 마다 _stat_ _value_",
+        "2. _point_포인트 마다 _stat_ _value_",
+        "3. _point_포인트 마다 _stat_ _value_",
+        "4. _point_포인트 마다 _stat_ _value_"
+      ],
+      "specialStatDatas": [
+        {
+          "point": "1",
+          "name": "미지의 기운",
+          "value": "5.0"
+        },
+        {
+          "point": "2",
+          "name": "미지의 기운 회복",
+          "value": "1.0"
+        },
+        {
+          "point": "3",
+          "name": "생명력",
+          "value": "-15.0"
+        },
+        {
+          "point": "5",
+          "name": "이동속도",
+          "value": "1.0"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Truth",
+      "script": [
+        "진실은 눈앞에 있다. 진실을 마주볼수록, 더 거대한 진실에 가까워진다.",
+        "1. _point_포인트 마다 _stat_ _value_",
+        "2. _point_포인트 마다 _stat_ _value_",
+        "3. _point_포인트 마다 _stat_ _value_"
+      ],
+      "specialStatDatas": [
+        {
+          "point": "1",
+          "name": "회복제 성능",
+          "value": "100.0"
+        },
+        {
+          "point": "2",
+          "name": "최대 회복제",
+          "value": "1.0"
+        },
+        {
+          "point": "3",
+          "name": "방어력",
+          "value": "3.0"
+        }
+      ]
+    }
+  ]
+} 

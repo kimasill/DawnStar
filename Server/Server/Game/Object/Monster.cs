@@ -101,11 +101,11 @@ namespace Server.Game
         }
         protected Player _target;
         Vector2Int _dest;
-        int _searchRange = 10;
-        int _chaseRange = 20;
-        long _nextSearchTick = 0;
-        long _nextMoveTick = 0;
-        long _nextWaitTick = 0;
+        protected int _searchRange = 10;
+        protected int _chaseRange = 20;
+        protected long _nextSearchTick = 0;
+        protected long _nextMoveTick = 0;
+        protected long _nextWaitTick = 0;
         protected virtual void UpdateIdle()
         {
             if (_nextSearchTick > Environment.TickCount64)
@@ -276,7 +276,7 @@ namespace Server.Game
                 Room.Broadcast(CellPos, skillPacket);
 
                 //쿨타임
-                int coolTick = (int)(skillData.coolTime * 1000);
+                int coolTick = (int)(1000/TotalAttackSpeed);
                 _coolTick = Environment.TickCount64 + coolTick;
             }
             if (_coolTick > Environment.TickCount64)
@@ -287,7 +287,7 @@ namespace Server.Game
         {
             if (_stiffEndTick == 0)
             {
-                _stiffEndTick = Environment.TickCount64 + 1000;
+                _stiffEndTick = Environment.TickCount64 + 500;
             }
 
             if (_stiffEndTick > Environment.TickCount64)

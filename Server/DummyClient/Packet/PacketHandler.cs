@@ -197,4 +197,9 @@ class PacketHandler
     {
         S_MakeChest chest = packet as S_MakeChest;
     }
+
+    public static void S_SkillCoolHandler(PacketSession session, IMessage packet)
+    {
+        S_SkillCool skillCool = packet as S_SkillCool;
+    }
 }

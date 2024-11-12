@@ -130,7 +130,6 @@ namespace Server.Game
                     return;
                 }
                 zone.Players.Add(player);
-                player.Vision.Update();
                 // 본인한테 정보 전송
                 {
                     S_EnterGame enterPacket = new S_EnterGame();
@@ -144,6 +143,7 @@ namespace Server.Game
                         Console.WriteLine("Error: player.Session is null");
                     }
                 }
+                player.Vision.Update();
             }
             else if (type == GameObjectType.Monster)
             {
@@ -232,8 +232,8 @@ namespace Server.Game
                 if (_projectiles.Remove(objectId, out projectile) == false)
                     return;
                 cellPos = projectile.CellPos;
-                Map.ApplyLeave(projectile);
                 despawnAnim = projectile.DespawnAnim;
+                Map.ApplyLeave(projectile);                
                 projectile.Room = null;
             }
             else if(type == GameObjectType.Magic)

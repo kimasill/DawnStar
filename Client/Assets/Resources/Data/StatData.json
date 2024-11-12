@@ -3,122 +3,155 @@
     {
       "level": "1",
       "maxHp": "200",
-      "attack": "20",
-      "deffense": "10",
-      "speed":  "5.0",
+      "attack": "10",
+      "deffense": "0",
+      "speed": "5.0",
       "totalExp": "0"
     },
     {
       "level": "2",
-      "maxHp": "250",
-      "attack": "25",
-      "deffense": "15",
-      "speed": "5.0",
-      "totalExp": "100"
+      "maxHp": "10",
+      "attack": "0",
+      "deffense": "0",
+      "speed": "0",
+      "totalExp": "500",
+      "statPoint": "1"
     },
     {
       "level": "3",
-      "maxHp": "300",
-      "attack": "30",
-      "deffense": "20",
-      "speed": "5.0",
-      "totalExp": "200"
+      "maxHp": "10",
+      "attack": "0",
+      "deffense": "0",
+      "speed": "0",
+      "totalExp": "770",
+      "statPoint": "1"
     },
     {
       "level": "4",
-      "maxHp": "400",
-      "attack": "35",
-      "deffense": "20",
-      "speed": "5.0",
-      "totalExp": "500"
+      "maxHp": "10",
+      "attack": "0",
+      "deffense": "0",
+      "speed": "0",
+      "totalExp": "1280",
+      "statPoint": "1"
     },
     {
       "level": "5",
-      "maxHp": "500",
-      "attack": "40",
-      "deffense": "25",
-      "speed": "5.0",
-      "totalExp": "1000"
+      "maxHp": "10",
+      "attack": "0",
+      "deffense": "0",
+      "speed": "0",
+      "totalExp": "1860",
+      "statPoint": "2"
     },
     {
       "level": "6",
-      "maxHp": "600",
-      "attack": "40",
-      "deffense": "25",
-      "speed": "5.0",
-      "totalExp": "2000"
+      "maxHp": "10",
+      "attack": "0",
+      "deffense": "0",
+      "speed": "0",
+      "totalExp": "2650",
+      "statPoint": "1"
     },
     {
       "level": "7",
-      "maxHp": "720",
-      "attack": "40",
-      "deffense": "25",
-      "speed": "5.0",
-      "totalExp": "3500"
+      "maxHp": "10",
+      "attack": "0",
+      "deffense": "0",
+      "speed": "0",
+      "totalExp": "3710",
+      "statPoint": "1"
     },
     {
       "level": "8",
-      "maxHp": "840",
-      "attack": "40",
-      "deffense": "25",
-      "speed": "5.0",
-      "totalExp": "5500"
+      "maxHp": "10",
+      "attack": "0",
+      "deffense": "0",
+      "speed": "0",
+      "totalExp": "4800",
+      "statPoint": "1"
     },
     {
       "level": "9",
-      "maxHp": "960",
-      "attack": "40",
-      "deffense": "25",
-      "speed": "5.0",
-      "totalExp": "8500"
+      "maxHp": "10",
+      "attack": "0",
+      "deffense": "0",
+      "speed": "0",
+      "statPoint": "1",
+      "totalExp": "6500"
+
     },
     {
       "level": "10",
-      "maxHp": "1080",
-      "attack": "40",
-      "deffense": "25",
-      "speed": "5.0",
-      "totalExp": "14000"
+      "maxHp": "10",
+      "attack": "0",
+      "deffense": "0",
+      "speed": "0",
+      "statPoint": "3",
+      "totalExp": "9000"
     },
     {
       "level": "11",
-      "maxHp": "1200",
-      "attack": "40",
-      "deffense": "25",
-      "speed": "5.0",
-      "totalExp": "21000"
+      "maxHp": "10",
+      "attack": "0",
+      "deffense": "0",
+      "speed": "0",
+      "statPoint": "1",
+      "totalExp": "13000"
     },
     {
       "level": "12",
-      "maxHp": "1350",
-      "attack": "40",
-      "deffense": "25",
-      "speed": "5.0",
-      "totalExp": "30000"
+      "maxHp": "10",
+      "attack": "0",
+      "deffense": "0",
+      "speed": "0",
+      "statPoint": "1",
+      "totalExp": "19600"
     },
     {
       "level": "13",
-      "maxHp": "1500",
-      "attack": "40",
-      "deffense": "25",
-      "speed": "5.0",
-      "totalExp": "42000"
+      "maxHp": "10",
+      "attack": "0",
+      "deffense": "0",
+      "speed": "0",
+      "statPoint": "1",
+      "totalExp": "31000"
     },
     {
       "level": "14",
-      "maxHp": "1650",
-      "attack": "40",
-      "deffense": "25",
-      "speed": "5.0",
-      "totalExp": "55000"
+      "maxHp": "10",
+      "attack": "0",
+      "deffense": "0",
+      "speed": "0",
+      "statPoint": "1",
+      "totalExp": "46900"
     },
     {
       "level": "15",
-      "maxHp": "1800",
-      "attack": "40",
-      "deffense": "25",
-      "speed": "5.0",
-      "totalExp": "70000"
+      "maxHp": "10",
+      "attack": "0",
+      "deffense": "0",
+      "speed": "0",
+      "statPoint": "2",
+      "totalExp": "63500"
     },
+    {
+      "level": "16",
+      "maxHp": "10",
+      "attack": "0",
+      "deffense": "0",
+      "speed": "0",
+      "statPoint": "1",
+      "totalExp": "82000"
+    },
+    {
+      "level": "17",
+      "maxHp": "10",
+      "attack": "0",
+      "deffense": "0",
+      "speed": "0",
+      "statPoint": "1",
+      "totalExp": "114000"
+    }
   ]
 } 

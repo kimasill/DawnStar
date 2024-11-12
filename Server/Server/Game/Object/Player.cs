@@ -109,7 +109,7 @@ namespace Server.Game
         public float AdditionalAttackSpeed { get; private set; }
 
         public override int TotalAttack { get { return Stat.Attack + WeaponDamage; } }
-        public override int TotalDefense { get { return ArmorDef; } }        
+        public override int TotalDefense { get { return Stat.Defense + ArmorDef; } }        
         public virtual int TotalCriticalChance { get {return Stat.CriticalChance + AdditionalCriticalChance ; } }
         public virtual int TotalCriticalDamage { get { return (int)MathF.Max(Stat.CriticalDamage + AdditionalCriticalDamage, 2); } }
         public override int TotalAvoidance { get { return Stat.Avoid + AdditionalAvoidance; } }
@@ -161,11 +161,12 @@ namespace Server.Game
 
         public void OnlevelUp()
         {
-            StatData stat = DataManager.StatDict.GetValueOrDefault(Level);
-            Stat.MaxHp = stat.MaxHp;
-            Hp = stat.MaxHp;
-            Stat.Attack = stat.Attack;
-            Stat.Speed = stat.Speed;           
+            StatData stat = DataManager.StatDict.GetValueOrDefault(Level);            
+            Stat.MaxHp += stat.MaxHp;
+            Hp = Stat.MaxHp;
+            Stat.Attack += stat.Attack;
+            Stat.Speed += stat.Speed;
+            Stat.StatPoint += stat.StatPoint;
             DbTransaction.SavePlayerStatus_All(this, Room);
             Room.Push(Room.HandleStatChange, this);
         }

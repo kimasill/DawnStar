@@ -141,6 +141,7 @@ public class PlayerController : CreatureController
         else if (skillData.skillType == SkillType.SkillBuff) _animation = "BUFF";
         else if (skillData.skillType == SkillType.SkillProjectile) _animation = "PROJECTILE";
         GameObject skill = Managers.Resource.Instantiate($"{skillData.prefab}", transform);
+        skill.transform.position += new Vector3(0, 0.5f, 0);
         SkillController skillController = skill.GetComponent<SkillController>();
         if (skillController == null)
             yield break;

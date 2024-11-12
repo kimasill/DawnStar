@@ -2,6 +2,7 @@
 using Server.Data;
 using Server.Game.Room;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -76,13 +77,28 @@ namespace Server.Game
 
             for (int i = 0; i < count; i++)
             {
-                Vector2Int pos = new Vector2Int(rand.Next((int)-skillData.spot.range, (int)(skillData.spot.range + 1)), rand.Next((int)-skillData.spot.range, (int)(skillData.spot.range + 1)));
-                if (room.Map.CanGo(pos, false))
-                    skillPos.Add(user.CellPos + pos);
-                else
-                    i--;
+                Vector2Int pos = new Vector2Int(
+                    rand.Next(-(int)skillData.spot.range, (int)skillData.spot.range + 1),
+                    rand.Next(-(int)skillData.spot.range, (int)skillData.spot.range + 1)
+                );
+                skillPos.Add(pos);
             }
             return skillPos;
+        }
+        public static List<Vector2Int> GetAllTargetsInRange(Vector2Int center, int range)
+        {
+            List<Vector2Int> tiles = new List<Vector2Int>();
+
+            for (int x = -range/2; x < range/2 + 1; x++)
+            {
+                for (int y = -range / 2; y < range /2 + 1; y++)
+                {
+                    Vector2Int tile = center + new Vector2Int(x, y);
+                    tiles.Add(tile);
+                }
+            }
+
+            return tiles;
         }
     }
 }

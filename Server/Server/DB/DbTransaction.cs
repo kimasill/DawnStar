@@ -36,7 +36,8 @@ namespace Server.DB
                 Exp = player.Exp,
                 PosX = player.CellPos.x,
                 PosY = player.CellPos.y,
-                MaxPotion = player.MaxPotion,                
+                MaxPotion = player.MaxPotion,
+                StatPoint = player.StatPoint,
             };
 
             Instance.Push(() =>
@@ -96,6 +97,47 @@ namespace Server.DB
         public static void SavePlayerStatus_Step3(int hp)
         {
             //Console.WriteLine($"save hp{hp}");
+        }
+
+        public static void SavePlayerDb(Player player, PlayerDb playerDb, GameRoom room)
+        {
+            if (playerDb == null)
+                return;
+
+            using (AppDbContext db = new AppDbContext())
+            {
+                db.Entry(playerDb).State = EntityState.Unchanged;
+                
+                var properties = typeof(PlayerDb).GetProperties();
+                foreach (var property in properties)
+                {
+                    var value = property.GetValue(playerDb);
+                    if (value != null)
+                    {
+                        db.Entry(playerDb).Property(property.Name).IsModified = true;
+                    }
+                }
+                bool success = db.SaveChangesEx();
+                if (success)
+                {
+                    room.Push(() =>
+                    {
+                        {
+                            S_ChangeStat statPacket = new S_ChangeStat();
+                            statPacket.StatInfo.MergeFrom(player.Stat);
+                            player.Session.Send(statPacket);
+                        }                        
+                        {
+                            S_ChangeHp hpPacket = new S_ChangeHp()
+                            {
+                                ObjectId = player.Id,
+                                Hp = player.Hp,
+                            };
+                            room.Broadcast(player.CellPos, hpPacket, player);
+                        }
+                    });
+                }
+            }            
         }
 
         public static void RewardPlayer(Player player, ItemData itemData, int count, GameRoom room)

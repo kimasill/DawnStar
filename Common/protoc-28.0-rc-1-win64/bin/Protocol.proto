@@ -56,6 +56,7 @@ enum MsgId {
   S_MAKE_CHEST = 48;
   C_USE_ITEM = 49;
   S_SKILL_COOL = 50;
+  C_SELECT_STAT = 51;
 }
 enum CreatureState{
   IDLE = 0;
@@ -93,6 +94,7 @@ enum SkillType{
 	SKILL_PROJECTILE = 2;
 	SKILL_SPOT = 3;
 	SKILL_BUFF = 4;
+	SKILL_DEBUFF = 5;
 }
 
 enum SkillLogicType{
@@ -101,6 +103,7 @@ enum SkillLogicType{
 	SPOTATTACK = 2;
 	KNOCKBACK = 3;
 	COMBAT = 4;
+	PULL = 5;
 }
 
 enum MonsterType{
@@ -172,6 +175,14 @@ enum ArmorType{
 	ARMOR_TYPE_ARMOR = 2;
 	ARMOR_TYPE_BOOTS = 3;
 	ARMOR_TYPE_BACK = 4;
+}
+
+enum MapType{
+	MAP_TYPE_NONE = 0;
+	MAP_TYPE_FIELD = 1;
+	MAP_TYPE_DUNGEON = 2;
+	MAP_TYPE_VILLAGE = 3;
+	MAP_TYPE_QUEST = 4;
 }
 
 enum JewelryType{
@@ -425,6 +436,10 @@ message C_QuestComplete{
 	int32 templateId = 1;
 }
 
+message C_SelectStat{
+	int32 templateId = 1;
+}
+
 message S_QuestList{
 	repeated QuestInfo quests = 1;
 }
@@ -476,7 +491,14 @@ message StatInfo{
   float attackSpeed = 13;
   float invokeSpeed = 14;  
   int32 maxPotion = 15;
-  int32 statPoint = 16;
+  int32 potionPerformance = 16;
+  int32 statPoint = 17;
+  int32 rage = 18;
+  int32 reason = 19;
+  int32 uncharted = 20;
+  int32 truth = 21;
+  int32 unchartedPoint = 22;
+  float unchartedPointRegen = 23;
 }
 
 message QuestInfo

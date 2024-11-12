@@ -154,7 +154,22 @@ namespace Server.Migrations
                     b.Property<int>("AccountDbId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Accuracy")
+                        .HasColumnType("int");
+
                     b.Property<int>("Attack")
+                        .HasColumnType("int");
+
+                    b.Property<float>("AttackSpeed")
+                        .HasColumnType("real");
+
+                    b.Property<int>("Avoid")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CriticalChance")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CriticalDamage")
                         .HasColumnType("int");
 
                     b.Property<int>("Defense")
@@ -190,6 +205,9 @@ namespace Server.Migrations
                     b.Property<int>("PosY")
                         .HasColumnType("int");
 
+                    b.Property<string>("RealizationsJson")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ServerState")
                         .HasColumnType("int");
 
@@ -197,6 +215,12 @@ namespace Server.Migrations
                         .HasColumnType("real");
 
                     b.Property<int>("StatPoint")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UnchartedPoint")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UnchartedPointRegen")
                         .HasColumnType("int");
 
                     b.HasKey("PlayerDbId");

@@ -267,4 +267,19 @@ class PacketHandler
 
         room.HandleUseItem(clientSession.MyPlayer, useItemPacket);
     }
+
+    public static void C_SelectStatHandler(PacketSession session, IMessage packet)
+    {
+        C_SelectStat selectStatPacket = packet as C_SelectStat;
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession == null || clientSession.MyPlayer == null)
+            return;
+
+        GameRoom room = clientSession.MyPlayer.Room;
+        if (room == null)
+            return;
+
+        room.HandleSelectStat(clientSession.MyPlayer, selectStatPacket.TemplateId);
+    }
 }

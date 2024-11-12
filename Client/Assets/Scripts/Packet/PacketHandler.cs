@@ -51,7 +51,7 @@ class PacketHandler
         {
             if (despawnPacket.DespawnAnim)
             {
-                Managers.Object.RemoveAfterAnimation(obj);
+                Managers.Instance.StartCoroutine(Managers.Object.RemoveAfterAnimation(obj));
             }
             else
             {
