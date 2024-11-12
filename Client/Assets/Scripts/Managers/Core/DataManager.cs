@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,7 @@ public class DataManager
     public Dictionary<int, Data.QuestData> QuestDict { get; private set; } = new Dictionary<int, Data.QuestData>();
     public Dictionary<int, Data.AcquireData> AcquireDict {  get; private set; } = new Dictionary<int, Data.AcquireData>();
     public Dictionary<int, Data.ShopData> ShopDict { get; private set; } = new Dictionary<int, Data.ShopData>();
+    public Dictionary<int, Data.RealizationData> RealizationDict { get; private set; } = new Dictionary<int, Data.RealizationData>();
 
     public void Init()
     {
@@ -33,6 +35,7 @@ public class DataManager
         NPCDict = LoadJson<Data.NPCLoader, string, Data.NPCData>("NPCData").MakeDict();
         AcquireDict = LoadJson<Data.AcquireLoader, int, Data.AcquireData>("AcquireData").MakeDict();
         ShopDict = LoadJson<Data.ShopLoader, int, Data.ShopData>("ShopData").MakeDict();
+        RealizationDict = LoadJson<Data.RealizationLoader, int, Data.RealizationData>("RealizationData").MakeDict();
     }
 
     Loader LoadJson<Loader, Key, Value>(string path) where Loader : ILoader<Key, Value>

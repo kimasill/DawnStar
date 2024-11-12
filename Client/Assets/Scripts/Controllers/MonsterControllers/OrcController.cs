@@ -30,7 +30,7 @@ public class OrcController : MonsterController
             if (_skillId == 1)
             {
                 Animator.Play("ATTACK");
-            }                
+            }
             else if (_skillId == 10)
             {
                 StartCoroutine(PlaySkill10Animation());
@@ -48,7 +48,7 @@ public class OrcController : MonsterController
         // 첫 번째 애니메이션 실행
         Animator.Play("ATTACK_SPIN_START");
         // 첫 번째 애니메이션이 끝날 때까지 대기
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
+        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
 
         // 두 번째 애니메이션 실행 (2초간)
         Animator.Play("ATTACK_SPIN_LOOP");
@@ -57,6 +57,7 @@ public class OrcController : MonsterController
         // 세 번째 애니메이션 실행
         Animator.Play("ATTACK_SPIN_END");
         // 세 번째 애니메이션이 끝날 때까지 대기
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
+        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
+        State = CreatureState.Idle;
     }
 }

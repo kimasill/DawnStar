@@ -269,6 +269,11 @@ public class BaseController : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    public virtual IEnumerator DespawnAnim()
+    {
+        yield return null;
+    }
+
     public IEnumerator WaitAnimationRunningTime(Action action)
     {
         AnimatorStateInfo stateInfo = Animator.GetCurrentAnimatorStateInfo(0);
@@ -374,6 +379,16 @@ public class BaseController : MonoBehaviour
 
     }
 
+    protected IEnumerator UseEffect(string prefab)
+    {
+        GameObject effect = Managers.Resource.Instantiate(prefab, transform);
+        effect.transform.position = transform.position + new Vector3(0, 0.5f, 0);
+        Animator animator = effect.GetComponent<Animator>();
+        animator.Play("START");
+        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+        Managers.Resource.Destroy(effect);
+    }
     protected virtual void UpdateSkill()
     {
 

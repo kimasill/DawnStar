@@ -23,29 +23,29 @@ public class ProjectileExController : BaseController
                 transform.rotation = Quaternion.Euler(0, 0, -90);
                 break;
         }
-        Animator.Play("START", 0, 0);
-        State = CreatureState.Moving;
-
         base.Init();
+        Animator.Play("START",0,0);
+        Animator.speed = 0;
+        State = CreatureState.Moving;        
     }
 
     protected override void UpdateAnimation()
     {
     }
-    public void OnLeavePacketReceived()
+    public override IEnumerator DespawnAnim()
     {
-        if (!_isExploding)
+        if(Animator == null)
         {
-            _isExploding = true;
-            StartCoroutine(PlayAnimationAndDisappear());
+            Animator = GetComponent<Animator>();
         }
+        yield return StartCoroutine(PlayAnimationAndDisappear());
     }
 
     private IEnumerator PlayAnimationAndDisappear()
     {
+        Animator.speed = 1;
         Animator.Play("START");
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
+        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
         gameObject.SetActive(false);
-        Managers.Resource.Destroy(gameObject);
     }
 }

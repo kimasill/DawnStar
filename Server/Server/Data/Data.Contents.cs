@@ -18,7 +18,8 @@ namespace Server.Data
         public float Speed;
         public float AttackSpeed;
         public float InvokeSpeed;
-        public int TotalExp;        
+        public int TotalExp;
+        public int StatPoint;
     }
 
     [Serializable]
@@ -377,6 +378,36 @@ namespace Server.Data
             foreach (AcquireData acquire in acquires)
             {
                 dict.Add(acquire.id, acquire);
+            }
+            return dict;
+        }
+    }
+    #endregion
+    #region SpecialStat
+    [Serializable]
+    public class SpecialStatData
+    {
+        public int point;
+        public string name;
+        public float value;
+    }
+    public class RealizationData
+    {
+        public int id;
+        public string name;
+        public List<string> script;
+        public List<SpecialStatData> specialStatDatas;
+    }
+    public class RealizationLoader : ILoader<int, RealizationData>
+    {
+        public List<RealizationData> realizations = new List<RealizationData>();
+
+        public Dictionary<int, RealizationData> MakeDict()
+        {
+            Dictionary<int, RealizationData> dict = new Dictionary<int, RealizationData>();
+            foreach (RealizationData realization in realizations)
+            {
+                dict.Add(realization.id, realization);
             }
             return dict;
         }

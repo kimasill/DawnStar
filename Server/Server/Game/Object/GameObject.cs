@@ -80,7 +80,7 @@ namespace Server.Game
                 PosInfo.PosY = value.y;
             }
         }
-        public bool DespawnAnim { get; set; } = false;
+        public bool DespawnAnim { get; set; }
         public GameObject()
         {
             Info.Position = PosInfo;

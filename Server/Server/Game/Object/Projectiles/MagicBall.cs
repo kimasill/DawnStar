@@ -13,6 +13,7 @@ namespace Server.Game
         public GameObject Owner { get; set; }
         public GameObject Target { get; set; }
         int _moveRange = 0;
+
         public override void Update()
         {
             if (Data == null || Data.projectile == null || Owner == null || Room == null)
@@ -20,56 +21,58 @@ namespace Server.Game
 
             int tick = (int)(1000 / Data.projectile.speed);
             Room.PushAfter(tick, Update);
-            if (Data.projectile.isHoming)
-            {
-                // 유도하여 날아가는 로직
-                if (Target != null)
-                {
-                    Vector2Int direction = (Target.CellPos - CellPos).normalized;
-                    Vector2Int destPos = CellPos + direction;
 
-                    if (Room.Map.ApplyMove(this, destPos, collision: false) || _moveRange > Data.projectile.range)
-                    {
-                        CellPos = destPos;
-                        S_Move movePacket = new S_Move();
-                        movePacket.ObjectId = Id;
-                        movePacket.Position = PosInfo;
-                        Room.Broadcast(CellPos, movePacket);
-                    }
-                    else if (_moveRange > Data.projectile.range)
-                    {
-                        GameObject target = Room.Map.Find(destPos);
-                        if (target != null)
-                        {
-                            target.OnDamaged(this, Data.damage + Owner.TotalAttack); // 피격 판정
-                        }
-                        Room.Push(Room.LeaveGame, Id);
-                    }
-                }
-            }
-            else
+            if (Data.projectile.isHoming && Target != null)
             {
-                // 직선으로 날아가는 로직
-                Vector2Int destPos = GetFrontCellPos();
-                if (Room.Map.ApplyMove(this, destPos, collision: false))
+                Vector2Int direction = (Target.CellPos - CellPos).normalized;
+                Vector2Int destPos = CellPos + direction;
+
+                if (Room.Map.ApplyMove(this, destPos, false))
                 {
                     CellPos = destPos;
                     S_Move movePacket = new S_Move();
                     movePacket.ObjectId = Id;
                     movePacket.Position = PosInfo;
                     Room.Broadcast(CellPos, movePacket);
+                    _moveRange += 1;
                 }
-                else if(_moveRange > Data.projectile.range)
+                else
                 {
                     GameObject target = Room.Map.Find(destPos);
-                    if (target != null)
+                    if (target != null && target != Owner)
                     {
                         target.OnDamaged(this, Data.damage + Owner.TotalAttack); // 피격 판정
                     }
+                    DespawnAnim = true;
+                    Room.Push(Room.LeaveGame, Id);
+                }
+                
+            }
+            else
+            {
+                // 직선으로 날아가는 로직
+                Vector2Int destPos = GetFrontCellPos();
+
+                if (Room.Map.ApplyMove(this, destPos))
+                {
+                    CellPos = destPos;
+                    S_Move movePacket = new S_Move();
+                    movePacket.ObjectId = Id;
+                    movePacket.Position = PosInfo;
+                    Room.Broadcast(CellPos, movePacket);
+                    _moveRange += 1;
+                }
+                else
+                { 
+                    GameObject target = Room.Map.Find(destPos);
+                    if (target != null && target != Owner)
+                    {
+                        target.OnDamaged(this, Data.damage + Owner.TotalAttack); // 피격 판정
+                    }
+                    DespawnAnim = true;
                     Room.Push(Room.LeaveGame, Id);
                 }
             }
-            _moveRange += 1;
         }
 
         public override GameObject GetOwner()

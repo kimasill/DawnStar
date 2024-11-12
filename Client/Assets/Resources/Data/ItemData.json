@@ -138,6 +138,19 @@
       "price": "50",
       "iconPath": "Textures/Item/helmets",
       "description": "뼈로 만든 투구. 가볍고 방어력이 높다."
+    },
+    {
+      "id": "102",
+      "name": "구도자의 투구",
+      "armorType": "Helmet",
+      "defence": "20",
+      "price": "3000",
+      "iconPath": "Textures/Item/Helmet/Helmet_Seeker",
+      "description": "구도자가 사용하던 투구. 미지의 기운이 깃들어 있다.",
+      "options": {
+        "Avoid": "10",        
+        "Skill": "16"
+      }
     }
   ],
   "jewelry": [
@@ -612,12 +625,75 @@
     },
     {
       "id": "1148",
-      "name": "오브(초록)",
+      "name": "오브(자연)",
       "maxCount": "9999",
       "materialType": "Base",
       "price": "500",
       "iconPath": "Textures/Item/Materials/Orb_Green",
-      "description": "오크 대족장의 초록색 오브"
+      "description": "자연의 기운이 도는 오브"
+    },
+    {
+      "id": "1149",
+      "name": "오브(구름)",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "500",
+      "iconPath": "Textures/Item/Materials/Orb_Blue",
+      "description": "푸른 기운이 도는 오브"
+    },
+    {
+      "id": "1150",
+      "name": "오브(황혼)",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "500",
+      "iconPath": "Textures/Item/Materials/Orb_Pink",
+      "description": "황혼의 기운이 도는 오브"
+    },
+    {
+      "id": "1151",
+      "name": "오브(미지)",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "500",
+      "iconPath": "Textures/Item/Materials/Orb_White",
+      "description": "미지의 기운이 도는 오브"
+    },
+    {
+      "id": "1152",
+      "name": "오브(용암)",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "500",
+      "iconPath": "Textures/Item/Materials/Orb_Lava",
+      "description": "용암의 기운이 도는 오브"
+    },
+    {
+      "id": "1153",
+      "name": "질긴가죽",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "30",
+      "iconPath": "Textures/Item/Materials/Drop/Leather_A",
+      "description": "동물의 질긴가죽."
+    },
+    {
+      "id": "1154",
+      "name": "골렘의핵",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "315",
+      "iconPath": "Textures/Item/Materials/Drop/Golem_Shard",
+      "description": "골램의 핵. 온전한 골렘의 핵은 높은 가치를 가진다."
+    },
+    {
+      "id": "1155",
+      "name": "석재조각",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "27",
+      "iconPath": "Textures/Item/Materials/Base/Rock_Piece",
+      "description": "가공하여 사용할 수 있는 석재의 조각"
     }
   ],
   "goods": [

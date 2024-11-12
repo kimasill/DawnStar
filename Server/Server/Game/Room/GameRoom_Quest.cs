@@ -120,5 +120,135 @@ namespace Server.Game
             // DB에 퀘스트 완료 상태 저장
             DbTransaction.SaveCompleteQuest(player, questDb, player.Room);                
         }
+        public void HandleSelectStat(Player player, int statId)
+        {
+            if (player == null)
+                return;
+
+            if (player.StatPoint <= 0)
+                return;
+
+            
+            RealizationData realization = null; 
+            DataManager.RealizationData.TryGetValue(statId, out realization);
+            if (realization == null)
+                return;
+            PlayerDb playerDb = new PlayerDb()
+            {
+                PlayerDbId = player.PlayerDbId
+            };
+            player.StatPoint--;
+            if (realization != null)
+            {
+                int index = 0;
+                if (realization.id == 1) {
+                    player.Stat.Rage += 1;
+                    index = player.Stat.Rage;
+                    playerDb.Realizations[realization.id] = player.Stat.Rage;
+                }
+                else if (realization.id == 2)
+                {
+                    player.Stat.Reason += 1;
+                    index = player.Stat.Reason;
+                    playerDb.Realizations[realization.id] = player.Stat.Reason;
+                }
+                else if (realization.id == 3)
+                {
+                    player.Stat.Uncharted += 1;
+                    index = player.Stat.Uncharted;
+                    playerDb.Realizations[realization.id] = player.Stat.Uncharted;
+                }
+                else if (realization.id == 4)
+                {
+                    player.Stat.Truth += 1;
+                    index = player.Stat.Truth;
+                    playerDb.Realizations[realization.id] = player.Stat.Truth;
+                }
+                // 소인수 분해를 통해 추가 스탯 적용
+                List<int> factors = GetFactors(index);
+                foreach (int factor in factors)
+                {
+                    SpecialStatData specialStatData = realization.specialStatDatas[factor];
+                    if (specialStatData != null)
+                    {                                                   
+                        playerDb = ApplySpecialStat(player, playerDb, specialStatData);
+                    }
+                }
+            }
+            playerDb.StatPoint = player.StatPoint;
+            DbTransaction.SavePlayerDb(player, playerDb, player.Room);
+        }
+        private List<int> GetFactors(int number)
+        {
+            List<int> factors = new List<int>();
+            for (int i = 1; i <= number; i++)
+            {
+                if (number % i == 0)
+                {
+                    factors.Add(i);
+                }
+            }
+            return factors;
+        }
+
+        private PlayerDb ApplySpecialStat(Player player, PlayerDb playerDb, SpecialStatData specialStatData)
+        {
+            switch (specialStatData.name)
+            {
+                case "생명력":
+                    player.Stat.MaxHp += (int)specialStatData.value;
+                    playerDb.MaxHp = player.Stat.MaxHp;
+                    break;
+                case "공격력":
+                    player.Stat.Attack += (int)specialStatData.value;
+                    playerDb.Attack = player.Stat.Attack;
+                    break;
+                case "방어력":
+                    player.Stat.Defense += (int)specialStatData.value;
+                    playerDb.Defense = player.Stat.Defense;
+                    break;
+                case "공격속도":
+                    player.Stat.AttackSpeed += specialStatData.value;
+                    playerDb.AttackSpeed = player.Stat.AttackSpeed;
+                    break;
+                case "회피율":
+                    player.Stat.Avoid += (int)specialStatData.value;
+                    playerDb.Avoid = player.Stat.Avoid;
+                    break;
+                case "명중률":
+                    player.Stat.Accuracy += (int)specialStatData.value;
+                    playerDb.Accuracy = player.Stat.Accuracy;
+                    break;
+                case "이동속도":
+                    player.Stat.Speed += specialStatData.value;
+                    playerDb.Speed = player.Stat.Speed;
+                    break;
+                case "치명타 확률":
+                    player.Stat.CriticalChance += (int)specialStatData.value;
+                    playerDb.CriticalChance = player.Stat.CriticalChance;
+                    break;
+                case "치명타 피해량":
+                    player.Stat.CriticalDamage += (int)specialStatData.value;
+                    playerDb.CriticalDamage = player.Stat.CriticalDamage;
+                    break;
+                case "최대 회복제":
+                    player.Stat.MaxPotion += (int)specialStatData.value;    
+                    playerDb.MaxPotion = player.Stat.MaxPotion;
+                    break;
+                case "회복제 성능":
+                    player.Stat.PotionPerformance += (int)specialStatData.value;
+                    playerDb.PotionPerformance = player.Stat.PotionPerformance;
+                    break;
+                case "미지의 기운":
+                    player.Stat.UnchartedPoint += (int)specialStatData.value;
+                    playerDb.UnchartedPoint = player.Stat.UnchartedPoint;
+                    break;
+                case "미지의 기운 회복":
+                    player.Stat.UnchartedPointRegen += (int)specialStatData.value;
+                    playerDb.UnchartedPointRegen = player.Stat.UnchartedPointRegen;
+                    break;
+            }
+            return playerDb;
+        }
     }
 }

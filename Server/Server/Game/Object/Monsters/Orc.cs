@@ -81,7 +81,7 @@ namespace Server.Game
                         // 첫 데미지를 주기 전에 0.5초 대기
                         await Task.Delay(500);
 
-                        for (int i = 0; i < 3; i++)
+                        for (int i = 0; i < 5; i++)
                         {
                             Vector2Int targetDir = _target.CellPos - CellPos;
                             if (_target != null && targetDir.magnitude <= skillData.shape.range)
@@ -94,7 +94,7 @@ namespace Server.Game
                             CellPos += moveDir;
                             changePacket.Position = PosInfo;   
                             Room.Broadcast(CellPos, changePacket);
-                            await Task.Delay(1000);
+                            await Task.Delay(400);
                         }
                     });
                     coolTick = (int)(1000 / TotalAttackSpeed) * 3;
@@ -107,7 +107,7 @@ namespace Server.Game
                     skillPacket.ObjectId = Id;
                     skillPacket.Info.SkillId = skillData.id;
                     Room.Broadcast(CellPos, skillPacket);
-                    Skill.StartSkill(this, skillData, target:_target, range:2);
+                    Skill.StartSkill(this, skillData, target:_target, addRange:2);
                 }
                 _coolTick = Environment.TickCount64 + coolTick;
             }

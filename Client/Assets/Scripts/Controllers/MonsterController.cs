@@ -31,4 +31,13 @@ public class MonsterController : CreatureController
         _skillId = skillId;
 		State = CreatureState.Skill;        
     }
+
+    protected IEnumerator CoStartBasicAttack()
+    {
+        // 대기 시간
+        _rangedSkill = false;      
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
+        State = CreatureState.Idle;
+        _coSkill = null;
+    }
 }

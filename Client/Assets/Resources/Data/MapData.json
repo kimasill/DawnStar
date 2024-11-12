@@ -3,6 +3,7 @@
     {
       "id": "001",
       "name": "DawnTown",
+      "type": "village",
       "portals": [
         {
           "id": "100",
@@ -44,6 +45,7 @@
     {
       "id": "002",
       "name": "DawnTownStore",
+      "type": "village",
       "portals": [
         {
           "id": "200",
@@ -57,6 +59,7 @@
     {
       "id": "003",
       "name": "DawnTownHome",
+      "type": "village",
       "portals": [
         {
           "id": "300",
@@ -77,6 +80,7 @@
     {
       "id": "004",
       "name": "DawnTownDead",
+      "type": "quest",
       "portals": [
         {
           "id": "400",
@@ -104,6 +108,7 @@
     {
       "id": "005",
       "name": "EastEnd",
+      "type": "field",
       "portals": [
         {
           "id": "500",
@@ -193,13 +198,61 @@
         },
         {
           "chestId": "3",
-          "templateId": "2"
+          "templateId": "1"
         },
         {
           "chestId": "4",
+          "templateId": "2"
+        },
+        {
+          "chestId": "5",
           "templateId": "3"
         }
       ]
+    },
+    {
+      "id": "006",
+      "name": "Prison",
+      "type": "dungeon",
+      "portals": [
+        {
+          "id": "501",
+          "name": "EastEnd",
+          "location": "Prison",
+          "posX": "-173",
+          "posY": "-46"
+        }
+      ],
+      "spawns": [
+        {
+          "id": "1",
+          "monsterId": "3",
+          "count": "15"
+        }
+      ],
+      "chests": [
+        {
+          "chestId": "1",
+          "templateId": "1"
+        },
+        {
+          "chestId": "2",
+          "templateId": "1"
+        }
+      ],
+      "dungeon": {
+        "name": "고대 감옥",
+        "level": "20",
+        "maxPlayer": "4",
+        "monsterIds": [
+          "1"
+        ],
+        "reward": [
+          "1147",
+          "10001",
+          "10002"
+        ]
+      }
     }
   ]
 }

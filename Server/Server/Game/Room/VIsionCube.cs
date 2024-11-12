@@ -89,7 +89,7 @@ namespace Server.Game.Room
             }
             return objects;
         }
-
+        
         public void Update()
         {
             if (Owner == null || Owner.Room == null)

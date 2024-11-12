@@ -81,7 +81,6 @@ public class ObjectManager
             }
             if (go == null)
                 return;
-            go.name = info.Name;
             _objects.Add(info.ObjectId, go);
 
             BaseController bc = go.GetComponent<BaseController>();
@@ -101,13 +100,15 @@ public class ObjectManager
             {
                 go = Managers.Resource.Instantiate("Magic/PoisonShock");
             }
-            go.name = info.Name;
+            if (go == null)
+                return;
             _objects.Add(info.ObjectId, go);
 
-            MagicController mc = go.GetComponent<MagicController>();
-            mc.Id = info.ObjectId;
-            mc.PosInfo = info.Position;
-            mc.SyncPos();
+             BaseController bc = go.GetComponent<BaseController>();
+
+            bc.Id = info.ObjectId;
+            bc.PosInfo = info.Position;
+            bc.SyncPos();
         }
         else if(type == GameObjectType.Item)
         {
@@ -162,13 +163,11 @@ public class ObjectManager
     {
         GameObject go = FindById(id);
         BaseController cc = go.GetComponent<BaseController>();
-        Animator animator = cc.GetComponent<Animator>();
-        if (animator != null)
+        if (cc != null)
         {
-            animator.Play("START");
-            yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+            yield return cc.DespawnAnim();
+            Remove(id);
         }
-        Remove(id);
     }
 
     public void Remove(int id)

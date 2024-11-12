@@ -71,12 +71,61 @@
           "itemId": "1147",
           "minCount": "4",
           "maxCount": "8"
-        },        
+        },
         {
           "probability": "100",
           "itemId": "10001",
           "minCount": "100",
           "maxCount": "200"
+        },
+        {
+          "probability": "100",
+          "itemId": "10002",
+          "minCount": "20",
+          "maxCount": "20"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "정예상자(사티로스 구도자)",
+      "type": "chest",
+      "rewards": [
+        {
+          "probability": "100",
+          "itemId": "102",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "1116",
+          "minCount": "1",
+          "maxCount": "5"
+        },
+        {
+          "probability": "100",
+          "itemId": "1117",
+          "minCount": "1",
+          "maxCount": "5"
+        },
+        {
+          "probability": "100",
+          "itemId": "1141",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "1147",
+          "minCount": "5",
+          "maxCount": "10"
+        },
+        {
+          "probability": "100",
+          "itemId": "10001",
+          "minCount": "200",
+          "maxCount": "300"
         },
         {
           "probability": "100",

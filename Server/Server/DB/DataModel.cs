@@ -38,7 +38,22 @@ namespace Server.DB
         public int Attack { get; set; }
         public int Defense { get; set; }
         public float Speed { get; set; }
+        public float AttackSpeed { get; set; }
+        public int Avoid { get; set; }
+        public int Accuracy { get; set; }
+        public int CriticalChance { get; set; }
+        public int CriticalDamage { get; set; }
+        public int UnchartedPoint { get; set; }
+        public int UnchartedPointRegen { get; set; }
         public int Exp { get; set; }
+        public string RealizationsJson { get; set; }
+
+        [NotMapped]
+        public List<int> Realizations
+        {
+            get => string.IsNullOrEmpty(RealizationsJson) ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(RealizationsJson);
+            set => RealizationsJson = JsonConvert.SerializeObject(value);
+        }
         public int PosX { get; set; }
         public int PosY { get; set; }
         public int Gold { get; set; }
