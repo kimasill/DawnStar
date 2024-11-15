@@ -119,7 +119,7 @@
       "name": "강공",
       "coolTime": "5",
       "damage": "40",
-      "skillType": "SkillAttack",   
+      "skillType": "SkillAttack",
       "skillLogicType": "BasicAttack",
       "shape": {
         "shapeType": "ShapeRect",
@@ -131,7 +131,7 @@
     {
       "id": "10",
       "name": "분노의회전",
-      "coolTime": "20",
+      "coolTime": "10",
       "damage": "15",
       "skillType": "SkillAttack",
       "shape": {
@@ -150,9 +150,9 @@
       "skillLogicType": "MagicBall",
       "projectile": {
         "speed": "5.0",
-        "range": "7",
+        "range": "10",
         "prefab": "Magic/PoisonExplosion",
-        "isHoming": "false"
+        "isHoming": "true"
       },
       "debuff": {
         "id": "1",
@@ -173,7 +173,7 @@
       "skillLogicType": "SpotAttack",
       "spot": {
         "speed": "5.0",
-        "range": "7",
+        "range": "5",
         "delay": "1.0",
         "minCount": "10",
         "maxCount": "20"
@@ -233,6 +233,105 @@
       },
       "unchartedPoint": "20",
       "description": "강한충격으로 적을 행동불가 상태로 만든다."
+    },
+    {
+      "id": "16",
+      "name": "방어",
+      "coolTime": "10",
+      "skillType": "SkillBuff",
+      "skillLogicType": "Block",
+      "buff": {
+        "id": "1",
+        "name": "방어",
+        "duration": "2",
+        "value": "0.9",
+        "isPercent": "false"
+      },
+      "unchartedPoint": "20",
+      "description": "일정시간동안 받는 피해량을 감소시킨다."
+    },
+    {
+      "id": "17",
+      "name": "본 스웜",
+      "coolTime": "20",
+      "damage": "50",
+      "count": "10",
+      "term": "0.2",
+      "range": "5.0",
+      "skillType": "SkillAttack",
+      "skillLogicType": "Summon",
+      "shape": {
+        "shapeType": "ShapeCircle",
+        "range": "3.0"
+      },
+      "prefab": "Magic/BoneSwarm",
+      "unchartedPoint": "20",
+      "description": "주변적에게 공격을 시전하는 뼈무리를 소환한다."
+    },
+    {
+      "id": "19",
+      "name": "암살",
+      "coolTime": "20",
+      "skillType": "SkillAttack",
+      "skillLogicType": "Kinetic",
+      "damage": "100",
+      "shape": {
+        "shapeType": "ShapeLine",
+        "range": "10.0",
+        "direction": "DirectionBack"
+      },
+      "prefabs" :[
+        "Effect/Assassination",
+        "Effect/Assassination2"
+      ],
+      "unchartedPoint": "20",
+      "description": "뒤에서 적을 공격하여 강력한 피해를 준다."
+    },
+    {
+      "id": "20",
+      "name": "회피",
+      "coolTime": "5",
+      "skillType": "SkillBuff",
+      "skillLogicType": "Dodge",
+      "buff": {
+        "id": "1",
+        "name": "회피",
+        "duration": "1",
+        "value": "0.0",
+        "isPercent": "false"
+      },
+      "unchartedPoint": "10",
+      "description": "일정시간동안 받는 피해를 회피한다."
+    },
+    {
+      "id": "21",
+      "name": "힐",
+      "coolTime": "10",
+      "skillType": "SkillBuff",
+      "skillLogicType": "Heal",
+      "buff": {
+        "id": "1",
+        "name": "회복",
+        "duration": "1",
+        "value": "0.5",
+        "isPercent": "false"
+      },
+      "unchartedPoint": "20",
+      "description": "일정시간동안 생명력을 회복한다."
+    },
+    {
+      "id": "22",
+      "name": "숨고르기",
+      "coolTime": "20",
+      "skillType": "SkillMove",
+      "skillLogicType": "Invocation",
+      "shape": {
+        "shapeType": "ShapeLine",
+        "range": "5.0",
+        "direction": "DirectionBack"
+      },
+      "unchartedPoint": "20",
+      "description": "뒤로 일정 거리 물러난다. 상태이상을 무시한다."
     }
   ]
 } 

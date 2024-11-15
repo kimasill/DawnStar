@@ -14,17 +14,10 @@ namespace Server.Game
         private int _baseAttackRange = 2;
         private int _skillRange = 10;
         private bool _hasRevived = false;
-        int _skillId = 0;
+        private const float SkillInvokeTime = 1.7f;
         public OrcMage(MonsterData data) : base(data)
         {
-            TemplateId = data.id;
-            MonsterType = data.type;
-            MonsterGrade = data.grade;
-            Info.Name = data.name;
-            Info.TemplateId = TemplateId;
-            Stat.MergeFrom(data.stat);
-            Stat.Hp = data.stat.MaxHp;
-            State = CreatureState.Idle;
+            Initialize(data);
         }
 
         public override void Update()
@@ -56,26 +49,33 @@ namespace Server.Game
                     return;
                 }
                 LookAt(dir);
+                int skillId = 12;
+                int coolTick = 1000 / (int)TotalAttackSpeed;
                 SkillData skillData = null;
                 if (dir.cellDistanceFromZero <= _baseAttackRange)
                 {
-                    _skillId = 13;
-                }
-                else
-                {
-                    _skillId = 12;                    
-                    DataManager.SkillDict.TryGetValue(_skillId, out skillData);
+                    skillId = 13;
+                    DataManager.SkillDict.TryGetValue(skillId, out skillData);
                     if (Skill.HandleSkillCool(skillData) == false)
                     {
-                        _skillId = 11;
+                        skillId = 12;
                     }
                 }
-                if (_skillId != 12)
+                if(skillId == 12)
                 {
-                    DataManager.SkillDict.TryGetValue(_skillId, out skillData);
+                    DataManager.SkillDict.TryGetValue(skillId, out skillData);
+                    coolTick = (int)(1000 * SkillInvokeTime);
                     if (Skill.HandleSkillCool(skillData) == false)
                     {
-                        _coolTick = Environment.TickCount64 + 1000;
+                        skillId = 11;
+                    }
+                }
+                if (skillId == 11)
+                {
+                    DataManager.SkillDict.TryGetValue(skillId, out skillData);
+                    coolTick = (int)(1000 * SkillInvokeTime);
+                    if (Skill.HandleSkillCool(skillData) == false)
+                    {
                         State = CreatureState.Moving;
                         BroadcastMove();
                         return;
@@ -88,7 +88,7 @@ namespace Server.Game
                 Room.Broadcast(CellPos, skillPacket);
 
                 Skill.StartSkill(this, skillData, _target);
-                _coolTick = Environment.TickCount64 + 1000;
+                _coolTick = Environment.TickCount64 + coolTick;
             }
             if (_coolTick > Environment.TickCount64)
                 return;

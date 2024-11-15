@@ -12,6 +12,7 @@ namespace Server.Game
     {
         public GameObject Owner { get; set; }
         public GameObject Target { get; set; }
+        public Action<GameObject> OnHit { get; set; }
         int _moveRange = 0;
 
         public override void Update()
@@ -42,11 +43,11 @@ namespace Server.Game
                     if (target != null && target != Owner)
                     {
                         target.OnDamaged(this, Data.damage + Owner.TotalAttack); // 피격 판정
+                        OnHit?.Invoke(target);
                     }
                     DespawnAnim = true;
                     Room.Push(Room.LeaveGame, Id);
-                }
-                
+                } 
             }
             else
             {
@@ -68,12 +69,13 @@ namespace Server.Game
                     if (target != null && target != Owner)
                     {
                         target.OnDamaged(this, Data.damage + Owner.TotalAttack); // 피격 판정
+                        OnHit?.Invoke(target);
                     }
                     DespawnAnim = true;
                     Room.Push(Room.LeaveGame, Id);
                 }
             }
-        }
+        }        
 
         public override GameObject GetOwner()
         {

@@ -17,14 +17,7 @@ namespace Server.Game
 
         public Orc(MonsterData data) : base(data)
         {
-            TemplateId = data.id;
-            MonsterType = data.type;
-            MonsterGrade = data.grade;
-            Info.Name = data.name;
-            Info.TemplateId = TemplateId;
-            Stat.MergeFrom(data.stat);
-            Stat.Hp = data.stat.MaxHp;
-            State = CreatureState.Idle;
+            Initialize(data);
         }
 
         public override void Update()
@@ -59,31 +52,36 @@ namespace Server.Game
                 //방향주시
                 LookAt(dir);
                 int coolTick = (int)(1000 / TotalAttackSpeed);
-
+                int skillId = 1;
                 if (Hp < Stat.MaxHp / 2)
                 {
+                    skillId = 10;
                     SkillData skillData = null;
-                    DataManager.SkillDict.TryGetValue(10, out skillData);
-                    //데미지 판정
-                    S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
-                    skillPacket.ObjectId = Id;
-                    skillPacket.Info.SkillId = skillData.id;
-                    Room.Broadcast(CellPos, skillPacket);
-
-                    S_ChangePosition changePacket = new S_ChangePosition();
-                    changePacket.ObjectId = Id;
-                    Vector2Int targetDir = _target.CellPos - CellPos;
-                    float minAbs = Math.Min(targetDir.magnitude, 3);
-                    Vector2Int moveDir = targetDir.normalized;
-
-                    Task.Run(async () =>
+                    DataManager.SkillDict.TryGetValue(skillId, out skillData);
+                    if (Skill.HandleSkillCool(skillData, attackSpeed: true) == false)
                     {
+                        skillId = 1;
+                    }
+                    else
+                    {
+                        //데미지 판정
+                        S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
+                        skillPacket.ObjectId = Id;
+                        skillPacket.Info.SkillId = skillData.id;
+                        Room.Broadcast(CellPos, skillPacket);
+
+                        S_ChangePosition changePacket = new S_ChangePosition();
+                        changePacket.ObjectId = Id;
+                        Vector2Int targetDir = _target.CellPos - CellPos;
+                        float minAbs = Math.Min(targetDir.magnitude, 3);
+                        Vector2Int moveDir = targetDir.normalized;
+
                         // 첫 데미지를 주기 전에 0.5초 대기
-                        await Task.Delay(500);
+                        System.Threading.Thread.Sleep((int)(1000 * TotalInvokeSpeed));
 
                         for (int i = 0; i < 5; i++)
                         {
-                            Vector2Int targetDir = _target.CellPos - CellPos;
+                            targetDir = _target.CellPos - CellPos;
                             if (_target != null && targetDir.magnitude <= skillData.shape.range)
                             {
                                 int damage = _target.OnDamaged(this, skillData.damage + TotalAttack);
@@ -92,22 +90,27 @@ namespace Server.Game
 
                             // 타겟 방향으로 이동
                             CellPos += moveDir;
-                            changePacket.Position = PosInfo;   
+                            changePacket.Position = PosInfo;
                             Room.Broadcast(CellPos, changePacket);
-                            await Task.Delay(400);
+                            System.Threading.Thread.Sleep(400);
                         }
-                    });
-                    coolTick = (int)(1000 / TotalAttackSpeed) * 3;
+                    }                    
                 }
-                else
+                if(skillId == 1)
                 {
                     SkillData skillData = null;
-                    DataManager.SkillDict.TryGetValue(1, out skillData);
+                    DataManager.SkillDict.TryGetValue(skillId, out skillData);
+                    if (Skill.HandleSkillCool(skillData, attackSpeed: true) == false)
+                    {
+                        State = CreatureState.Moving;
+                        BroadcastMove();
+                        return;
+                    }
                     S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
                     skillPacket.ObjectId = Id;
                     skillPacket.Info.SkillId = skillData.id;
                     Room.Broadcast(CellPos, skillPacket);
-                    Skill.StartSkill(this, skillData, target:_target, addRange:2);
+                    Skill.StartSkill(this, skillData, target: _target, addRange: 2);
                 }
                 _coolTick = Environment.TickCount64 + coolTick;
             }

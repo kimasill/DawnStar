@@ -57,6 +57,8 @@ enum MsgId {
   C_USE_ITEM = 49;
   S_SKILL_COOL = 50;
   C_SELECT_STAT = 51;
+  C_ENTER_DUNGEON = 52;
+  S_PARTY_INVITE = 53;
 }
 enum CreatureState{
   IDLE = 0;
@@ -95,6 +97,7 @@ enum SkillType{
 	SKILL_SPOT = 3;
 	SKILL_BUFF = 4;
 	SKILL_DEBUFF = 5;
+	SKILL_MOVE = 6;
 }
 
 enum SkillLogicType{
@@ -104,6 +107,17 @@ enum SkillLogicType{
 	KNOCKBACK = 3;
 	COMBAT = 4;
 	PULL = 5;
+	BLOCK = 6;
+	DOT = 7;
+	KINETIC = 8;
+	INVOCATION = 9;
+	SUMMON = 10;
+}
+
+enum AdmitType{
+	ADMIT_TYPE_NONE = 0;
+	ADMIT_TYPE_MATCHING = 1;
+	ADMIT_TYPE_CANCEL = 2;
 }
 
 enum MonsterType{
@@ -128,6 +142,20 @@ enum ShapeType{
 	SHAPE_LINE = 3;
 	SHAPE_BENT = 4;
 	SHAPE_CROSS = 5;
+}
+
+enum DirectionType{
+	DIRECTION_NONE = 0;
+	DIRECTION_UP = 1;
+	DIRECTION_DOWN = 2;
+	DIRECTION_LEFT = 3;
+	DIRECTION_RIGHT = 4;
+	DIRECTION_UPLEFT = 5;
+	DIRECTION_UPRIGHT = 6;
+	DIRECTION_DOWNLEFT = 7;
+	DIRECTION_DOWNRIGHT = 8;
+	DIRECTION_BACK = 9;
+	DIRECTION_FRONT = 10;
 }
 
 enum RewardType{
@@ -274,6 +302,7 @@ message C_Skill {
 message S_Skill {
   int32 objectId = 1;
   SkillInfo info = 2;
+  int32 phase = 3;
 }
 
 message S_SkillCool{
@@ -423,6 +452,11 @@ message C_MapChange{
 	int32 mapId = 1;
 }
 
+message C_EnterDungeon{
+	int32 mapId = 1;
+	AdmitType admitType = 2;
+}
+
 message S_MapChange{
 	int32 mapId = 1;
 	ObjectInfo objectInfo = 2;
@@ -450,6 +484,11 @@ message S_StartQuest{
 
 message S_QuestComplete{
 	QuestInfo quest = 1;
+}
+
+message S_PartyInvite{
+	int32 partyId = 1;
+	int32 inviterId = 2;
 }
 
 message LobbyPlayerInfo{
@@ -499,6 +538,7 @@ message StatInfo{
   int32 truth = 21;
   int32 unchartedPoint = 22;
   float unchartedPointRegen = 23;
+  float stiffTime = 24;
 }
 
 message QuestInfo

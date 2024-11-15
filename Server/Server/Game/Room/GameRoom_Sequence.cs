@@ -1,11 +1,13 @@
 using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.DB;
+using Server.Game.Contents;
 using Server.Game.Job;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using DbTransaction = Server.DB.DbTransaction;
 
 namespace Server.Game
@@ -85,6 +87,43 @@ namespace Server.Game
 
         public void HandleMapChanged(Player player, int mapId)
         {
+            MapData mapData = DataManager.MapDict[mapId];
+            bool add = false;
+            if (mapData.type == MapType.Dungeon)
+                add = true;
+            else if (mapData.type == MapType.Field)
+                add = false;
+
+            GameRoom room = GameLogic.Instance.GetRoom(player, mapId, this, add);
+            HandleMapChanged(player, mapId, room);
+        }
+        public void HandleMapChanged(Player player, int mapId, GameRoom pRoom)
+        {
+            if(pRoom == null)
+            {
+                Console.WriteLine("There is not pRoom");
+                return;
+            }    
+            UpdatePlayerMapInfo(player, mapId);
+            if (pRoom != null)
+            {
+                player.Room = pRoom;
+                pRoom.Push(pRoom.EnterGame, player, false);
+            }
+            PlayerDb playerDb = new PlayerDb()
+            {
+                PlayerDbId = player.PlayerDbId,                
+                PosX = player.CellPos.x,
+                PosY = player.CellPos.y,
+            };
+            DbTransaction.SavePlayerDb(player, playerDb, player.Room);
+            DbTransaction.SavePlayerMap(player, player.MapInfo);
+
+            GameLogic.Instance.UpdateRoom(this);
+        }
+
+        public void UpdatePlayerMapInfo(Player player, int mapId)
+        {
             if (player == null)
                 return;
 
@@ -114,22 +153,8 @@ namespace Server.Game
             player.MapInfo.TemplateId = mapData.id;
             player.MapInfo.MapName = mapData.name;
             player.MapInfo.Scene = mapData.name;
-            player.MapInfo.PortalId = portalData.id;        
+            player.MapInfo.PortalId = portalData.id;
             player.Session.UpdateMapChests(mapId);
-            LeaveGame(player.Id);
-            GameLogic.Instance.ChangeRoom(player, mapId, this);
-            //// 클라이언트에 맵 이동 정보 전송
-            //S_MapChange mapChangePacket = new S_MapChange
-            //{
-            //    MapId = mapId,
-            //    ObjectInfo = player.Info
-            //};
-
-            //player.Session.Send(mapChangePacket);
-
-            // 플레이어의 위치와 맵 정보를 데이터베이스에 저장
-            DbTransaction.SavePlayerStatus_All(player, this);
-            DbTransaction.SavePlayerMap(player, player.MapInfo);
         }
         public void HandleStatChange(Player player)
         {
@@ -201,6 +226,33 @@ namespace Server.Game
                 newMonster.SpawnId = _spawnCount++;
                 
                 EnterGame(newMonster, false);
+            }
+        }
+        public void HandleEnterDungeon(Player player, int mapId)
+        {
+            if (player == null)
+                return;
+
+            Party party = player.Session.CurrentParty;
+
+            if (party == null)
+            {
+                party = new Party(PartySystem.Instance.CreateParty().PartyId);
+                party.AddMember(player);                
+            }
+            PartyMatchingSystem.Instance.EnterMap(party, mapId);     
+        }
+
+        public void HandleMatching(Player player, int mapId, AdmitType admitType)
+        {
+            if (player == null) return;
+            if(admitType == AdmitType.Matching)
+            {
+                PartyMatchingSystem.Instance.Register(player.Session, mapId);
+            }
+            else if(admitType == AdmitType.Cancel)
+            {
+                PartyMatchingSystem.Instance.Unregister(player.Session, mapId);
             }
         }
     }

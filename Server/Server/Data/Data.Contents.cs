@@ -18,6 +18,7 @@ namespace Server.Data
         public float Speed;
         public float AttackSpeed;
         public float InvokeSpeed;
+        public float StiffTime;
         public int TotalExp;
         public int StatPoint;
     }
@@ -47,6 +48,9 @@ namespace Server.Data
         public string name;
         public float coolTime;
         public int damage;
+        public int count;
+        public int term;
+        public int range;
         public SkillType skillType;
         public SkillLogicType skillLogicType;
         public ShapeInfo shape;
@@ -59,6 +63,7 @@ namespace Server.Data
     {
         public ShapeType shapeType;
         public float range;
+        public DirectionType direction;
     }
     public class ProjectileInfo
     {
@@ -78,8 +83,6 @@ namespace Server.Data
         public int minCount;
         public string prefab;
     }
-
-
     public class BuffInfo
     {
         public int id;
@@ -258,15 +261,24 @@ namespace Server.Data
         public int chestId;
         public int templateId;
     }
-
+    public class DungeonData
+    {
+        public string name;
+        public int level;
+        public int maxPlayer;        
+        public List<int> monsters;
+        public List<int> rewards;
+    }
     [Serializable]
     public class MapData
     {
         public int id;
-        public string name;        
+        public string name;
+        public MapType type;
         public List<PortalData> portals;
         public List<SpawnData> spawns;
         public List<ChestData> chests;
+        public DungeonData dungeon;
     }
 
     [Serializable]

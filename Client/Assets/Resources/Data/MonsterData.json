@@ -347,7 +347,9 @@
         "attack": "15",
         "speed": "2.8",
         "totalExp": "110",
-        "attackSpeed": "0.4"
+        "attackSpeed": "0.76",
+        "invokeSpeed": "0.6",
+        "stiffTime": "0.7"
       },
       "rewards": [
         {
@@ -387,7 +389,9 @@
         "attack": "15",
         "speed": "2.8",
         "totalExp": "110",
-        "attackSpeed": "0.4"
+        "attackSpeed": "0.76",
+        "invokeSpeed": "0.6",
+        "stiffTime": "0.7"
       },
       "rewards": [
         {
@@ -427,8 +431,9 @@
         "attack": "24",
         "speed": "2.1",
         "totalExp": "230",
-        "attackSpeed": "0.3",
-        "invokeSpeed": "1"
+        "attackSpeed": "0.67",
+        "invokeSpeed": "0.9",
+        "stiffTime": "0.5"
       },
       "rewards": [
         {
@@ -468,8 +473,8 @@
         "attack": "31",
         "speed": "2.5",
         "totalExp": "650",
-        "attackSpeed": "0.2",
-        "invokeSpeed": "0.4"
+        "attackSpeed": "0.625",
+        "invokeSpeed": "1.0"
       },
       "rewards": [
         {
@@ -576,10 +581,10 @@
       "grade": "Elite",
       "stat": {
         "level": "20",
-        "maxHp": "1420",
+        "maxHp": "2420",
         "attack": "115",
         "speed": "2.3",
-        "totalExp": "830",
+        "totalExp": "1830",
         "attackSpeed": "0.32",
         "invokeSpeed": "1.0"
       },
@@ -679,6 +684,98 @@
           "minCount": "7",
           "maxCount": "14"
         },
+        {
+          "probability": "50",
+          "itemId": "10001",
+          "minCount": "30",
+          "maxCount": "60"
+        }
+      ]
+    },
+    {
+      "id": "20",
+      "name": "스켈레톤 전사",
+      "type": "Normal",
+      "grade": "Normal",
+      "stat": {
+        "level": "21",
+        "maxHp": "950",
+        "attack": "50",
+        "speed": "1.8",
+        "totalExp": "1200",
+        "attackSpeed": "0.83",
+        "invokeSpeed": "0.5"
+      },
+      "rewards": [
+        {
+          "probability": "50",
+          "itemId": "10001",
+          "minCount": "30",
+          "maxCount": "60"
+        }
+      ]
+    },
+    {
+      "id": "21",
+      "name": "스켈레톤 방패전사",
+      "type": "Normal",
+      "grade": "Normal",
+      "stat": {
+        "level": "21",
+        "maxHp": "950",
+        "attack": "50",
+        "speed": "1.8",
+        "totalExp": "1400",
+        "attackSpeed": "0.7",
+        "invokeSpeed": "0.5"
+      },
+      "rewards": [
+        {
+          "probability": "50",
+          "itemId": "10001",
+          "minCount": "30",
+          "maxCount": "60"
+        }
+      ]
+    },
+    {
+      "id": "22",
+      "name": "스켈레톤 마법사",
+      "type": "Normal",
+      "grade": "Normal",
+      "stat": {
+        "level": "18",
+        "maxHp": "1100",
+        "attack": "90",
+        "speed": "1.8",
+        "totalExp": "1550",
+        "attackSpeed": "0.67",
+        "invokeSpeed": "0.5"
+      },
+      "rewards": [
+        {
+          "probability": "50",
+          "itemId": "10001",
+          "minCount": "30",
+          "maxCount": "60"
+        }
+      ]
+    },
+    {
+      "id": "23",
+      "name": "간수",
+      "type": "Normal",
+      "grade": "Normal",
+      "stat": {
+        "level": "18",
+        "maxHp": "3120",
+        "attack": "110",
+        "speed": "1.8",
+        "totalExp": "4000",
+        "attackSpeed": "0.9",
+        "invokeSpeed": "0.3"
+      },
+      "rewards": [
         {
           "probability": "50",
           "itemId": "10001",

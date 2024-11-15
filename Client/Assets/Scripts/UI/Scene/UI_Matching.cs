@@ -1,21 +1,28 @@
+using Data;
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UI_Matching : UI_Scene
 {
-    enum Buttons
+    enum Images
     {
-        EnterButton,
-        MatchButton
+        EntranceButton,
+        MatchingButton,
+        MatchingCancelButton
     }
 
     enum Texts
     {
-        StatusText,
-        DungeonInfoText
+        LevelText,
+        MaxPlayerText,
+        MonstersText,
+        MatchingNoticeText,
+        TitleText,
     }
 
     enum GameObjects
@@ -25,44 +32,61 @@ public class UI_Matching : UI_Scene
     }
 
     private bool _isMatching = false;
-    [SerializeField]
-    private UI_ItemDescription _itemDescription;
 
     [SerializeField]
-    private List<Image> _itemIcons = new List<Image>();
-
+    private List<UI_ItemIcon> _itemIcons = new List<UI_ItemIcon>();
+    [SerializeField]
+    private GameObject _content = null;
+    public MapData MapData { get; set; }
     public override void Init()
     {
         base.Init();
-
-        Bind<Button>(typeof(Buttons));
+        
         Bind<Text>(typeof(Texts));
+        Bind<Button>(typeof(Images));
         Bind<GameObject>(typeof(GameObjects));
 
-        GetButton((int)Buttons.EnterButton).gameObject.BindEvent(OnClickEnterButton);
-        GetButton((int)Buttons.MatchButton).gameObject.BindEvent(OnClickMatchButton);
+        GetImage((int)Images.EntranceButton).gameObject.BindEvent(OnClickEnterButton, Define.UIEvent.Click);
+        GetImage((int)Images.MatchingButton).gameObject.BindEvent(OnClickMatchingButton, Define.UIEvent.Click);
+        GetImage((int)Images.MatchingCancelButton).gameObject.BindEvent(OnClickMatchingButton, Define.UIEvent.Click);
     }
 
     private void OnClickEnterButton(PointerEventData evt)
     {
-        if (_isMatching)
-        {
-            // 파티를 유지한 채로 입장 요청
-            Debug.Log("입장 요청");
-            // 서버에 입장 요청을 보내는 로직을 추가하세요.
-        }
+        C_EnterDungeon enterDungeonPacket = new C_EnterDungeon();
+        enterDungeonPacket.MapId = MapData.id;
+        enterDungeonPacket.AdmitType = AdmitType.None;
+        Managers.Network.Send(enterDungeonPacket);
     }
 
-    private void OnClickMatchButton(PointerEventData evt)
+    private void OnClickMatchingButton(PointerEventData evt)
     {
         if (!_isMatching)
         {
             _isMatching = true;
-            GetText((int)Texts.StatusText).text = "매칭 중";
+            GetText((int)Texts.MatchingNoticeText).text = "매칭 중";
             GetObject((int)GameObjects.MatchingSpinner).SetActive(true);
+            GetImage((int)Images.MatchingCancelButton).gameObject.SetActive(true);
+            C_EnterDungeon enterDungeonPacket = new C_EnterDungeon();
+            enterDungeonPacket.MapId = MapData.id;
+            enterDungeonPacket.AdmitType = AdmitType.Matching;
+            Managers.Network.Send(enterDungeonPacket);
+        }
+    }
 
-            // 서버에 매칭 요청을 보내는 로직을 추가하세요.
-            StartCoroutine(SimulateMatching());
+    private void OnClickMatchingCancelButton(PointerEventData evt)
+    {
+        if (_isMatching)
+        {
+            _isMatching = false;
+            GetText((int)Texts.MatchingNoticeText).text = "";
+            GetObject((int)GameObjects.MatchingSpinner).SetActive(false);
+            GetImage((int)Images.MatchingCancelButton).gameObject.SetActive(false);
+
+            C_EnterDungeon enterDungeonPacket = new C_EnterDungeon();
+            enterDungeonPacket.MapId = MapData.id;
+            enterDungeonPacket.AdmitType = AdmitType.Cancel;
+            Managers.Network.Send(enterDungeonPacket);
         }
     }
 
@@ -72,73 +96,57 @@ public class UI_Matching : UI_Scene
         yield return new WaitForSeconds(3f);
 
         _isMatching = false;
-        GetText((int)Texts.StatusText).text = "매칭 성공";
+        GetText((int)Texts.MatchingNoticeText).text = "매칭 성공";
         GetObject((int)GameObjects.MatchingSpinner).SetActive(false);
-
-        // 매칭 성공 후 던전 정보를 업데이트
-        UpdateDungeonInfo();
     }
-
-    private void UpdateDungeonInfo()
+    public void RefreshUI(int mapId)
     {
-        // 던전 데이터를 가져오는 로직을 추가하세요.
-        Data.DungeonData dungeonData = GetDungeonData();
+        MapData mapData = Managers.Data.MapDict.TryGetValue(mapId, out mapData) ? mapData : null;
+        if (mapData == null) return;
+        MapData = mapData;
+        foreach (UI_ItemIcon icon in _itemIcons)
+        {
+            if (icon != null)
+            {
+                Managers.Resource.Destroy(icon.gameObject);
+            }
+        }
 
+        DungeonData dungeonData = mapData.dungeon;
         if (dungeonData != null)
         {
-            // 던전 정보를 텍스트에 작성
-            GetText((int)Texts.DungeonInfoText).text = "던전 정보: " + dungeonData.ToString();
+            GetText((int)Texts.TitleText).text = dungeonData.name;
+            GetText((int)Texts.LevelText).text = "레벨 제한: " + mapData.dungeon.level;
+            GetText((int)Texts.MaxPlayerText).text = "최대 인원: " + mapData.dungeon.maxPlayer;
+            GetText((int)Texts.MonstersText).text = "몬스터: ";
+            MonsterData monsterData = null;
+            foreach (int monsterId in mapData.dungeon.monsters)
+            {
+                if (Managers.Data.MonsterDict.TryGetValue(monsterId, out monsterData))
+                {
+                    GetText((int)Texts.MonstersText).text += monsterData.name + " ";
+                }
+            }
 
-            // 아이템 아이디 리스트를 읽어서 아이템 스프라이트를 추가
-            foreach (int itemId in dungeonData.ItemIdList)
+            foreach (int itemId in dungeonData.rewards)
             {
                 if (Managers.Data.ItemDict.TryGetValue(itemId, out Data.ItemData itemData))
                 {
-                    Sprite itemSprite = Managers.Resource.Load<Sprite>(itemData.iconPath);
-                    if (itemSprite != null)
+                    UI_ItemIcon itemIcon = Managers.Resource.Instantiate("UI/Scene/UI_ItemIcon", _content.transform).GetComponent<UI_ItemIcon>();
+                    _itemIcons.Add(itemIcon);
+                    ItemInfo itemInfo = new ItemInfo()
                     {
-                        GameObject itemIcon = new GameObject("ItemIcon");
-                        Image image = itemIcon.AddComponent<Image>();
-                        image.sprite = itemSprite;
+                        ItemDbId = 0,
+                        TemplateId = itemId,
+                        Count = 1,
+                        Equipped = false
+                    };
+                    itemInfo.Options.AddRange(itemData.options);
 
-                        ItemIcon itemIconComponent = itemIcon.AddComponent<ItemIcon>();
-                        itemIconComponent.SetItem(itemId);
-
-                        itemIcon.transform.SetParent(GetObject((int)GameObjects.ItemIconScrollViewContent).transform, false);
-                    }
+                    Item item = Item.MakeItem(itemInfo);                    
+                    itemIcon.SetItem(item);                                                           
                 }
             }
-        }
-    }
-
-    private Data.DungeonData GetDungeonData()
-    {
-        // 던전 데이터를 가져오는 로직을 구현하세요.
-        return new Data.DungeonData();
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        // 마우스 오버한 아이템 아이콘을 찾습니다.
-        foreach (var icon in _itemIcons)
-        {
-            if (eventData.pointerEnter == icon.gameObject)
-            {
-                // UI_ItemDescription 객체를 생성하고 정보를 설정합니다.
-                _itemDescription = Instantiate(_itemDescription, transform);
-                _itemDescription.SetItem(icon.GetComponent<Item>());
-                _itemDescription.gameObject.SetActive(true);
-                break;
-            }
-        }
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        // 마우스가 아이템 아이콘에서 벗어났을 때 UI_ItemDescription 객체를 비활성화합니다.
-        if (_itemDescription != null)
-        {
-            _itemDescription.gameObject.SetActive(false);
-        }
+        }    
     }
 }

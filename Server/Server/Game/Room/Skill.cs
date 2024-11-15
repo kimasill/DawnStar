@@ -10,6 +10,7 @@ using System.Collections;
 using Server.Game.Room;
 using static System.Net.Mime.MediaTypeNames;
 using System.Numerics;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Server.Game
 {
@@ -73,6 +74,15 @@ namespace Server.Game
                     break;
                 case SkillType.SkillSpot:
                     HandleSpotSkill(skillData.skillLogicType);
+                    break;
+                case SkillType.SkillBuff:
+                    HandleBuffSkill(skillData);
+                    break;
+                case SkillType.SkillDebuff:
+                    HandleDebuffSkill(skillData);
+                    break;
+                case SkillType.SkillMove:
+                    HandleMoveSkill(skillData);
                     break;
             }
         }
@@ -142,7 +152,13 @@ namespace Server.Game
                     CombatAsync(data, skill.range);
                     return;
                 case SkillLogicType.Pull:
-
+                    Pull(data, skill.range);
+                    return;
+                case SkillLogicType.Summon:
+                    SummonAttack(data, skill.range, skill.target);
+                    return;
+                case SkillLogicType.Kinetic:
+                    KineticAttack(data , skill.range, skill.target);
                     return;
                 default: return;
             }
@@ -187,6 +203,77 @@ namespace Server.Game
                     break;
             }
         }
+
+        public async void HandleBuffSkill(SkillData skillData)
+        {
+            switch (skillData.skillLogicType)
+            {
+                case SkillLogicType.Block:
+                    await Task.Delay(100);
+                    BlockAsync(skillData);
+                    break;
+                default: ApplyBuff(skillData);
+                    break;
+            }
+        }
+
+        public void HandleDebuffSkill(SkillData skillData, GameObject target = null)
+        {
+            switch(skillData.skillLogicType)
+            {
+                case SkillLogicType.Dot:
+                    DOT(skillData, target);
+                    break;
+            }
+        }
+
+        public void HandleMoveSkill(SkillData skillData, GameObject target = null)
+        {
+            switch (skillData.skillLogicType)
+            {
+                case SkillLogicType.Kinetic:
+                    //KeneticMoveSkill(skillData, target);
+                    break;
+                case SkillLogicType.Invocation:
+                    MoveSkill(skillData, target);
+                    break;
+            }
+        }
+        private void ApplyBuff(SkillData data)
+        {
+            // Buff 적용 로직
+            if (data.buff != null)
+            {
+                // Buff 시작 시 로직
+                Console.WriteLine($"Buff {data.buff.name} applied with value {data.buff.value}");
+                // Buff 종료 시 로직
+                Task.Delay(data.buff.duration * 1000).ContinueWith(_ =>
+                {
+                    Console.WriteLine($"Buff {data.buff.name} ended");
+                });
+            }
+        }
+
+        private async void DOT(SkillData data, GameObject target)
+        {
+            if (data.debuff == null || target == null)
+                return;
+
+            int tickInterval = 1000; // 1초 간격
+            int totalTicks = data.debuff.duration;
+
+            for (int i = 0; i < totalTicks; i++)
+            {
+                if (target == null)
+                    break;
+                target.OnDamaged(Owner, (int)(Owner.TotalAttack*data.debuff.value));
+
+                await Task.Delay(tickInterval);
+            }
+
+            Console.WriteLine($"Debuff {data.debuff.name} ended");
+        }
+
         public void MagicBall(SkillData data)
         {
             MagicBall magicBall = ObjectManager.Instance.Add<MagicBall>();
@@ -201,6 +288,10 @@ namespace Server.Game
             magicBall.Speed = data.projectile.speed;
             magicBall.DespawnAnim = true;
             magicBall.TemplateId = data.id;
+            if(data.debuff != null)
+            {
+                magicBall.OnHit = (target) => { HandleDebuffSkill(data, target); };
+            }            
             Owner.Room.Push(Owner.Room.EnterGame, magicBall, false);
         }
         public async void BasicAttakAsync(SkillData data, int range)
@@ -321,6 +412,160 @@ namespace Server.Game
                 spot.Delay = data.spot.delay;
                 spot.TemplateId = data.id;
                 Owner.Room.Push(Owner.Room.EnterGame, spot, false);
+            }
+        }
+
+        private async void BlockAsync(SkillData data) 
+        { 
+            float prevReduce = Owner.TotalDamageReduce;
+            Owner.TotalDamageReduce = data.buff.value;
+            await Task.Delay(data.buff.duration*1000);
+            Owner.TotalDamageReduce = prevReduce;
+        }
+
+        private void MoveSkill(SkillData data, GameObject target = null)
+        {
+            if (data.shape == null)
+                return;
+            
+            Vector2Int dir = GetDir(data.shape.direction);
+            Vector2Int destPos = new Vector2Int();
+            if (target != null)
+            {
+                if (data.shape.shapeType == ShapeType.ShapeLine)
+                {
+                    destPos = target.CellPos - dir;
+                }
+            }
+            else
+            {
+                if (data.shape.shapeType == ShapeType.ShapeLine)
+                {
+                    destPos = Owner.CellPos + new Vector2Int((int)(dir.x * data.shape.range), (int)(dir.y * data.shape.range));
+
+                    if (!Owner.Room.Map.CanGo(destPos))
+                    {
+                        Vector2Int currentPos = Owner.CellPos;
+                        while (!Owner.Room.Map.CanGo(currentPos))
+                        {
+                            currentPos -= dir;
+                        }
+                        destPos = currentPos;
+                    }
+                }
+            }
+            if (Owner.Room.Map.ApplyMove(Owner, destPos))
+            {
+                Owner.CellPos = destPos;
+                S_ChangePosition movePacket = new S_ChangePosition();
+                movePacket.ObjectId = Owner.Id;
+                movePacket.Position = Owner.PosInfo;
+                Owner.Room.Broadcast(Owner.CellPos, movePacket);
+            }
+        }
+        private Vector2Int GetDir(DirectionType type)
+        {
+            Vector2Int dir = new Vector2Int();
+            switch (type)
+            {
+                case DirectionType.DirectionNone:
+                    dir = new Vector2Int(0, 0);
+                    break;
+                case DirectionType.DirectionUp:
+                    dir = new Vector2Int(0, 1);
+                    break;
+                case DirectionType.DirectionDown:
+                    dir = new Vector2Int(0, -1);
+                    break;
+                case DirectionType.DirectionLeft:
+                    dir = new Vector2Int(-1, 0);
+                    break;
+                case DirectionType.DirectionRight:
+                    dir = new Vector2Int(1, 0);
+                    break;
+                case DirectionType.DirectionBack:
+                    if (Owner.Dir == MoveDir.Up)
+                    {
+                        dir = new Vector2Int(0, -1);
+                    }
+                    else if (Owner.Dir == MoveDir.Down)
+                    {
+                        dir = new Vector2Int(0, 1);
+                    }
+                    else if (Owner.Dir == MoveDir.Left)
+                    {
+                        dir = new Vector2Int(1, 0);
+                    }
+                    else if (Owner.Dir == MoveDir.Right)
+                    {
+                        dir = new Vector2Int(-1, 0);
+                    }
+                    break;
+                case DirectionType.DirectionFront:
+                    if (Owner.Dir == MoveDir.Up)
+                    {
+                        dir = new Vector2Int(0, 1);
+                    }
+                    else if (Owner.Dir == MoveDir.Down)
+                    {
+                        dir = new Vector2Int(0, -1);
+                    }
+                    else if (Owner.Dir == MoveDir.Left)
+                    {
+                        dir = new Vector2Int(-1, 0);
+                    }
+                    else if (Owner.Dir == MoveDir.Right)
+                    {
+                        dir = new Vector2Int(1, 0);
+                    }
+                    break;
+            }
+            return dir;
+        }
+        private void SummonAttack(SkillData data, int range, GameObject target = null)
+        {
+            Task.Delay(1000 * (int)Owner.TotalInvokeSpeed);
+            SummonAttackObj summon = ObjectManager.Instance.Add<SummonAttackObj>();
+            summon.Owner = Owner;
+            summon.Target = _target;
+            summon.Owner.Room = Owner.Room;
+            summon.Data = data;
+            summon.PosInfo.State = CreatureState.Moving;
+            summon.Delay = data.term;
+            summon.TemplateId = data.id;
+            if (target != null)
+            {
+                summon.PosInfo.MoveDir = target.PosInfo.MoveDir;
+                summon.PosInfo.PosX = target.PosInfo.PosX;
+                summon.PosInfo.PosY = target.PosInfo.PosY;
+            }
+            else
+            {
+                summon.PosInfo.MoveDir = Owner.PosInfo.MoveDir;
+                summon.PosInfo.PosX = Owner.PosInfo.PosX;
+                summon.PosInfo.PosY = Owner.PosInfo.PosY;
+            }            
+            if (data.debuff != null)
+            {
+                summon.OnHit = (target) => { HandleDebuffSkill(data, target); };
+            }
+
+            Owner.Room.Push(Owner.Room.EnterGame, summon, false);            
+        }
+
+        private void KineticAttack(SkillData data, int range, GameObject target = null)
+        {
+            MoveSkill(data, target);
+            Task.Delay(1000 * (int)Owner.TotalInvokeSpeed);
+            int dist = (Owner.CellPos - target.CellPos).cellDistanceFromZero;
+            if (target != null && dist<range)
+            {                                
+                S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
+                skillPacket.ObjectId = Owner.Id;
+                skillPacket.Info.SkillId = data.id;
+                skillPacket.Phase = 2;
+                Owner.Room.Broadcast(Owner.CellPos, skillPacket);
+                target.OnDamaged(Owner, data.damage + Owner.TotalAttack);
             }
         }
 

@@ -5,6 +5,7 @@ using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using static Define;
 using static Item;
@@ -17,6 +18,8 @@ public class MyPlayerController : PlayerController
     private NPCController _NPCController;
     private CameraController _cameraController;
     private ChestController _chestController;
+    private int _nearByDungeonId = -1;
+    private GameObject _headUpIcon;
     public CameraController CameraController { get; private set; }
 
     public KeyCode[] SkillKeys { get; private set;} = new KeyCode[4];
@@ -130,11 +133,24 @@ public class MyPlayerController : PlayerController
         }
         else if (Input.GetKeyDown(KeyCode.G))
         {
-            if(_chestController != null)
+            if (_nearByDungeonId != -1)
+            {
+                UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;
+                gameScene.MatchingUI.RefreshUI(_nearByDungeonId);
+                if (gameScene.MatchingUI.gameObject.activeSelf)
+                {
+                    gameScene.MatchingUI.gameObject.SetActive(false);
+                }
+                else
+                {
+                    gameScene.MatchingUI.gameObject.SetActive(true);
+                }
+            }
+            else if(_chestController != null)
             {
                 _chestController.OpenChest();
             }
-            else if(_NPCController!= null)
+            else if(_NPCController != null)
                 _NPCController.StartInteraction();
         }
         else if (Input.GetKeyDown(KeyCode.Q))
@@ -325,12 +341,23 @@ public class MyPlayerController : PlayerController
 
             if(mapData.type == MapType.Dungeon)
             {
-                //던전 입장 UI
+                _nearByDungeonId = id;
+                _headUpIcon = Managers.Resource.Instantiate("UI/HeadUpIcon", transform);
+                _headUpIcon.GetComponent<SpriteRenderer>().sprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Dungeon");                
+                _headUpIcon.GetComponentInChildren<TMP_Text>().text = "던전 입장 : G";
             }
             else
             {
                 C_MapChange mapPacket = new C_MapChange { MapId = id };
                 Managers.Network.Send(mapPacket);
+            }            
+        }
+        else
+        {
+            if (_nearByDungeonId != -1)
+            {
+                Managers.Resource.Destroy(_headUpIcon);
+                _nearByDungeonId = -1;
             }            
         }
     }
@@ -433,7 +460,6 @@ public class MyPlayerController : PlayerController
             _chestController = null;
         }
     }
-
     //Dirty Flag Check
     protected override void CheckUpdatedFlag()
     {

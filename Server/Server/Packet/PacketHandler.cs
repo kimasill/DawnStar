@@ -150,14 +150,30 @@ class PacketHandler
         GameRoom room = player.Room;
         if (room == null)
             return;
-        //GameLogic.Instance.Push(() =>
-        //{
-        //});
 
         if (player == null)
             return;
         room.Push(room.HandleMapChanged, player, mapChangePacket.MapId);
     }
+
+    public static void C_EnterDungeonHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_EnterDungeon enterDungeonPacket = packet as C_EnterDungeon;
+        Player player = clientSession.MyPlayer;
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+        if (enterDungeonPacket.AdmitType == AdmitType.None)
+        {
+            room.Push(room.HandleEnterDungeon, player, enterDungeonPacket.MapId);
+        }
+        else if(enterDungeonPacket.AdmitType == AdmitType.Matching || enterDungeonPacket.AdmitType == AdmitType.Cancel)
+        {
+            room.Push(room.HandleMatching, player, enterDungeonPacket.MapId, enterDungeonPacket.AdmitType);
+        }
+    }
+
 
     public static void C_ChangePositionHandler(PacketSession session, IMessage packet)
     {

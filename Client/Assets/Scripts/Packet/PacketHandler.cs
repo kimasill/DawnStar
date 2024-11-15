@@ -546,4 +546,11 @@ class PacketHandler
         Debug.Log($"SkillCool : {skillCoolPacket.SkillId} {skillCoolPacket.CoolTime}");
         ui.GameWindow.SkillSlot.StartCooldown(skillCoolPacket.SkillId, skillCoolPacket.CoolTime);
     }
+
+    public static void S_PartyInviteHandler(PacketSession session, IMessage packet)
+    {
+        S_PartyInvite partyInvitePacket = packet as S_PartyInvite;
+        //UI_Popup popup = Managers.UI.ShowPopupUI<UI_Popup>();
+        //popup.SetPopup(partyInvitePacket);
+    }
 }
