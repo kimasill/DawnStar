@@ -26,7 +26,7 @@ namespace Server.Game
         
         public QuestInventory Quest { get; set; } = new QuestInventory();
         private Dictionary<int, long> _skillCooldowns = new Dictionary<int, long>();
-        public bool IsDead { get; set; }
+        
         public int Exp {
             get { return Stat.TotalExp; }
             set {

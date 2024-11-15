@@ -12,6 +12,7 @@ public class UI_GameScene : UI_Scene
     public UI_StoryScene StoryScene { get; private set; }
     public UI_Quest QuestUI { get; private set; }
     public UI_Notification NotificationUI { get; private set; }
+    public UI_Matching MatchingUI { get; private set; }
 
     public override void Init()
     {
@@ -23,6 +24,7 @@ public class UI_GameScene : UI_Scene
         StoryScene = GetComponentInChildren<UI_StoryScene>();
         QuestUI = GetComponentInChildren<UI_Quest>();
         NotificationUI = GetComponentInChildren<UI_Notification>();
+        MatchingUI = GetComponentInChildren<UI_Matching>();
 
         GameWindow.gameObject.SetActive(false);
         StatUI.gameObject.SetActive(false);
@@ -30,6 +32,7 @@ public class UI_GameScene : UI_Scene
         ShopUI.gameObject.SetActive(false);
         StoryScene.gameObject.SetActive(false);
         QuestUI.gameObject.SetActive(false);
+        MatchingUI.gameObject.SetActive(false);
     }
 
     public void GetMap(string id)

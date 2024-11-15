@@ -202,4 +202,9 @@ class PacketHandler
     {
         S_SkillCool skillCool = packet as S_SkillCool;
     }
+
+    public static void S_PartyInviteHandler(PacketSession session, IMessage packet)
+    {
+        S_PartyInvite partyInvite = packet as S_PartyInvite;
+    }
 }

@@ -57,16 +57,18 @@ namespace Server.Game
             return null;
         }
 
-        public void ChangeRoom(Player player, int newMapId, GameRoom room)
+        public void UpdateRoom(GameRoom room)
         {
-            if(room.GetPlayerCount() == 0)
+            if (room.GetPlayerCount() == 0)
             {
                 Instance.Remove(room.RoomId);
             }
-            player.Session.ChangeServerState(newMapId);
-            // 새로운 맵이 멀티서버용 맵인지 확인
+        }
+
+        public GameRoom GetRoom(Player player, int newMapId, GameRoom room, bool add)
+        {            
             GameRoom newRoom;
-            if (newMapId == 5)
+            if (add == false)
             {
                 newRoom = Instance.FindByMapId(newMapId); // 멀티서버용 룸 찾기
                 if (newRoom == null)
@@ -78,15 +80,7 @@ namespace Server.Game
             {
                 newRoom = Instance.Add(newMapId);
             }
-
-            if (newRoom != null)
-            {
-                newRoom.Push(newRoom.EnterGame, player, false);
-            }
-            else
-            {
-                Console.WriteLine("알맞은 Room 없음");
-            }
+            return newRoom;
         }
     }
 }

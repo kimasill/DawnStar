@@ -85,7 +85,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SMakeChest, MakePacket<S_MakeChest>);
 		_handler.Add((ushort)MsgId.SMakeChest, PacketHandler.S_MakeChestHandler);		
 		_onRecv.Add((ushort)MsgId.SSkillCool, MakePacket<S_SkillCool>);
-		_handler.Add((ushort)MsgId.SSkillCool, PacketHandler.S_SkillCoolHandler);
+		_handler.Add((ushort)MsgId.SSkillCool, PacketHandler.S_SkillCoolHandler);		
+		_onRecv.Add((ushort)MsgId.SPartyInvite, MakePacket<S_PartyInvite>);
+		_handler.Add((ushort)MsgId.SPartyInvite, PacketHandler.S_PartyInviteHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

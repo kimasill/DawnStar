@@ -52,6 +52,7 @@ namespace Data
         public int unchartedPoint;
         public string description;
         public string prefab;
+        public List<string> prefabs;
         public string icon;
     }
     public class ShapeInfo

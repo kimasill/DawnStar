@@ -100,10 +100,6 @@ public class CreatureController : BaseController
 		Managers.Data.SkillDict.TryGetValue(skillId, out skillData);
         if (skillData == null)
             return;
-
-        if (skillData.skillType == SkillType.SkillAttack) _animation = "ATTACK";
-        else if (skillData.skillType == SkillType.SkillBuff) _animation = "BUFF";
-        else if (skillData.skillType == SkillType.SkillProjectile) _animation = "PROJECTILE";
         GameObject skill = Managers.Resource.Instantiate($"{skillData.prefab}", transform);
         SkillController skillController = skill.GetComponent<SkillController>();
         if (skillController == null)

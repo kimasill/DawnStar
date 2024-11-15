@@ -18,18 +18,20 @@ namespace Server.Game
 {
     public class Monster : GameObject
     {
-        public int TemplateId { get; protected set; }
         public Vector2Int SpawnPosition { get; set; }
         public int SpawnId { get; set; }
         public MonsterType MonsterType { get; protected set; }
         public MonsterGrade MonsterGrade { get; protected set; }
-
         protected Dictionary<int, long> _skillCooldowns = new Dictionary<int, long>();
-        public bool IsDead = false;
         public bool IsFlying = false;
         public int _patrolRange = 10;
+        private const int PushTime = 200;
         Random _rand = new Random();
         public Monster(MonsterData monsterData)
+        {
+            Initialize(monsterData);
+        }
+        protected void Initialize(MonsterData monsterData)
         {
             ObjectType = GameObjectType.Monster;
             MonsterGrade = monsterData.grade;
@@ -38,13 +40,14 @@ namespace Server.Game
             TemplateId = monsterData.id;
             Stat.MergeFrom(monsterData.stat);
             Stat.Hp = monsterData.stat.MaxHp;
-            Stat.Hp = monsterData.stat.MaxHp;
             State = CreatureState.Idle;
-            Skill = new Skill(this);            
-            if(MonsterType == MonsterType.Flying)
+            Skill = new Skill(this);
+
+            if (MonsterType == MonsterType.Flying)
             {
                 IsFlying = true;
             }
+            IsDead = false;
         }
         public static Monster CreateMonster(int templateId)
         {
@@ -96,11 +99,11 @@ namespace Server.Game
             }
             if(Room != null)
             {
-                _job = Room.PushAfter(200, Update);
+                _job = Room.PushAfter(PushTime, Update);
             }
         }
         protected Player _target;
-        Vector2Int _dest;
+        protected Vector2Int _dest;
         protected int _searchRange = 10;
         protected int _chaseRange = 20;
         protected long _nextSearchTick = 0;
@@ -287,7 +290,7 @@ namespace Server.Game
         {
             if (_stiffEndTick == 0)
             {
-                _stiffEndTick = Environment.TickCount64 + 500;
+                _stiffEndTick = (long)(Environment.TickCount64 + 1000*TotalStiffTime - PushTime);
             }
 
             if (_stiffEndTick > Environment.TickCount64)
@@ -393,12 +396,12 @@ namespace Server.Game
             });
             if(monsterData.grade == MonsterGrade.Elite)
             {
-                Room.CheckBossRewards(_target, monsterData.rewardBoxId);
+                room.CheckBossRewards(_target, monsterData.rewardBoxId);
                 _respawnTime = _respawnTime * 10;
             }                
             else if (monsterData.grade == MonsterGrade.Boss)
             {
-                Room.CheckBossRewards(_target, monsterData.rewardBoxId);
+                room.CheckBossRewards(_target, monsterData.rewardBoxId);
                 return;
             }
                 

@@ -205,6 +205,9 @@ namespace Server.Migrations
                     b.Property<int>("PosY")
                         .HasColumnType("int");
 
+                    b.Property<int>("PotionPerformance")
+                        .HasColumnType("int");
+
                     b.Property<string>("RealizationsJson")
                         .HasColumnType("nvarchar(max)");
 

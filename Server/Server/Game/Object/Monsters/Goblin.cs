@@ -14,17 +14,12 @@ namespace Server.Game
         private int _basicAttackCount = 0;
         private const int BasicAttackLimit = 5;
         private int _skillRange = 1;
+        private const double StrongAttackTime = 1.5;
+        private const double StrongAttackInvokeAdd = 0.4;
 
         public Goblin(MonsterData data) : base(data)
         {            
-            TemplateId = data.id;
-            MonsterType = data.type;
-            MonsterGrade = data.grade;
-            Info.Name = data.name;
-            Info.TemplateId = TemplateId;
-            Stat.MergeFrom(data.stat);
-            Stat.Hp = data.stat.MaxHp;
-            State = CreatureState.Idle;
+            Initialize(data);
         }
 
         public override void Update()
@@ -56,25 +51,43 @@ namespace Server.Game
                     return;
                 }
                 LookAt(dir);
+                int skillId = 0;
+                int coolTick = (int)(1000/TotalAttackSpeed);
                 SkillData skillData = null;
+                AdditionalInvokeSpeed = 0;
                 if (_basicAttackCount < BasicAttackLimit)
-                {                    
-                    DataManager.SkillDict.TryGetValue(1, out skillData);
-                    Skill.StartSkill(this,skillData, _target);
-                    _basicAttackCount+=1;
+                {            
+                    skillId = 1;
+                    DataManager.SkillDict.TryGetValue(skillId, out skillData);
+                    if(Skill.HandleSkillCool(skillData, true) == false)
+                    {
+                        State = CreatureState.Moving;
+                        BroadcastMove();
+                        return;
+                    }
+                    _basicAttackCount += 1;                     
                 }
                 else
                 {
-                    DataManager.SkillDict.TryGetValue(9, out skillData);
-                    Skill.StartSkill(this, skillData, _target);
+                    skillId = 9;
+                    DataManager.SkillDict.TryGetValue(skillId, out skillData);
+                    if (Skill.HandleSkillCool(skillData) == false)
+                    {
+                        State = CreatureState.Moving;
+                        BroadcastMove();
+                        return;
+                    }
                     _basicAttackCount = 0;
+                    coolTick = (int)(1000 * StrongAttackTime);
+                    AdditionalInvokeSpeed = (float)StrongAttackInvokeAdd;
                 }
+                
+                Skill.StartSkill(this, skillData, _target);                
                 S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
                 skillPacket.ObjectId = Id;
                 skillPacket.Info.SkillId = skillData.id;
                 Room.Broadcast(CellPos, skillPacket);
-                //쿨타임
-                int coolTick = (int)(1000 / TotalAttackSpeed);
+                
                 _coolTick = Environment.TickCount64 + coolTick;
             }
             if (_coolTick > Environment.TickCount64)

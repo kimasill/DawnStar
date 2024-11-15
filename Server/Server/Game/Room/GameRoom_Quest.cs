@@ -245,7 +245,7 @@ namespace Server.Game
                     break;
                 case "미지의 기운 회복":
                     player.Stat.UnchartedPointRegen += (int)specialStatData.value;
-                    playerDb.UnchartedPointRegen = player.Stat.UnchartedPointRegen;
+                    playerDb.UnchartedPointRegen = (int)player.Stat.UnchartedPointRegen;
                     break;
             }
             return playerDb;

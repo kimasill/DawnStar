@@ -23,10 +23,8 @@ namespace Server
         List<ArraySegment<byte>> _reserverQueue = new List<ArraySegment<byte>>();
         int _reservedSentByte = 0;
         long _lastSendTick = 0;
-
-
         long _pingpongTime = 0;
-
+        
         public void Ping()
         {
             if (_pingpongTime > 0)
@@ -44,7 +42,6 @@ namespace Server
 
             GameLogic.Instance.PushAfter(5000, Ping);
         }
-
         public void HandlePong()
         {
             _pingpongTime = System.Environment.TickCount64;

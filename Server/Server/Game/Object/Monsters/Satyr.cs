@@ -17,35 +17,16 @@ namespace Server.Game
 
         public Satyr(MonsterData data) : base(data)
         {
+            Initialize(data);
         }
 
-        public override void Update()
-        {
-            base.Update();
-
-            if (State == CreatureState.Dead)
-                return;
-
-            if (State == CreatureState.Idle)
-            {
-                UpdateIdle();
-            }
-            else if (State == CreatureState.Moving)
-            {
-                UpdateMoving();
-            }
-            else if (State == CreatureState.Skill)
-            {
-                UpdateSkill();
-            }
-        }
         long _coolTick = 0;
         protected override void UpdateSkill()
         {
             if (_coolTick > Environment.TickCount64)
                 return;
 
-            _coolTick = Environment.TickCount64 + (int)TotalAttackSpeed * 1000;
+            _coolTick = Environment.TickCount64 + 1000/(int)TotalAttackSpeed;
 
             
             if (_target == null || _target.Room != Room || _target.Hp == 0)

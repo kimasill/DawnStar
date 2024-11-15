@@ -15,6 +15,7 @@ namespace Server.Game
         public GameRoom Room { get; set; }
         public Skill Skill { get; set; }
         public GameObjectType ObjectType { get; protected set; } = GameObjectType.None;
+        public bool IsDead { get; set; }
         public int Id 
         { 
             get { return Info.ObjectId; } 
@@ -33,13 +34,18 @@ namespace Server.Game
             get { return Stat.Level; }
             set { Stat.Level = value; }
         }
-        public virtual float TotalInvokeSpeed { get { return Stat.InvokeSpeed; } }
+        public virtual float TotalInvokeSpeed { get { return Stat.InvokeSpeed + AdditionalInvokeSpeed; } }
         public virtual int TotalAttack { get { return Stat.Attack; } }
         public virtual int TotalDefense { get { return 0; } }
         public virtual float TotalAttackSpeed { get { return Stat.AttackSpeed; } }
         public virtual int TotalAvoidance { get { return Stat.Avoid; } } 
         public virtual int TotalAccuracy { get { return Stat.Accuracy; } }
+        public virtual int TotalCriticalChance { get { return Stat.CriticalChance; } }
+        public virtual int TotalCriticalDamage { get { return Stat.CriticalDamage; } }
+        public virtual float TotalDamageReduce { get; set; }
+        public virtual float AdditionalInvokeSpeed { get; set; }
 
+        public virtual float TotalStiffTime { get { return Stat.StiffTime; }}
         public int Hp
         {
             get { return Stat.Hp; }
@@ -156,6 +162,7 @@ namespace Server.Game
             if (Stat.Hp <= 0)
             {
                 Ondead(attacker);
+                IsDead = true;
             }
             return damage;
         }
