@@ -59,6 +59,9 @@ enum MsgId {
   C_SELECT_STAT = 51;
   C_ENTER_DUNGEON = 52;
   S_PARTY_INVITE = 53;
+  C_INTERACTION = 54;
+  S_INTERACTION = 55;
+  S_CHANGE_ADDITIONAL_STAT = 56;
 }
 enum CreatureState{
   IDLE = 0;
@@ -88,6 +91,7 @@ enum GameObjectType{
 	NPC = 4;
 	ITEM = 5;	
 	MAGIC = 6;
+	INTERACTION = 7;
 }
 
 enum SkillType{
@@ -112,6 +116,22 @@ enum SkillLogicType{
 	KINETIC = 8;
 	INVOCATION = 9;
 	SUMMON = 10;
+}
+
+enum OptionType{
+	OPTION_TYPE_NONE = 0;
+	OPTION_TYPE_ATTACK = 1;
+	OPTION_TYPE_DEFENSE = 2;
+	OPTION_TYPE_SPEED = 3;
+	OPTION_TYPE_CIRITICALCHANCE = 4;
+	OPTION_TYPE_CRITICALDAMAGE = 5;
+	OPTION_TYPE_AVOID = 6;
+	OPTION_TYPE_ACCURACY = 7;
+	OPTION_TYPE_ATTACKSPEED = 8;
+	OPTION_TYPE_HP = 9;
+	OPTION_TYPE_UP = 10;
+	OPTION_TYPE_INVOKESPEED = 11;
+	OPTION_TYPE_COOLTIME = 12;
 }
 
 enum AdmitType{
@@ -237,6 +257,16 @@ enum GoodsType{
 	GOODS_TYPE_NONE = 0;
 	GOODS_TYPE_QUEST = 1;
 	GOODS_TYPE_KEY = 2;
+}
+
+enum InteractionType{
+	INTERACTION_TYPE_NONE = 0;
+	INTERACTION_TYPE_CHEST = 1;
+	INTERACTION_TYPE_PORTAL = 2;
+	INTERACTION_TYPE_NPC = 3;
+	INTERACTION_TYPE_SHOP = 4;
+	INTERACTION_TYPE_DOOR = 5;
+	INTERACTION_TYPE_QUEST = 6;
 }
 
 enum RespawnType{
@@ -450,6 +480,7 @@ message S_Tutorial {
 
 message C_MapChange{
 	int32 mapId = 1;
+	int32 portalId = 2;
 }
 
 message C_EnterDungeon{
@@ -473,7 +504,9 @@ message C_QuestComplete{
 message C_SelectStat{
 	int32 templateId = 1;
 }
-
+message S_ChangeAdditionalStat{
+	StatInfo statInfo = 1;
+}
 message S_QuestList{
 	repeated QuestInfo quests = 1;
 }
@@ -489,6 +522,18 @@ message S_QuestComplete{
 message S_PartyInvite{
 	int32 partyId = 1;
 	int32 inviterId = 2;
+}
+
+message C_Interaction{
+	int32 objectId = 1;
+	InteractionType interactionType = 2;
+}
+
+message S_Interaction{
+	int32 objectId = 1;
+	int32 playerId = 2;
+	bool success = 3;
+	InteractionType interactionType =4;
 }
 
 message LobbyPlayerInfo{
@@ -539,6 +584,8 @@ message StatInfo{
   int32 unchartedPoint = 22;
   float unchartedPointRegen = 23;
   float stiffTime = 24;
+  float coolTime =25;
+  int32 up =26;
 }
 
 message QuestInfo

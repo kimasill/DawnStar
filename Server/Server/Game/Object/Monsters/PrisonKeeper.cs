@@ -47,7 +47,6 @@ namespace Server.Game.Object.Monsters
             }
             return resultDamage;
         }
-
         private void EnterPhaseTwo()
         {
             _isUsingSkill = true;
@@ -73,7 +72,6 @@ namespace Server.Game.Object.Monsters
                 return;
             }
         }
-
         protected override void UpdateSkill()
         {
             if (_coolTick > Environment.TickCount64)
@@ -122,7 +120,6 @@ namespace Server.Game.Object.Monsters
                     return;
                 }
             }
-
             S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
             skillPacket.ObjectId = Id;
             skillPacket.Info.SkillId = skillData.id;

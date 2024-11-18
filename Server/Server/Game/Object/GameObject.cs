@@ -11,6 +11,7 @@ namespace Server.Game
 {
     public class GameObject
     {
+        #region Properties
         public ObjectInfo Info { get; private set;} = new ObjectInfo();
         public GameRoom Room { get; set; }
         public Skill Skill { get; set; }
@@ -29,28 +30,71 @@ namespace Server.Game
         public PositionInfo PosInfo { get; private set;} = new PositionInfo();
         public StatInfo Stat { get; private set; } = new StatInfo();
         public MapInfo MapInfo { get; set; } = new MapInfo();
+        public List<BuffInfo> Buffs { get; set; } = new List<BuffInfo>();
+        public List<DebuffInfo> Debuffs { get; set; } = new List<DebuffInfo>();
         public virtual int Level
         {
             get { return Stat.Level; }
             set { Stat.Level = value; }
         }
         public virtual float TotalInvokeSpeed { get { return Stat.InvokeSpeed + AdditionalInvokeSpeed; } }
-        public virtual int TotalAttack { get { return Stat.Attack; } }
-        public virtual int TotalDefense { get { return 0; } }
-        public virtual float TotalAttackSpeed { get { return Stat.AttackSpeed; } }
-        public virtual int TotalAvoidance { get { return Stat.Avoid; } } 
-        public virtual int TotalAccuracy { get { return Stat.Accuracy; } }
-        public virtual int TotalCriticalChance { get { return Stat.CriticalChance; } }
-        public virtual int TotalCriticalDamage { get { return Stat.CriticalDamage; } }
+        public virtual int TotalAttack { get { return Stat.Attack + AdditionalAttack;  } }
+        public virtual int TotalDefense { get { return Stat.Defense + AdditionalDefense; } }
+        public virtual int TotalAvoidance { get { return Stat.Avoid + AdditionalAvoidance; } }
+        public virtual int TotalAccuracy { get { return Stat.Accuracy + AdditionalAccuracy; } }
+        public virtual float TotalAttackSpeed { get { return Stat.AttackSpeed + AdditionalAttackSpeed; } }
+        public virtual int TotalCriticalChance { get { return Stat.CriticalChance + AdditionalCriticalChance; } }
+        public virtual int TotalCriticalDamage { get { return (int)MathF.Max(Stat.CriticalDamage + AdditionalCriticalDamage, 2); } }
+        public virtual int TotalSpeed { get { return (int)(Stat.Speed + AdditionalSpeed); } }
         public virtual float TotalDamageReduce { get; set; }
+
+        protected int _additionalAttack;
+        public virtual int AdditionalAttack { get; set; }
+
+        protected int _additionalDefense;
+        public virtual int AdditionalDefense { get; set; }
+
+        protected float _additionalInvokeSpeed;
         public virtual float AdditionalInvokeSpeed { get; set; }
 
+        protected float _additionalCoolTime;
+        public virtual float AdditionalCoolTime { get; set; }
+
+        protected int _additionalCriticalChance;
+        public virtual int AdditionalCriticalChance { get; set; }
+
+        protected int _additionalCriticalDamage;
+        public virtual int AdditionalCriticalDamage { get; set; }
+
+        protected int _additionalAvoidance;
+        public virtual int AdditionalAvoidance { get;  set; }
+
+        protected int _additionalAccuracy;
+        public virtual int AdditionalAccuracy { get; set; }
+
+        protected float _additionalAttackSpeed;
+        public virtual float AdditionalAttackSpeed { get; set; }
+
+        protected float _additionalSpeed;
+        public virtual float AdditionalSpeed { get; set; }
+
+        protected int _additionalHp;
+        public virtual int AdditionalHp { get; set; }
+
+        protected int _additionalUp;
+        public virtual int AdditionalUp { get; set; }
         public virtual float TotalStiffTime { get { return Stat.StiffTime; }}
         public int Hp
         {
             get { return Stat.Hp; }
-            set { Stat.Hp = Math.Clamp(value, 0, Stat.MaxHp); }
+            set { Stat.Hp = Math.Clamp(value, 0, MaxHp); }
         }
+
+        public int MaxHp
+        {
+            get { return Stat.MaxHp + AdditionalHp; }            
+        }
+
         public MoveDir Dir
         {
             get { return PosInfo.MoveDir; }
@@ -92,7 +136,7 @@ namespace Server.Game
             Info.Position = PosInfo;
             Info.StatInfo = Stat;
         }
-
+        #endregion
         public virtual void Update()
         {
 
@@ -122,7 +166,6 @@ namespace Server.Game
             }
             return cellPos;
         }
-
         public static MoveDir GetDirFromVec(Vector2Int dir)
         {
             if (dir.x > 0)
@@ -134,7 +177,6 @@ namespace Server.Game
             else
                 return MoveDir.Down;
         }
-
         public Vector2Int GetPosFromLookDir(Vector2Int pos, LookDir lookDir)
         {
             switch (lookDir)
@@ -146,7 +188,6 @@ namespace Server.Game
             }
             return pos;
         }
-
         public virtual int OnDamaged(GameObject attacker, int damage)
         {
             if (Room == null)
@@ -166,35 +207,106 @@ namespace Server.Game
             }
             return damage;
         }
-
         public virtual void OnHealed(int heal, GameObject healer)
         {
             if (Room == null)
                 return;
 
-            Stat.Hp = Math.Min(Stat.Hp + heal, Stat.MaxHp);
+            Stat.Hp = Math.Min(Stat.Hp + heal, MaxHp);
             S_ChangeHp changePacket = new S_ChangeHp();
             changePacket.ObjectId = Id;
             changePacket.Hp = Stat.Hp;
             Room.Broadcast(CellPos, changePacket);
         }
-
         public virtual void OnBuffed(SkillData skillData)
         {
             if (Room == null)
                 return;
 
-            // TODO : 버프 적용
+            ApplyBuff(skillData.buff);
         }
-
         public virtual void OnDebuffed(SkillData skillData)
         {
             if (Room == null)
                 return;
 
-            // TODO : 디버프 적용
+            ApplyDebuff(skillData.debuff);
         }
+        public void ApplyBuff(BuffInfo buff)
+        {
+            if (buff == null)
+                return;
 
+            ApplyEffect(buff.name, buff.value, true);
+            Buffs.Add(buff);
+            Console.WriteLine($"Buff {buff.name} applied with value {buff.value}");
+        }
+        public void RemoveBuff(BuffInfo buff)
+        {
+            if (buff == null)
+                return;
+
+            ApplyEffect(buff.name, buff.value, false);
+            Buffs.Remove(buff);
+            Console.WriteLine($"Buff {buff.name} removed");
+        }
+        public void ApplyDebuff(DebuffInfo debuff)
+        {
+            if (debuff == null)
+                return;
+
+            ApplyEffect(debuff.name, debuff.value, true);
+            Debuffs.Add(debuff);
+            Console.WriteLine($"Debuff {debuff.name} applied with value {debuff.value}");
+        }
+        public void RemoveDebuff(DebuffInfo debuff)
+        {
+            if (debuff == null)
+                return;
+
+            ApplyEffect(debuff.name, debuff.value, false);
+            Debuffs.Remove(debuff);
+            Console.WriteLine($"Debuff {debuff.name} removed");
+        }
+        private void ApplyEffect(string name, float value, bool isApplying)
+        {
+            int multiplier = isApplying ? 1 : -1;
+
+            switch (name)
+            {
+                case "공격력":
+                    AdditionalAttack += (int)(TotalAttack * value) * multiplier;
+                    break;
+                case "방어력":
+                    AdditionalDefense += (int)(TotalDefense * value) * multiplier;
+                    break;
+                case "이동속도":
+                    AdditionalSpeed += (int)(TotalSpeed * value) * multiplier;
+                    break;
+                case "공격속도":
+                    AdditionalAttackSpeed += TotalAttackSpeed * value * multiplier;
+                    break;
+                case "치명타 확률":
+                    AdditionalCriticalChance += (int)(TotalCriticalChance * value) * multiplier;
+                    break;
+                case "치명타 피해":
+                    AdditionalCriticalDamage += (int)(TotalCriticalDamage * value) * multiplier;
+                    break;
+                case "회피율":
+                    AdditionalAvoidance += (int)(TotalAvoidance * value) * multiplier;
+                    break;
+                case "명중률":
+                    AdditionalAccuracy += (int)(TotalAccuracy * value) * multiplier;
+                    break;
+                case "생명력":
+                    AdditionalHp += (int)(Stat.MaxHp * value) * multiplier;
+                    break;
+                case "회복":
+                    if (isApplying)
+                        OnHealed((int)(Stat.MaxHp * value), this);
+                    break;
+            }
+        }
         public virtual void Ondead(GameObject attacker)
         {
             if (Room == null)
@@ -214,7 +326,6 @@ namespace Server.Game
 
             room.EnterGame(this, false);
         }
-
         public virtual GameObject GetOwner()
         {
             return this;

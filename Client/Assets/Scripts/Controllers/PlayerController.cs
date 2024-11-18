@@ -12,6 +12,7 @@ public class PlayerController : CreatureController
 	
     protected EquipmentController _equipmentController;
     protected SortingGroup _sortingLayer;
+    protected bool _isAttacking = false;
     public EquipmentController Equipment 
     { 
         get {
@@ -22,7 +23,18 @@ public class PlayerController : CreatureController
         } 
         private set { } 
     }
-
+    public int EquipDamage { get; protected set; }
+    public int EquipDefense { get; protected set; }
+    public int EquipAvoidance { get; protected set; }
+    public int EquipAccuracy { get; protected set; }
+    public int EquipCriticalChance { get; protected set; }
+    public int EquipCriticalDamage { get; protected set; }
+    public float EquipAttackSpeed { get; protected set; }
+    public float EquipSpeed { get; protected set; }
+    public float EquipInvokeSpeed { get; protected set; }
+    public float EquipCoolTime { get; protected set; }
+    public int EquipHp { get; protected set; }
+    public int EquipUp { get; protected set; }
 
     protected override void Init()
 	{
@@ -131,6 +143,7 @@ public class PlayerController : CreatureController
     private IEnumerator CoStartSkill(int skillId)
     {
         _rangedSkill = false;
+        _isAttacking = true;
         SkillData skillData = null;
         Managers.Data.SkillDict.TryGetValue(skillId, out skillData);
         if (skillData == null)
@@ -147,32 +160,35 @@ public class PlayerController : CreatureController
         yield return StartCoroutine(skillController.ExecuteSkill());
         State = CreatureState.Idle;
         _coSkill = null;
+        _isAttacking = false;
         CheckUpdatedFlag();
     }
     private IEnumerator CoStartShootArrow()
     {
         // 대기 시간
         _rangedSkill = true;
+        _isAttacking = true;
         State = CreatureState.Skill;
-        Animator.speed = AttackSpeed;
-        yield return new WaitForSeconds(0.01f);
+        Animator.speed = Stat.AttackSpeed + AdditionalAttackSpeed;
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
         Animator.speed = 1.0f;
         State = CreatureState.Idle;
         _coSkill = null;
+        _isAttacking = false;
         CheckUpdatedFlag();
     }
     private IEnumerator CoStartBasicAttack()
     {
         // 대기 시간
         _rangedSkill = false;
+        _isAttacking = true;
         State = CreatureState.Skill;
-        Animator.speed = AttackSpeed;
-        yield return new WaitForSeconds(0.01f);
+        Animator.speed = Stat.AttackSpeed + AdditionalAttackSpeed;
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
         Animator.speed = 1.0f;
         State = CreatureState.Idle;
         _coSkill = null;
+        _isAttacking = false;
         CheckUpdatedFlag();
     }
     protected virtual void CheckUpdatedFlag(){ }

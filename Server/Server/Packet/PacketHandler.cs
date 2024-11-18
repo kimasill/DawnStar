@@ -153,7 +153,7 @@ class PacketHandler
 
         if (player == null)
             return;
-        room.Push(room.HandleMapChanged, player, mapChangePacket.MapId);
+        room.Push(room.HandleMapChanged, player, mapChangePacket.PortalId);
     }
 
     public static void C_EnterDungeonHandler(PacketSession session, IMessage packet)
@@ -297,5 +297,24 @@ class PacketHandler
             return;
 
         room.HandleSelectStat(clientSession.MyPlayer, selectStatPacket.TemplateId);
+    }
+
+    public static void C_InteractionHandler(PacketSession session, IMessage packet)
+    {
+        C_Interaction interactionPacket = packet as C_Interaction;
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession == null || clientSession.MyPlayer == null)
+            return;
+
+        GameRoom room = clientSession.MyPlayer.Room;
+        if (room == null)
+            return;
+
+        if(interactionPacket.InteractionType == InteractionType.None)
+            return;
+        else if (interactionPacket.InteractionType == InteractionType.Door)
+            room.HandleDoorInteraction(clientSession.MyPlayer, interactionPacket.ObjectId);        
+            
     }
 }

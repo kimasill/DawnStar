@@ -1,0 +1,134 @@
+{
+  "doors": [
+    {
+      "id": 1,
+      "name": "NormalDoor",
+      "multi": "true"
+    },
+    {
+      "id": 2,
+      "name": "NormalDoor",
+      "multi": "true"
+    },
+    {
+      "id": 3,
+      "name": "NormalDoor",
+      "multi": "true"
+    },
+    {
+      "id": 4,
+      "name": "NormalDoor",
+      "multi": "true"
+    },
+    {
+      "id": 5,
+      "name": "NormalDoor",
+      "multi": "true"
+    },
+    {
+      "id": 6,
+      "name": "WareHouseDoor",
+      "multi": "true",
+      "scripts": [
+        "열쇠가 필요하다."
+      ],
+      "keyItems": [
+        "1156"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "HiddenDoor",
+      "multi": "true",
+      "scripts": [
+        "구석의 숨겨진 문. 무언가 있을것 같다."
+      ]
+    },
+    {
+      "id": 8,
+      "name": "NormalDoor",
+      "multi": "true"
+    },
+    {
+      "id": 9,
+      "name": "NormalDoor",
+      "multi": "true"
+    },
+    {
+      "id": 10,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 11,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 12,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 13,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 14,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 15,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 16,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 17,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 18,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 19,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 20,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 21,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 22,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 23,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 24,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 25,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 26,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 27,
+      "name": "NormalDoor"
+    },
+    {
+      "id": 28,
+      "name": "NormalDoor"
+    }
+  ]
+}

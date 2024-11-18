@@ -85,26 +85,38 @@ namespace Server.Game
             return closestPortalPos;
         }
 
-        public void HandleMapChanged(Player player, int mapId)
+        public void HandleMapChanged(Player player, int portalId)
         {
-            MapData mapData = DataManager.MapDict[mapId];
-            bool add = false;
-            if (mapData.type == MapType.Dungeon)
-                add = true;
-            else if (mapData.type == MapType.Field)
-                add = false;
+            MapData mapData = null;
+            DataManager.MapDict.TryGetValue(player.MapInfo.TemplateId, out  mapData);
+            if (mapData != null) {
+                foreach (var portal in mapData.portals)
+                {
+                    if (portal.id == portalId)
+                    {
+                        int mapId = portal.mapId;
 
-            GameRoom room = GameLogic.Instance.GetRoom(player, mapId, this, add);
-            HandleMapChanged(player, mapId, room);
+                        bool add = false;
+                        if (mapData.type == MapType.Dungeon)
+                            add = true;
+                        else if (mapData.type == MapType.Field)
+                            add = false;
+
+                        GameRoom room = GameLogic.Instance.GetRoom(player, mapId, this, add);
+                        HandleMapChanged(player, mapData, portal.destination, room);
+                        break;
+                    }
+                }
+            }
         }
-        public void HandleMapChanged(Player player, int mapId, GameRoom pRoom)
+        public void HandleMapChanged(Player player, MapData map, int destPortalId, GameRoom pRoom)
         {
             if(pRoom == null)
             {
                 Console.WriteLine("There is not pRoom");
                 return;
             }    
-            UpdatePlayerMapInfo(player, mapId);
+            UpdatePlayerMapInfo(player, map, destPortalId);
             if (pRoom != null)
             {
                 player.Room = pRoom;
@@ -122,39 +134,34 @@ namespace Server.Game
             GameLogic.Instance.UpdateRoom(this);
         }
 
-        public void UpdatePlayerMapInfo(Player player, int mapId)
+        public void UpdatePlayerMapInfo(Player player, MapData map, int destPortalId)
         {
             if (player == null)
                 return;
 
-            MapData mapData = null;
-
-            if (!DataManager.MapDict.TryGetValue(mapId, out mapData))
-                return;
-            PortalData portalData = null;
-            foreach (var portal in mapData.portals)
+            if(map == null)
             {
-                if (portal.name == player.MapInfo.MapName)
+                Console.WriteLine("맵 정보를 찾을 수 없습니다.");
+                return;
+            }
+            PortalData portalData = null;
+
+            foreach (var portal in map.portals)
+            {
+                if (portal.id == destPortalId)
                 {
                     portalData = portal;
-                    break;
                 }
-            }
-
-            if (portalData == null)
-            {
-                Console.WriteLine("포탈 정보를 찾을 수 없습니다.");
-                return;
-            }
+            }           
 
             // 플레이어의 위치를 포탈의 위치로 업데이트
             player.CellPos = new Vector2Int((int)portalData.posX, (int)portalData.posY);
             player.PosInfo.State = CreatureState.Idle;
-            player.MapInfo.TemplateId = mapData.id;
-            player.MapInfo.MapName = mapData.name;
-            player.MapInfo.Scene = mapData.name;
+            player.MapInfo.TemplateId = map.id;
+            player.MapInfo.MapName = map.name;
+            player.MapInfo.Scene = map.name;
             player.MapInfo.PortalId = portalData.id;
-            player.Session.UpdateMapChests(mapId);
+            player.Session.UpdateMapChests(map.id);
         }
         public void HandleStatChange(Player player)
         {

@@ -19,6 +19,7 @@ namespace Server.Game
 {
     public class Player: GameObject
     {
+        #region Properties
         public int PlayerDbId { get; set; }
         public ClientSession Session { get; set; }
         public VIsionCube Vision { get; private set; }
@@ -99,22 +100,141 @@ namespace Server.Game
                 }
             }
         }
-        public int WeaponRange { get; private set; }
-        public int WeaponDamage { get; private set; }
-        public int ArmorDef { get; private set; }
-        public int AdditionalAvoidance { get; private set; }
-        public int AdditionalAccuracy { get; private set; }
-        public int AdditionalCriticalChance { get; private set; }
-        public int AdditionalCriticalDamage { get; private set; }
-        public float AdditionalAttackSpeed { get; private set; }
 
-        public override int TotalAttack { get { return Stat.Attack + WeaponDamage; } }
-        public override int TotalDefense { get { return Stat.Defense + ArmorDef; } }        
-        public virtual int TotalCriticalChance { get {return Stat.CriticalChance + AdditionalCriticalChance ; } }
-        public virtual int TotalCriticalDamage { get { return (int)MathF.Max(Stat.CriticalDamage + AdditionalCriticalDamage, 2); } }
-        public override int TotalAvoidance { get { return Stat.Avoid + AdditionalAvoidance; } }
-        public override int TotalAccuracy { get { return Stat.Accuracy + AdditionalAccuracy; } }
-        public override float TotalAttackSpeed { get { return Stat.AttackSpeed + AdditionalAttackSpeed; } }
+        public override int AdditionalAttack
+        {
+            get { return _additionalAttack + EquipDamage; }
+            set
+            {
+                _additionalAttack = value;
+                SendAdditionalStat(new StatInfo() { Attack = _additionalAttack });
+            }
+        }
+
+        public override int AdditionalDefense
+        {
+            get { return _additionalDefense + EquipDefense; }
+            set
+            {
+                _additionalDefense = value;
+                SendAdditionalStat(new StatInfo() { Defense = _additionalDefense });
+            }
+        }
+
+        public override float AdditionalInvokeSpeed
+        {
+            get { return _additionalInvokeSpeed + EquipInvokeSpeed; }
+            set
+            {
+                _additionalInvokeSpeed = value;
+                SendAdditionalStat(new StatInfo() { InvokeSpeed = _additionalInvokeSpeed });
+            }
+        }
+
+        public override float AdditionalCoolTime
+        {
+            get { return _additionalCoolTime + EquipCoolTime; }
+            set
+            {
+                _additionalCoolTime = value;
+                SendAdditionalStat(new StatInfo() { CoolTime = _additionalCoolTime });
+            }
+        }
+
+        public override int AdditionalCriticalChance
+        {
+            get { return _additionalCriticalChance + EquipCriticalChance; }
+            set
+            {
+                _additionalCriticalChance = value;
+                SendAdditionalStat(new StatInfo() { CriticalChance = _additionalCriticalChance });
+            }
+        }
+
+        public override int AdditionalCriticalDamage
+        {
+            get { return _additionalCriticalDamage + EquipCriticalDamage; }
+            set
+            {
+                _additionalCriticalDamage = value;
+                SendAdditionalStat(new StatInfo() { CriticalDamage = _additionalCriticalDamage });
+            }
+        }
+
+        public override int AdditionalAvoidance
+        {
+            get { return _additionalAvoidance + EquipAvoidance; }
+            set
+            {
+                _additionalAvoidance = value;
+                SendAdditionalStat(new StatInfo() { Avoid = _additionalAvoidance });
+            }
+        }
+
+        public override int AdditionalAccuracy
+        {
+            get { return _additionalAccuracy + EquipAccuracy; }
+            set
+            {
+                _additionalAccuracy = value;
+                SendAdditionalStat(new StatInfo() { Accuracy = _additionalAccuracy });
+            }
+        }
+
+        public override float AdditionalAttackSpeed
+        {
+            get { return _additionalAttackSpeed + EquipAttackSpeed; }
+            set
+            {
+                _additionalAttackSpeed = value;
+                SendAdditionalStat(new StatInfo() { AttackSpeed = _additionalAttackSpeed });
+            }
+        }
+
+        public override float AdditionalSpeed
+        {
+            get { return _additionalSpeed + EquipSpeed; }
+            set
+            {
+                _additionalSpeed = value;
+                SendAdditionalStat(new StatInfo() { Speed = _additionalSpeed });
+            }
+        }
+
+        public override int AdditionalHp
+        {
+            get { return _additionalHp + EquipHp; }
+            set
+            {
+                _additionalHp = value;
+                SendAdditionalStat(new StatInfo() { Hp = _additionalHp });
+            }
+        }
+
+        public override int AdditionalUp
+        {
+            get { return _additionalUp + EquipUp; }
+            set
+            {
+                _additionalUp = value;
+                SendAdditionalStat(new StatInfo() { Up = _additionalUp });
+            }
+        }
+        public int WeaponRange { get; private set; }
+        public int EquipDamage { get; private set; }
+        public int EquipDefense { get; private set; }
+        public int EquipAvoidance { get; private set; }
+        public int EquipAccuracy { get; private set; }
+        public int EquipCriticalChance { get; private set; }
+        public int EquipCriticalDamage { get; private set; }
+        public float EquipAttackSpeed { get; private set; }
+        public float EquipSpeed { get; private set; }
+        public float EquipInvokeSpeed { get; private set; }
+        public float EquipCoolTime { get; private set; }
+        public int EquipHp { get; private set; }
+        public int EquipUp { get; private set; }
+        #endregion
+
         public Player()
         {
             ObjectType = GameObjectType.Player;
@@ -157,6 +277,30 @@ namespace Server.Game
         {
             S_Respawn respawnPacket = new S_Respawn();            
             Session.Send(respawnPacket);
+        }
+        public void SendAdditionalStat(StatInfo stat = null)
+        {
+            S_ChangeAdditionalStat additionalStat = new S_ChangeAdditionalStat();
+            if (stat != null)
+            {
+                additionalStat.StatInfo.MergeFrom(stat);
+            }
+            else
+            {
+                additionalStat.StatInfo.Attack = AdditionalAttack;
+                additionalStat.StatInfo.Defense = AdditionalDefense;
+                additionalStat.StatInfo.Avoid = AdditionalAvoidance;
+                additionalStat.StatInfo.Accuracy = AdditionalAccuracy;
+                additionalStat.StatInfo.CriticalChance = AdditionalCriticalChance;
+                additionalStat.StatInfo.CriticalDamage = AdditionalCriticalDamage;
+                additionalStat.StatInfo.AttackSpeed = AdditionalAttackSpeed;
+                additionalStat.StatInfo.Speed = AdditionalSpeed;
+                additionalStat.StatInfo.InvokeSpeed = AdditionalInvokeSpeed;
+                additionalStat.StatInfo.CoolTime = AdditionalCoolTime;
+                additionalStat.StatInfo.Hp = AdditionalHp;
+                additionalStat.StatInfo.Up = AdditionalUp;
+            }
+            Session.Send(additionalStat);
         }
 
         public void OnlevelUp()
@@ -252,13 +396,19 @@ namespace Server.Game
 
         public void RefreshAdditionalStat()
         {
-            WeaponDamage = 0;
-            ArmorDef = 0;
-            AdditionalAvoidance = 0;
-            AdditionalAccuracy = 0;
-            AdditionalCriticalChance = 0;
-            AdditionalCriticalDamage = 0;
-            AdditionalAttackSpeed = 0;
+            EquipDamage = 0;
+            EquipDefense = 0;
+            EquipAvoidance = 0;
+            EquipAccuracy = 0;
+            EquipCriticalChance = 0;
+            EquipCriticalDamage = 0;
+            EquipAttackSpeed = 0;
+            EquipSpeed = 0;
+            EquipInvokeSpeed = 0;
+            EquipCoolTime = 0;
+            EquipHp = 0;
+            EquipUp = 0;
+
 
             foreach (Item item in Inven.Items.Values)
             {
@@ -270,32 +420,53 @@ namespace Server.Game
                     continue;
                 foreach (var option in options)
                 {
-                    switch (option.Key)
+                    if (Enum.TryParse(option.Key, out OptionType optionType))
                     {
-                        case "Avoid":
-                            AdditionalAvoidance += int.Parse(option.Value);
-                            break;
-                        case "Acc":
-                            AdditionalAccuracy += int.Parse(option.Value);
-                            break;
-                        case "CriticalChance":
-                            AdditionalCriticalChance += int.Parse(option.Value);
-                            break;
-                        case "CriticalDamage":
-                            AdditionalCriticalDamage += int.Parse(option.Value);
-                            break;
+                        switch (optionType)
+                        {
+                            case OptionType.Avoid:
+                                EquipAvoidance += int.Parse(option.Value);
+                                break;
+                            case OptionType.Accuracy:
+                                EquipAccuracy += int.Parse(option.Value);
+                                break;
+                            case OptionType.Ciriticalchance:
+                                EquipCriticalChance += int.Parse(option.Value);
+                                break;
+                            case OptionType.Criticaldamage:
+                                EquipCriticalDamage += int.Parse(option.Value);
+                                break;
+                            case OptionType.Attackspeed:
+                                EquipAttackSpeed += int.Parse(option.Value);
+                                break;
+                            case OptionType.Speed:
+                                EquipSpeed += int.Parse(option.Value);
+                                break;
+                            case OptionType.Invokespeed:
+                                EquipInvokeSpeed += int.Parse(option.Value);
+                                break;
+                            case OptionType.Cooltime:
+                                EquipCoolTime += int.Parse(option.Value);
+                                break;
+                            case OptionType.Hp:
+                                EquipHp += int.Parse(option.Value);
+                                break;
+                            case OptionType.Up:
+                                EquipUp += int.Parse(option.Value);
+                                break;
+                        }
                     }
                 }
 
                 switch (item.ItemType)
                 {
                     case ItemType.Weapon:
-                        WeaponDamage += ((Weapon)item).Damage;
+                        EquipDamage += ((Weapon)item).Damage;
                         WeaponRange = ((Weapon)item).Range;
-                        AdditionalAttackSpeed += ((Weapon)item).AttackSpeed;
+                        EquipAttackSpeed += ((Weapon)item).AttackSpeed;
                         break;
                     case ItemType.Armor:
-                        ArmorDef += ((Armor)item).Defense;
+                        EquipDefense += ((Armor)item).Defense;
                         break;
                 }
 

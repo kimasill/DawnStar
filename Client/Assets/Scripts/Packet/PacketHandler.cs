@@ -436,6 +436,66 @@ class PacketHandler
         }
     }
 
+    public static void S_ChangeAdditionalStatHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeAdditionalStat statPacket = (S_ChangeAdditionalStat)packet;
+        if(statPacket.StatInfo == null)
+        {
+            return;
+        }
+
+        if(statPacket.StatInfo.Attack != 0)
+        {
+            Managers.Object.MyPlayer.AdditionalAttack = statPacket.StatInfo.Attack;
+        }
+        if (statPacket.StatInfo.Defense != 0)
+        {
+            Managers.Object.MyPlayer.AdditionalDefense = statPacket.StatInfo.Defense;
+        }
+        if (statPacket.StatInfo.InvokeSpeed != 0)
+        {
+            Managers.Object.MyPlayer.AdditionalInvokeSpeed = statPacket.StatInfo.InvokeSpeed;
+        }
+        if (statPacket.StatInfo.CoolTime != 0)
+        {
+            Managers.Object.MyPlayer.AdditionalCoolTime = statPacket.StatInfo.CoolTime;
+        }
+        if (statPacket.StatInfo.CriticalChance != 0)
+        {
+            Managers.Object.MyPlayer.AdditionalCriticalChance = statPacket.StatInfo.CriticalChance;
+        }
+        if (statPacket.StatInfo.CriticalDamage != 0)
+        {
+            Managers.Object.MyPlayer.AdditionalCriticalDamage = statPacket.StatInfo.CriticalDamage;
+        }
+        if (statPacket.StatInfo.Avoid != 0)
+        {
+            Managers.Object.MyPlayer.AdditionalAvoidance = statPacket.StatInfo.Avoid;
+        }
+        if (statPacket.StatInfo.Accuracy != 0)
+        {
+            Managers.Object.MyPlayer.AdditionalAccuracy = statPacket.StatInfo.Accuracy;
+        }
+        if (statPacket.StatInfo.AttackSpeed != 0)
+        {
+            Managers.Object.MyPlayer.AdditionalAttackSpeed = statPacket.StatInfo.AttackSpeed;
+        }
+        if (statPacket.StatInfo.Speed != 0)
+        {
+            Managers.Object.MyPlayer.AdditionalSpeed = statPacket.StatInfo.Speed;
+        }
+        if (statPacket.StatInfo.Hp != 0)
+        {
+            Managers.Object.MyPlayer.AdditionalHp = statPacket.StatInfo.Hp;
+        }
+        if (statPacket.StatInfo.Up != 0)
+        {
+            Managers.Object.MyPlayer.AdditionalUp = statPacket.StatInfo.Up;
+        }
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        gameSceneUI.StatUI.RefreshUI();
+    }
+
     public static void S_ChangeExpHandler(PacketSession session, IMessage packet)
     {        
         S_ChangeExp expPacket = (S_ChangeExp)packet;
@@ -502,7 +562,7 @@ class PacketHandler
             Debug.LogError($"ItemData not found for TemplateId: {dropItemPacket.TemplateId}");
             return;
         }
-        Managers.Object.GenerateId(GameObjectType.Item, out int tempId);
+        int tempId = Managers.Object.GenerateId(GameObjectType.Item);
         
         // ObjectInfo 생성
         ObjectInfo objectInfo = new ObjectInfo
@@ -552,5 +612,17 @@ class PacketHandler
         S_PartyInvite partyInvitePacket = packet as S_PartyInvite;
         //UI_Popup popup = Managers.UI.ShowPopupUI<UI_Popup>();
         //popup.SetPopup(partyInvitePacket);
+    }
+
+    public static void S_InteractionHandler(PacketSession session, IMessage packet)
+    {
+        S_Interaction interactionPacket = packet as S_Interaction;
+        bool action = false;
+        if(Managers.Object.MyPlayer.Id == interactionPacket.ObjectId)
+        {
+            action = true;
+        }
+        InteractionController ic = Managers.Map.GetInteraction(templateId:interactionPacket.ObjectId);
+        ic.Interact(interactionPacket.Success, action);
     }
 }

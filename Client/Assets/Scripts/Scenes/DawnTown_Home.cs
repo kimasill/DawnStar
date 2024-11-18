@@ -95,7 +95,7 @@ public class DawnTown_Home : DawnTown
         if (Managers.Data.ItemDict.TryGetValue(itemId, out ItemData itemData))
         {
             int objectId = 0;
-            Managers.Object.GenerateId(GameObjectType.Item, out objectId);
+            objectId = Managers.Object.GenerateId(GameObjectType.Item);
             ObjectInfo itemInfo = new ObjectInfo
             {
                 Name = itemData.name,
@@ -124,7 +124,7 @@ public class DawnTown_Home : DawnTown
                 doorObject.name = "DawnTownDead";
             }
         }
-        Managers.Map.FindDoors();
+        Managers.Map.FindPortals();
     }
 
     private void OnInventoryItemAdded(Item item)

@@ -694,6 +694,15 @@
       "price": "27",
       "iconPath": "Textures/Item/Materials/Base/Rock_Piece",
       "description": "가공하여 사용할 수 있는 석재의 조각"
+    },
+    {
+      "id": "1156",
+      "name": "지하 창고 열쇠",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "100",
+      "iconPath": "Textures/Item/Materials/Drop/PrisonKey_1",
+      "description": "알맞는 문이 있을것 같다."
     }
   ],
   "goods": [
