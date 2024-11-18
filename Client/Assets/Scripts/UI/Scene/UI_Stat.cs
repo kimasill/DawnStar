@@ -243,18 +243,17 @@ public class UI_Stat : UI_Base
             player.RefreshAdditionalStat();
 
             Get<TMP_Text>((int)Texts.NameText).text = player.name;
-            int totalDamage = player.Stat.Attack + player.WeaponDamage;
-            Get<TMP_Text>((int)Texts.AttackValueText).text = $"{totalDamage}(+{player.WeaponDamage})";
-            Get<TMP_Text>((int)Texts.DefenseValueText).text = $"{player.ArmorDef}";
-            Get<TMP_Text>((int)Texts.HPValueText).text = $"{player.Stat.MaxHp}";
-            Get<TMP_Text>((int)Texts.AttackSpeedValueText).text = $"{player.Stat.AttackSpeed}/s";
-            Get<TMP_Text>((int)Texts.CriticalChanceValueText).text = $"{player.Stat.CriticalChance}%";
-            Get<TMP_Text>((int)Texts.CriticalDamageValueText).text = $"{player.Stat.CriticalDamage}%";
-            Get<TMP_Text>((int)Texts.AvoidValueText).text = $"{player.Stat.Avoid}%";
-            Get<TMP_Text>((int)Texts.AccuracyValueText).text = $"{player.Stat.Accuracy}%";
-            Get<TMP_Text>((int)Texts.UPValueText).text = $"{player.Stat.UnchartedPoint}";
+            Get<TMP_Text>((int)Texts.AttackValueText).text = $"{player.Stat.Attack} + ({player.AdditionalAttack})";
+            Get<TMP_Text>((int)Texts.DefenseValueText).text = $"{player.Stat.Defense} + ({player.AdditionalDefense})";
+            Get<TMP_Text>((int)Texts.HPValueText).text = $"{player.Stat.MaxHp}  + ({player.AdditionalHp})";
+            Get<TMP_Text>((int)Texts.AttackSpeedValueText).text = $"{player.Stat.AttackSpeed} + ({player.AdditionalAttackSpeed})/s";
+            Get<TMP_Text>((int)Texts.CriticalChanceValueText).text = $"{player.Stat.CriticalChance} + ({player.AdditionalCriticalChance})%";
+            Get<TMP_Text>((int)Texts.CriticalDamageValueText).text = $"{player.Stat.CriticalDamage} + ({player.AdditionalCriticalDamage})%";
+            Get<TMP_Text>((int)Texts.AvoidValueText).text = $"{player.Stat.Avoid} + ({player.AdditionalAvoidance})%";
+            Get<TMP_Text>((int)Texts.AccuracyValueText).text = $"{player.Stat.Accuracy} + ({player.AdditionalAccuracy})%";
+            Get<TMP_Text>((int)Texts.UPValueText).text = $"{player.Stat.UnchartedPoint} + ({player.AdditionalUp})";
             Get<TMP_Text>((int)Texts.UPRegenValueText).text = $"{player.Stat.UnchartedPointRegen}/s";
-            Get<TMP_Text>((int)Texts.MoveSpeedValueText).text = $"{player.Stat.Speed}";
+            Get<TMP_Text>((int)Texts.MoveSpeedValueText).text = $"{player.Stat.Speed} + ({player.AdditionalSpeed})";
             Get<TMP_Text>((int)Texts.RageValueText).text = $"{player.Stat.Rage}";
             Get<TMP_Text>((int)Texts.ReasonValueText).text = $"{player.Stat.Reason}";
             Get<TMP_Text>((int)Texts.UnchartedValueText).text = $"{player.Stat.Uncharted}";

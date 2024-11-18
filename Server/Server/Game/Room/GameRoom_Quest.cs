@@ -250,5 +250,66 @@ namespace Server.Game
             }
             return playerDb;
         }
+        public void HandleDoorInteraction(Player player, int objectId)
+        {
+            if (player == null || player.Room == null)
+                return;
+
+            DataManager.InteractionData.TryGetValue(objectId, out InteractionData interactionData);
+            if (interactionData.interactionType != InteractionType.Door)
+                return;
+
+            DoorData doorData = (DoorData)interactionData;
+
+
+            if (_interactions.ContainsKey(objectId) == false)
+            {
+                Door newDoor = new Door(objectId, false, doorData.keyItems);
+                foreach(var cell in doorData.cells)
+                {
+                    newDoor.CellPoses.Add(new Vector2Int(cell.x, cell.y));
+                }
+                newDoor.Room = this;
+                _interactions.Add(objectId, newDoor);
+            }
+            Door door = (Door)_interactions[objectId];
+            S_Interaction interactionPacket = new S_Interaction();
+            interactionPacket.Success = true;
+
+            if(door.IsOpen == false)
+            {
+                if (door.KeyItems.Count > 0)
+                {
+                    foreach (var keyId in door.KeyItems)
+                    {
+                        Item key = player.Inven.FindByTemplateId(keyId);
+                        if (key == null)
+                        {
+                            interactionPacket.Success = false;
+                            break;
+                        }
+                        player.Inven.Remove(key.ItemDbId, count: 1);
+                    }
+                }
+            }
+
+            if (interactionPacket.Success)
+            {
+                door.IsOpen = !door.IsOpen;
+                if (door.IsOpen)
+                    door.Open();
+                else
+                    door.Close();
+                interactionPacket.ObjectId = objectId;
+                interactionPacket.PlayerId = player.Info.ObjectId;
+                interactionPacket.Success = door.IsOpen;
+                interactionPacket.InteractionType = InteractionType.Door;
+                player.Room.Broadcast(player.CellPos, interactionPacket);
+            }
+            else
+            {
+                player.Session.Send(interactionPacket);
+            }
+        }
     }
 }

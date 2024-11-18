@@ -7,38 +7,49 @@
       "portals": [
         {
           "id": "100",
-          "name": "Tutorial01",
-          "location": "DawnTown",
+          "name": "튜토리얼",
           "posX": "-25",
           "posY": "-16"
         },
         {
           "id": "101",
-          "name": "DawnChurch",
-          "location": "DawnTown",
+          "name": "성당",
+          "mapId": "20",
+          "destination": "2001",
           "posX": "0",
           "posY": "0"
         },
         {
           "id": "102",
-          "name": "USCDawnBranch",
-          "location": "DawnTown",
+          "name": "USC 새벽마을 지부",
+          "mapId": "20",
+          "destination": "2002",     
           "posX": "0",
           "posY": "0"
         },
         {
           "id": "103",
-          "name": "DawnTownStore",
-          "location": "DawnTown",
+          "name": "상점 입구",
+          "mapId": "2",
+          "destination": "200",
           "posX": "-7",
           "posY": "-38"
         },
         {
           "id": "104",
-          "name": "DawnTownHome",
-          "location": "DawnTown",
+          "name": "케일라드의 집",
+          "mapId": "3",
+          "destination": "300",
           "posX": "-38",
           "posY": "-9"
+        },
+        {
+          "id": "105",
+          "name": "이스트 엔드",
+          "mapId": "5",
+          "destination": "501",
+          "posX": "35",
+          "posY": "-11"
         }
       ]
     },
@@ -49,8 +60,9 @@
       "portals": [
         {
           "id": "200",
-          "name": "DawnTown",
-          "location": "DawnTownStore",
+          "name": "상점 입구",
+          "mapId": "1",
+          "destination": "103",
           "posX": "-14",
           "posY": "-4"
         }
@@ -63,15 +75,17 @@
       "portals": [
         {
           "id": "300",
-          "name": "DawnTown",
-          "location": "DawnTownHome",
+          "name": "케일라드의 집 현관",
+          "mapId": "1",
+          "destination": "104",
           "posX": "-12",
           "posY": "-5"
         },
         {
           "id": "301",
-          "name": "DawnTownDead",
-          "location": "DawnTownHome",
+          "name": "죽음의 새벽 마을",
+          "mapId": "4",
+          "destination": "400",
           "posX": "-12",
           "posY": "-5"
         }
@@ -84,15 +98,17 @@
       "portals": [
         {
           "id": "400",
-          "name": "DawnTownHome",
-          "location": "DawnTownDead",
+          "name": "케일라드의 집 입구",
+          "mapId": "3",
+          "destination": "300",
           "posX": "-38",
           "posY": "-9"
         },
         {
           "id": "401",
-          "name": "EastEnd",
-          "location": "DawnTownDead",
+          "name": "이스트 엔드",
+          "mapId": "5",
+          "destination": "501",
           "posX": "35",
           "posY": "-11"
         }
@@ -111,16 +127,24 @@
       "type": "field",
       "portals": [
         {
-          "id": "500",
-          "name": "DawnTownDead",
-          "location": "EastEnd",
+          "id": "501",
+          "name": "이스트 엔드 초입",
+          "mapId": "4",
+          "destination": "401",
           "posX": "-173",
           "posY": "-46"
         },
         {
-          "id": "501",
-          "name": "DawnTown",
-          "location": "EastEnd",
+          "id": "502",
+          "name": "오래된 감옥 입구",
+          "mapId": "6",
+          "destination": "601",
+          "posX": "-173",
+          "posY": "-46"
+        },
+        {
+          "id": "503",
+          "name": "오래된 감옥 출구",
           "posX": "-173",
           "posY": "-46"
         }
@@ -216,9 +240,18 @@
       "type": "dungeon",
       "portals": [
         {
-          "id": "501",
-          "name": "EastEnd",
-          "location": "Prison",
+          "id": "601",
+          "name": "오래된 감옥 입구",
+          "mapId": "5",
+          "destination": "502",
+          "posX": "-173",
+          "posY": "-46"
+        },
+        {
+          "id": "602",
+          "name": "오래된 감옥 출구",
+          "mapId": "5",
+          "destination": "503",
           "posX": "-173",
           "posY": "-46"
         }

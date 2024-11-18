@@ -257,7 +257,7 @@
       "damage": "50",
       "count": "10",
       "term": "0.2",
-      "range": "5.0",
+      "range": "5",
       "skillType": "SkillAttack",
       "skillLogicType": "Summon",
       "shape": {
@@ -268,6 +268,42 @@
       "unchartedPoint": "20",
       "description": "주변적에게 공격을 시전하는 뼈무리를 소환한다."
     },
+    {
+      "id": "18",
+      "name": "사생결단",
+      "coolTime": "150",
+      "skillType": "SkillBuff",      
+      "buffList": [
+        {
+          "id": "5",
+          "name": "치명타확률",
+          "duration": "60",
+          "value": "0.2",
+          "isPercent": "false"
+        },
+        {
+          "id": "6",
+          "name": "치명타데미지",
+          "duration": "60",
+          "value": "0.5",
+          "isPercent": "false"
+        },
+        {
+          "id": "3",
+          "name": "이동속도",
+          "duration": "60",
+          "value": "0.3",
+          "isPercent": "false"
+        },
+        {
+          "id": "4",
+          "name": "공격속도",
+          "duration": "60",
+          "value": "0.2",
+          "isPercent": "false"
+        }
+      ]
+      },
     {
       "id": "19",
       "name": "암살",
@@ -288,29 +324,12 @@
       "description": "뒤에서 적을 공격하여 강력한 피해를 준다."
     },
     {
-      "id": "20",
-      "name": "회피",
-      "coolTime": "5",
-      "skillType": "SkillBuff",
-      "skillLogicType": "Dodge",
-      "buff": {
-        "id": "1",
-        "name": "회피",
-        "duration": "1",
-        "value": "0.0",
-        "isPercent": "false"
-      },
-      "unchartedPoint": "10",
-      "description": "일정시간동안 받는 피해를 회피한다."
-    },
-    {
       "id": "21",
       "name": "힐",
       "coolTime": "10",
       "skillType": "SkillBuff",
-      "skillLogicType": "Heal",
       "buff": {
-        "id": "1",
+        "id": "10",
         "name": "회복",
         "duration": "1",
         "value": "0.5",

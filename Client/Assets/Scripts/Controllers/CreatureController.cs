@@ -13,11 +13,46 @@ public class CreatureController : BaseController
 	StatInfo _stat = new StatInfo();
     protected Coroutine _coSkill;
     protected bool _rangedSkill = false;
+
     public float TotalAttackSpeed 
 	{
-		get { return Stat.AttackSpeed + AttackSpeed; }		
+		get { return Stat.AttackSpeed; }		
 	}
-	protected float AttackSpeed { get; set; } = 0.0f;
+    protected int _additionalAttack;
+    public virtual int AdditionalAttack { get; set; }
+
+    protected int _additionalDefense;
+    public virtual int AdditionalDefense { get; set; }
+
+    protected float _additionalInvokeSpeed;
+    public virtual float AdditionalInvokeSpeed { get; set; }
+
+    protected float _additionalCoolTime;
+    public virtual float AdditionalCoolTime { get; set; }
+
+    protected int _additionalCriticalChance;
+    public virtual int AdditionalCriticalChance { get; set; }
+
+    protected int _additionalCriticalDamage;
+    public virtual int AdditionalCriticalDamage { get; set; }
+
+    protected int _additionalAvoidance;
+    public virtual int AdditionalAvoidance { get; set; }
+
+    protected int _additionalAccuracy;
+    public virtual int AdditionalAccuracy { get; set; }
+
+    protected float _additionalAttackSpeed;
+    public virtual float AdditionalAttackSpeed { get; set; }
+
+    protected float _additionalSpeed;
+    public virtual float AdditionalSpeed { get; set; }
+
+    protected int _additionalHp;
+    public virtual int AdditionalHp { get; set; }
+
+    protected int _additionalUp;
+    public virtual int AdditionalUp { get; set; }
     protected int _skillId;
     protected string _animation;
     public override StatInfo Stat

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PrisonKeeperController : MonsterController
 {
+    int _phase = 1;
     protected override void Init()
     {
         base.Init();

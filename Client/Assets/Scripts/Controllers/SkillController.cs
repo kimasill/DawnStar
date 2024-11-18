@@ -31,7 +31,7 @@ public class SkillController : MonoBehaviour
 
     public void UpdateAnimation()
     {
-        _animator.speed = User.TotalAttackSpeed;
+        _animator.speed = User.Stat.AttackSpeed;
         float range = SkillData.shape.range;
         if (User.PosInfo.LookDir == LookDir.LookLeft)
         {

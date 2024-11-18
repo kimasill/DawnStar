@@ -4,12 +4,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Unity.Collections.AllocatorManager;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 public class ObjectManager
 {
 	public MyPlayerController MyPlayer { get; set; }
 	//id 에따라 관리
 	Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
+    private int _counter = 0;
     public static GameObjectType GetObjectType(int id)
     {
 		int type = (id >> 24) & 0x7F; 
@@ -123,20 +126,15 @@ public class ObjectManager
         }
     }
 
-    //임시 아이디 생성
-    public void GenerateId(GameObjectType type, out int id)
+    public int GenerateId(GameObjectType type)
     {
-        int typeCode = (int)type;
-        Debug.Log($"typeCode : {typeCode}");
-        int newId;
-        do
+        while (true)
         {
-            newId = (typeCode << 24) | UnityEngine.Random.Range(1, 0x7F);
-        } while (_objects.ContainsKey(newId));
-        Debug.Log($"newId : {newId}");
-        id = newId;
+            int newId = ((int)type << 24) | (_counter++);
+            if (_objects.ContainsKey(newId) == false)
+                return newId;
+        }        
     }
-
     public bool IsPlayingAnim(int id)
     {
         if (_objects.ContainsKey(id))

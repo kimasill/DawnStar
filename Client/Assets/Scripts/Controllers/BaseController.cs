@@ -273,8 +273,8 @@ public class BaseController : MonoBehaviour
     {
         yield return null;
     }
-
-    public IEnumerator WaitAnimationRunningTime(Action action)
+    
+    public IEnumerator WaitAnimationRunningTime(Action onComplete)
     {
         AnimatorStateInfo stateInfo = Animator.GetCurrentAnimatorStateInfo(0);
         float clipLength = stateInfo.length;
@@ -282,8 +282,12 @@ public class BaseController : MonoBehaviour
         float currentPlayTime = stateInfo.normalizedTime * clipLength;
 
         float remainingTime = (clipLength - currentPlayTime) / animationSpeed;
+        if (float.IsNaN(remainingTime) || remainingTime < 0)
+        {
+            remainingTime = 0;
+        }
         yield return new WaitForSeconds(remainingTime);
-        action?.Invoke();
+        onComplete?.Invoke();
     }
 
     void Start()

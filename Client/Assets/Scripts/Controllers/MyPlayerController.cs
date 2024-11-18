@@ -1,7 +1,6 @@
 using Data;
 using Google.Protobuf.Collections;
 using Google.Protobuf.Protocol;
-using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,12 +11,12 @@ using static Item;
 
 public class MyPlayerController : PlayerController
 {
-    bool _moveKeyPressed = false;    
-    public int WeaponDamage { get; private set; }
-    public int ArmorDef { get; private set; }
+    bool _moveKeyPressed = false;
+    
     private NPCController _NPCController;
     private CameraController _cameraController;
     private ChestController _chestController;
+    private InteractionController _interactionController;
     private int _nearByDungeonId = -1;
     private GameObject _headUpIcon;
     public CameraController CameraController { get; private set; }
@@ -39,6 +38,7 @@ public class MyPlayerController : PlayerController
             GameScene.GameWindow.UpdateStateInfo();
         }
     }
+    
     protected override void UpdateHpBar()
     {
         GameScene.GameWindow.UpdateHpUI();
@@ -152,6 +152,8 @@ public class MyPlayerController : PlayerController
             }
             else if(_NPCController != null)
                 _NPCController.StartInteraction();
+            else if (_interactionController != null)
+                _interactionController.StartInteraction();
         }
         else if (Input.GetKeyDown(KeyCode.Q))
         {            
@@ -222,7 +224,7 @@ public class MyPlayerController : PlayerController
             _moveKeyPressed = false;
         }
     }
-    private bool _isAttacking = false;
+    
 
     protected override void UpdateSkill()
     {
@@ -232,14 +234,12 @@ public class MyPlayerController : PlayerController
         {
             if (Input.GetKeyDown(SkillKeys[i]))
             {
-                _isAttacking = true;
                 SkillData skill = GameScene.GameWindow.SkillSlot.GetSkill(i);
                 if (skill == null)
                     return;
                 C_Skill skillPacket = new C_Skill() { Info = new SkillInfo() };
                 skillPacket.Info.SkillId = skill.id;
                 Managers.Network.Send(skillPacket);
-                StartCoroutine(WaitAnimationRunningTime(() => _isAttacking = false));
             }
         }
     }
@@ -260,14 +260,12 @@ public class MyPlayerController : PlayerController
         {
             if (Input.GetKeyDown(SkillKeys[i]))
             {
-                _isAttacking = true;
                 SkillData skill = GameScene.GameWindow.SkillSlot.GetSkill(i);
                 if (skill == null)
                     return;
                 C_Skill skillPacket = new C_Skill() { Info = new SkillInfo() };
                 skillPacket.Info.SkillId = skill.id;
                 Managers.Network.Send(skillPacket);
-                StartCoroutine(WaitAnimationRunningTime(() => _isAttacking = false));
             }
         }
 
@@ -277,16 +275,17 @@ public class MyPlayerController : PlayerController
         // 스킬 상태로 갈지 확인
         if (Input.GetKey(KeyCode.Space))
         {
-            _isAttacking = true;
             Debug.Log("기본공격");
             //TODO: 무기따라 ID선택
             C_Skill skill = new C_Skill() { Info = new SkillInfo()};
             skill.Info.SkillId = 1;
-            Managers.Network.Send(skill);
-            StartCoroutine(WaitAnimationRunningTime(() => _isAttacking = false));
+            Managers.Network.Send(skill);            
         }
     }
-
+    public IEnumerator AttackDelay()
+    {
+        yield return new WaitForSeconds(1000*(Stat.AttackSpeed+AdditionalAttackSpeed));
+    }
     protected override void MoveToNextPos()
     {
         if (_moveKeyPressed == false)
@@ -323,6 +322,7 @@ public class MyPlayerController : PlayerController
                 CheckIfPlayerAtItem();
                 DetectNearbyNPCs();
                 DetectNearbyChests();
+                DetectNearbyInteractions();
                 CheckQuest();                
             }
         }
@@ -331,24 +331,40 @@ public class MyPlayerController : PlayerController
 
     private void CheckIfPlayerAtPortal(Vector3Int playerCellPosition)
     {
-        string portal = Managers.Map.IsPlayerAtPortal(playerCellPosition);
-        if (portal != null)
+        string tempId = Managers.Map.IsPlayerAtPortal(playerCellPosition);
+        int portalId = 0;
+        if (tempId != null) {
+            portalId = int.Parse(tempId);
+        }
+         
+        if (portalId != 0)
         {
-            int id = Managers.Map.GetPortalId(portal);
-            Managers.Data.MapDict.TryGetValue(id, out MapData mapData);
+            int mapId = Managers.Map.CurrentMapId;
+            Managers.Data.MapDict.TryGetValue(mapId, out MapData mapData);
             if (mapData == null)
                 return;
-
-            if(mapData.type == MapType.Dungeon)
+            PortalData portalData = null;
+            foreach (var portal in mapData.portals)
             {
-                _nearByDungeonId = id;
+                if (portal.id == portalId)
+                {
+                    portalData = portal;
+                    break;
+                }
+            }
+            Managers.Data.MapDict.TryGetValue(portalData.mapId, out MapData nextMapData);
+            if (nextMapData == null)
+                return;
+            if (nextMapData.type == MapType.Dungeon)
+            {
+                _nearByDungeonId = portalData.mapId;
                 _headUpIcon = Managers.Resource.Instantiate("UI/HeadUpIcon", transform);
                 _headUpIcon.GetComponent<SpriteRenderer>().sprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Dungeon");                
                 _headUpIcon.GetComponentInChildren<TMP_Text>().text = "던전 입장 : G";
             }
             else
             {
-                C_MapChange mapPacket = new C_MapChange { MapId = id };
+                C_MapChange mapPacket = new C_MapChange { PortalId = portalId };
                 Managers.Network.Send(mapPacket);
             }            
         }
@@ -460,6 +476,43 @@ public class MyPlayerController : PlayerController
             _chestController = null;
         }
     }
+    private void DetectNearbyInteractions()
+    {
+        Vector3Int playerCellPos = CellPos;
+        InteractionController ic = null;
+        bool interactionFound = false;
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                Vector3Int checkPos = playerCellPos + new Vector3Int(x, y, 0);
+                ic = Managers.Map.GetInteraction((Vector2Int)checkPos);
+                if (ic != null)
+                {
+                    if (_interactionController != ic)
+                    {
+                        ic.ActivateNotification();
+                        if (_interactionController != null)
+                        {
+                            _interactionController.DeactivateNotification();
+                        }
+                        _interactionController = ic;
+                    }
+                    interactionFound = true;
+                    Debug.Log($"Interaction Detected: {checkPos}");
+                    break;
+                }
+            }
+            if (interactionFound)
+                break;
+        }
+
+        if (!interactionFound && _interactionController != null)
+        {
+            _interactionController.DeactivateNotification();
+            _interactionController = null;
+        }
+    }
     //Dirty Flag Check
     protected override void CheckUpdatedFlag()
     {
@@ -473,9 +526,18 @@ public class MyPlayerController : PlayerController
     }
     public void RefreshAdditionalStat()
     {
-        WeaponDamage = 0;
-        ArmorDef = 0;
-        AttackSpeed = 0;
+        EquipDamage = 0;
+        EquipDefense = 0;
+        EquipAvoidance = 0;
+        EquipAccuracy = 0;
+        EquipCriticalChance = 0;
+        EquipCriticalDamage = 0;
+        EquipAttackSpeed = 0;
+        EquipSpeed = 0;
+        EquipInvokeSpeed = 0;
+        EquipCoolTime = 0;
+        EquipHp = 0;
+        EquipUp = 0;
         foreach (Item item in Managers.Inventory.Items.Values)
         {
             if (item.Equipped == false)
@@ -485,27 +547,52 @@ public class MyPlayerController : PlayerController
                 continue;
             foreach (var option in options)
             {
-                switch (option.Key)
-                {  
-                    case "WeaponDamage":
-                        WeaponDamage += int.Parse(option.Value);
-                        break;
-                    case "ArmorDef":
-                        ArmorDef += int.Parse(option.Value);
-                        break;
-                    case "AttackSpeed":
-                        AttackSpeed += int.Parse(option.Value);
-                        break;
+                if (Enum.TryParse(option.Key, out OptionType optionType))
+                {
+                    switch (optionType)
+                    {
+                        case OptionType.Avoid:
+                            EquipAvoidance += int.Parse(option.Value);
+                            break;
+                        case OptionType.Accuracy:
+                            EquipAccuracy += int.Parse(option.Value);
+                            break;
+                        case OptionType.Ciriticalchance:
+                            EquipCriticalChance += int.Parse(option.Value);
+                            break;
+                        case OptionType.Criticaldamage:
+                            EquipCriticalDamage += int.Parse(option.Value);
+                            break;
+                        case OptionType.Attackspeed:
+                            EquipAttackSpeed += int.Parse(option.Value);
+                            break;
+                        case OptionType.Speed:
+                            EquipSpeed += int.Parse(option.Value);
+                            break;
+                        case OptionType.Invokespeed:
+                            EquipInvokeSpeed += int.Parse(option.Value);
+                            break;
+                        case OptionType.Cooltime:
+                            EquipCoolTime += int.Parse(option.Value);
+                            break;
+                        case OptionType.Hp:
+                            EquipHp += int.Parse(option.Value);
+                            break;
+                        case OptionType.Up:
+                            EquipUp += int.Parse(option.Value);
+                            break;
+                    }
                 }
             }
             switch (item.ItemType)
             {
                 case ItemType.Weapon:
-                    WeaponDamage += ((Weapon)item).Damage;
-                    AttackSpeed += ((Weapon)item).AttackSpeed;
+                    EquipDamage += ((Weapon)item).Damage;
+                    EquipDefense = ((Weapon)item).Range;
+                    EquipAttackSpeed += ((Weapon)item).AttackSpeed;
                     break;
                 case ItemType.Armor:
-                    ArmorDef += ((Armor)item).Defense;
+                    EquipDefense += ((Armor)item).Defense;
                     break;
             }
 

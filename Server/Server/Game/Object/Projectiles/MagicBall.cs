@@ -14,9 +14,12 @@ namespace Server.Game
         public GameObject Target { get; set; }
         public Action<GameObject> OnHit { get; set; }
         int _moveRange = 0;
+        bool _isComplete = false;
 
         public override void Update()
         {
+            if (_isComplete)
+                return;
             if (Data == null || Data.projectile == null || Owner == null || Room == null)
                 return;
 
@@ -47,6 +50,7 @@ namespace Server.Game
                     }
                     DespawnAnim = true;
                     Room.Push(Room.LeaveGame, Id);
+                    _isComplete = true;
                 } 
             }
             else
@@ -73,6 +77,7 @@ namespace Server.Game
                     }
                     DespawnAnim = true;
                     Room.Push(Room.LeaveGame, Id);
+                    _isComplete = true;
                 }
             }
         }        

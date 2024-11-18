@@ -349,6 +349,18 @@ namespace Server.Game.Room
                 }
             }
         }
+        public void SetCollision(Vector2Int cellPos, bool collision)
+        {
+            if (cellPos.x < MinX || cellPos.x > MaxX)
+                return;
+            if (cellPos.y < MinY || cellPos.y > MaxY)
+                return;
+
+            int x = cellPos.x - MinX;
+            int y = MaxY - cellPos.y;
+            _collision[y, x] = collision;
+        }
+
         #region A* PathFinding
 
         // U D L R

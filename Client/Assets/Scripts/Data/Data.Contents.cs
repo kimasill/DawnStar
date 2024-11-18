@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Item;
 
 namespace Data
 {
@@ -16,6 +17,7 @@ namespace Data
         public int Defence;
         public float Speed;
         public int TotalExp;
+        public int StatPoint;
     }
 
     [Serializable]
@@ -42,13 +44,18 @@ namespace Data
         public string name;
         public float coolTime;
         public int damage;
+        public int count;
+        public float term;
+        public int range;
         public SkillType skillType;
         public SkillLogicType skillLogicType;
         public ShapeInfo shape;
         public ProjectileInfo projectile;
         public SpotInfo spot;
         public BuffInfo buff;
+        public List<BuffInfo> buffList;
         public DebuffInfo debuff;
+        public List<DebuffInfo> debuffList;
         public int unchartedPoint;
         public string description;
         public string prefab;
@@ -109,7 +116,6 @@ namespace Data
         }
     }
     #endregion
-
     #region Item
     [Serializable]
     public class ItemData
@@ -199,7 +205,6 @@ namespace Data
         }
     }
     #endregion 
-
     #region Monster
     [Serializable]
     public class RewardData
@@ -235,7 +240,6 @@ namespace Data
         }
     }
     #endregion
-
     #region Map
 
     [Serializable]
@@ -243,7 +247,8 @@ namespace Data
     {
         public int id;
         public string name;
-        public string location;
+        public int mapId;
+        public int destination;        
         public float posX;
         public float posY;
     }
@@ -290,7 +295,6 @@ namespace Data
         }
     }
     #endregion
-
     #region Script
 
     [Serializable]
@@ -399,7 +403,6 @@ namespace Data
     }
 
     #endregion
-
     #region Acquire
     [Serializable]
     public class AcquireData
@@ -484,6 +487,43 @@ namespace Data
             foreach (RealizationData realization in realizations)
             {
                 dict.Add(realization.id, realization);
+            }
+            return dict;
+        }
+    }
+    #endregion
+    #region Interaction
+    [Serializable]
+    public class InteractionData
+    {
+        public int id;
+        public string name;
+        public bool multi;
+        public InteractionType interactionType;
+    }
+    public class Vector2Set
+    {
+        public int x;
+        public int y;
+    }
+    public class DoorData: InteractionData
+    {
+        public List<string> script;
+        public List<int> keyItems;
+        public List<Vector2Set> cells;
+    }
+    
+    public class InteractionLoader : ILoader<int, InteractionData>
+    {
+        public List<DoorData> doors = new List<DoorData>();
+
+        public Dictionary<int, InteractionData> MakeDict()
+        {
+            Dictionary<int, InteractionData> dict = new Dictionary<int, InteractionData>();
+            foreach (InteractionData interaction in doors)
+            {
+                interaction.interactionType = InteractionType.Door;
+                dict.Add(interaction.id, interaction);
             }
             return dict;
         }

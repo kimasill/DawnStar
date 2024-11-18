@@ -50,7 +50,7 @@ namespace Server.Game
                 }
                 LookAt(dir);
                 int skillId = 12;
-                int coolTick = 1000 / (int)TotalAttackSpeed;
+                int coolTick = (int)(1000 / TotalAttackSpeed);
                 SkillData skillData = null;
                 if (dir.cellDistanceFromZero <= _baseAttackRange)
                 {
@@ -100,12 +100,6 @@ namespace Server.Game
                 return;
             int moveTick = (int)(1000 / Speed);
             _nextMoveTick = Environment.TickCount64 + moveTick;
-
-            if (MonsterGrade == MonsterGrade.Animal)
-            {
-                UpdatePatrol();
-                return;
-            }
 
             if (_target == null || _target.Room != Room)
             {

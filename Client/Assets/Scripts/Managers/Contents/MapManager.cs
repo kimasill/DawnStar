@@ -33,8 +33,8 @@ public struct PQNode : IComparable<PQNode>
 public class MapManager
 {
 	public Grid CurrentGrid { get; private set; }
-
-	public int MinX { get; set; }
+    public int CurrentMapId { get; set; }
+    public int MinX { get; set; }
 	public int MaxX { get; set; }
 	public int MinY { get; set; }
 	public int MaxY { get; set; }
@@ -47,6 +47,7 @@ public class MapManager
 	private Dictionary<Vector3Int, GameObject> _questDict = new Dictionary<Vector3Int, GameObject>(); // 문 객체들을 저장할 Dictionary
     private Dictionary<int, Vector2Int> _cameraDict = new Dictionary<int, Vector2Int>(); // 카메라 포인트를 저장할 Dictionary
     private Dictionary<Vector2Int, ChestController> _chestDict = new Dictionary<Vector2Int, ChestController>(); // 상자 위치를 저장할 Dictionary
+    private Dictionary<Vector2Int, InteractionController> _interactionDict = new Dictionary<Vector2Int, InteractionController>(); // 상호작용 위치를 저장할 Dictionary
     public bool CanGo(Vector3Int cellPos)
 	{
         Vector3Int adjustedPos = new Vector3Int(cellPos.x + 1, cellPos.y + 1, 0);
@@ -68,7 +69,7 @@ public class MapManager
 
         Vector3Int adjustedPos = new Vector3Int(cellPos.x + 1, cellPos.y + 1, 0);
         if(_portalDict.TryGetValue(adjustedPos, out var result))
-			return result.name;
+			return result.name.Split("_")[1];
 		return null;		
     }
 
@@ -102,6 +103,25 @@ public class MapManager
         else return null;
     }
 
+    public InteractionController GetInteraction(Vector2Int cellPos)
+    {
+        if (_interactionDict.TryGetValue(cellPos, out var result))
+        {
+            return result;
+        }
+        else return null;
+    }
+
+    public InteractionController GetInteraction(int templateId)
+    {
+        foreach (var interaction in _interactionDict.Values)
+        {
+            if (interaction.TemplateId == templateId)
+                return interaction;
+        }
+        return null;
+    }
+
     public ChestController GetChestById(int id)
     {
         foreach (var chest in _chestDict.Values)
@@ -124,13 +144,11 @@ public class MapManager
     {
         return _cameraDict[id];
     }
-    
 
     public void LoadMap(int mapId)
 	{
 		DestroyMap();
-        _portalDict.Clear();
-        _questDict.Clear();
+        ClearAllDict();
         string mapName = "Map_" + mapId.ToString("000");
 		GameObject go = Managers.Resource.Instantiate($"Map/{mapName}");
 		go.name = "Map";
@@ -162,10 +180,12 @@ public class MapManager
 				_collision[y, x] = (line[x] == '1' ? true : false);
 			}
 		}
-		FindDoors();
+        CurrentMapId = mapId;
+        FindPortals();
         FindQuests();
         FindCameraPoints();
         FindChests();
+        FindInteractions();
     }
 
 	public void DestroyMap()
@@ -178,12 +198,12 @@ public class MapManager
         }
 	}
 
-    public void FindDoors()
+    public void FindPortals()
     {        
-        GameObject[] doorObjects = GameObject.FindGameObjectsWithTag("Door");
-        foreach (GameObject doorObject in doorObjects)
+        GameObject[] portals = GameObject.FindGameObjectsWithTag("Portal");
+        foreach (GameObject portal in portals)
         {
-            Bounds bounds = doorObject.GetComponent<Collider2D>().bounds;
+            Bounds bounds = portal.GetComponent<Collider2D>().bounds;
             Vector3Int min = CurrentGrid.WorldToCell(bounds.min);
             Vector3Int max = CurrentGrid.WorldToCell(bounds.max);
             for (int x = min.x; x <= max.x; x++)
@@ -191,7 +211,7 @@ public class MapManager
                 for (int y = min.y; y <= max.y; y++)
                 {
                     Vector3Int cellPos = new Vector3Int(x, y, 0);
-                    _portalDict[cellPos] = doorObject;
+                    _portalDict[cellPos] = portal;
                 }
             }
         }
@@ -249,6 +269,52 @@ public class MapManager
         }
     }
 
+    private void FindInteractions()
+    {
+        GameObject[] interactionObjects = GameObject.FindGameObjectsWithTag("Interaction");
+        foreach (GameObject interactionObject in interactionObjects)
+        {
+            InteractionController ic = interactionObject.GetComponentInChildren<InteractionController>();
+            if (ic != null)
+            {
+                int interactionId = int.Parse(interactionObject.name.Split('_')[1]);
+                ic.SetInteraction(interactionId);
+
+                Bounds bounds = interactionObject.GetComponent<Collider2D>().bounds;
+                Vector3Int min = CurrentGrid.WorldToCell(bounds.min);
+                Vector3Int max = CurrentGrid.WorldToCell(bounds.max);
+                for (int x = min.x; x <= max.x; x++)
+                {
+                    for (int y = min.y; y <= max.y; y++)
+                    {
+                        Vector2Int cellPos = (Vector2Int)new Vector3Int(x, y, 0);
+                        _interactionDict[cellPos] = ic;
+                        ic.CellPoses.Add(cellPos);
+                        Debug.Log($" Interaction id:{interactionId}, cellPos:{cellPos.x},{cellPos.y}");
+                    }
+                }
+            }            
+        }
+    }
+    public void SetCollision(Vector2Int cellPos, bool collision)
+    {
+        if (cellPos.x < MinX || cellPos.x > MaxX)
+            return;
+        if (cellPos.y < MinY || cellPos.y > MaxY)
+            return;
+
+        int x = cellPos.x - MinX;
+        int y = MaxY - cellPos.y;
+        _collision[y, x] = collision;
+    }
+    private void ClearAllDict()
+    {
+        _portalDict.Clear();
+        _questDict.Clear();
+        _cameraDict.Clear();
+        _chestDict.Clear();
+        _interactionDict.Clear();
+    }
     public int GetPortalId(string name)
     {
 		foreach (var mapData in Managers.Data.MapDict)

@@ -11,6 +11,7 @@ using Server.Game.Room;
 using static System.Net.Mime.MediaTypeNames;
 using System.Numerics;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 
 namespace Server.Game
 {
@@ -131,7 +132,7 @@ namespace Server.Game
 
             return coolDown;
         }
-
+        #region LogicDivide
         public void HandleAttackSkill(SkillLogicType skillLogic)
         {
             _skillQueue.TryDequeue(out var skill);
@@ -163,7 +164,6 @@ namespace Server.Game
                 default: return;
             }
         }
-
         public async void HandleProjectileSkill(SkillLogicType skillLogic)
         {
             _skillQueue.TryDequeue(out var skill);
@@ -203,20 +203,20 @@ namespace Server.Game
                     break;
             }
         }
-
-        public async void HandleBuffSkill(SkillData skillData)
+        public void HandleBuffSkill(SkillData skillData)
         {
             switch (skillData.skillLogicType)
             {
                 case SkillLogicType.Block:
-                    await Task.Delay(100);
+                    Task.Delay(100);
                     BlockAsync(skillData);
                     break;
-                default: ApplyBuff(skillData);
+                default:
+                    Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
+                    ApplyBuff(skillData);
                     break;
             }
         }
-
         public void HandleDebuffSkill(SkillData skillData, GameObject target = null)
         {
             switch(skillData.skillLogicType)
@@ -224,9 +224,12 @@ namespace Server.Game
                 case SkillLogicType.Dot:
                     DOT(skillData, target);
                     break;
+                default:
+                    Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
+                    ApplyDeBuff(skillData);
+                    break;
             }
         }
-
         public void HandleMoveSkill(SkillData skillData, GameObject target = null)
         {
             switch (skillData.skillLogicType)
@@ -239,21 +242,66 @@ namespace Server.Game
                     break;
             }
         }
-        private void ApplyBuff(SkillData data)
+        private async void ApplyBuff(SkillData data)
         {
             // Buff 적용 로직
             if (data.buff != null)
             {
                 // Buff 시작 시 로직
                 Console.WriteLine($"Buff {data.buff.name} applied with value {data.buff.value}");
+                Owner.ApplyBuff(data.buff);
+
                 // Buff 종료 시 로직
-                Task.Delay(data.buff.duration * 1000).ContinueWith(_ =>
+                await Task.Delay(data.buff.duration * 1000);
+                Owner.RemoveBuff(data.buff);
+                Console.WriteLine($"Buff {data.buff.name} ended");
+            }
+            else if (data.buffList != null)
+            {
+                foreach (var buff in data.buffList)
                 {
-                    Console.WriteLine($"Buff {data.buff.name} ended");
-                });
+                    // Buff 시작 시 로직
+                    Console.WriteLine($"Buff {buff.name} applied with value {buff.value}");
+                    Owner.ApplyBuff(buff);
+
+                    // Buff 종료 시 로직
+                    await Task.Delay(buff.duration * 1000);
+                    Owner.RemoveBuff(buff);
+                    Console.WriteLine($"Buff {buff.name} ended");
+                }
             }
         }
 
+        private async void ApplyDeBuff(SkillData data)
+        {
+            if (data.debuff != null)
+            {
+                // Debuff 시작 시 로직
+                Console.WriteLine($"Debuff {data.debuff.name} applied with value {data.debuff.value}");
+                Owner.ApplyDebuff(data.debuff);
+
+                // Debuff 종료 시 로직
+                await Task.Delay(data.debuff.duration * 1000);
+                Owner.RemoveDebuff(data.debuff);
+                Console.WriteLine($"Debuff {data.debuff.name} ended");
+            }
+            else if (data.debuffList != null)
+            {
+                foreach (var debuff in data.debuffList)
+                {
+                    // Debuff 시작 시 로직
+                    Console.WriteLine($"Debuff {debuff.name} applied with value {debuff.value}");
+                    Owner.ApplyDebuff(debuff);
+
+                    // Debuff 종료 시 로직
+                    await Task.Delay(debuff.duration * 1000);
+                    Owner.RemoveDebuff(debuff);
+                    Console.WriteLine($"Debuff {debuff.name} ended");
+                }
+            }
+        }
+        #endregion
+        #region SkillLogic
         private async void DOT(SkillData data, GameObject target)
         {
             if (data.debuff == null || target == null)
@@ -273,7 +321,6 @@ namespace Server.Game
 
             Console.WriteLine($"Debuff {data.debuff.name} ended");
         }
-
         public void MagicBall(SkillData data)
         {
             MagicBall magicBall = ObjectManager.Instance.Add<MagicBall>();
@@ -347,7 +394,6 @@ namespace Server.Game
                 Owner.Room.Broadcast(_target.CellPos, changePosition);
             }
         }
-
         public async void CombatAsync(SkillData data, int range)
         {
             await Task.Delay((int)(100 / Owner.TotalAttackSpeed));
@@ -366,7 +412,6 @@ namespace Server.Game
                 }
             }
         }
-
         public void Pull(SkillData data, int range)
         {
             List<Vector2Int> tiles = SkillLogic.GetAllTargetsInRange(Owner.CellPos, range);
@@ -414,7 +459,6 @@ namespace Server.Game
                 Owner.Room.Push(Owner.Room.EnterGame, spot, false);
             }
         }
-
         private async void BlockAsync(SkillData data) 
         { 
             float prevReduce = Owner.TotalDamageReduce;
@@ -422,7 +466,6 @@ namespace Server.Game
             await Task.Delay(data.buff.duration*1000);
             Owner.TotalDamageReduce = prevReduce;
         }
-
         private void MoveSkill(SkillData data, GameObject target = null)
         {
             if (data.shape == null)
@@ -530,6 +573,7 @@ namespace Server.Game
             summon.Target = _target;
             summon.Owner.Room = Owner.Room;
             summon.Data = data;
+            summon.Range = range;
             summon.PosInfo.State = CreatureState.Moving;
             summon.Delay = data.term;
             summon.TemplateId = data.id;
@@ -552,7 +596,6 @@ namespace Server.Game
 
             Owner.Room.Push(Owner.Room.EnterGame, summon, false);            
         }
-
         private void KineticAttack(SkillData data, int range, GameObject target = null)
         {
             MoveSkill(data, target);
@@ -568,7 +611,8 @@ namespace Server.Game
                 target.OnDamaged(Owner, data.damage + Owner.TotalAttack);
             }
         }
-
+        #endregion
+        #region Calculate
         private void CalculateDistance(GameObject target, Action action, int range)
         {
             if (target != null)
@@ -581,5 +625,6 @@ namespace Server.Game
                 }
             }
         }
+        #endregion
     }
 }

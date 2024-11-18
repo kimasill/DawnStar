@@ -1,7 +1,9 @@
-﻿using Server.Game;
+﻿using Server.Data;
+using Server.Game;
 using Server.Game.Contents;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Server
 {
@@ -55,9 +57,14 @@ namespace Server
         public void EnterMap(Party party, int mapId)
         {
             GameRoom room = GameLogic.Instance.Add(mapId);
+            MapData mapData = DataManager.MapDict.TryGetValue(mapId, out mapData) ? mapData : null;
+            if(mapData == null)
+            {
+                return;
+            }
             foreach (var member in party.Members)
             {
-                member.Room.Push(member.Room.HandleMapChanged, member, mapId, room);
+                member.Room.Push(member.Room.HandleMapChanged, member, mapData, mapData.portals.First().destination, room);
             }
         }
     }

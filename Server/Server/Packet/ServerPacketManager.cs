@@ -63,7 +63,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CSelectStat, MakePacket<C_SelectStat>);
 		_handler.Add((ushort)MsgId.CSelectStat, PacketHandler.C_SelectStatHandler);		
 		_onRecv.Add((ushort)MsgId.CEnterDungeon, MakePacket<C_EnterDungeon>);
-		_handler.Add((ushort)MsgId.CEnterDungeon, PacketHandler.C_EnterDungeonHandler);
+		_handler.Add((ushort)MsgId.CEnterDungeon, PacketHandler.C_EnterDungeonHandler);		
+		_onRecv.Add((ushort)MsgId.CInteraction, MakePacket<C_Interaction>);
+		_handler.Add((ushort)MsgId.CInteraction, PacketHandler.C_InteractionHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

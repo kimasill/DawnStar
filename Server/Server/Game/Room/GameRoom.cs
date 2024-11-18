@@ -22,6 +22,7 @@ namespace Server.Game
         Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
         Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
         Dictionary<int, Magic> _magics = new Dictionary<int, Magic>();
+        Dictionary<int, Interaction> _interactions = new Dictionary<int, Interaction>();
         public Zone[,] Zones { get; private set ; }
         public int ZoneCells { get; private set; }
 

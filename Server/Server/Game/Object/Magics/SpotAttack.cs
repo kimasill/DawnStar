@@ -26,15 +26,20 @@ namespace Server.Game
             if (Delay <= 0)
                 return;
 
-            Task.Delay((int)Delay*1000);
+            Cast();
+        }
+
+        private async void Cast()
+        {
+            await Task.Delay((int)Delay * 1000);
             Vector2Int destPos = CellPos;
             GameObject target = Room.Map.Find(destPos);
             if (target != null)
             {
                 target.OnDamaged(this, Data.damage + Owner.TotalAttack); //피격판정                    
             }
-            
-            Room.PushAfter(5000,Room.LeaveGame, Id);
+
+            Room.PushAfter(5000, Room.LeaveGame, Id);
         }
     }
 }
