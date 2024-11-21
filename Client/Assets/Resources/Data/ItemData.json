@@ -159,11 +159,11 @@
       "name": "주술사의 목걸이",
       "jewelryType": "Necklace",
       "price": "1000",
-      "iconPath": "Textures/Item/jewelry",
+      "iconPath": "Textures/Item/Jewelry/OrcMage_Necklace",
       "description": "오크 대족장이 사용하던 목걸이. 미지의 기운이 깃들어 있다.",
       "options": {
         "UpBonous": "10",
-        "UpRegen" : "5",
+        "UpRegen": "5",
         "Skill": "12"
       }
     }

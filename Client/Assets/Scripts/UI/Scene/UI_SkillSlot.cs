@@ -10,6 +10,7 @@ public class UI_SkillSlot : UI_Base
     UI_SkillSlot_Icon _weaponSkill;
     UI_SkillSlot_Icon _ringSkill;
     UI_SkillSlot_Icon _helmetSkill;
+    UI_SkillSlot_Icon _necklaceSkill;
     public Dictionary<int, UI_SkillSlot_Icon> SkillSlots = new Dictionary<int, UI_SkillSlot_Icon>();
 
     public override void Init()
@@ -17,9 +18,11 @@ public class UI_SkillSlot : UI_Base
         _weaponSkill = transform.GetChild(0).GetComponent<UI_SkillSlot_Icon>();
         _helmetSkill = transform.GetChild(1).GetComponent<UI_SkillSlot_Icon>();
         _ringSkill = transform.GetChild(2).GetComponent<UI_SkillSlot_Icon>();
+        _necklaceSkill = transform.GetChild(3).GetComponent<UI_SkillSlot_Icon>();
         SkillSlots.Add(0, _weaponSkill);
         SkillSlots.Add(1, _helmetSkill);
         SkillSlots.Add(2, _ringSkill);
+        SkillSlots.Add(3, _necklaceSkill);
         foreach (var skillSlot in SkillSlots)
         {
             if(skillSlot.Value.IsInit == false)
@@ -63,10 +66,19 @@ public class UI_SkillSlot : UI_Base
                     else if (item.Value is Item.Jewelry)
                     {
                         if (((Item.Jewelry)item.Value).JewelryType == JewelryType.Ring)
+                        {
                             _ringSkill.KeyText.text = Managers.Object.MyPlayer.SkillKeys[2].ToString();
-                        if (_ringSkill.KeyText.text == "None")
-                            _ringSkill.KeyText.text = "F";
+                            if (_ringSkill.KeyText.text == "None")
+                                _ringSkill.KeyText.text = "F";
+                        }
+                        else if(((Item.Jewelry)item.Value).JewelryType == JewelryType.Necklace)
+                        {
+                            _necklaceSkill.KeyText.text = Managers.Object.MyPlayer.SkillKeys[3].ToString();
+                            if (_necklaceSkill.KeyText.text == "None")
+                                _necklaceSkill.KeyText.text = "T";
+                        }
                     }
+                    
                     SetSkill(item.Value);
                 }                
             }

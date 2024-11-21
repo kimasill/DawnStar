@@ -160,12 +160,21 @@ public class ObjectManager
     public IEnumerator RemoveAfterAnimation(int id)
     {
         GameObject go = FindById(id);
-        BaseController cc = go.GetComponent<BaseController>();
-        if (cc != null)
+        if (go == null)
         {
-            yield return cc.DespawnAnim();
-            Remove(id);
+            Debug.LogError($"GameObject with id {id} not found.");
+            yield break;
         }
+
+        BaseController cc = go.GetComponent<BaseController>();
+        if (cc == null)
+        {
+            Debug.LogError($"BaseController not found on GameObject with id {id}.");
+            yield break;
+        }
+
+        yield return cc.DespawnAnim();
+        Remove(id);
     }
 
     public void Remove(int id)
@@ -202,8 +211,9 @@ public class ObjectManager
 		return null;
 	}
 
-    public GameObject FindItem(Vector3Int cellPos)
+    public List<GameObject> FindItem(Vector3Int cellPos)
     {
+        List<GameObject> items = new List<GameObject>();
         foreach (GameObject obj in _objects.Values)
         {
             ItemController ic = obj.GetComponent<ItemController>();
@@ -211,11 +221,12 @@ public class ObjectManager
                 continue;
 
             if (ic.CellPos == cellPos)
-                return obj;
+            {
+                items.Add(obj);
+            }                
         }
-
-        return null;
-    }
+        return items;
+    }    
 
     public GameObject FindById(int id)
     {

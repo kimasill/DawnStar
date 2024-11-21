@@ -127,7 +127,11 @@ public class PlayerController : CreatureController
 	
 	public override void UseSkill(int skillId)
 	{
-		if (skillId == 1)
+        if(gameObject.activeSelf == false)
+        {
+            return;
+        }
+        if (skillId == 1)
 		{
 			_coSkill = StartCoroutine("CoStartBasicAttack");
 		}
@@ -158,9 +162,7 @@ public class PlayerController : CreatureController
 
         skillController.Init(skillData, gameObject);
         yield return StartCoroutine(skillController.ExecuteSkill());
-        State = CreatureState.Idle;
-        _coSkill = null;
-        _isAttacking = false;
+        
         CheckUpdatedFlag();
     }
     private IEnumerator CoStartShootArrow()
@@ -169,7 +171,7 @@ public class PlayerController : CreatureController
         _rangedSkill = true;
         _isAttacking = true;
         State = CreatureState.Skill;
-        Animator.speed = Stat.AttackSpeed + AdditionalAttackSpeed;
+        Animator.speed = TotalAttackSpeed;
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
         Animator.speed = 1.0f;
         State = CreatureState.Idle;
@@ -183,7 +185,7 @@ public class PlayerController : CreatureController
         _rangedSkill = false;
         _isAttacking = true;
         State = CreatureState.Skill;
-        Animator.speed = Stat.AttackSpeed + AdditionalAttackSpeed;
+        Animator.speed = TotalAttackSpeed;
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
         Animator.speed = 1.0f;
         State = CreatureState.Idle;
@@ -196,6 +198,18 @@ public class PlayerController : CreatureController
 	{
 		Debug.Log("Player HIT !");
         base.OnDamaged();
+    }
+    public virtual void UpdateSkillFlag(bool flag)
+    {
+        if(flag)
+        {
+            _isAttacking = true;
+        }
+        else
+        {
+            _coSkill = null;
+            _isAttacking = false;
+        }
     }
     protected override void UpdateSortingLayer()
     {

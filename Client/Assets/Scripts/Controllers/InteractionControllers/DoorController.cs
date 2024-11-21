@@ -42,9 +42,12 @@ public class DoorController : InteractionController
         // 애니메이션 재생 시간 동안 대기
         yield return new WaitForSeconds(0.01f);
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
-        foreach(var cellPos in CellPoses)
+        if(CellPoses != null)
         {
-            Managers.Map.SetCollision(cellPos, false);
+            foreach (var cellPos in CellPoses)
+            {
+                Managers.Map.SetCollision(cellPos, false);
+            }
         }        
         Animator.Play("CLOSE", 0, 0);
         Animator.speed = 0;       
@@ -56,10 +59,14 @@ public class DoorController : InteractionController
         Animator.Play("CLOSE");
         yield return new WaitForSeconds(0.01f);
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length - 0.05f);
-        foreach (var cellPos in CellPoses)
+        if (CellPoses != null)
         {
-            Managers.Map.SetCollision(cellPos, true);
+            foreach (var cellPos in CellPoses)
+            {
+                Managers.Map.SetCollision(cellPos, true);
+            }
         }
+            
         Animator.Play("OPEN", 0, 0);
         Animator.speed = 0;
     }

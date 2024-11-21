@@ -55,7 +55,11 @@ public class UI_Stat : UI_Base
         Card_Panel,
         Card_DescriptionPanel,
         BaseStatPanel,
-        SpecialStatPanel,
+        SpecialStatPanel,        
+    }
+
+    enum Objects
+    {
         InfoButton,
         StatPointButton,
     }
@@ -68,22 +72,22 @@ public class UI_Stat : UI_Base
     {
         Bind<TMP_Text>(typeof(Texts)); // Change TMPro to TextMeshProUGUI
         Bind<Image>(typeof(Images));
-        BindEvent(GetObject((int)Images.InfoButton), (PointerEventData data) => { OnClickInfoButton();});
-        BindEvent(GetObject((int)Images.StatPointButton), (PointerEventData data) => { OnClickStatPointButton(); });
+        Bind<GameObject>(typeof(Objects));
+        BindEvent(GetObject((int)Objects.InfoButton), (PointerEventData data) => { OnClickInfoButton();});
+        BindEvent(GetObject((int)Objects.StatPointButton), (PointerEventData data) => { OnClickStatPointButton(); });
         CardObjects.Add(GetImage((int)Images.Card_Rage).gameObject);
         CardObjects.Add(GetImage((int)Images.Card_Reason).gameObject);
         CardObjects.Add(GetImage((int)Images.Card_Uncharted).gameObject);
         CardObjects.Add(GetImage((int)Images.Card_Truth).gameObject);
-        int index = 0;
-        foreach (GameObject card in CardObjects)
+        
+        for (int i = 0; i < CardObjects.Count; i++)
         {
-            if (card != null)
-            {
-                BindEvent(card, (PointerEventData data) => { OnClickCard(index); });
-                BindEvent(card, (PointerEventData data) => { OnMouseOverCard(index); }, Define.UIEvent.MouseOver);
-                BindEvent(card, (PointerEventData data) => { OnMouseExitCard(); }, Define.UIEvent.MouseOut);
-                index++;
-            }
+            int index = i+1;
+            GameObject card = CardObjects[i];
+            
+            BindEvent(card, (PointerEventData data) => { OnClickCard(index); });
+            BindEvent(card, (PointerEventData data) => { OnMouseOverCard(index); }, Define.UIEvent.MouseOver);
+            BindEvent(card, (PointerEventData data) => { OnMouseExitCard(); }, Define.UIEvent.MouseOut);    
         }
         ShowImage((int)Images.Card_Panel, false);
         ShowImage((int)Images.Card_DescriptionPanel, false);
@@ -93,16 +97,22 @@ public class UI_Stat : UI_Base
 
     private void OnClickCard(int index)
     {
+        if (index < 1 || index >= CardObjects.Count + 1)
+        {
+            Debug.LogError("Invalid card index");
+            return;
+        }
         MyPlayerController player = Managers.Object.MyPlayer;
         if (player == null)
             return;
         C_SelectStat selectStat = new C_SelectStat();
         selectStat.TemplateId = index;
-        StartCoroutine(ChangeAndResetCardSize(CardObjects[index]));
+        Managers.Network.Send(selectStat);
+        StartCoroutine(ChangeAndResetCardSize(CardObjects[index-1]));
         _statPoint--;
         if (_statPoint <= 0)
         {
-            ShowImage((int)Images.Card_Panel, false);
+            OnClickStatPointButton();
         }
     }
     private void OnClickStatPointButton()
@@ -110,12 +120,20 @@ public class UI_Stat : UI_Base
         MyPlayerController player = Managers.Object.MyPlayer;
         if (player == null)
             return;
-        if (_statPoint > 0)
+        
+        if (_statPoint > 0 && _isCardPanelActive == false)
         {
             ShowImage((int)Images.Card_Panel, true);
             ShowImage((int)Images.Card_DescriptionPanel, true);
+            _isCardPanelActive = true;
         }
-        else
+        else if(_isCardPanelActive == true)
+        {
+            ShowImage((int)Images.Card_Panel, false);
+            ShowImage((int)Images.Card_DescriptionPanel, false);
+            _isCardPanelActive = false;
+        }
+        else if(_isCardPanelActive == false && _statPoint <= 0)
         {
             GameObject warningText = GetTextMeshPro((int)Texts.StatPointText_Warning).gameObject;
             StartCoroutine(CoNotificationText(warningText));
@@ -144,6 +162,11 @@ public class UI_Stat : UI_Base
     }
     private void OnMouseOverCard(int index)
     {
+        if (index < 1 || index >= CardObjects.Count+1)
+        {
+            Debug.LogError("Invalid card index");
+            return;
+        }
         Managers.Data.RealizationDict.TryGetValue(index, out RealizationData realization);
         if (realization == null)
             return;
@@ -254,19 +277,22 @@ public class UI_Stat : UI_Base
             Get<TMP_Text>((int)Texts.UPValueText).text = $"{player.Stat.UnchartedPoint} + ({player.AdditionalUp})";
             Get<TMP_Text>((int)Texts.UPRegenValueText).text = $"{player.Stat.UnchartedPointRegen}/s";
             Get<TMP_Text>((int)Texts.MoveSpeedValueText).text = $"{player.Stat.Speed} + ({player.AdditionalSpeed})";
-            Get<TMP_Text>((int)Texts.RageValueText).text = $"{player.Stat.Rage}";
-            Get<TMP_Text>((int)Texts.ReasonValueText).text = $"{player.Stat.Reason}";
-            Get<TMP_Text>((int)Texts.UnchartedValueText).text = $"{player.Stat.Uncharted}";
-            Get<TMP_Text>((int)Texts.TruthValueText).text = $"{player.Stat.Truth}";
+            Get<TMP_Text>((int)Texts.RageValueText).text = $"{player.Stat.Realizations[0]}";
+            Get<TMP_Text>((int)Texts.ReasonValueText).text = $"{player.Stat.Realizations[1]}";
+            Get<TMP_Text>((int)Texts.UnchartedValueText).text = $"{player.Stat.Realizations[2]}";
+            Get<TMP_Text>((int)Texts.TruthValueText).text = $"{player.Stat.Realizations[3]}";
             Get<TMP_Text>((int)Texts.MaxPotionValueText).text = $"{player.Stat.MaxPotion}";
             Get<TMP_Text>((int)Texts.StatPointText).text = $"{player.Stat.StatPoint}";
+            Get<TMP_Text>((int)Texts.StatPointText_Warning).gameObject.SetActive(false);
 
-            OnClickInfoButton();
+            if (_isBaseStatPanelActive == true)
+                OnClickInfoButton();
 
-            if (player.Stat.StatPoint > 0)
+            if (player.Stat.StatPoint > 0 && _isCardPanelActive == false)
             {
                 _statPoint = player.Stat.StatPoint;
                 ShowImage((int)Images.Card_Panel, true);
+                _isCardPanelActive = true;
             }
         }
     }

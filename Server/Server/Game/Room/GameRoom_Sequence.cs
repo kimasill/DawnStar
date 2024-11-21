@@ -128,7 +128,7 @@ namespace Server.Game
                 PosX = player.CellPos.x,
                 PosY = player.CellPos.y,
             };
-            DbTransaction.SavePlayerDb(player, playerDb, player.Room);
+            DbTransaction.SavePlayerPosDb(player, playerDb, player.Room);
             DbTransaction.SavePlayerMap(player, player.MapInfo);
 
             GameLogic.Instance.UpdateRoom(this);
@@ -161,7 +161,7 @@ namespace Server.Game
             player.MapInfo.MapName = map.name;
             player.MapInfo.Scene = map.name;
             player.MapInfo.PortalId = portalData.id;
-            player.Session.UpdateMapChests(map.id);
+            player.Session.UpdateMapChests(player, map.id);
         }
         public void HandleStatChange(Player player)
         {

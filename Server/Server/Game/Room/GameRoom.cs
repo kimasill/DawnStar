@@ -15,7 +15,7 @@ namespace Server.Game
 {
     public partial class GameRoom : JobSerializer
     {
-        public const int VisionCells = 10;
+        public const int VisionCells = 20;
         public int RoomId { get; set; }
 
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
@@ -119,7 +119,6 @@ namespace Server.Game
                 player.IsDead = false;
 
                 player.RefreshAdditionalStat();
-
 
                 Map.ApplyMove(player, new Vector2Int(player.CellPos.x, player.CellPos.y));
                 Console.WriteLine($"Player Room Id:{RoomId}");

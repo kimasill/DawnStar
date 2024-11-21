@@ -67,6 +67,22 @@ namespace Server.Game
                     return new Vector2Int(0, 0);
             }
         }
+        private static Vector2Int GetOffsetByDirection(MoveDir moveDir, int distance)
+        {
+            switch (moveDir)
+            {
+                case MoveDir.Up:
+                    return new Vector2Int(0, -distance);
+                case MoveDir.Down:
+                    return new Vector2Int(0, distance);
+                case MoveDir.Left:
+                    return new Vector2Int(-distance, 0);
+                case MoveDir.Right:
+                    return new Vector2Int(distance, 0);
+                default:
+                    return new Vector2Int(0, 0);
+            }
+        }
 
         public static List<Vector2Int> GetRandomSpots(GameObject user, SkillData skillData, GameRoom room)
         {
@@ -81,6 +97,7 @@ namespace Server.Game
                     rand.Next(-(int)skillData.spot.range, (int)skillData.spot.range + 1),
                     rand.Next(-(int)skillData.spot.range, (int)skillData.spot.range + 1)
                 );
+                pos += user.CellPos;
                 skillPos.Add(pos);
             }
             return skillPos;
@@ -96,6 +113,21 @@ namespace Server.Game
                     Vector2Int tile = center + new Vector2Int(x, y);
                     tiles.Add(tile);
                 }
+            }
+
+            return tiles;
+        }
+
+        public static List<Vector2Int> GetTargetsInLine(Vector2Int center, MoveDir dir, int range)
+        {
+
+            List<Vector2Int> tiles = new List<Vector2Int>();
+
+            for (int i = 0; i < range; i++)
+            {
+                Vector2Int offset = GetOffsetByDirection(dir, i);
+                Vector2Int tile = center + offset;
+                tiles.Add(tile);
             }
 
             return tiles;

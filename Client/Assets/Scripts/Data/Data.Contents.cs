@@ -169,6 +169,7 @@ namespace Data
     {
         public List<WeaponData> weapons = new List<WeaponData>();
         public List<ArmorData> armors = new List<ArmorData>();
+        public List<JewelryData> jewelry = new List<JewelryData>();
         public List<ConsumableData> consumables = new List<ConsumableData>();
         public List<MaterialData> materials = new List<MaterialData>();
         public List<GoodsData> goods = new List<GoodsData>();
@@ -184,6 +185,11 @@ namespace Data
             foreach (ItemData item in armors)
             {
                 item.itemType = ItemType.Armor;
+                dict.Add(item.id, item);
+            }
+            foreach(ItemData item in jewelry)
+            {
+                item.itemType = ItemType.Jewelry;
                 dict.Add(item.id, item);
             }
             foreach (ItemData item in consumables)

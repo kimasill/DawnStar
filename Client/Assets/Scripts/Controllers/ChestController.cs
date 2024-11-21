@@ -39,8 +39,8 @@ public class ChestController : BaseController
 
         if(_headUpText == null)
             _headUpText = _headUpIcon.GetComponentInChildren<TextMeshPro>();
-        
-        StartCoroutine(BlinkText(_headUpText));
+        if(gameObject.activeSelf)
+            StartCoroutine(BlinkText(_headUpText));
     }
 
     private IEnumerator BlinkText(TextMeshPro text)
@@ -56,9 +56,14 @@ public class ChestController : BaseController
     }
     public void DeactivateNotification()
     {
-        Debug.Log("Deactivate Chest Notification");
+        if (this == null || gameObject == null)
+        {
+            Debug.LogWarning("ChestController or GameObject is already destroyed.");
+            return;
+        }
         StopCoroutine(BlinkText(_headUpText));
-        _headUpIcon?.SetActive(false);        
+        if (_headUpIcon != null)
+            _headUpIcon.SetActive(false);        
     }
 
     public void OpenChest()

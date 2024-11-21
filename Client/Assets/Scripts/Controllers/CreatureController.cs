@@ -16,7 +16,7 @@ public class CreatureController : BaseController
 
     public float TotalAttackSpeed 
 	{
-		get { return Stat.AttackSpeed; }		
+		get { return Stat.AttackSpeed + AdditionalAttackSpeed; }		
 	}
     protected int _additionalAttack;
     public virtual int AdditionalAttack { get; set; }

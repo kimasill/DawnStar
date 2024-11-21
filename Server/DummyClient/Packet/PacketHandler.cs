@@ -207,4 +207,13 @@ class PacketHandler
     {
         S_PartyInvite partyInvite = packet as S_PartyInvite;
     }
+
+    public static void S_InteractionHandler(PacketSession session, IMessage packet)
+    {
+        S_Interaction interaction = packet as S_Interaction;
+    }
+    public static void S_ChangeAdditionalStatHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeAdditionalStat additionalStat = packet as S_ChangeAdditionalStat;
+    }
 }

@@ -105,28 +105,32 @@ namespace Server.DB
                 }
             });
         }
-        public static void ExpNoti(Player player, int totalExp)
+        public static void ExpNoti(Player player, int Exp)
         {
             if (player == null)
                 return;
+
+            PlayerDb playerDb = new PlayerDb()
+            {
+                PlayerDbId = player.PlayerDbId,
+                Exp = player.Exp + Exp
+            };
+
             Instance.Push(() =>
             {
-                player.Exp += totalExp;
                 using (AppDbContext db = new AppDbContext())
                 {
-                    PlayerDb playerDb = db.Players.FirstOrDefault(p => p.PlayerDbId == player.PlayerDbId);
-                    if (playerDb != null)
-                    {
-                        playerDb.Exp = player.Exp;                        
-                    }
-                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                    db.Entry(playerDb).State = EntityState.Unchanged;
+                    db.Entry(playerDb).Property(nameof(playerDb.Exp)).IsModified = true;
 
+                    bool success = db.SaveChangesEx(); // 저장할 때 예외처리를 해준다.
                     if (success)
                     {
                         player.Room.Push(() =>
                         {
+                            player.Exp = playerDb.Exp;
                             S_ChangeExp expPacket = new S_ChangeExp();
-                            expPacket.Exp = playerDb.Exp;
+                            expPacket.Exp = player.Exp;
                             player.Session.Send(expPacket);
                         });
                     }

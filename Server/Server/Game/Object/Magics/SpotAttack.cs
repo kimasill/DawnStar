@@ -24,8 +24,10 @@ namespace Server.Game
                 return;
 
             if (Delay <= 0)
+            {
+                base.Update();
                 return;
-
+            }
             Cast();
         }
 
@@ -34,12 +36,12 @@ namespace Server.Game
             await Task.Delay((int)Delay * 1000);
             Vector2Int destPos = CellPos;
             GameObject target = Room.Map.Find(destPos);
-            if (target != null)
+            if (target != null && target != Owner)
             {
                 target.OnDamaged(this, Data.damage + Owner.TotalAttack); //피격판정                    
             }
 
-            Room.PushAfter(5000, Room.LeaveGame, Id);
+            Room.PushAfter(1000, Room.LeaveGame, Id);
         }
     }
 }
