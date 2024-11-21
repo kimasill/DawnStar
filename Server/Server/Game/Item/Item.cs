@@ -73,6 +73,9 @@ namespace Server.Game
                 case ItemType.Armor:
                     item = new Armor(itemDb.TemplateId);
                     break;
+                case ItemType.Jewelry:
+                    item = new Jewelry(itemDb.TemplateId);
+                    break;
                 case ItemType.Consumable:
                     item = new Consumable(itemDb.TemplateId);
                     break;
@@ -164,7 +167,32 @@ namespace Server.Game
                 }
             }
         }
+        public class Jewelry : Item
+        {
+            public JewelryType JewelryType { get; private set; }
+            public Jewelry(int templateId) : base(ItemType.Jewelry)
+            {
+                Init(templateId);
+            }
 
+            void Init(int templateId)
+            {
+                ItemData itemData = null;
+                DataManager.ItemDict.TryGetValue(templateId, out itemData);
+                if (itemData.itemType != ItemType.Jewelry)
+                {
+                    return;
+                }
+
+                JewelryData data = (JewelryData)itemData;
+                {
+                    TemplateId = data.id;
+                    Count = 1;
+                    JewelryType = data.jewelType;
+                    Stackable = false;
+                }
+            }
+        }
         public class Consumable : Item
         {
             public ConsumableType ConsumableType { get; private set; }

@@ -56,13 +56,21 @@ namespace Server
                             {
                                 Level = playerDb.Level,
                                 Hp = playerDb.Hp,
+                                Up = playerDb.UnchartedPoint,
                                 MaxHp = playerDb.MaxHp,
                                 Attack = playerDb.Attack,
+                                Defense = playerDb.Defense,
                                 Speed = playerDb.Speed,
                                 TotalExp = playerDb.Exp,
-                                Gold = playerDb.Gold,
-                            }                            
+                                StatPoint = playerDb.StatPoint,
+                            }
                         };
+                        if (playerDb.Realizations == null || playerDb.Realizations.Count == 0)
+                        {
+                            playerDb.Realizations = new List<int>() { 0, 0, 0, 0 };
+                        }
+                        lobbyPlayer.StatInfo.Realizations.Clear();
+                        lobbyPlayer.StatInfo.Realizations.AddRange(playerDb.Realizations);                    
 
                         // 메모리에도 들고 있다
                         LobbyPlayers.Add(lobbyPlayer);
@@ -192,7 +200,7 @@ namespace Server
                         mapId = mapDb.TemplateId;
                     }
                 }
-                UpdateMapChests(mapId);
+                UpdateMapChests(MyPlayer, mapId);
                 MyPlayer.Skill = new Skill(MyPlayer);
                 if (ServerState == PlayerServerState.ServerStateSingle)
                 {
@@ -203,7 +211,6 @@ namespace Server
                     GameLogic.Instance.Push(() =>
                     {
                         GameRoom room = GameLogic.Instance.Add(mapId);
-                        Console.WriteLine($"Player Room Id:{room.RoomId}");
                         room.Push(room.EnterGame, MyPlayer, false);
                     });
                 }                
@@ -214,7 +221,6 @@ namespace Server
                     GameLogic.Instance.Push(() =>
                     {
                         GameRoom room = GameLogic.Instance.Find(1); //멀티서버
-                        Console.WriteLine($"Player Room Id:{room.RoomId}");
                         room.Push(room.EnterGame, MyPlayer, false);
                     });
                 }
@@ -254,7 +260,7 @@ namespace Server
             }
             return null;
         }
-        public void UpdateMapChests(int mapId)
+        public void UpdateMapChests(Player player, int mapId)
         {
             List<int> chestIds = new List<int>();
             DataManager.MapDict.TryGetValue(mapId, out MapData mapData);
@@ -264,7 +270,6 @@ namespace Server
             
             using (AppDbContext db = new AppDbContext())
             {
-                
                 List<ChestDb> chests = db.Chests
                     .Where(c => c.MapDbId == MyPlayer.MapInfo.MapDbId)
                     .ToList();
@@ -281,7 +286,7 @@ namespace Server
                             Opened = false
                         };
                         chestIds.Add(chest.chestId);
-                        db.Add(chestDb);
+                        DbTransaction.UpdateChestDb(player, chestDb);
                     }
                     else
                     {

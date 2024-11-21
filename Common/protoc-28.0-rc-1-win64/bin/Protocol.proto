@@ -62,6 +62,7 @@ enum MsgId {
   C_INTERACTION = 54;
   S_INTERACTION = 55;
   S_CHANGE_ADDITIONAL_STAT = 56;
+  C_REQUEST_STAT = 57;
 }
 enum CreatureState{
   IDLE = 0;
@@ -504,6 +505,9 @@ message C_QuestComplete{
 message C_SelectStat{
 	int32 templateId = 1;
 }
+
+message C_RequestStat{
+}
 message S_ChangeAdditionalStat{
 	StatInfo statInfo = 1;
 }
@@ -577,15 +581,12 @@ message StatInfo{
   int32 maxPotion = 15;
   int32 potionPerformance = 16;
   int32 statPoint = 17;
-  int32 rage = 18;
-  int32 reason = 19;
-  int32 uncharted = 20;
-  int32 truth = 21;
-  int32 unchartedPoint = 22;
-  float unchartedPointRegen = 23;
-  float stiffTime = 24;
-  float coolTime =25;
-  int32 up =26;
+  int32 unchartedPoint = 18;
+  float unchartedPointRegen = 19;
+  float stiffTime = 20;
+  float coolTime =21;
+  int32 up =22;
+  repeated int32 realizations = 23;
 }
 
 message QuestInfo

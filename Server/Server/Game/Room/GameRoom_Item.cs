@@ -162,7 +162,7 @@ namespace Server.Game
                 ChestDb chestDb = db.Chests
                    .Where(s => s.TemplateId == rewardId && s.MapDbId == player.MapInfo.MapDbId)
                    .FirstOrDefault();
-                if((chestDb != null && chestDb.Opened == false) || chestDb == null)
+                if((chestDb != null && chestDb.Opened == false))
                 {
                     S_MakeChest makeChest = new S_MakeChest();
                     makeChest.ChestId = chestDb.ChestId;

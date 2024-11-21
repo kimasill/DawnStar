@@ -6,6 +6,7 @@ using System.Deployment.Internal;
 using System.IO;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using static SoonsoonData;
 
 public struct Pos
@@ -62,15 +63,25 @@ public class MapManager
 		return !_collision[y, x];
 	}
 
-    public string IsPlayerAtPortal(Vector3Int cellPos)
+    public GameObject IsPlayerAtPortal(Vector3Int cellPos)
     {
         // 디버깅을 위해 좌표 출력
         Debug.Log($"Checking door at cell position: {cellPos}");
 
         Vector3Int adjustedPos = new Vector3Int(cellPos.x + 1, cellPos.y + 1, 0);
         if(_portalDict.TryGetValue(adjustedPos, out var result))
-			return result.name.Split("_")[1];
+			return result;
 		return null;		
+    }
+
+    public GameObject GetPortalById(int id)
+    {
+        foreach(var portal in _portalDict)
+        {
+            if (int.Parse(portal.Value.name.Split("_")[1]) == id)
+                return portal.Value;
+        }
+        return null;
     }
 
 	public void RemovePortalByName(string portalName)
@@ -199,24 +210,24 @@ public class MapManager
 	}
 
     public void FindPortals()
-    {        
+    {
         GameObject[] portals = GameObject.FindGameObjectsWithTag("Portal");
         foreach (GameObject portal in portals)
         {
-            Bounds bounds = portal.GetComponent<Collider2D>().bounds;
-            Vector3Int min = CurrentGrid.WorldToCell(bounds.min);
-            Vector3Int max = CurrentGrid.WorldToCell(bounds.max);
-            for (int x = min.x; x <= max.x; x++)
+            Tilemap tilemap = portal.GetComponent<Tilemap>();
+            if (tilemap != null)
             {
-                for (int y = min.y; y <= max.y; y++)
+                foreach (var pos in tilemap.cellBounds.allPositionsWithin)
                 {
-                    Vector3Int cellPos = new Vector3Int(x, y, 0);
-                    _portalDict[cellPos] = portal;
+                    if (tilemap.HasTile(pos))
+                    {
+                        Vector3Int cellPos = new Vector3Int(pos.x, pos.y, 0);
+                        _portalDict[cellPos] = portal;
+                    }
                 }
             }
         }
     }
-
 	 private void FindQuests()
     {
         GameObject[] questObjects = GameObject.FindGameObjectsWithTag("Quest");
@@ -251,21 +262,22 @@ public class MapManager
 
     private void FindChests()
     {
-        GameObject[] chestObjects = GameObject.FindGameObjectsWithTag("Chest");
-        foreach (GameObject chestObject in chestObjects)
+        GameObject chestObject = GameObject.FindGameObjectWithTag("Chest");
+        if (chestObject == null)
+            return;
+
+        ChestController[] chestControllers = chestObject.GetComponentsInChildren<ChestController>(true);
+
+        foreach (ChestController chest in chestControllers)
         {
-            ChestController cc = chestObject.GetComponent<ChestController>();
-            if(cc != null)
-            {
-                string[] str = chestObject.name.Split('_');
-                string name = str[0];
-                int templateId = str.Length > 1 ? int.Parse(str[1]) : 0;
-                int chestId = str.Length > 2 ? int.Parse(str[2]) : 0;
-                cc.SetChest(chestId, templateId);
-                cc.CellPos = CurrentGrid.WorldToCell(chestObject.transform.position);
-                Vector3Int chestPos = cc.CellPos;
-                _chestDict[(Vector2Int)chestPos] = cc;
-            }            
+            string[] str = chest.gameObject.name.Split('_');
+            string name = str[0];
+            int templateId = str.Length > 1 ? int.Parse(str[1]) : 0;
+            int chestId = str.Length > 2 ? int.Parse(str[2]) : 0;
+            chest.SetChest(chestId, templateId);
+            chest.CellPos = CurrentGrid.WorldToCell(chest.transform.position);
+            Vector3Int chestPos = chest.CellPos;
+            _chestDict[(Vector2Int)chestPos] = chest;
         }
     }
 

@@ -287,18 +287,22 @@ namespace Server.Game
             }
             else
             {
-                additionalStat.StatInfo.Attack = AdditionalAttack;
-                additionalStat.StatInfo.Defense = AdditionalDefense;
-                additionalStat.StatInfo.Avoid = AdditionalAvoidance;
-                additionalStat.StatInfo.Accuracy = AdditionalAccuracy;
-                additionalStat.StatInfo.CriticalChance = AdditionalCriticalChance;
-                additionalStat.StatInfo.CriticalDamage = AdditionalCriticalDamage;
-                additionalStat.StatInfo.AttackSpeed = AdditionalAttackSpeed;
-                additionalStat.StatInfo.Speed = AdditionalSpeed;
-                additionalStat.StatInfo.InvokeSpeed = AdditionalInvokeSpeed;
-                additionalStat.StatInfo.CoolTime = AdditionalCoolTime;
-                additionalStat.StatInfo.Hp = AdditionalHp;
-                additionalStat.StatInfo.Up = AdditionalUp;
+                StatInfo statInfo = new StatInfo() 
+                {
+                    Attack = AdditionalAttack,
+                    Defense = AdditionalDefense,
+                    Avoid = AdditionalAvoidance,
+                    Accuracy = AdditionalAccuracy,
+                    CriticalChance = AdditionalCriticalChance,
+                    CriticalDamage = AdditionalCriticalDamage,
+                    AttackSpeed = AdditionalAttackSpeed,
+                    Speed = AdditionalSpeed,
+                    InvokeSpeed = AdditionalInvokeSpeed,
+                    CoolTime = AdditionalCoolTime,
+                    Hp = AdditionalHp,
+                    Up = AdditionalUp,
+                };
+                additionalStat.StatInfo = statInfo;
             }
             Session.Send(additionalStat);
         }
@@ -390,6 +394,7 @@ namespace Server.Game
             }
 
             RefreshAdditionalStat();
+            SendAdditionalStat();
         }
 
         

@@ -140,43 +140,29 @@ namespace Server.Game
             player.StatPoint--;
             if (realization != null)
             {
-                int index = 0;
-                if (realization.id == 1) {
-                    player.Stat.Rage += 1;
-                    index = player.Stat.Rage;
-                    playerDb.Realizations[realization.id] = player.Stat.Rage;
-                }
-                else if (realization.id == 2)
-                {
-                    player.Stat.Reason += 1;
-                    index = player.Stat.Reason;
-                    playerDb.Realizations[realization.id] = player.Stat.Reason;
-                }
-                else if (realization.id == 3)
-                {
-                    player.Stat.Uncharted += 1;
-                    index = player.Stat.Uncharted;
-                    playerDb.Realizations[realization.id] = player.Stat.Uncharted;
-                }
-                else if (realization.id == 4)
-                {
-                    player.Stat.Truth += 1;
-                    index = player.Stat.Truth;
-                    playerDb.Realizations[realization.id] = player.Stat.Truth;
-                }
+                int index = realization.id - 1;
+                int count = 0;
+                player.Stat.Realizations[index] += 1;
+                count = player.Stat.Realizations[index];
+                playerDb.Realizations = player.Stat.Realizations.ToList();
+                
                 // 소인수 분해를 통해 추가 스탯 적용
-                List<int> factors = GetFactors(index);
+                List<int> factors = GetFactors(count);
                 foreach (int factor in factors)
                 {
-                    SpecialStatData specialStatData = realization.specialStatDatas[factor];
-                    if (specialStatData != null)
-                    {                                                   
-                        playerDb = ApplySpecialStat(player, playerDb, specialStatData);
+                    foreach(var specialStat in realization.specialStatDatas)
+                    {
+                        if(specialStat == null)
+                            continue;
+                        if (specialStat.point == factor)
+                        {
+                            playerDb = ApplySpecialStat(player, playerDb, specialStat);
+                        }
                     }
                 }
             }
             playerDb.StatPoint = player.StatPoint;
-            DbTransaction.SavePlayerDb(player, playerDb, player.Room);
+            DbTransaction.SavePlayerStatDb(player, playerDb, player.Room);
         }
         private List<int> GetFactors(int number)
         {
@@ -208,7 +194,7 @@ namespace Server.Game
                     playerDb.Defense = player.Stat.Defense;
                     break;
                 case "공격속도":
-                    player.Stat.AttackSpeed += specialStatData.value;
+                    player.Stat.AttackSpeed += specialStatData.value/100;
                     playerDb.AttackSpeed = player.Stat.AttackSpeed;
                     break;
                 case "회피율":

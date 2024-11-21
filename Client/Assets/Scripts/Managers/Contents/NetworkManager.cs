@@ -41,5 +41,4 @@ public class NetworkManager
 				handler.Invoke(_session, packet.Message);
 		}	
 	}
-
 }

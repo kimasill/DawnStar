@@ -12,13 +12,13 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Numerics;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
+using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 
 namespace Server.Game
 {
 
     public class Skill
     {
-        int _invokeDelay = 100;
         List<GameObject> _targetList = new List<GameObject>();
         GameObject _target = null;
         private Queue<(SkillData skillData, GameObject target, int range)> _skillQueue = new Queue<(SkillData, GameObject, int)>();
@@ -150,7 +150,7 @@ namespace Server.Game
                     KnockBack(data);
                     return;
                 case SkillLogicType.Combat:
-                    CombatAsync(data, skill.range);
+                    CombatAsync(data);
                     return;
                 case SkillLogicType.Pull:
                     Pull(data, skill.range);
@@ -394,21 +394,37 @@ namespace Server.Game
                 Owner.Room.Broadcast(_target.CellPos, changePosition);
             }
         }
-        public async void CombatAsync(SkillData data, int range)
+        public async void CombatAsync(SkillData data)
         {
-            await Task.Delay((int)(100 / Owner.TotalAttackSpeed));
-            Vector2Int center = Owner.GetFrontCellPos();
-            for (int i = 0; i < range; i++)
+            for(int i = 0; i< data.count; i++)
             {
-                Vector2Int pos = center + new Vector2Int((Owner.CellPos - center).x*i, (Owner.CellPos - center).y*i);
-                GameObject target = Owner.Room.Map.Find(pos);
-                if (target != null)
+                if(data.terms!=null && data.terms.Count > 0)
                 {
-                    if (target == Owner)
+                    if(i >= 1)
                     {
-                        continue;
+                        await Task.Delay((int)((data.terms[i] - data.terms[i-1])/Owner.TotalAttackSpeed * 1000));
                     }
-                    target.OnDamaged(Owner, Owner.TotalAttack + data.damage);
+                    else if(i == 0)
+                    {
+                        await Task.Delay((int)(data.terms[i]/Owner.TotalAttackSpeed * 1000));
+                    }                    
+                }
+                else if(data.term != 0)
+                {
+                    await Task.Delay((int)(data.term / Owner.TotalAttackSpeed * 1000));
+                }
+                List<Vector2Int> targets = SkillLogic.GetTargetsInLine(Owner.CellPos, Owner.Info.Position.MoveDir, (int)data.shape.range);
+                foreach(var pos in targets)
+                {                    
+                    GameObject target = Owner.Room.Map.Find(pos);
+                    if (target != null)
+                    {
+                        if (target == Owner)
+                        {
+                            continue;
+                        }
+                        target.OnDamaged(Owner, Owner.TotalAttack + data.damage);
+                    }
                 }
             }
         }
@@ -443,9 +459,11 @@ namespace Server.Game
         }
         private async void SpotAttack(SkillData data, List<Vector2Int> skillPos)
         {
-            foreach (Vector2Int pos in skillPos)
+             foreach (Vector2Int pos in skillPos)
             {
-                await Task.Delay(_invokeDelay*100);
+                await Task.Delay(100);
+                if (Owner == null || Owner.Room ==null)
+                    return;
                 SpotAttack spot = ObjectManager.Instance.Add<SpotAttack>();
                 spot.Owner = Owner;
                 spot.Owner.Room = Owner.Room;

@@ -8,6 +8,7 @@ using Server.Game.Room;
 using Server.Migrations;
 using Server.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -99,7 +100,7 @@ namespace Server.DB
             //Console.WriteLine($"save hp{hp}");
         }
 
-        public static void SavePlayerDb(Player player, PlayerDb playerDb, GameRoom room)
+        public static void SavePlayerStatDb(Player player, PlayerDb playerDb, GameRoom room)
         {
             if (playerDb == null)
                 return;
@@ -111,10 +112,37 @@ namespace Server.DB
                 var properties = typeof(PlayerDb).GetProperties();
                 foreach (var property in properties)
                 {
+                    if(property.Name == "PlayerDbId")
+                        continue;
                     var value = property.GetValue(playerDb);
+                    double doubleValue;
                     if (value != null)
                     {
-                        db.Entry(playerDb).Property(property.Name).IsModified = true;
+                        if (property.Name == "Realizations")
+                        {
+                            // Realizations 속성 처리
+                            if (playerDb.Realizations != null && playerDb.Realizations.Count > 0)
+                            {
+                                db.Entry(playerDb).Property(nameof(playerDb.RealizationsJson)).IsModified = true;
+                            }
+                        }
+                        else if (value is IList list && list.Count > 0)
+                        {
+                            // 일반 리스트 타입이고 요소가 있는 경우
+                            db.Entry(playerDb).Property(property.Name).IsModified = true;
+                        }
+                        else if (property.Name == "StatPoint")
+                        {
+                            if (playerDb.StatPoint == player.StatPoint)
+                            {
+                                db.Entry(playerDb).Property(property.Name).IsModified = true;
+                            }
+                        }
+                        else if (double.TryParse(value.ToString(), out doubleValue) && doubleValue != 0 && property.Name != "PosX" && property.Name != "PosY")
+                        {
+                            // 리스트 타입이 아니고, double로 변환 가능한 경우
+                            db.Entry(playerDb).Property(property.Name).IsModified = true;
+                        }
                     }
                 }
                 bool success = db.SaveChangesEx();
@@ -124,7 +152,9 @@ namespace Server.DB
                     {
                         {
                             S_ChangeStat statPacket = new S_ChangeStat();
-                            statPacket.StatInfo.MergeFrom(player.Stat);
+                            StatInfo statInfo = new StatInfo();
+                            statInfo.MergeFrom(player.Stat);
+                            statPacket.StatInfo = statInfo;                            
                             player.Session.Send(statPacket);
                         }                        
                         {
@@ -139,7 +169,36 @@ namespace Server.DB
                 }
             }            
         }
+        public static void SavePlayerPosDb(Player player, PlayerDb playerDb, GameRoom room)
+        {
+            if (playerDb == null)
+                return;
 
+            using (AppDbContext db = new AppDbContext())
+            {
+                db.Entry(playerDb).State = EntityState.Unchanged;
+
+                var properties = typeof(PlayerDb).GetProperties();
+                foreach (var property in properties)
+                {
+                    if (property.Name == "PlayerDbId")
+                        continue;
+                    var value = property.GetValue(playerDb);
+                    if(property.Name != "PosX" && property.Name != "PosY")
+                    {
+                        continue;
+                    }
+                    if (value != null)
+                    {
+                        db.Entry(playerDb).Property(property.Name).IsModified = true;
+                    }
+                }
+                bool success = db.SaveChangesEx();
+                if (success)
+                {                    
+                }
+            }
+        }
         public static void RewardPlayer(Player player, ItemData itemData, int count, GameRoom room)
         {
             if (player == null || itemData == null || room == null)
@@ -305,26 +364,27 @@ namespace Server.DB
                     bool success = db.SaveChangesEx(); // 저장할 때 예외 처리를 해준다.
                     if (success)
                     {
-                        player.Gold += gold;
-                        player.Exp += exp;                            
-                        RewardInfo rewardInfo = new RewardInfo();
-                        foreach(RewardData rewardData in questData.rewards)
+                        room.Push(() =>
                         {
-                            rewardInfo.RewardType = rewardData.type;
-                            rewardInfo.RewardValue = rewardData.amount;
-                        }
-                        QuestInfo questInfo = new QuestInfo()
-                        {
-                            QuestDbId = questDb.QuestDbId,
-                            TemplateId = questDb.TemplateId,
-                            Connection = connection,
-                            Rewards = rewardInfo,
-                        };
-                        S_QuestComplete questCompletePacket = new S_QuestComplete();
-                        questCompletePacket.Quest = questInfo;
-                        player.Session.Send(questCompletePacket);
-
-                        SavePlayerStatus_All(player, player.Room);
+                            player.Gold += gold;
+                            ExpNoti(player, exp);
+                            RewardInfo rewardInfo = new RewardInfo();
+                            foreach (RewardData rewardData in questData.rewards)
+                            {
+                                rewardInfo.RewardType = rewardData.type;
+                                rewardInfo.RewardValue = rewardData.amount;
+                            }
+                            QuestInfo questInfo = new QuestInfo()
+                            {
+                                QuestDbId = questDb.QuestDbId,
+                                TemplateId = questDb.TemplateId,
+                                Connection = connection,
+                                Rewards = rewardInfo,
+                            };
+                            S_QuestComplete questCompletePacket = new S_QuestComplete();
+                            questCompletePacket.Quest = questInfo;
+                            player.Session.Send(questCompletePacket);
+                        });
                     }                    
                 }
             });
@@ -429,13 +489,15 @@ namespace Server.DB
                         .FirstOrDefault();
                     if (chest != null )
                     {
+                        if(chest.Opened == true)
+                        {
+                            reward = false;
+                        }
+                        else
+                        {
+                            reward = true;
+                        }
                         chest.Opened = chestDb.Opened;
-                    }
-                    else
-                    {
-                        chestDb.Opened = false;
-                        reward = true;
-                        db.Chests.Add(chestDb);                                   
                     }
                     bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
                     if (success && reward)
@@ -462,6 +524,30 @@ namespace Server.DB
                                 }
                             }
                         });
+                    }
+                }
+            });
+        }
+        public static void UpdateChestDb(Player player, ChestDb chestDb)
+        {
+            if (player == null || chestDb == null)
+                return;
+
+            Instance.Push(() =>
+            {
+                using (AppDbContext db = new AppDbContext())
+                {
+                    ChestDb chest = db.Chests
+                        .Where(c => c.MapDbId == player.MapInfo.MapDbId && c.ChestId == chestDb.ChestId)
+                        .FirstOrDefault();
+                    if (chest == null)
+                    {
+                        db.Chests.Add(chestDb);
+                    }
+                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.
+                    if (success)
+                    {
+                        //Console.WriteLine("success");
                     }
                 }
             });

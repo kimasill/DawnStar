@@ -211,9 +211,6 @@ namespace Server.Migrations
                     b.Property<string>("RealizationsJson")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ServerState")
-                        .HasColumnType("int");
-
                     b.Property<float>("Speed")
                         .HasColumnType("real");
 

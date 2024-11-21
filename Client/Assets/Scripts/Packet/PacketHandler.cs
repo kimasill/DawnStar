@@ -267,7 +267,9 @@ class PacketHandler
             Managers.Object.MyPlayer.Stat.MergeFrom(objectInfo.StatInfo);
             Managers.Map.SetChests(objectInfo.MapInfo.ChestIds.ToList());
             Managers.Scene.CurrentScene.CheckOnSceneLoadedQuest();
-            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;            
+
+            C_RequestStat request = new C_RequestStat();
+            Managers.Network.Send(request);
         }
 
         // 이벤트 핸들러 제거
@@ -429,11 +431,12 @@ class PacketHandler
     {
         S_ChangeStat statPacket = (S_ChangeStat)packet;
         Managers.Object.MyPlayer.Stat.MergeFrom(statPacket.StatInfo);
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
         if (Managers.Object.MyPlayer.Stat.Level != statPacket.StatInfo.Level)
         {
-            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
             gameSceneUI.NotificationUI.ShowLevelNoti();
         }
+        gameSceneUI.StatUI.RefreshUI();
     }
 
     public static void S_ChangeAdditionalStatHandler(PacketSession session, IMessage packet)

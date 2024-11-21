@@ -16,6 +16,7 @@ namespace Server.Game
         }
         public override void Update()
         {
+            Room.PushAfter(200, Update);
         }
     }
 }

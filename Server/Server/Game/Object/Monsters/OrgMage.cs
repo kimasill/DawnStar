@@ -41,7 +41,7 @@ namespace Server.Game
                 //스킬 사용 가능한지
                 Vector2Int dir = _target.CellPos - CellPos;
                 int dist = dir.cellDistanceFromZero;
-                bool canUseSkill = dist <= _skillRange && (dir.x == 0 || dir.y == 0);
+                bool canUseSkill = dist <= _skillRange;
                 if (canUseSkill == false)
                 {
                     State = CreatureState.Moving;
@@ -52,7 +52,7 @@ namespace Server.Game
                 int skillId = 12;
                 int coolTick = (int)(1000 / TotalAttackSpeed);
                 SkillData skillData = null;
-                if (dir.cellDistanceFromZero <= _baseAttackRange)
+                if (dist <= _baseAttackRange)
                 {
                     skillId = 13;
                     DataManager.SkillDict.TryGetValue(skillId, out skillData);
@@ -84,7 +84,7 @@ namespace Server.Game
 
                 S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
                 skillPacket.ObjectId = Id;
-                skillPacket.Info.SkillId = skillData.id;
+                skillPacket.Info.SkillId = skillId;
                 Room.Broadcast(CellPos, skillPacket);
 
                 Skill.StartSkill(this, skillData, _target);

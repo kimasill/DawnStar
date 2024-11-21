@@ -17,7 +17,8 @@ public class MyPlayerController : PlayerController
     private CameraController _cameraController;
     private ChestController _chestController;
     private InteractionController _interactionController;
-    private int _nearByDungeonId = -1;
+    private DoorController _doorController;
+    private int _nearByPortalId = -1;
     private GameObject _headUpIcon;
     public CameraController CameraController { get; private set; }
 
@@ -67,6 +68,7 @@ public class MyPlayerController : PlayerController
         SkillKeys[0] = KeyCode.E;
         SkillKeys[1] = KeyCode.R;
         SkillKeys[2] = KeyCode.F;
+        SkillKeys[3] = KeyCode.T;
     }
 
     protected override void UpdateController() 
@@ -133,17 +135,21 @@ public class MyPlayerController : PlayerController
         }
         else if (Input.GetKeyDown(KeyCode.G))
         {
-            if (_nearByDungeonId != -1)
+            if (_nearByPortalId != -1)
             {
                 UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;
-                gameScene.MatchingUI.RefreshUI(_nearByDungeonId);
+                gameScene.MatchingUI.RefreshUI(_nearByPortalId);
                 if (gameScene.MatchingUI.gameObject.activeSelf)
                 {
                     gameScene.MatchingUI.gameObject.SetActive(false);
+                    if(_doorController!=null)
+                        _doorController.CloseDoor();
                 }
                 else
                 {
                     gameScene.MatchingUI.gameObject.SetActive(true);
+                    if (_doorController != null)
+                        _doorController.OpenDoor();
                 }
             }
             else if(_chestController != null)
@@ -331,7 +337,10 @@ public class MyPlayerController : PlayerController
 
     private void CheckIfPlayerAtPortal(Vector3Int playerCellPosition)
     {
-        string tempId = Managers.Map.IsPlayerAtPortal(playerCellPosition);
+        GameObject portalObj = Managers.Map.IsPlayerAtPortal(playerCellPosition);
+        if (portalObj == null)
+            return;
+        string tempId = portalObj.name.Split("_")[1];
         int portalId = 0;
         if (tempId != null) {
             portalId = int.Parse(tempId);
@@ -355,25 +364,37 @@ public class MyPlayerController : PlayerController
             Managers.Data.MapDict.TryGetValue(portalData.mapId, out MapData nextMapData);
             if (nextMapData == null)
                 return;
+            _nearByPortalId = portalData.mapId;
+            DoorController dc = portalObj.GetComponentInChildren<DoorController>();
+            if (dc != null)
+            {
+                _doorController = dc;
+            }
             if (nextMapData.type == MapType.Dungeon)
             {
-                _nearByDungeonId = portalData.mapId;
-                _headUpIcon = Managers.Resource.Instantiate("UI/HeadUpIcon", transform);
-                _headUpIcon.GetComponent<SpriteRenderer>().sprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Dungeon");                
-                _headUpIcon.GetComponentInChildren<TMP_Text>().text = "던전 입장 : G";
+                if(_headUpIcon == null)
+                {
+                    _headUpIcon = Managers.Resource.Instantiate("UI/HeadUpIcon", transform);
+                    _headUpIcon.GetComponent<SpriteRenderer>().sprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Dungeon");
+                    _headUpIcon.GetComponentInChildren<TMP_Text>().text = "던전 입장 : G";
+                }
             }
             else
             {
                 C_MapChange mapPacket = new C_MapChange { PortalId = portalId };
                 Managers.Network.Send(mapPacket);
+                if(_doorController!=null)
+                    _doorController.OpenDoor();
             }            
         }
         else
         {
-            if (_nearByDungeonId != -1)
+            if (_nearByPortalId != -1)
             {
                 Managers.Resource.Destroy(_headUpIcon);
-                _nearByDungeonId = -1;
+                _headUpIcon = null;
+                _nearByPortalId = -1;
+                _doorController = null;
             }            
         }
     }
@@ -381,12 +402,14 @@ public class MyPlayerController : PlayerController
     private void CheckIfPlayerAtItem()
     {
         Vector3Int playerCellPosition = CellPos;
-        GameObject itemObject = Managers.Object.FindItem(playerCellPosition);
-        if (itemObject != null && itemObject.GetComponent<ItemController>() != null)
+        List<GameObject> itemObjects = Managers.Object.FindItem(playerCellPosition);
+        if (itemObjects != null && itemObjects.Count>=1)
         {
-            ItemController itemController = itemObject.GetComponent<ItemController>();
-            itemController.MoveToPlayer(transform);
-            // 아이템 루팅 로직 추가
+            foreach (GameObject itemObject in itemObjects)
+            {
+                ItemController itemController = itemObject.GetComponent<ItemController>();
+                itemController.MoveToPlayer(transform);
+            }
         }
     }
 
@@ -456,7 +479,7 @@ public class MyPlayerController : PlayerController
                     {
                         cc.ActivateNotification();
                         if (_chestController != null)
-                        {
+                        {                           
                             _chestController.DeactivateNotification();
                         }
                         _chestController = cc;

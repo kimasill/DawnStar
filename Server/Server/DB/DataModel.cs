@@ -29,9 +29,7 @@ namespace Server.DB
         [ForeignKey("Account")]
         public int AccountDbId { get; set; }
         public AccountDb Account { get; set; }
-
         public ICollection<ItemDb> Items { get; set; }
-        public PlayerServerState ServerState { get; set; }
         public int Level { get; set; }
         public int Hp { get; set; }
         public int MaxHp { get; set; }
