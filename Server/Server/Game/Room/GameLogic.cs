@@ -18,7 +18,8 @@ namespace Server.Game
         public void Update()
         {
             Flush();
-            foreach (GameRoom room in _rooms.Values)
+            var roomsCopy = _rooms.Values.ToList(); // Create a copy of the collection
+            foreach (GameRoom room in roomsCopy)
                 room.Update();
         }
 

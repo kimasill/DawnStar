@@ -138,7 +138,8 @@ public class MyPlayerController : PlayerController
             if (_nearByPortalId != -1)
             {
                 UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;
-                gameScene.MatchingUI.RefreshUI(_nearByPortalId);
+                int nextMapId = Managers.Map.GetNextMap(_nearByPortalId);
+                gameScene.MatchingUI.RefreshUI(nextMapId);
                 if (gameScene.MatchingUI.gameObject.activeSelf)
                 {
                     gameScene.MatchingUI.gameObject.SetActive(false);
@@ -339,7 +340,17 @@ public class MyPlayerController : PlayerController
     {
         GameObject portalObj = Managers.Map.IsPlayerAtPortal(playerCellPosition);
         if (portalObj == null)
+        {
+            if (_nearByPortalId != -1)
+            {
+                Managers.Resource.Destroy(_headUpIcon);
+                _headUpIcon = null;
+                _nearByPortalId = -1;
+                _doorController = null;
+            }
             return;
+        }
+            
         string tempId = portalObj.name.Split("_")[1];
         int portalId = 0;
         if (tempId != null) {
@@ -348,23 +359,11 @@ public class MyPlayerController : PlayerController
          
         if (portalId != 0)
         {
-            int mapId = Managers.Map.CurrentMapId;
-            Managers.Data.MapDict.TryGetValue(mapId, out MapData mapData);
-            if (mapData == null)
-                return;
-            PortalData portalData = null;
-            foreach (var portal in mapData.portals)
-            {
-                if (portal.id == portalId)
-                {
-                    portalData = portal;
-                    break;
-                }
-            }
-            Managers.Data.MapDict.TryGetValue(portalData.mapId, out MapData nextMapData);
+            int nextMapId = Managers.Map.GetNextMap(portalId);
+            Managers.Data.MapDict.TryGetValue(nextMapId, out MapData nextMapData);
             if (nextMapData == null)
                 return;
-            _nearByPortalId = portalData.mapId;
+            _nearByPortalId = portalId;
             DoorController dc = portalObj.GetComponentInChildren<DoorController>();
             if (dc != null)
             {
@@ -374,7 +373,8 @@ public class MyPlayerController : PlayerController
             {
                 if(_headUpIcon == null)
                 {
-                    _headUpIcon = Managers.Resource.Instantiate("UI/HeadUpIcon", transform);
+                    _headUpIcon = Managers.Resource.Instantiate("UI/HeadUpIcon");
+                    _headUpIcon.transform.position = transform.position + new Vector3(0, 1.5f, 0);
                     _headUpIcon.GetComponent<SpriteRenderer>().sprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Dungeon");
                     _headUpIcon.GetComponentInChildren<TMP_Text>().text = "던전 입장 : G";
                 }
@@ -385,16 +385,6 @@ public class MyPlayerController : PlayerController
                 Managers.Network.Send(mapPacket);
                 if(_doorController!=null)
                     _doorController.OpenDoor();
-            }            
-        }
-        else
-        {
-            if (_nearByPortalId != -1)
-            {
-                Managers.Resource.Destroy(_headUpIcon);
-                _headUpIcon = null;
-                _nearByPortalId = -1;
-                _doorController = null;
             }            
         }
     }
