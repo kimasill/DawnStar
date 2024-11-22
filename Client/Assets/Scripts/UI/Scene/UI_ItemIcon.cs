@@ -14,17 +14,22 @@ public class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitHandler
     private UI_ItemDescription _itemDescription;
     bool _isDescription = false;
     private Item _item;
-
+    private bool _init = false;
 
     public override void Init()
     {
+        if (_init)
+            return;
         _icon = GetComponent<Image>();
-        BindEvent(_icon.gameObject, OnPointerEnter, Define.UIEvent.MouseOver);
-        BindEvent(_icon.gameObject, OnPointerExit, Define.UIEvent.MouseOut);
+        gameObject.BindEvent(OnPointerEnter, Define.UIEvent.MouseOver);
+        gameObject.BindEvent(OnPointerExit, Define.UIEvent.MouseOut);
+        _init = true;
     }
 
     public void SetItem(Item item)
     {
+        if(!_init)
+            Init();
         _item = item;
         Data.ItemData itemData = null;
         Managers.Data.ItemDict.TryGetValue(item.TemplateId, out itemData);
@@ -37,12 +42,10 @@ public class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitHandler
     {
         if (_isDescription)
             return;
-        Item item = Managers.Inventory.Get(_item.ItemDbId);
-        if (item == null)
-            return;
+
         _isDescription = true;
         _itemDescription = Managers.UI.ShowPopupUI<UI_ItemDescription>();
-        _itemDescription.SetItem(item);
+        _itemDescription.SetItem(_item);
         _itemDescription.OnPointerEnter(eventData);
     }
 

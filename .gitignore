@@ -1,4 +1,10 @@
-Client/Library/ArtifactDB
-Client/Library/SourceAssetDB
+Client/Library/ArtifactDB/
+Client/Library/SourceAssetDB/
+Client/Library/StateCache/
+Client/Library/
 [Cc]lient/[Ll]ibrary/
 /Client/Library
+/Client/Library
+Client/Library/SourceAssetDB-lock
+/Client/UserSettings
+/Client/obj

@@ -620,7 +620,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "310",
-      "iconPath": "Textures/Item/Materials/Uncharted_Fragment",
+      "iconPath": "Textures/Item/Materials/Base/Uncharted_Fragment",
       "description": "미지의 기운이 담긴 파편. 정제하여 미지의 기운을 역이용할 수 있다."
     },
     {

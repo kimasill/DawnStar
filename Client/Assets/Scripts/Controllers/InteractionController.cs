@@ -15,7 +15,8 @@ public class InteractionController : BaseController
     public InteractionType Type { get; set; }
     public List<Vector2Int> CellPoses { get; set; } = new List<Vector2Int>();
     protected override void Init()
-    {        
+    {
+        base.Init();
     }
 
     public void SetInteraction(int interactionId)

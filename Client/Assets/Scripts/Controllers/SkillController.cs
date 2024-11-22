@@ -1,8 +1,6 @@
 using Data;
 using Google.Protobuf.Protocol;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class SkillController : MonoBehaviour

@@ -64,7 +64,7 @@ namespace Server
             }
             foreach (var member in party.Members)
             {
-                member.Room.Push(member.Room.HandleMapChanged, member, mapData, mapData.portals.First().destination, room);
+                member.Room.Push(member.Room.HandleMapChanged, member, mapData, mapData.portals.First().id, room);
             }
         }
     }

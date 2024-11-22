@@ -1,13 +1,9 @@
 ﻿using Data;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Deployment.Internal;
 using System.IO;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using static SoonsoonData;
 
 public struct Pos
 {
@@ -62,7 +58,18 @@ public class MapManager
 		int y = MaxY - adjustedPos.y;
 		return !_collision[y, x];
 	}
-
+    public int GetNextMap(int portalId)
+    {
+        Managers.Data.MapDict.TryGetValue(CurrentMapId, out MapData mapData);
+        if (mapData == null)
+            return 0;
+        foreach (var portal in mapData.portals)
+        {
+           if(portal.id == portalId)
+                return portal.mapId;
+        }
+        return 0;
+    }
     public GameObject IsPlayerAtPortal(Vector3Int cellPos)
     {
         // 디버깅을 위해 좌표 출력
@@ -228,7 +235,7 @@ public class MapManager
             }
         }
     }
-	 private void FindQuests()
+	private void FindQuests()
     {
         GameObject[] questObjects = GameObject.FindGameObjectsWithTag("Quest");
         foreach (GameObject questObject in questObjects)
@@ -286,26 +293,24 @@ public class MapManager
         GameObject[] interactionObjects = GameObject.FindGameObjectsWithTag("Interaction");
         foreach (GameObject interactionObject in interactionObjects)
         {
-            InteractionController ic = interactionObject.GetComponentInChildren<InteractionController>();
-            if (ic != null)
+            Tilemap tilemap = interactionObject.GetComponent<Tilemap>();
+            if (tilemap != null)
             {
-                int interactionId = int.Parse(interactionObject.name.Split('_')[1]);
-                ic.SetInteraction(interactionId);
-
-                Bounds bounds = interactionObject.GetComponent<Collider2D>().bounds;
-                Vector3Int min = CurrentGrid.WorldToCell(bounds.min);
-                Vector3Int max = CurrentGrid.WorldToCell(bounds.max);
-                for (int x = min.x; x <= max.x; x++)
+                foreach (var pos in tilemap.cellBounds.allPositionsWithin)
                 {
-                    for (int y = min.y; y <= max.y; y++)
+                    if (tilemap.HasTile(pos))
                     {
-                        Vector2Int cellPos = (Vector2Int)new Vector3Int(x, y, 0);
-                        _interactionDict[cellPos] = ic;
-                        ic.CellPoses.Add(cellPos);
-                        Debug.Log($" Interaction id:{interactionId}, cellPos:{cellPos.x},{cellPos.y}");
+                        InteractionController ic = interactionObject.GetComponentInChildren<InteractionController>();
+                        if (ic != null)
+                        {
+                            int interactionId = int.Parse(interactionObject.name.Split('_')[1]);
+                            ic.SetInteraction(interactionId);
+                            Vector2Int cellPos = new Vector2Int(pos.x, pos.y);
+                            _interactionDict[cellPos] = ic;
+                        }
                     }
                 }
-            }            
+            }
         }
     }
     public void SetCollision(Vector2Int cellPos, bool collision)

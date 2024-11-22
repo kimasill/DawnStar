@@ -2,12 +2,13 @@ using Data;
 using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_Matching : UI_Scene
+public class UI_Matching : UI_Base
 {
     enum Images
     {
@@ -28,11 +29,11 @@ public class UI_Matching : UI_Scene
     enum GameObjects
     {
         MatchingSpinner,
-        ItemIconScrollViewContent
+        ScrollView
     }
 
     private bool _isMatching = false;
-
+    private bool _init = false;
     [SerializeField]
     private List<UI_ItemIcon> _itemIcons = new List<UI_ItemIcon>();
     [SerializeField]
@@ -40,15 +41,19 @@ public class UI_Matching : UI_Scene
     public MapData MapData { get; set; }
     public override void Init()
     {
-        base.Init();
+        if (_init)
+            return;
         
-        Bind<Text>(typeof(Texts));
-        Bind<Button>(typeof(Images));
+        Bind<TMP_Text>(typeof(Texts));
+        Bind<Image>(typeof(Images));
         Bind<GameObject>(typeof(GameObjects));
 
         GetImage((int)Images.EntranceButton).gameObject.BindEvent(OnClickEnterButton, Define.UIEvent.Click);
         GetImage((int)Images.MatchingButton).gameObject.BindEvent(OnClickMatchingButton, Define.UIEvent.Click);
-        GetImage((int)Images.MatchingCancelButton).gameObject.BindEvent(OnClickMatchingButton, Define.UIEvent.Click);
+        GetImage((int)Images.MatchingCancelButton).gameObject.BindEvent(OnClickMatchingCancelButton, Define.UIEvent.Click);
+
+        GetTextMeshPro((int)Texts.MatchingNoticeText).gameObject.SetActive(false);
+        _init = true;
     }
 
     private void OnClickEnterButton(PointerEventData evt)
@@ -64,7 +69,8 @@ public class UI_Matching : UI_Scene
         if (!_isMatching)
         {
             _isMatching = true;
-            GetText((int)Texts.MatchingNoticeText).text = "매칭 중";
+            GetTextMeshPro((int)Texts.MatchingNoticeText).gameObject.SetActive(true);
+            GetTextMeshPro((int)Texts.MatchingNoticeText).text = "매칭 중";
             GetObject((int)GameObjects.MatchingSpinner).SetActive(true);
             GetImage((int)Images.MatchingCancelButton).gameObject.SetActive(true);
             C_EnterDungeon enterDungeonPacket = new C_EnterDungeon();
@@ -79,7 +85,7 @@ public class UI_Matching : UI_Scene
         if (_isMatching)
         {
             _isMatching = false;
-            GetText((int)Texts.MatchingNoticeText).text = "";
+            GetTextMeshPro((int)Texts.MatchingNoticeText).text = "";
             GetObject((int)GameObjects.MatchingSpinner).SetActive(false);
             GetImage((int)Images.MatchingCancelButton).gameObject.SetActive(false);
 
@@ -96,11 +102,15 @@ public class UI_Matching : UI_Scene
         yield return new WaitForSeconds(3f);
 
         _isMatching = false;
-        GetText((int)Texts.MatchingNoticeText).text = "매칭 성공";
+        GetTextMeshPro((int)Texts.MatchingNoticeText).text = "매칭 성공";
         GetObject((int)GameObjects.MatchingSpinner).SetActive(false);
     }
     public void RefreshUI(int mapId)
     {
+        if (!_init)
+        {
+            Init();
+        }
         MapData mapData = Managers.Data.MapDict.TryGetValue(mapId, out mapData) ? mapData : null;
         if (mapData == null) return;
         MapData = mapData;
@@ -115,16 +125,16 @@ public class UI_Matching : UI_Scene
         DungeonData dungeonData = mapData.dungeon;
         if (dungeonData != null)
         {
-            GetText((int)Texts.TitleText).text = dungeonData.name;
-            GetText((int)Texts.LevelText).text = "레벨 제한: " + mapData.dungeon.level;
-            GetText((int)Texts.MaxPlayerText).text = "최대 인원: " + mapData.dungeon.maxPlayer;
-            GetText((int)Texts.MonstersText).text = "몬스터: ";
+            GetTextMeshPro((int)Texts.TitleText).text = dungeonData.name;
+            GetTextMeshPro((int)Texts.LevelText).text = "레벨 제한: " + mapData.dungeon.level;
+            GetTextMeshPro((int)Texts.MaxPlayerText).text = "최대 인원: " + mapData.dungeon.maxPlayer;
+            GetTextMeshPro((int)Texts.MonstersText).text = "몬스터: ";
             MonsterData monsterData = null;
             foreach (int monsterId in mapData.dungeon.monsters)
             {
                 if (Managers.Data.MonsterDict.TryGetValue(monsterId, out monsterData))
                 {
-                    GetText((int)Texts.MonstersText).text += monsterData.name + " ";
+                    GetTextMeshPro((int)Texts.MonstersText).text += monsterData.name + " ";
                 }
             }
 
