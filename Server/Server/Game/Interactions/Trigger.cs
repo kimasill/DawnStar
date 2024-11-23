@@ -9,7 +9,7 @@ namespace Server.Game
         public bool IsActivated { get; set; }
         public List<int> ActivationItems { get; set; } = new List<int>();
         public Dictionary<int, bool> Conditions { get; set; } = new Dictionary<int, bool>();
-        public Trigger(TriggerData triggerData)
+        public Trigger(TriggerData triggerData) : base(triggerData)
         {
             TemplateId = triggerData.id;
             ActivationItems = triggerData.keyItems;
@@ -44,7 +44,7 @@ namespace Server.Game
             {
                 Conditions[key] = true;
             }
-            IsActivated = true;            
+            IsActivated = true;
         }
 
         public void Deactivate()
@@ -58,7 +58,7 @@ namespace Server.Game
             {
                 Conditions[key] = false;
             }
-            IsActivated = false;            
+            IsActivated = false;
         }
     }
 }

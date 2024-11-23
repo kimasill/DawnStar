@@ -495,7 +495,7 @@
     {
       "id": "15",
       "name": "사티로스",
-      "type": "Normal",
+      "type": "Satyr",
       "grade": "Normal",
       "stat": {
         "level": "14",
@@ -530,7 +530,7 @@
     {
       "id": "16",
       "name": "사티로스워리어",
-      "type": "Normal",
+      "type": "Satyr",
       "grade": "Normal",
       "stat": {
         "level": "16",
@@ -577,7 +577,7 @@
     {
       "id": "17",
       "name": "사티로스구도자",
-      "type": "Normal",
+      "type": "Satyr",
       "grade": "Elite",
       "stat": {
         "level": "20",
@@ -695,7 +695,7 @@
     {
       "id": "20",
       "name": "스켈레톤 전사",
-      "type": "Normal",
+      "type": "SkeletonWarrior",
       "grade": "Normal",
       "stat": {
         "level": "21",
@@ -742,7 +742,7 @@
     {
       "id": "21",
       "name": "스켈레톤 방패전사",
-      "type": "Normal",
+      "type": "SkeletonWarrior",
       "grade": "Normal",
       "stat": {
         "level": "21",
@@ -789,7 +789,7 @@
     {
       "id": "22",
       "name": "스켈레톤 마법사",
-      "type": "Normal",
+      "type": "SkeletonMage",
       "grade": "Normal",
       "stat": {
         "level": "18",
@@ -830,7 +830,7 @@
     {
       "id": "23",
       "name": "간수",
-      "type": "Normal",
+      "type": "PrisonKeeper",
       "grade": "Normal",
       "stat": {
         "level": "18",

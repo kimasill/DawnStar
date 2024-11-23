@@ -60,7 +60,7 @@ namespace Server.Game
             else
             {
                 skillId = 1;
-                _coolTick = Environment.TickCount64 + 1000 / (int)TotalAttackSpeed;
+                _coolTick = Environment.TickCount64 + (int)(1000 / TotalAttackSpeed);
             }
 
             if (_hasShield && _random.NextDouble() < DefenseStanceProbability)

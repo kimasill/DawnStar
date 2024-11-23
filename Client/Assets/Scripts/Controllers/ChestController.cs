@@ -89,8 +89,6 @@ public class ChestController : BaseController
     private IEnumerator CoOpenChest()
     {
         Animator.Play("OPEN_H");
-        // 애니메이션 재생 시간 동안 대기
-        yield return new WaitForSeconds(0.01f);
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);        
         Animator.Play("CLOSE_H", 0, 0);
         Animator.speed = 0;
@@ -103,7 +101,6 @@ public class ChestController : BaseController
     {
         Animator.speed = 1;
         Animator.Play("CLOSE_H");
-        yield return new WaitForSeconds(0.01f);
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length - 0.05f);
         gameObject.SetActive(false);
         Destroy(gameObject);
