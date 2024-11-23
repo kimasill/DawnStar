@@ -22,7 +22,7 @@ public class DoorController : InteractionController
     {
         if (_isOpen)
             return;
-
+        
         _isOpen = true;
         StartCoroutine(CoOpenDoor());
     }
@@ -31,7 +31,7 @@ public class DoorController : InteractionController
     {
         if (!_isOpen)
             return;
-
+        
         _isOpen = false;
         StartCoroutine(CoCloseDoor());
     }

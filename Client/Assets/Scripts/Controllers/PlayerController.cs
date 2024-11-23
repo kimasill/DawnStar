@@ -35,6 +35,7 @@ public class PlayerController : CreatureController
     public float EquipCoolTime { get; protected set; }
     public int EquipHp { get; protected set; }
     public int EquipUp { get; protected set; }
+    public float EquipUpRegen { get; protected set; }
 
     protected override void Init()
 	{

@@ -9,7 +9,7 @@
       "skillLogicType": "BasicAttack",
       "shape": {
         "shapeType": "ShapeBent",
-        "range": "2.0"
+        "range": "1.0"
       }
     },
     {

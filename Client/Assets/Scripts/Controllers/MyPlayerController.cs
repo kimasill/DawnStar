@@ -551,6 +551,7 @@ public class MyPlayerController : PlayerController
         EquipCoolTime = 0;
         EquipHp = 0;
         EquipUp = 0;
+        EquipUpRegen = 0;
         foreach (Item item in Managers.Inventory.Items.Values)
         {
             if (item.Equipped == false)
@@ -570,22 +571,22 @@ public class MyPlayerController : PlayerController
                         case OptionType.Accuracy:
                             EquipAccuracy += int.Parse(option.Value);
                             break;
-                        case OptionType.Ciriticalchance:
+                        case OptionType.CiriticalChance:
                             EquipCriticalChance += int.Parse(option.Value);
                             break;
-                        case OptionType.Criticaldamage:
+                        case OptionType.CriticalDamage:
                             EquipCriticalDamage += int.Parse(option.Value);
                             break;
-                        case OptionType.Attackspeed:
+                        case OptionType.AttackSpeed:
                             EquipAttackSpeed += int.Parse(option.Value);
                             break;
                         case OptionType.Speed:
                             EquipSpeed += int.Parse(option.Value);
                             break;
-                        case OptionType.Invokespeed:
+                        case OptionType.InvokeSpeed:
                             EquipInvokeSpeed += int.Parse(option.Value);
                             break;
-                        case OptionType.Cooltime:
+                        case OptionType.CoolTime:
                             EquipCoolTime += int.Parse(option.Value);
                             break;
                         case OptionType.Hp:
@@ -593,6 +594,9 @@ public class MyPlayerController : PlayerController
                             break;
                         case OptionType.Up:
                             EquipUp += int.Parse(option.Value);
+                            break;
+                        case OptionType.UpRegen:
+                            EquipUpRegen += int.Parse(option.Value);
                             break;
                     }
                 }

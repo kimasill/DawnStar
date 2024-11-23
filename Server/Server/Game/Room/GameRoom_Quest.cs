@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
+using Microsoft.VisualBasic;
 using Server.Data;
 using Server.DB;
 using Server.Game.Job;
@@ -236,34 +237,41 @@ namespace Server.Game
             }
             return playerDb;
         }
-        public void HandleDoorInteraction(Player player, int objectId)
+        public void HandleDoorInteraction(Player player, int doorId)
         {
             if (player == null || player.Room == null)
                 return;
 
-            DataManager.InteractionData.TryGetValue(objectId, out InteractionData interactionData);
+            DataManager.InteractionData.TryGetValue(doorId, out InteractionData interactionData);
             if (interactionData.interactionType != InteractionType.Door)
                 return;
 
             DoorData doorData = (DoorData)interactionData;
 
 
-            if (_interactions.ContainsKey(objectId) == false)
+            if (_interactions.ContainsKey(doorId) == false)
             {
-                Door newDoor = new Door(objectId, false, doorData.keyItems);
-                foreach(var cell in doorData.cells)
-                {
-                    newDoor.CellPoses.Add(new Vector2Int(cell.x, cell.y));
-                }
+                Door newDoor = new Door(doorData);
                 newDoor.Room = this;
-                _interactions.Add(objectId, newDoor);
+                _interactions.Add(doorId, newDoor);
             }
-            Door door = (Door)_interactions[objectId];
+            Door door = (Door)_interactions[doorId];
             S_Interaction interactionPacket = new S_Interaction();
             interactionPacket.Success = true;
 
             if(door.IsOpen == false)
             {
+                if (door.Triggers.Count > 0)
+                {
+                    foreach (var triggerId in door.Triggers.Keys)
+                    {
+                        if (door.Triggers[triggerId] == false)
+                        {
+                            interactionPacket.Success = false;
+                            break;
+                        }
+                    }
+                }
                 if (door.KeyItems.Count > 0)
                 {
                     foreach (var keyId in door.KeyItems)
@@ -274,9 +282,16 @@ namespace Server.Game
                             interactionPacket.Success = false;
                             break;
                         }
-                        player.Inven.Remove(key.ItemDbId, count: 1);
                     }
-                }
+                    if(interactionPacket.Success)
+                    {
+                        foreach (var keyId in door.KeyItems)
+                        {
+                            Item key = player.Inven.FindByTemplateId(keyId);
+                            player.Inven.Remove(key.ItemDbId, 1);
+                        }
+                    }
+                }                
             }
 
             if (interactionPacket.Success)
@@ -286,7 +301,7 @@ namespace Server.Game
                     door.Open();
                 else
                     door.Close();
-                interactionPacket.ObjectId = objectId;
+                interactionPacket.ObjectId = doorId;
                 interactionPacket.PlayerId = player.Info.ObjectId;
                 interactionPacket.Success = door.IsOpen;
                 interactionPacket.InteractionType = InteractionType.Door;
@@ -296,6 +311,93 @@ namespace Server.Game
             {
                 player.Session.Send(interactionPacket);
             }
+        }
+
+        public void HandleTriggerInteraction(Player player, int triggerId)
+        {
+            if (player == null || player.Room == null)
+                return;
+
+            DataManager.InteractionData.TryGetValue(triggerId, out InteractionData interactionData);
+            if (interactionData.interactionType != InteractionType.Trigger)
+                return;
+
+            TriggerData triggerData = (TriggerData)interactionData;
+            bool success = true;
+            if (_interactions.ContainsKey(triggerId) == false)
+            {
+                Trigger newTrigger = new Trigger(triggerData);
+                newTrigger.Room = this;
+                _interactions.Add(triggerId, newTrigger);
+            }
+            Trigger trigger = (Trigger)_interactions[triggerId];
+            if (trigger.ActivationItems.Count>0 && trigger.IsActivated==false)
+            {
+                foreach (var keyId in trigger.ActivationItems)
+                {
+                    Item key = player.Inven.FindByTemplateId(keyId);
+                    if (key == null)
+                    {
+                        success = false;
+                    }
+                }
+            }
+            
+            if (trigger.Conditions.Count > 0 && success)
+            {
+                foreach (var targetInteraction in trigger.Conditions.Keys)
+                {
+                    if (_interactions.ContainsKey(targetInteraction) == false)
+                    {
+                        CreateNewInteraction(targetInteraction);
+                    }
+                    _interactions[targetInteraction].OnTriggerEnter(triggerId);
+                }
+            }
+            S_Interaction interactionPacket = new S_Interaction();
+            interactionPacket.Success = success;
+            if (success)
+            {
+                trigger.OnInteraction();
+                interactionPacket.ObjectId = triggerId;
+                interactionPacket.PlayerId = player.Info.ObjectId;
+                interactionPacket.InteractionType = InteractionType.Door;
+                player.Room.Broadcast(player.CellPos, interactionPacket);
+            }
+            else
+            {
+                player.Session.Send(interactionPacket);
+            }
+        }
+
+        public Interaction CreateNewInteraction(int id)
+        {
+            foreach (var interactionDataPair in DataManager.InteractionData)
+            {
+                if (interactionDataPair.Value.interactionType == InteractionType.Door)
+                {
+                    DoorData doorData = (DoorData)interactionDataPair.Value;
+                    if (doorData.triggers != null && doorData.triggers.Contains(id))
+                    {
+                        Door newDoor = new Door(doorData);
+                        newDoor.Room = this;
+                        _interactions.Add(id, newDoor);
+                        return newDoor;
+                    }
+                }
+                else if (interactionDataPair.Value.interactionType == InteractionType.Trigger)
+                {
+                    TriggerData newTriggerData = (TriggerData)interactionDataPair.Value;
+                    if (newTriggerData.targetInteraction != null && newTriggerData.targetInteraction.Contains(id))
+                    {
+                        Trigger newTrigger = new Trigger(newTriggerData);
+                        newTrigger.Room = this;
+                        _interactions.Add(id, newTrigger);
+                        return newTrigger;
+                    }
+                }
+            }
+            return null;
         }
     }
 }

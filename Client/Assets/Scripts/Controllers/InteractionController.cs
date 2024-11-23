@@ -38,8 +38,16 @@ public class InteractionController : BaseController
 
         _headUpIcon.SetActive(true);
         if(Type == InteractionType.Door)
-            _headUpIcon.gameObject.GetComponent<SpriteRenderer>().sprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Door");        
-        _headUpIcon.transform.position = new Vector3(transform.position.x, transform.position.y + 1f, 0);
+        {
+            _headUpIcon.gameObject.GetComponent<SpriteRenderer>().sprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Door");
+            _headUpIcon.transform.position = new Vector3(transform.position.x, transform.position.y + 1f, 0);
+        }
+        else if(Type == InteractionType.Trigger)
+        {
+             _headUpIcon.gameObject.GetComponent<SpriteRenderer>().sprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Trigger");
+            _headUpIcon.transform.position = new Vector3(transform.position.x, transform.position.y + 1f, 0);
+        }
+
 
         if (_headUpText == null)
             _headUpText = _headUpIcon.GetComponentInChildren<TextMeshPro>();
