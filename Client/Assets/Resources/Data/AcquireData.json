@@ -134,6 +134,98 @@
           "maxCount": "20"
         }
       ]
+    },
+    {
+      "id": "4",
+      "name": "보스상자(간수)",
+      "type": "chest",
+      "rewards": [
+        {
+          "probability": "100",
+          "itemId": "4",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "201",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "1125",
+          "minCount": "2",
+          "maxCount": "2"
+        },
+        {
+          "probability": "100",
+          "itemId": "1136",
+          "minCount": "5",
+          "maxCount": "10"
+        },
+        {
+          "probability": "100",
+          "itemId": "1141",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "1142",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "10001",
+          "minCount": "500",
+          "maxCount": "700"
+        },
+        {
+          "probability": "100",
+          "itemId": "10002",
+          "minCount": "50",
+          "maxCount": "50"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "name": "돌 상자",
+      "type": "chest",
+      "rewards": [
+        {
+          "probability": "100",
+          "itemId": "10001",
+          "minCount": "150",
+          "maxCount": "300"
+        },
+        {
+          "probability": "50",
+          "itemId": "1130",
+          "minCount": "3",
+          "maxCount": "7"
+        },
+        {
+          "probability": "40",
+          "itemId": "1133",
+          "minCount": "3",
+          "maxCount": "7"
+        },
+        {
+          "probability": "30",
+          "itemId": "1136",
+          "minCount": "3",
+          "maxCount": "7"
+        },
+        {
+          "probability": "100",
+          "itemId": "10002",
+          "minCount": "10",
+          "maxCount": "10"
+        }
+      ]
     }
   ]
 }

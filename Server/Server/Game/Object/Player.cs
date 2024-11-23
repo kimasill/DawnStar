@@ -233,6 +233,7 @@ namespace Server.Game
         public float EquipCoolTime { get; private set; }
         public int EquipHp { get; private set; }
         public int EquipUp { get; private set; }
+        public float EquipUpRegen { get; private set; }
         #endregion
 
         public Player()
@@ -413,6 +414,7 @@ namespace Server.Game
             EquipCoolTime = 0;
             EquipHp = 0;
             EquipUp = 0;
+            EquipUpRegen = 0;
 
 
             foreach (Item item in Inven.Items.Values)
@@ -435,22 +437,22 @@ namespace Server.Game
                             case OptionType.Accuracy:
                                 EquipAccuracy += int.Parse(option.Value);
                                 break;
-                            case OptionType.Ciriticalchance:
+                            case OptionType.CiriticalChance:
                                 EquipCriticalChance += int.Parse(option.Value);
                                 break;
-                            case OptionType.Criticaldamage:
+                            case OptionType.CriticalDamage:
                                 EquipCriticalDamage += int.Parse(option.Value);
                                 break;
-                            case OptionType.Attackspeed:
+                            case OptionType.AttackSpeed:
                                 EquipAttackSpeed += int.Parse(option.Value);
                                 break;
                             case OptionType.Speed:
                                 EquipSpeed += int.Parse(option.Value);
                                 break;
-                            case OptionType.Invokespeed:
+                            case OptionType.InvokeSpeed:
                                 EquipInvokeSpeed += int.Parse(option.Value);
                                 break;
-                            case OptionType.Cooltime:
+                            case OptionType.CoolTime:
                                 EquipCoolTime += int.Parse(option.Value);
                                 break;
                             case OptionType.Hp:
@@ -458,6 +460,9 @@ namespace Server.Game
                                 break;
                             case OptionType.Up:
                                 EquipUp += int.Parse(option.Value);
+                                break;
+                            case OptionType.UpRegen:
+                                EquipUpRegen += int.Parse(option.Value);
                                 break;
                         }
                     }

@@ -516,12 +516,20 @@ namespace Data
     {
         public List<string> script;
         public List<int> keyItems;
+        public List<int> triggers;
         public List<Vector2Set> cells;
     }
-    
+    public class TriggerData : InteractionData
+    {
+        public List<string> script;
+        public List<int> keyItems;
+        public List<int> targetInteraction;
+    }
+
     public class InteractionLoader : ILoader<int, InteractionData>
     {
         public List<DoorData> doors = new List<DoorData>();
+        public List<TriggerData> triggers = new List<TriggerData>();
 
         public Dictionary<int, InteractionData> MakeDict()
         {
@@ -529,6 +537,11 @@ namespace Data
             foreach (InteractionData interaction in doors)
             {
                 interaction.interactionType = InteractionType.Door;
+                dict.Add(interaction.id, interaction);
+            }
+            foreach (InteractionData interaction in triggers)
+            {
+                interaction.interactionType = InteractionType.Trigger;
                 dict.Add(interaction.id, interaction);
             }
             return dict;

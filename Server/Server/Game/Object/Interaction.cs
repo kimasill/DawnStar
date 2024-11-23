@@ -18,5 +18,11 @@ namespace Server.Game
         public override void Update()
         {
         }
+        public virtual void OnTriggerEnter(int id)
+        {
+        }
+        public virtual void OnInteraction()
+        {
+        }
     }
 }

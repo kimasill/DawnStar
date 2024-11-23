@@ -121,7 +121,7 @@ public class UI_ItemDescription : UI_Popup
     public string ConvertSpecialOptions(string option)
     {
         switch(option) {
-            case "Critical":
+            case "CriticalChance":
                 option = "치명타 확률";
                 break;
             case "CriticalDamage":
@@ -130,16 +130,28 @@ public class UI_ItemDescription : UI_Popup
             case "AttackSpeed":
                 option = "공격 속도";
                 break;
-            case "MoveSpeed":
+            case "Speed":
                 option = "이동 속도";
                 break;
-            case "HPRegen":
+            case "Hp":
+                option = "체력";
+                break;
+            case "Avoid":
+                option = "회피율";
+                break;
+            case "Accuracy":
+                option = "명중률";
+                break;
+            case "HpRegen":
                 option = "체력 회복";
                 break;
             case "Heal":
                 option = "회복량";
                 break;
-            case "UPRegen":
+            case "Up":
+                option = "미지력";
+                break;
+            case "UpRegen":
                 option = "미지력 회복";
                 break;
             case "Skill":
