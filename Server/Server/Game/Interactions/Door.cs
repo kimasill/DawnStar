@@ -9,15 +9,10 @@ namespace Server.Game
         public bool IsOpen { get; set; }
         public List<int> KeyItems { get; set; } = new List<int>();
         public Dictionary<int, bool> Triggers { get; set; } = new Dictionary<int, bool>();
-        public List<Vector2Int> CellPoses { get; set; } = new List<Vector2Int>();
-        public Door(DoorData doorData)
+        public Door(DoorData doorData) : base(doorData)
         {
             TemplateId = doorData.id;
             KeyItems = doorData.keyItems;
-            foreach (var cell in doorData.cells)
-            {
-                CellPoses.Add(new Vector2Int(cell.x, cell.y));
-            }
             if (doorData.triggers != null)
             {
                 foreach (var trigger in doorData.triggers)
@@ -27,17 +22,16 @@ namespace Server.Game
             }
             IsOpen = false;
         }
-
         public void Open()
         {
-            if(Room == null)
+            if (Room == null)
             {
                 return;
             }
             IsOpen = true;
-            foreach (var cellPos in CellPoses)
+            foreach (var cellPos in Cells)
             {
-                 Room.Map.SetCollision(cellPos, false);
+                Room.Map.SetCollision(cellPos, false);
             }
         }
 
@@ -48,9 +42,9 @@ namespace Server.Game
                 return;
             }
             IsOpen = false;
-            foreach (var cellPos in CellPoses)
+            foreach (var cellPos in Cells)
             {
-                 Room.Map.SetCollision(cellPos, true);
+                Room.Map.SetCollision(cellPos, true);
             }
         }
 

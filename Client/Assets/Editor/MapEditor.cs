@@ -127,6 +127,82 @@ public class MapEditor : MonoBehaviour
             SaveMapData(pathPrefix, fileName, mapData, bounds);
         }
     }
+    private static void GenerateInteractionPointByPath(string pathPrefix)
+    {
+        GameObject[] gameObjects = Resources.LoadAll<GameObject>("Prefabs/Map");
+
+        foreach (var go in gameObjects)
+        {
+            GameObject interactionPoint = go.transform.Find("Interactions")?.gameObject;
+            if (interactionPoint == null)
+            {
+                continue;
+            }
+
+            Transform interactionPointTransform = interactionPoint.transform;
+            List<Tilemap> interactionTilemaps = new List<Tilemap>();
+            Tilemap tmBase = Util.FindChild<Tilemap>(go, "Tilemap_Base", true);
+
+            foreach (Transform child in interactionPointTransform)
+            {
+                Tilemap tilemap = child.GetComponent<Tilemap>();
+                if (tilemap != null)
+                {
+                    interactionTilemaps.Add(tilemap);
+                }
+            }
+
+            if (interactionTilemaps.Count == 0)
+            {
+                Debug.LogError("InteractionPoint 아래에 타일맵이 없습니다.");
+                return;
+            }
+
+            // tmBase의 경계를 사용하여 맵 데이터 초기화
+            BoundsInt bounds = tmBase.cellBounds;
+            int width = bounds.xMax - bounds.xMin + 1;
+            int height = bounds.yMax - bounds.yMin + 1;
+            string[,] mapData = new string[width, height];
+
+            // 모든 위치를 0으로 초기화
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    mapData[x, y] = "0";
+                }
+            }
+
+            foreach (Tilemap tilemap in interactionTilemaps)
+            {
+                foreach (Vector3Int pos in tilemap.cellBounds.allPositionsWithin)
+                {
+                    TileBase tile = tilemap.GetTile(pos);
+                    if (tile != null)
+                    {
+                        string tileName = tilemap.gameObject.name;
+                        
+                        if (tilemap.gameObject.CompareTag("Interaction"))
+                        {                            
+                            int interactionId = int.Parse(tileName.Split("_")[1]);
+
+                            Vector3Int cellPosition = new Vector3Int(
+                                pos.x - bounds.xMin,
+                                pos.y - bounds.yMin,
+                                0
+                            );
+
+                            mapData[cellPosition.x, cellPosition.y] = interactionId.ToString();
+                            Debug.Log($"InteractionId: {interactionId}, Position: {cellPosition}");
+                        }
+                    }
+                }
+            }
+
+            string fileName = $"{go.name}_InteractionPoints";
+            SaveMapData(pathPrefix, fileName, mapData, bounds);
+        }
+    }
     private static void SaveMapData(string pathPrefix, string fileName, string[,] mapData, BoundsInt bounds)
     {
         string filePath = Path.Combine(pathPrefix, $"{fileName}.txt");

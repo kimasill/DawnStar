@@ -53,7 +53,7 @@ namespace Server.Game
             else
             {
                 skillId = 18;
-                _coolTick = Environment.TickCount64 + 1000 / (int)TotalAttackSpeed;
+                _coolTick = Environment.TickCount64 + (int)(1000 / TotalAttackSpeed);
             }
             SkillData skillData = null;
             DataManager.SkillDict.TryGetValue(skillId, out skillData);
@@ -64,7 +64,7 @@ namespace Server.Game
 
                 if (Skill.HandleSkillCool(skillData) == false)
                 {
-                    _coolTick = Environment.TickCount64 + 1000/(int)TotalAttackSpeed;
+                    _coolTick = Environment.TickCount64 + (int)(1000 /TotalAttackSpeed);
                     State = CreatureState.Moving;
                     BroadcastMove();
                     return;

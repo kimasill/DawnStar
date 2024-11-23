@@ -1,6 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
+using Server.Data;
 using Server.DB;
-using Server.Game;
 using ServerCore;
 using System;
 using System.Collections.Generic;
@@ -107,6 +107,8 @@ namespace Server.Game.Room
         bool[,] _collision;
         GameObject[,] _objects;
         int[,] _spawnPoints;
+        int[,] _interactionPoints;
+        Dictionary<int,Interaction> _interactions;
         public int MapId { get; private set; }
         public bool CanGo(Vector2Int cellPos, bool checkObjects = true)
         {
@@ -258,6 +260,41 @@ namespace Server.Game.Room
             return spawnPoints;
         }
 
+        public Interaction GetInteraction(Vector2Int cellPos)
+        {
+            if (cellPos.x < MinX || cellPos.x > MaxX)
+                return null;
+            if (cellPos.y < MinY || cellPos.y > MaxY)
+                return null;
+
+            int x = cellPos.x - MinX;
+            int y = MaxY - cellPos.y;
+            int interactionId = _interactionPoints[y, x];
+            if (interactionId == 0)
+                return null;
+
+            if (_interactions.TryGetValue(interactionId, out Interaction interaction) == false)
+            {
+                InteractionData data = null;
+                DataManager.InteractionDict.TryGetValue(interactionId, out data);
+                if (data != null)
+                {
+                    interaction = Interaction.CreateInteraction(data);
+                    interaction.Id = interactionId;
+                    interaction.Room = null;
+                    _interactions[interactionId] = interaction;
+                }
+            }
+            return interaction;
+        }
+        public Interaction GetInteraction(int interactionId)
+        {
+            if (_interactions.TryGetValue(interactionId, out Interaction interaction) == false)
+            {
+                return null;
+            }
+            return interaction;
+        }
         public void LoadMap(int mapId, string pathPrefix = "../../../../../Common/MapData")
         {
             MapId = mapId;
@@ -285,37 +322,6 @@ namespace Server.Game.Room
             }
         }
         
-        //public void LoadSpawnPoints(int mapId, string pathPrefix = "../../../../../Common/MapData")
-        //{
-        //    string mapName = "Map_" + mapId.ToString("000");
-        //    string path = $"{pathPrefix}/{mapName}_SpawnPoints.txt";
-        //    if (File.Exists(path) == false)
-        //    {
-        //        return;
-        //    }
-        //    string text = File.ReadAllText($"{pathPrefix}/{mapName}_SpawnPoints.txt");
-        //    StringReader reader = new StringReader(text);
-            
-        //    if(MinX != int.Parse(reader.ReadLine())) Console.WriteLine("MinX Error");
-        //    if(MaxX != int.Parse(reader.ReadLine())) Console.WriteLine("MaxX Error");
-        //    if(MinY != int.Parse(reader.ReadLine())) Console.WriteLine("MinY Error");
-        //    if(MaxY != int.Parse(reader.ReadLine())) Console.WriteLine("MaxY Error");
-
-
-        //    _spawnPoints = new int[SizeY, SizeX]; // 맵 크기에 맞게 배열 초기화
-
-        //    for (int y = 0; y < SizeY; y++)
-        //    {
-        //        string line = reader.ReadLine();
-        //        for (int x = 0; x < SizeX; x++)
-        //        {
-        //            if (int.TryParse(line[x].ToString(), out int monsterId))
-        //            {
-        //                _spawnPoints[y, x] = monsterId; // 몬스터 아이디 저장
-        //            }
-        //        }
-        //    }
-        //}
         public void LoadSpawnPoints(int mapId, string pathPrefix = "../../../../../Common/MapData")
         {
             string mapName = "Map_" + mapId.ToString("000");
@@ -349,6 +355,58 @@ namespace Server.Game.Room
                 }
             }
         }
+
+        public void LoadInteractionPoints(int mapId, GameRoom room, string pathPrefix = "../../../../../Common/MapData")
+        {
+            string mapName = "Map_" + mapId.ToString("000");
+            string path = $"{pathPrefix}/{mapName}_InteractionPoints.txt";
+            if (!File.Exists(path))
+                return;
+
+            using (StreamReader reader = new StreamReader(path))
+            {
+                MinX = int.Parse(reader.ReadLine());
+                MaxX = int.Parse(reader.ReadLine());
+                MinY = int.Parse(reader.ReadLine());
+                MaxY = int.Parse(reader.ReadLine());
+
+                int xCount = MaxX - MinX + 1;
+                int yCount = MaxY - MinY + 1;
+
+                _interactionPoints = new int[yCount, xCount];
+
+                for (int y = 0; y < yCount; y++)
+                {
+                    string line = reader.ReadLine();
+                    string[] tokens = line.Split(',');
+
+                    for (int x = 0; x < xCount; x++)
+                    {
+                        if (int.TryParse(tokens[x], out int interactionId))
+                        {
+                            _interactionPoints[y, x] = interactionId;
+                            if(interactionId != 0)
+                            {
+                                if(_interactions.TryGetValue(interactionId, out Interaction interaction) == false)
+                                {
+                                    InteractionData data = null;
+                                    DataManager.InteractionDict.TryGetValue(interactionId, out data);
+                                    if (data != null)
+                                    {
+                                        interaction = Interaction.CreateInteraction(data);
+                                        interaction.Id = interactionId;
+                                        interaction.Room = room;  
+                                        _interactions[interactionId] = interaction;
+                                    }                                    
+                                }                                
+                                interaction.Cells.Add(new Vector2Int(x + MinX, MaxY - y));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         public void SetCollision(Vector2Int cellPos, bool collision)
         {
             if (cellPos.x < MinX || cellPos.x > MaxX)

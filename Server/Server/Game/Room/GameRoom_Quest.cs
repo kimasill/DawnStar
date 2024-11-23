@@ -131,7 +131,7 @@ namespace Server.Game
 
             
             RealizationData realization = null; 
-            DataManager.RealizationData.TryGetValue(statId, out realization);
+            DataManager.RealizationDict.TryGetValue(statId, out realization);
             if (realization == null)
                 return;
             PlayerDb playerDb = new PlayerDb()
@@ -242,20 +242,9 @@ namespace Server.Game
             if (player == null || player.Room == null)
                 return;
 
-            DataManager.InteractionData.TryGetValue(doorId, out InteractionData interactionData);
-            if (interactionData.interactionType != InteractionType.Door)
-                return;
+            Door door = Map.GetInteraction(doorId) as Door;
 
-            DoorData doorData = (DoorData)interactionData;
-
-
-            if (_interactions.ContainsKey(doorId) == false)
-            {
-                Door newDoor = new Door(doorData);
-                newDoor.Room = this;
-                _interactions.Add(doorId, newDoor);
-            }
-            Door door = (Door)_interactions[doorId];
+            
             S_Interaction interactionPacket = new S_Interaction();
             interactionPacket.Success = true;
 
@@ -318,19 +307,12 @@ namespace Server.Game
             if (player == null || player.Room == null)
                 return;
 
-            DataManager.InteractionData.TryGetValue(triggerId, out InteractionData interactionData);
-            if (interactionData.interactionType != InteractionType.Trigger)
-                return;
-
-            TriggerData triggerData = (TriggerData)interactionData;
-            bool success = true;
-            if (_interactions.ContainsKey(triggerId) == false)
+            Trigger trigger = Map.GetInteraction(triggerId) as Trigger;
+            if (trigger == null)
             {
-                Trigger newTrigger = new Trigger(triggerData);
-                newTrigger.Room = this;
-                _interactions.Add(triggerId, newTrigger);
+                return;
             }
-            Trigger trigger = (Trigger)_interactions[triggerId];
+            bool success = true;
             if (trigger.ActivationItems.Count>0 && trigger.IsActivated==false)
             {
                 foreach (var keyId in trigger.ActivationItems)
@@ -347,13 +329,10 @@ namespace Server.Game
             {
                 foreach (var targetInteraction in trigger.Conditions.Keys)
                 {
-                    if (_interactions.ContainsKey(targetInteraction) == false)
-                    {
-                        CreateNewInteraction(targetInteraction);
-                    }
-                    _interactions[targetInteraction].OnTriggerEnter(triggerId);
+                    Map.GetInteraction(targetInteraction).OnTriggerEnter(triggerId);                    
                 }
             }
+
             S_Interaction interactionPacket = new S_Interaction();
             interactionPacket.Success = success;
             if (success)
@@ -368,36 +347,6 @@ namespace Server.Game
             {
                 player.Session.Send(interactionPacket);
             }
-        }
-
-        public Interaction CreateNewInteraction(int id)
-        {
-            foreach (var interactionDataPair in DataManager.InteractionData)
-            {
-                if (interactionDataPair.Value.interactionType == InteractionType.Door)
-                {
-                    DoorData doorData = (DoorData)interactionDataPair.Value;
-                    if (doorData.triggers != null && doorData.triggers.Contains(id))
-                    {
-                        Door newDoor = new Door(doorData);
-                        newDoor.Room = this;
-                        _interactions.Add(id, newDoor);
-                        return newDoor;
-                    }
-                }
-                else if (interactionDataPair.Value.interactionType == InteractionType.Trigger)
-                {
-                    TriggerData newTriggerData = (TriggerData)interactionDataPair.Value;
-                    if (newTriggerData.targetInteraction != null && newTriggerData.targetInteraction.Contains(id))
-                    {
-                        Trigger newTrigger = new Trigger(newTriggerData);
-                        newTrigger.Room = this;
-                        _interactions.Add(id, newTrigger);
-                        return newTrigger;
-                    }
-                }
-            }
-            return null;
         }
     }
 }

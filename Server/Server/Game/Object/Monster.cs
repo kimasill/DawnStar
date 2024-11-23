@@ -2,6 +2,7 @@
 using Server.Data;
 using Server.DB;
 using Server.Game.Job;
+using Server.Game.Object.Monsters;
 using Server.Game.Room;
 using Server.Migrations;
 using System;
@@ -64,6 +65,18 @@ namespace Server.Game
                     break;
                 case MonsterType.Orcmage:
                     monster = new OrcMage(monsterData);
+                    break;
+                case MonsterType.Satyr:
+                    monster = new Satyr(monsterData);
+                    break;
+                case MonsterType.SkeletonWarrior:
+                    monster = new SkeletonWarrior(monsterData);
+                    break;
+                case MonsterType.SkeletonMage:
+                    monster = new SkeletonMage(monsterData);
+                    break;
+                case MonsterType.PrisonKeeper:
+                    monster = new PrisonKeeper(monsterData);
                     break;
                 default:
                     monster = new Monster(monsterData);

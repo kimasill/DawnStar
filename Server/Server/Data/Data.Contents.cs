@@ -466,7 +466,6 @@ namespace Server.Data
         public List<string> script;
         public List<int> keyItems;
         public List<int> triggers;
-        public List<Vector2Set> cells;
     }
     public class TriggerData : InteractionData
     {

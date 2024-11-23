@@ -165,19 +165,19 @@
         "Up": "10",
         "UpRegen": "5",
         "Skill": "12"
-      },
-      {
-        "id": "201",
-        "name": "사생결단의 반지",
-        "jewelryType": "Ring",
-        "price": "2500",
-        "iconPath": "Textures/Item/Jewelry/Life_or_death_Ring",
-        "description": "간수의 반지. 반지와의 거래를 통해 강력한 힘을 사용할 수 있다.",
-        "options": {
-          "Up": "15",
-          "UpRegen": "10",
-          "Skill": "18"
-        }
+      }
+    },
+    {
+      "id": "201",
+      "name": "사생결단의 반지",
+      "jewelryType": "Ring",
+      "price": "2500",
+      "iconPath": "Textures/Item/Jewelry/Life_or_death_Ring",
+      "description": "간수의 반지. 반지와의 거래를 통해 강력한 힘을 사용할 수 있다.",
+      "options": {
+        "Up": "15",
+        "UpRegen": "10",
+        "Skill": "18"
       }
     }
   ],
