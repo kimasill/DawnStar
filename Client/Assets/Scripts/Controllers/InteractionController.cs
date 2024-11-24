@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class InteractionController : BaseController
 {
-    private bool _isInteracted = false;
+    protected bool _isInteracted = false;
     private GameObject _headUpIcon;
     private TextMeshPro _headUpText;    
     public int TemplateId { get; private set; }
@@ -16,18 +16,27 @@ public class InteractionController : BaseController
     public List<Vector2Int> CellPoses { get; set; } = new List<Vector2Int>();
     protected override void Init()
     {
-        base.Init();
+        Animator = GetComponent<Animator>();
+        if (Animator != null)
+            _animatorSpeed = Animator.speed;
+        _sprite = GetComponent<SpriteRenderer>();
+
+        CellPos = Managers.Map.CurrentGrid.WorldToCell(transform.position);
+        UpdateSortingLayer();
     }
 
     public void SetInteraction(int interactionId)
     {
-        
         TemplateId = interactionId;
         Managers.Data.InteractionDict.TryGetValue(interactionId, out InteractionData data);
         if (data == null)
             return;
         Multi = data.multi;
         Type = data.interactionType;
+    }
+
+    protected override void UpdateAnimation()
+    {
     }
 
     public void ActivateNotification()
@@ -85,7 +94,6 @@ public class InteractionController : BaseController
         _isInteracted = true;
 
         DeactivateNotification();
-        Destroy(_headUpIcon);
 
         if (Multi)
         {

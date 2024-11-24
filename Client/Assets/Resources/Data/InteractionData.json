@@ -67,7 +67,7 @@
       "name": "NormalDoor"
     }
   ],
-  "targets": [
+  "triggers": [
     {
       "id": "1001",
       "name": "PrisonBossRoomTrigger",

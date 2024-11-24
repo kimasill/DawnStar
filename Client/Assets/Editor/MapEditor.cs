@@ -22,6 +22,8 @@ public class MapEditor : MonoBehaviour
         GenerateByPath("../Common/MapData");
         GenerateSpawnPointByPath("Assets/Resources/Map");
         GenerateSpawnPointByPath("../Common/MapData");
+        GenerateInteractionPointByPath("Assets/Resources/Map");
+        GenerateInteractionPointByPath("../Common/MapData");
     }
 
     private static void GenerateByPath(string pathPrefix)

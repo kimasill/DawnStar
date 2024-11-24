@@ -43,7 +43,7 @@ public class SkeletonMageController : MonsterController
     private IEnumerator UseSkillRoutine()
     {
         // 준비 동작
-        Animator.Play("SKILL_PREPARE");
+        Animator.Play("SKILL_PREP");
         yield return new WaitForSeconds(1f); // 준비 동작 시간
 
         // 루프 동작
