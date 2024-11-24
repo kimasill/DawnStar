@@ -44,7 +44,7 @@ public class MapManager
 	private Dictionary<Vector3Int, GameObject> _questDict = new Dictionary<Vector3Int, GameObject>(); // 문 객체들을 저장할 Dictionary
     private Dictionary<int, Vector2Int> _cameraDict = new Dictionary<int, Vector2Int>(); // 카메라 포인트를 저장할 Dictionary
     private Dictionary<Vector2Int, ChestController> _chestDict = new Dictionary<Vector2Int, ChestController>(); // 상자 위치를 저장할 Dictionary
-    private Dictionary<Vector2Int, InteractionController> _interactionDict = new Dictionary<Vector2Int, InteractionController>(); // 상호작용 위치를 저장할 Dictionary
+    private Dictionary<int , InteractionController> _interactionDict = new Dictionary< int, InteractionController>(); // 상호작용 위치를 저장할 Dictionary
     public bool CanGo(Vector3Int cellPos)
 	{
         Vector3Int adjustedPos = new Vector3Int(cellPos.x + 1, cellPos.y + 1, 0);
@@ -121,21 +121,21 @@ public class MapManager
         else return null;
     }
 
-    public InteractionController GetInteraction(Vector2Int cellPos)
+    public InteractionController GetInteractionById(int templateId)
     {
-        if (_interactionDict.TryGetValue(cellPos, out var result))
-        {
-            return result;
-        }
-        else return null;
+        _interactionDict.TryGetValue(templateId, out InteractionController ic);
+        return ic;        
     }
 
-    public InteractionController GetInteraction(int templateId)
+    public InteractionController GetInteraction(Vector2Int cellPos)
     {
         foreach (var interaction in _interactionDict.Values)
         {
-            if (interaction.TemplateId == templateId)
-                return interaction;
+            foreach (var pos in interaction.CellPoses)
+            {
+                if (pos == cellPos)
+                    return interaction;
+            }
         }
         return null;
     }
@@ -300,13 +300,22 @@ public class MapManager
                 {
                     if (tilemap.HasTile(pos))
                     {
-                        InteractionController ic = interactionObject.GetComponentInChildren<InteractionController>();
-                        if (ic != null)
+                        int interactionId = int.Parse(interactionObject.name.Split('_')[1]);
+                        InteractionController ic = null;
+                        _interactionDict.TryGetValue(interactionId, out ic);
+                        if (ic == null)
                         {
-                            int interactionId = int.Parse(interactionObject.name.Split('_')[1]);
-                            ic.SetInteraction(interactionId);
-                            Vector2Int cellPos = new Vector2Int(pos.x, pos.y);
-                            _interactionDict[cellPos] = ic;
+                            ic = interactionObject.GetComponentInChildren<InteractionController>();
+                            if (ic != null)
+                            {
+                                ic.SetInteraction(interactionId);
+                                ic.CellPoses.Add(new Vector2Int(pos.x, pos.y));
+                                _interactionDict[interactionId] = ic;
+                            }                            
+                        }
+                        else
+                        {
+                            ic.CellPoses.Add(new Vector2Int(pos.x, pos.y));
                         }
                     }
                 }

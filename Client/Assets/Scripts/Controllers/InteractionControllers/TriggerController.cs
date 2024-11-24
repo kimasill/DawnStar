@@ -75,5 +75,6 @@ public class TriggerController : InteractionController
         {
             // 상호작용 실패 처리 - notification
         }
+        _isInteracted = false;
     }
 }

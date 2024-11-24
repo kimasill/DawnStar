@@ -12,7 +12,8 @@ namespace Server.Game
         public Door(DoorData doorData) : base(doorData)
         {
             TemplateId = doorData.id;
-            KeyItems = doorData.keyItems;
+            if(doorData.keyItems != null)
+                KeyItems.AddRange(doorData.keyItems);            
             if (doorData.triggers != null)
             {
                 foreach (var trigger in doorData.triggers)

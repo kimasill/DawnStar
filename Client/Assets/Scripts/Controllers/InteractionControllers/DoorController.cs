@@ -22,9 +22,9 @@ public class DoorController : InteractionController
     {
         if (_isOpen)
             return;
-        
-        _isOpen = true;
+
         StartCoroutine(CoOpenDoor());
+        _isOpen = true;
     }
 
     public void CloseDoor()
@@ -32,25 +32,24 @@ public class DoorController : InteractionController
         if (!_isOpen)
             return;
         
-        _isOpen = false;
         StartCoroutine(CoCloseDoor());
+        _isOpen = false;
     }
     private IEnumerator CoOpenDoor()
     {
         Animator.speed = 1;
         Animator.Play("OPEN");
-        // 애니메이션 재생 시간 동안 대기
         yield return new WaitForSeconds(0.01f);
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
-        if(CellPoses != null)
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length); // 애니메이션 재생 시간 동안 대기
+        if (CellPoses != null)
         {
             foreach (var cellPos in CellPoses)
             {
                 Managers.Map.SetCollision(cellPos, false);
             }
-        }        
+        }
         Animator.Play("CLOSE", 0, 0);
-        Animator.speed = 0;       
+        Animator.speed = 0;
     }
 
     private IEnumerator CoCloseDoor()
@@ -91,5 +90,6 @@ public class DoorController : InteractionController
         {
             // 상호작용 실패 처리 - notification
         }
+        _isInteracted = false;
     }
 }

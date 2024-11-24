@@ -617,7 +617,7 @@ class PacketHandler
         {
             action = true;
         }
-        InteractionController ic = Managers.Map.GetInteraction(templateId:interactionPacket.ObjectId);
+        InteractionController ic = Managers.Map.GetInteractionById(templateId:interactionPacket.ObjectId);
         ic.Interact(interactionPacket.Success, action);
     }
 }

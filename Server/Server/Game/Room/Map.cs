@@ -108,17 +108,18 @@ namespace Server.Game.Room
         GameObject[,] _objects;
         int[,] _spawnPoints;
         int[,] _interactionPoints;
-        Dictionary<int,Interaction> _interactions;
+        Dictionary<int,Interaction> _interactions = new Dictionary<int, Interaction>();
         public int MapId { get; private set; }
         public bool CanGo(Vector2Int cellPos, bool checkObjects = true)
         {
-            if (cellPos.x < MinX || cellPos.x > MaxX)
+            Vector2Int adjustedPos = new Vector2Int(cellPos.x + 1, cellPos.y + 1);
+            if (adjustedPos.x < MinX || adjustedPos.x > MaxX)
                 return false;
-            if (cellPos.y < MinY || cellPos.y > MaxY)
+            if (adjustedPos.y < MinY || adjustedPos.y > MaxY)
                 return false;
 
-            int x = cellPos.x - MinX;
-            int y = MaxY - cellPos.y;
+            int x = adjustedPos.x - MinX;
+            int y = MaxY - adjustedPos.y;
             return !_collision[y, x] && (!checkObjects || _objects[y, x] == null);
         }
 
@@ -289,7 +290,8 @@ namespace Server.Game.Room
         }
         public Interaction GetInteraction(int interactionId)
         {
-            if (_interactions.TryGetValue(interactionId, out Interaction interaction) == false)
+            Interaction interaction = null;
+            if (_interactions.TryGetValue(interactionId, out interaction) == false)
             {
                 return null;
             }
