@@ -26,9 +26,9 @@ public class GoblinController : MonsterController
                     _sprite.flipX = false;
                     break;
             }
-            if (_skillId == 1)
+            if (SkillId == 1)
                 Animator.Play("ATTACK");
-            else if (_skillId == 9)
+            else if (SkillId == 9)
                 Animator.Play("ATTACK_STRONG");
         }
         else

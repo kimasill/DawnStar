@@ -364,12 +364,18 @@ namespace Server.Game
             return zones.ToList();
         }
 
-        public void ResetSingleRoom(Player player)
+        public void ResetRoom()
         {
-            foreach (var monster in _monsters) {
-                LeaveGame(monster.Value.Id);
+            if(_players.Count == 0)
+            {
+                foreach (var monster in _monsters)
+                {
+                    LeaveGame(monster.Value.Id);
+                }
+                _projectiles.Clear();
+
+                HandleSpawnMonster();
             }            
-            _projectiles.Clear();
         }
     }
 }

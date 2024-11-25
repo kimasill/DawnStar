@@ -14,7 +14,14 @@ public class ChestController : BaseController
     private TextMeshPro _headUpText;
     protected override void Init()
     {
-        base.Init();
+        Animator = GetComponent<Animator>();
+        if (Animator != null)
+            _animatorSpeed = Animator.speed;
+        _sprite = GetComponent<SpriteRenderer>();
+
+        CellPos = Managers.Map.CurrentGrid.WorldToCell(transform.position);
+        UpdateSortingLayer();
+
         Animator.Play("OPEN_H",0,0);
         Animator.speed = 0;
     }
@@ -104,5 +111,9 @@ public class ChestController : BaseController
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length - 0.05f);
         gameObject.SetActive(false);
         Destroy(gameObject);
+    }
+
+    protected override void UpdateAnimation()
+    {
     }
 }

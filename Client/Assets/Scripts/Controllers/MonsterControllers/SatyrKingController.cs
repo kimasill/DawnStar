@@ -26,7 +26,7 @@ public class SatyrKingController : MonsterController
                     _sprite.flipX = false;
                     break;
             }
-            if (_skillId == 1)
+            if (SkillId == 1)
             {
                 Animator.Play("ATTACK");
                 StartCoroutine(StartEffectCoroutine());

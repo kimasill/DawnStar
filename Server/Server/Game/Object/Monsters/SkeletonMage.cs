@@ -12,9 +12,10 @@ namespace Server.Game
     internal class SkeletonMage : Monster
     {
         private int _baseAttackRange = 2;
-        int _skillRange = 7;              
+        int _skillRange = 10;              
         private const double _blasterMinRange = 3;
         private const double _blasterDuration = 2;
+        private const double _blasterAttackDelay = 0.4f;
         private const double _summonInvokeAdd = 0.5f;
         public SkeletonMage(MonsterData data) : base(data)
         {
@@ -37,7 +38,7 @@ namespace Server.Game
             //스킬 사용 가능한지
             Vector2Int dir = _target.CellPos - CellPos;
             int dist = dir.cellDistanceFromZero;
-            bool canUseSkill = dist <= _skillRange && (dir.x == 0 || dir.y == 0);
+            bool canUseSkill = dist <= SkillRange && (dir.x == 0 || dir.y == 0);
             if (canUseSkill == false)
             {
                 State = CreatureState.Moving;
@@ -51,9 +52,8 @@ namespace Server.Game
             {
                 skillId = 20;
                 DataManager.SkillDict.TryGetValue(skillId, out skillData);
-
-                AdditionalInvokeSpeed = (float)_summonInvokeAdd;
-                _coolTick = Environment.TickCount64 + (int)(_blasterDuration * 1000);
+                AdditionalInvokeSpeed = (float)_blasterAttackDelay;
+                _coolTick = Environment.TickCount64 + (int)((_blasterDuration + Stat.InvokeSpeed) * 1000);
                 if (Skill.HandleSkillCool(skillData) == false)
                 {                    
                     skillId = 23;
@@ -61,7 +61,9 @@ namespace Server.Game
             }
             if(skillId == 23)
             {
-                AdditionalInvokeSpeed = 0;
+                DataManager.SkillDict.TryGetValue(skillId, out skillData);
+
+                AdditionalInvokeSpeed = (float)_summonInvokeAdd;
                 _coolTick = Environment.TickCount64 + (int)(1000 / TotalAttackSpeed);
                 if (dist>skillData.range || Skill.HandleSkillCool(skillData) == false)
                 {
@@ -70,11 +72,17 @@ namespace Server.Game
                     return;
                 }
             }
-            S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
-            skillPacket.ObjectId = Id;
-            skillPacket.Info.SkillId = skillData.id;
+            
+            S_Skill skillPacket = new S_Skill()
+            {
+                ObjectId = Id,
+                Info = new SkillInfo()
+                {
+                    SkillId = skillData.id,                    
+                },                
+            };
             Room.Broadcast(CellPos, skillPacket);
-            Skill.StartSkill(this, skillData);            
+            Skill.StartSkill(this, skillData, target:_target);            
         }
     }
 }

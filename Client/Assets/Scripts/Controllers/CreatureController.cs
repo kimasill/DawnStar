@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 using static Define;
 
@@ -53,7 +54,8 @@ public class CreatureController : BaseController
 
     protected int _additionalUp;
     public virtual int AdditionalUp { get; set; }
-    protected int _skillId;
+    protected float TotalInvokeDelay { get { return Stat.InvokeSpeed + AdditionalInvokeSpeed; } }
+    protected int SkillId;
     protected string _animation;
     public override StatInfo Stat
 	{
@@ -131,12 +133,28 @@ public class CreatureController : BaseController
     public virtual void UseSkill(int skillId)
     {
         _rangedSkill = false;
+        SkillId = skillId;
+        State = CreatureState.Skill;        
         SkillData skillData = null;
         Managers.Data.SkillDict.TryGetValue(skillId, out skillData);
         if (skillData == null)
             return;
-
+        if (skillData.prefab != null && skillData.IsObject != true)
+        {
+            UseEffect(skillData);
+        }
+    }
+    public async void UseEffect(SkillData skillData)
+    {
         // 스킬 이펙트 생성 및 초기화
+        if(TotalInvokeDelay>0)
+        {
+            await Task.Delay((int)(1000 * TotalInvokeDelay));
+        }
+        if(gameObject == null)
+        {
+            return;
+        }
         GameObject skill = Managers.Resource.Instantiate($"{skillData.prefab}", transform);
         SkillController skillController = skill.GetComponent<SkillController>();
         if (skillController == null)
@@ -145,7 +163,6 @@ public class CreatureController : BaseController
         skillController.Init(skillData, gameObject);
         StartCoroutine(skillController.ExecuteSkill());
     }
-
     public bool IsPlayingDieAnimation()
     {
         Animator animator = GetComponent<Animator>();

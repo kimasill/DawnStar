@@ -8,7 +8,6 @@ public class SkeletonMageController : MonsterController
     {
         base.Init();
     }
-
     protected override void UpdateAnimation()
     {
         if (Animator == null)
@@ -28,15 +27,15 @@ public class SkeletonMageController : MonsterController
                     break;
             }
 
-            if (_skillId == 20)
+            if (SkillId == 20)
             {
                 StartCoroutine(UseSkillRoutine());
             }
-            else if(_skillId == 23)
+            else if(SkillId == 23)
             {
                 Animator.Play("ATTACK");
             }
-            _skillId = 0;
+            SkillId = 0;
         }
         else
         {
@@ -52,7 +51,7 @@ public class SkeletonMageController : MonsterController
 
         // 루프 동작
         Animator.Play("SKILL_LOOP");
-        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
+        yield return new WaitForSeconds(1.4f);
 
         // 마무리 동작
         Animator.Play("SKILL_FINISH");

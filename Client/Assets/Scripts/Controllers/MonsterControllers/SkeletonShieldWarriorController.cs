@@ -26,14 +26,14 @@ public class SkeletonShieldWarriorController : MonsterController
                     _sprite.flipX = false;
                     break;
             }
-            if (_skillId == 1)
+            if (SkillId == 1)
                 Animator.Play("ATTACK");
-            else if (_skillId == 9)
+            else if (SkillId == 9)
                 Animator.Play("ATTACK_STRONG");
-            else if (_skillId == 10)
+            else if (SkillId == 10)
             {
                 StartCoroutine(DefenseRoutine());
-                _skillId = 0;
+                SkillId = 0;
             }
         }
         else

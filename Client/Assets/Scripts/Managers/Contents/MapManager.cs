@@ -73,7 +73,7 @@ public class MapManager
     public GameObject IsPlayerAtPortal(Vector3Int cellPos)
     {
         // 디버깅을 위해 좌표 출력
-        Debug.Log($"Checking door at cell position: {cellPos}");
+        //Debug.Log($"Checking door at cell position: {cellPos}");
 
         Vector3Int adjustedPos = new Vector3Int(cellPos.x + 1, cellPos.y + 1, 0);
         if(_portalDict.TryGetValue(adjustedPos, out var result))

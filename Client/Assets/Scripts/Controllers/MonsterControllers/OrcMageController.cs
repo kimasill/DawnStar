@@ -26,16 +26,15 @@ public class OrcMageController : MonsterController
                     _sprite.flipX = false;
                     break;
             }
-            if (_skillId == 11)
+            if (SkillId == 11)
             {
                 Animator.Play("ATTACK");
-                StartCoroutine(CoStartBasicAttack());
             }                
-            else if (_skillId == 12 || _skillId == 13)
+            else if (SkillId == 12 || SkillId == 13)
             {
-                Animator.Play("ATTACK_STRONG");
-                StartCoroutine(CoStartBasicAttack());
-            }               
+                Animator.Play("ATTACK_STRONG");        
+            }
+            SkillId = 0;
         }
         else
         {

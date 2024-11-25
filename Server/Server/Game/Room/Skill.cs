@@ -208,8 +208,7 @@ namespace Server.Game
                     if (skillPos.Count == 0)
                     {
                         return;
-                    }
-                    Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
+                    }                    
                     SpotAttack(data, skillPos);
                     break;
             }
@@ -219,11 +218,11 @@ namespace Server.Game
             switch (skillData.skillLogicType)
             {
                 case SkillLogicType.Block:
-                    Task.Delay(100);
+                    
                     BlockAsync(skillData);
                     break;
                 default:
-                    Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
+                    
                     ApplyBuff(skillData);
                     break;
             }
@@ -236,7 +235,6 @@ namespace Server.Game
                     DOT(skillData, target);
                     break;
                 default:
-                    Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
                     ApplyDeBuff(skillData);
                     break;
             }
@@ -255,6 +253,7 @@ namespace Server.Game
         }
         private async void ApplyBuff(SkillData data)
         {
+            await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
             // Buff 적용 로직
             if (data.buff != null)
             {
@@ -285,6 +284,7 @@ namespace Server.Game
 
         private async void ApplyDeBuff(SkillData data)
         {
+            await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
             if (data.debuff != null)
             {
                 // Debuff 시작 시 로직
@@ -470,6 +470,7 @@ namespace Server.Game
         }
         private async void SpotAttack(SkillData data, List<Vector2Int> skillPos)
         {
+            await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
             foreach (Vector2Int pos in skillPos)
             {
                 if (Owner == null || Owner.Room ==null)
@@ -491,13 +492,14 @@ namespace Server.Game
             }
         }
         private async void BlockAsync(SkillData data) 
-        { 
+        {
+            await Task.Delay(100);
             float prevReduce = Owner.TotalDamageReduce;
             Owner.TotalDamageReduce = data.buff.value;
             await Task.Delay(data.buff.duration*1000);
             Owner.TotalDamageReduce = prevReduce;
         }
-        private void InvokeSkill(SkillData data, GameObject target)
+        private async void InvokeSkill(SkillData data, GameObject target)
         {
             List<Vector2Int> skillPos = new List<Vector2Int>();
             switch (data.shape.shapeType) 
@@ -513,23 +515,23 @@ namespace Server.Game
                     break;
             }
             // invokespeed 이후에 스킬 동작
-            Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
+            await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
             for (int i = 0; i < data.count; i++)
             {
                 if (data.terms != null && data.terms.Count > 0)
                 {
                     if (i >= 1)
                     {
-                        Task.Delay((int)((data.terms[i] - data.terms[i - 1]) / Owner.TotalAttackSpeed * 1000));
+                        await Task.Delay((int)((data.terms[i] - data.terms[i - 1]) / Owner.TotalAttackSpeed * 1000));
                     }
                     else if (i == 0)
                     {
-                        Task.Delay((int)((data.terms[i] / Owner.TotalAttackSpeed) * 1000));
+                        await Task.Delay((int)((data.terms[i] / Owner.TotalAttackSpeed) * 1000));
                     }
                 }
                 else if (data.term != 0)
                 {
-                    Task.Delay((int)((data.term / Owner.TotalAttackSpeed) * 1000));
+                    await Task.Delay((int)((data.term / Owner.TotalAttackSpeed) * 1000));
                 }
                 foreach (Vector2Int pos in skillPos)
                 {
@@ -644,9 +646,9 @@ namespace Server.Game
             }
             return dir;
         }
-        private void SummonAttack(SkillData data, int range, GameObject target = null)
+        private async void SummonAttack(SkillData data, int range, GameObject target = null)
         {
-            Task.Delay(1000 * (int)Owner.TotalInvokeSpeed);
+            await Task.Delay(1000 * (int)Owner.TotalInvokeSpeed);
             SummonAttackObj summon = ObjectManager.Instance.Add<SummonAttackObj>();
             summon.Owner = Owner;
             summon.Target = _target;
@@ -675,19 +677,23 @@ namespace Server.Game
 
             Owner.Room.Push(Owner.Room.EnterGame, summon, false);            
         }
-        private void KineticAttack(SkillData data, int range, GameObject target = null)
+        private async void KineticAttack(SkillData data, int range, GameObject target = null)
         {
-            MoveSkill(data, target);
-            Task.Delay(1000 * (int)Owner.TotalInvokeSpeed);
-            int dist = (Owner.CellPos - target.CellPos).cellDistanceFromZero;
-            if (target != null && dist<range)
-            {                                
-                S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
-                skillPacket.ObjectId = Owner.Id;
-                skillPacket.Info.SkillId = data.id;
-                skillPacket.Phase = 2;
-                Owner.Room.Broadcast(Owner.CellPos, skillPacket);
-                target.OnDamaged(Owner, data.damage + Owner.TotalAttack);
+            for(int i = 0; i < data.count; i++)
+            {
+                await Task.Delay((int)(1000 * data.terms[i]));
+                MoveSkill(data, target);
+
+                int dist = (Owner.CellPos - target.CellPos).cellDistanceFromZero;
+                if (target != null && dist < range)
+                {
+                    S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
+                    skillPacket.ObjectId = Owner.Id;
+                    skillPacket.Info.SkillId = data.id;
+                    skillPacket.Phase = i+2;
+                    Owner.Room.Broadcast(Owner.CellPos, skillPacket);
+                    target.OnDamaged(Owner, data.damage + Owner.TotalAttack);
+                }
             }
         }
         #endregion

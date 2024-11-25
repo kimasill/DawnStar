@@ -83,7 +83,7 @@ namespace Server.Game
                 skillPacket.ObjectId = Id;
                 skillPacket.Info.SkillId = skillData.id;
                 Room.Broadcast(CellPos, skillPacket);
-                Skill.StartSkill(this, skillData);
+                Skill.StartSkill(this, skillData, target:_target);
             }
         }
     }
