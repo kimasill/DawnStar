@@ -332,10 +332,6 @@ namespace Server.Game
                 Room.Push(Room.HandleUpdateQuest,this, Quest.CurrentQuest.TemplateId, 0);
             DbTransaction.SavePlayerStatus_All(this, Room);
             DbTransaction.SavePlayerMap(this, MapInfo);
-            if (Session.ServerState == PlayerServerState.ServerStateSingle)
-            {
-                Room.Push(Room.ResetSingleRoom,this);
-            }
         }
 
         public void HandleEquipItem(C_EquipItem equipPacket)

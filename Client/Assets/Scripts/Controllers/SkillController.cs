@@ -11,6 +11,8 @@ public class SkillController : MonoBehaviour
     SpriteRenderer _sprite;
     Animator _animator;
     bool _isSkillEnd = false; // 스킬 종료 여부 확인 변수 추가
+    float posX = 0;
+    float posY = 0;
 
     public void Init(SkillData skillData, GameObject user)
     {
@@ -49,42 +51,44 @@ public class SkillController : MonoBehaviour
     }
     private void PlayAnimation()
     {
-        // 스킬 애니메이션 재생
-        _animator.speed = User.TotalAttackSpeed;
-        float range = SkillData.shape.range;
+        if(User is PlayerController)
+        { 
+            _animator.speed = User.TotalAttackSpeed;
+        }
+
+        posX = -transform.localPosition.x;
+        posY = transform.localPosition.y;
 
         switch (User.PosInfo.MoveDir)
         {
             case MoveDir.Up:
-                transform.localPosition = new Vector3(0, range / 2, 0);
-                transform.rotation = Quaternion.Euler(0, 0, -90);
-                _sprite.flipX = false;
-                break;
-            case MoveDir.Down:
-                transform.localPosition = new Vector3(0, -range / 2, 0);
+                transform.localPosition = new Vector3(0, posX, 0);
                 transform.rotation = Quaternion.Euler(0, 0, 90);
                 _sprite.flipX = false;
                 break;
-            case MoveDir.Left:
-                transform.localPosition = new Vector3(-range / 2, 0, 0);
-                transform.rotation = Quaternion.Euler(0, 0, 0);
+            case MoveDir.Down:
+                transform.localPosition = new Vector3(0, -posX, 0);
+                transform.rotation = Quaternion.Euler(0, 0, -90);
                 _sprite.flipX = false;
+                break;
+            case MoveDir.Left:
+                    transform.localPosition = new Vector3(posX, posY, 0);
+                    transform.rotation = Quaternion.Euler(0, 180, 0);
+                    _sprite.flipX = false;
                 break;
             case MoveDir.Right:
-                transform.localPosition = new Vector3(-range / 2, 0, 0);
-                transform.rotation = Quaternion.Euler(0, 0, 0);
-                _sprite.flipX = false;
+                    transform.localPosition = new Vector3(posX, posY, 0);
+                    transform.rotation = Quaternion.Euler(0, 0, 0);
+                    _sprite.flipX = false;
                 break;
         }
-        transform.localPosition += new Vector3(0, 0.5f, 0);
     }
     private void UpdateUserSkillFlag()
     {
-        User.State = CreatureState.Idle;
         if (User is PlayerController)
         {
             PlayerController pc = User as PlayerController;
-            pc.UpdateSkillFlag(false);
+            pc.UpdateSkillFlag(false);            
         }
     }
 }

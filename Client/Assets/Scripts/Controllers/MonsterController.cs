@@ -25,13 +25,10 @@ public class MonsterController : CreatureController
 	{
         base.OnDamaged();
     }
-
     public override void UseSkill(int skillId)
-    { 
-        _skillId = skillId;
-		State = CreatureState.Skill;        
+    {
+        base.UseSkill(skillId);
     }
-
     protected IEnumerator CoStartBasicAttack()
     {
         // 대기 시간

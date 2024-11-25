@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static Item;
 
@@ -61,6 +62,7 @@ namespace Data
         public string prefab;
         public List<string> prefabs;
         public string icon;
+        public bool IsObject;
     }
     public class ShapeInfo
     {

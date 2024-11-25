@@ -3,6 +3,7 @@ using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using static Define;
@@ -128,44 +129,35 @@ public class PlayerController : CreatureController
 	
 	public override void UseSkill(int skillId)
 	{
-        if(gameObject.activeSelf == false)
+        if (gameObject.activeSelf == false)
         {
             return;
         }
-        if (skillId == 1)
-		{
-			_coSkill = StartCoroutine("CoStartBasicAttack");
-		}
-		else if (skillId == 2)
-        {
-            _coSkill = StartCoroutine("CoStartShootArrow");
-        }
-        else
-        {
-            _coSkill = StartCoroutine("CoStartSkill", skillId);
-        }
-    }
-    private IEnumerator CoStartSkill(int skillId)
-    {
-        _rangedSkill = false;
         _isAttacking = true;
+        _rangedSkill = false;
+
+        SkillId = skillId;
+        State = CreatureState.Skill;        
         SkillData skillData = null;
         Managers.Data.SkillDict.TryGetValue(skillId, out skillData);
         if (skillData == null)
-            yield break;
-
-        State = CreatureState.Skill;        
-        GameObject skill = Managers.Resource.Instantiate($"{skillData.prefab}", transform);
-        skill.transform.position += new Vector3(0, 0.5f, 0);
-        SkillController skillController = skill.GetComponent<SkillController>();
-        if (skillController == null)
-            yield break;
-
-        skillController.Init(skillData, gameObject);
-        yield return StartCoroutine(skillController.ExecuteSkill());
-        
+            return;
+        if (skillData.prefab != null && skillData.IsObject != true)
+        {
+            UseEffect(skillData);
+        }
+        _coSkill = StartCoroutine(CoUseSkill());
+    }
+    public IEnumerator CoUseSkill()
+    {
+        AnimatorStateInfo stateInfo = Animator.GetCurrentAnimatorStateInfo(0);
+        yield return new WaitForSeconds(stateInfo.length / Animator.speed); // SkillData에서 지속 시간 가져오기
+        Animator.speed = 1.0f;
+        State = CreatureState.Idle;
+        UpdateSkillFlag(false);
         CheckUpdatedFlag();
     }
+    
     private IEnumerator CoStartShootArrow()
     {
         // 대기 시간
@@ -182,16 +174,13 @@ public class PlayerController : CreatureController
     }
     private IEnumerator CoStartBasicAttack()
     {
-        // 대기 시간
-        _rangedSkill = false;
-        _isAttacking = true;
-        State = CreatureState.Skill;
         Animator.speed = TotalAttackSpeed;
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
+        AnimatorStateInfo stateInfo = Animator.GetCurrentAnimatorStateInfo(0);
+        yield return new WaitForSeconds(stateInfo.length / Animator.speed); // SkillData에서 지속 시간 가져오기
         Animator.speed = 1.0f;
         State = CreatureState.Idle;
         _coSkill = null;
-        _isAttacking = false;
+        UpdateSkillFlag(false);
         CheckUpdatedFlag();
     }
     protected virtual void CheckUpdatedFlag(){ }

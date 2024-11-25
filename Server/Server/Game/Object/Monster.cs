@@ -92,6 +92,8 @@ namespace Server.Game
         private int _respawnTime = 60000;
         public override void Update()
         {
+            if (Room == null)
+                return;
             switch (State)
             {
                 case CreatureState.Idle:

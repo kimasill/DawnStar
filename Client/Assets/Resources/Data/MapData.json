@@ -305,23 +305,23 @@
       ],
       "chests": [
         {
-          "chestId": "1",
+          "chestId": "6",
           "templateId": "1"
         },
         {
-          "chestId": "2",
+          "chestId": "7",
           "templateId": "5"
         },
         {
-          "chestId": "3",
+          "chestId": "8",
           "templateId": "5"
         },
         {
-          "chestId": "4",
+          "chestId": "9",
           "templateId": "5"
         },
         {
-          "chestId": "5",
+          "chestId": "10",
           "templateId": "4"
         }
       ],

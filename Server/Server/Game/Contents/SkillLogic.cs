@@ -72,9 +72,9 @@ namespace Server.Game
             switch (moveDir)
             {
                 case MoveDir.Up:
-                    return new Vector2Int(0, -distance);
-                case MoveDir.Down:
                     return new Vector2Int(0, distance);
+                case MoveDir.Down:
+                    return new Vector2Int(0, -distance);
                 case MoveDir.Left:
                     return new Vector2Int(-distance, 0);
                 case MoveDir.Right:

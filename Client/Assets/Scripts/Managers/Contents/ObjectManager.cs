@@ -194,9 +194,11 @@ public class ObjectManager
         }
         foreach (GameObject obj in _objects.Values)
 		{
-			CreatureController cc = obj.GetComponent<CreatureController>();
-			if (cc == null)
-				continue;
+            if (obj == null)
+                continue;
+            obj.TryGetComponent(out CreatureController cc);
+            if (cc == null)
+                continue;            
 
 			if (cc.CellPos == cellPos)
 				return obj;
@@ -210,7 +212,9 @@ public class ObjectManager
         List<GameObject> items = new List<GameObject>();
         foreach (GameObject obj in _objects.Values)
         {
-            ItemController ic = obj.GetComponent<ItemController>();
+            if (obj == null)
+                continue;
+            obj.TryGetComponent(out ItemController ic);
             if (ic == null)
                 continue;
 
