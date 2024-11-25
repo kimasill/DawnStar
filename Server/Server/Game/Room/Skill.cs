@@ -161,6 +161,9 @@ namespace Server.Game
                 case SkillLogicType.Kinetic:
                     KineticAttack(data , skill.range, skill.target);
                     return;
+                case SkillLogicType.Invocation:
+                    InvokeSkill(data, skill.target);
+                    return;
                 default: return;
             }
         }
@@ -182,10 +185,11 @@ namespace Server.Game
                 default: return;
             }            
         }
-        public async void HandleSpotSkill(SkillLogicType skillLogic)
+        public void HandleSpotSkill(SkillLogicType skillLogic)
         {
             _skillQueue.TryDequeue(out var skill);
             SkillData data = skill.skillData;
+            List<Vector2Int> skillPos = null;
             if (data.skillLogicType != skillLogic)
             {
                 return;
@@ -193,12 +197,19 @@ namespace Server.Game
             switch (skillLogic)
             {
                 case SkillLogicType.Spotattack:
-                    List<Vector2Int> skillPos = SkillLogic.GetRandomSpots(Owner, data, Owner.Room);
-                    if(skillPos.Count == 0)
+                    if (data.spot.maxCount - data.spot.minCount > 0)
+                    {
+                        skillPos = SkillLogic.GetRandomSpots(Owner, data, Owner.Room);
+                    }
+                    else if(data.spot.maxCount == 1)
+                    {
+                        skillPos = [skill.target.CellPos];
+                    }
+                    if (skillPos.Count == 0)
                     {
                         return;
                     }
-                    await Task.Delay((int)(1000*Owner.TotalInvokeSpeed));
+                    Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
                     SpotAttack(data, skillPos);
                     break;
             }
@@ -459,9 +470,8 @@ namespace Server.Game
         }
         private async void SpotAttack(SkillData data, List<Vector2Int> skillPos)
         {
-             foreach (Vector2Int pos in skillPos)
+            foreach (Vector2Int pos in skillPos)
             {
-                await Task.Delay(100);
                 if (Owner == null || Owner.Room ==null)
                     return;
                 SpotAttack spot = ObjectManager.Instance.Add<SpotAttack>();
@@ -475,6 +485,9 @@ namespace Server.Game
                 spot.Delay = data.spot.delay;
                 spot.TemplateId = data.id;
                 Owner.Room.Push(Owner.Room.EnterGame, spot, false);
+
+                if(data.term != 0)
+                    await Task.Delay((int)(data.term * 1000));
             }
         }
         private async void BlockAsync(SkillData data) 
@@ -483,6 +496,54 @@ namespace Server.Game
             Owner.TotalDamageReduce = data.buff.value;
             await Task.Delay(data.buff.duration*1000);
             Owner.TotalDamageReduce = prevReduce;
+        }
+        private void InvokeSkill(SkillData data, GameObject target)
+        {
+            List<Vector2Int> skillPos = new List<Vector2Int>();
+            switch (data.shape.shapeType) 
+            {
+                case ShapeType.ShapeLine:
+                    skillPos = SkillLogic.GetTargetsInLine(Owner.CellPos, Owner.Info.Position.MoveDir, data.range);
+                    break;
+                case ShapeType.ShapeRect:
+                    break;
+                case ShapeType.ShapeBent:
+                    break;
+                case ShapeType.ShapeCircle:
+                    break;
+            }
+            // invokespeed 이후에 스킬 동작
+            Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
+            for (int i = 0; i < data.count; i++)
+            {
+                if (data.terms != null && data.terms.Count > 0)
+                {
+                    if (i >= 1)
+                    {
+                        Task.Delay((int)((data.terms[i] - data.terms[i - 1]) / Owner.TotalAttackSpeed * 1000));
+                    }
+                    else if (i == 0)
+                    {
+                        Task.Delay((int)((data.terms[i] / Owner.TotalAttackSpeed) * 1000));
+                    }
+                }
+                else if (data.term != 0)
+                {
+                    Task.Delay((int)((data.term / Owner.TotalAttackSpeed) * 1000));
+                }
+                foreach (Vector2Int pos in skillPos)
+                {
+                    GameObject newTarget = Owner.Room.Map.Find(pos);
+                    if (newTarget != null)
+                    {
+                        if (newTarget == Owner)
+                        {
+                            continue;
+                        }
+                        newTarget.OnDamaged(Owner, Owner.TotalAttack + data.damage);
+                    }
+                }
+            }
         }
         private void MoveSkill(SkillData data, GameObject target = null)
         {

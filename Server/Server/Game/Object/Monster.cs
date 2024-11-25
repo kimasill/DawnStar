@@ -121,7 +121,8 @@ namespace Server.Game
         protected int _chaseRange = 20;
         protected long _nextSearchTick = 0;
         protected long _nextMoveTick = 0;
-        protected long _nextWaitTick = 0;
+        protected long _nextWaitTick = 0;        
+        protected int SkillRange = 1;
         protected virtual void UpdateIdle()
         {
             if (_nextSearchTick > Environment.TickCount64)
@@ -138,7 +139,6 @@ namespace Server.Game
                 return;                
             }
         }
-        int _skillRange = 1;
         protected virtual void UpdateMoving()
         {
             if (_nextMoveTick > Environment.TickCount64)
@@ -179,7 +179,7 @@ namespace Server.Game
                 return;
             }
 
-            if (dist <= _skillRange && (dir.x == 0 || dir.y == 0))
+            if (dist <= SkillRange && (dir.x == 0 || dir.y == 0))
             {
                 _coolTick = 0;
                 State = CreatureState.Skill;
@@ -272,7 +272,7 @@ namespace Server.Game
                 //스킬 사용 가능한지
                 Vector2Int dir = _target.CellPos - CellPos;
                 int dist = dir.cellDistanceFromZero;
-                bool canUseSkill = dist <= _skillRange && (dir.x == 0 || dir.y == 0);
+                bool canUseSkill = dist <= SkillRange && (dir.x == 0 || dir.y == 0);
                 if (canUseSkill==false)
                 {
                     State = CreatureState.Moving;

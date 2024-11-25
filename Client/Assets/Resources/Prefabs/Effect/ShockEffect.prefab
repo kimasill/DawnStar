@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 6400903277533496889}
   - component: {fileID: 2352674608995745954}
   - component: {fileID: 8787081387576627134}
+  - component: {fileID: 9143415264352035198}
   m_Layer: 0
-  m_Name: verticalring
+  m_Name: ShockEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -106,3 +107,15 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &9143415264352035198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311713776560038866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fab30b1f624dd404bbf637dbfa5e5767, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

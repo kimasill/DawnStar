@@ -132,13 +132,16 @@ public class CreatureController : BaseController
     {
         _rangedSkill = false;
         SkillData skillData = null;
-		Managers.Data.SkillDict.TryGetValue(skillId, out skillData);
+        Managers.Data.SkillDict.TryGetValue(skillId, out skillData);
         if (skillData == null)
             return;
+
+        // 스킬 이펙트 생성 및 초기화
         GameObject skill = Managers.Resource.Instantiate($"{skillData.prefab}", transform);
         SkillController skillController = skill.GetComponent<SkillController>();
         if (skillController == null)
             return;
+
         skillController.Init(skillData, gameObject);
         StartCoroutine(skillController.ExecuteSkill());
     }
