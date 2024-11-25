@@ -28,11 +28,15 @@ public class SkeletonMageController : MonsterController
                     break;
             }
 
-            if (_skillId == 1)
+            if (_skillId == 20)
             {
                 StartCoroutine(UseSkillRoutine());
-                _skillId = 0;
             }
+            else if(_skillId == 23)
+            {
+                Animator.Play("ATTACK");
+            }
+            _skillId = 0;
         }
         else
         {
@@ -44,24 +48,14 @@ public class SkeletonMageController : MonsterController
     {
         // 준비 동작
         Animator.Play("SKILL_PREP");
-        yield return new WaitForSeconds(1f); // 준비 동작 시간
+        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
 
         // 루프 동작
         Animator.Play("SKILL_LOOP");
-        yield return new WaitForSeconds(2f); // 루프 동작 시간
+        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
 
         // 마무리 동작
         Animator.Play("SKILL_FINISH");
-        yield return new WaitForSeconds(1f); // 마무리 동작 시간
-
-        // FireBlaster 소환
-        SummonFireBlaster();
-    }
-
-    private void SummonFireBlaster()
-    {
-        Vector3 summonPosition = transform.position + (LookDir == LookDir.LookLeft ? Vector3.left : Vector3.right);
-        GameObject fireBlaster = Instantiate(Resources.Load<GameObject>("Magic/FireBlaster"), summonPosition, Quaternion.identity);
-        // FireBlaster 초기화 코드 추가 가능
+        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
     }
 }

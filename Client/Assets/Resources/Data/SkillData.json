@@ -178,12 +178,12 @@
       "name": "맹독충격",
       "coolTime": "20",
       "damage": "40",
-      "range":"7",
+      "term": "0.1",
+      "range":"5",
       "skillType": "SkillSpot",
       "skillLogicType": "SpotAttack",
       "spot": {
         "speed": "7.0",
-        "range": "4",
         "delay": "0.5",
         "minCount": "10",
         "maxCount": "20"
@@ -235,7 +235,7 @@
       "damage": "30",
       "skillType": "SkillDebuff",
       "debuff": {
-        "id": "1",
+        "id": "2",
         "name": "기절",
         "duration": "3",
         "value": "0.0",
@@ -326,12 +326,30 @@
         "range": "10.0",
         "direction": "DirectionBack"
       },
-      "prefabs" :[
+      "prefabs": [
         "Effect/Assassination",
         "Effect/Assassination2"
       ],
       "unchartedPoint": "20",
       "description": "뒤에서 적을 공격하여 강력한 피해를 준다."
+    },
+    {
+      "id": "20",
+      "name": "플레임 스네이크",
+      "coolTime": "25",
+      "damage": "50",
+      "range": "7",
+      "count": "5",
+      "term": "0.3",
+      "skillType": "SkillAttack",
+      "skillLogicType": "Invocation",
+      "shape": {
+        "shapeType": "ShapeLine",
+        "range": "1.0"
+      },
+      "prefab": "Magic/FireBlaster",
+      "unchartedPoint": "20",
+      "description": "정면의 적에게 기다란 화염을 분사한다."
     },
     {
       "id": "21",
@@ -361,6 +379,35 @@
       },
       "unchartedPoint": "20",
       "description": "뒤로 일정 거리 물러난다. 상태이상을 무시한다."
+    },
+    {
+      "id": "23",
+      "name": "아이싱",
+      "coolTime": "6",
+      "damage": "50",
+      "range": "5",
+      "skillType": "SkillSpot",
+      "skillLogicType": "SpotAttack",
+      "shape": {
+        "shapeType": "ShapeCircle",
+        "range": "2.0"
+      },
+      "spot": {
+        "speed": "1.0",
+        "delay": "0",
+        "minCount": "1",
+        "maxCount": "1"
+      },
+      "debuff": {
+        "id": "3",
+        "name": "이동속도",
+        "duration": "3",
+        "value": "-0.2",
+        "isPercent": "false"
+      },
+      "prefab": "Magic/Icing",
+      "unchartedPoint": "20",
+      "description": "좁은 범위를 순간적으로 동결시킨다."
     }
   ]
 } 

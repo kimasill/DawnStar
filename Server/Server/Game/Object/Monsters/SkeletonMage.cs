@@ -12,13 +12,14 @@ namespace Server.Game
     internal class SkeletonMage : Monster
     {
         private int _baseAttackRange = 2;
-        private int _skillRange = 10;              
+        int _skillRange = 7;              
         private const double _blasterMinRange = 3;
-        private const double _blasterDuration = 2.2;
+        private const double _blasterDuration = 2;
         private const double _summonInvokeAdd = 0.5f;
         public SkeletonMage(MonsterData data) : base(data)
         {
             Initialize(data);
+            SkillRange = _skillRange;
         }
         long _coolTick = 0;
         protected override void UpdateSkill()
@@ -43,36 +44,31 @@ namespace Server.Game
                 BroadcastMove();
                 return;
             }
-            int skillId = 0;
+            int skillId = 23;
             LookAt(dir);
-            if (_blasterMinRange <= dist)
-            {
-                skillId = 17;
-                _coolTick = Environment.TickCount64 + (int)(_blasterDuration * 1000);
-            }
-            else
-            {
-                skillId = 18;
-                _coolTick = Environment.TickCount64 + (int)(1000 / TotalAttackSpeed);
-            }
             SkillData skillData = null;
-            DataManager.SkillDict.TryGetValue(skillId, out skillData);
-            AdditionalInvokeSpeed = 0;
-            if (Skill.HandleSkillCool(skillData) == false)
+            if (_blasterMinRange >= dist)
             {
-                skillId = 18;
+                skillId = 20;
+                DataManager.SkillDict.TryGetValue(skillId, out skillData);
 
+                AdditionalInvokeSpeed = (float)_summonInvokeAdd;
+                _coolTick = Environment.TickCount64 + (int)(_blasterDuration * 1000);
                 if (Skill.HandleSkillCool(skillData) == false)
+                {                    
+                    skillId = 23;
+                }
+            }
+            if(skillId == 23)
+            {
+                AdditionalInvokeSpeed = 0;
+                _coolTick = Environment.TickCount64 + (int)(1000 / TotalAttackSpeed);
+                if (dist>skillData.range || Skill.HandleSkillCool(skillData) == false)
                 {
-                    _coolTick = Environment.TickCount64 + (int)(1000 /TotalAttackSpeed);
                     State = CreatureState.Moving;
                     BroadcastMove();
                     return;
                 }
-            }
-            if(skillId == 18)
-            {
-                AdditionalInvokeSpeed = (float)_summonInvokeAdd;
             }
             S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
             skillPacket.ObjectId = Id;

@@ -23,24 +23,34 @@ namespace Server.Game
             if (Data == null || Data.spot == null || Owner == null || Room == null)
                 return;
 
-            if (Delay <= 0)
-            {
-                base.Update();
-                return;
-            }
             Cast();
         }
 
         private async void Cast()
         {
-            await Task.Delay((int)Delay * 1000);
+            if(Delay > 0)
+                await Task.Delay((int)Delay * 1000);
+            
             Vector2Int destPos = CellPos;
-            GameObject target = Room.Map.Find(destPos);
-            if (target != null && target != Owner)
+            List<Vector2Int> targetPositions = new List<Vector2Int>();
+
+            if (Data.shape != null)
             {
-                target.OnDamaged(this, Data.damage + Owner.TotalAttack); //피격판정                    
+                targetPositions = SkillLogic.GetAllTargetsInRange(destPos, (int)Data.shape.range);
+            }
+            else
+            {
+                targetPositions.Add(destPos);
             }
 
+            foreach (var pos in targetPositions)
+            {
+                GameObject target = Room.Map.Find(pos);
+                if (target != null && target != Owner)
+                {
+                    target.OnDamaged(this, Data.damage + Owner.TotalAttack); //피격판정                    
+                }
+            }
             Room.PushAfter(1000, Room.LeaveGame, Id);
         }
     }

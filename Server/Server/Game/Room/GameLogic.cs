@@ -60,10 +60,13 @@ namespace Server.Game
 
         public void UpdateRoom(GameRoom room)
         {
-            if (room.GetPlayerCount() == 0)
+            Instance.PushAfter(1000 * 60 * 5, () =>
             {
-                Instance.Remove(room.RoomId);
-            }
+                if (room.GetPlayerCount() == 0)
+                {
+                    Instance.Remove(room.RoomId);
+                }
+            });
         }
 
         public GameRoom GetRoom(Player player, int newMapId, GameRoom room, bool add)

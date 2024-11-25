@@ -94,8 +94,8 @@ namespace Server.Game
             for (int i = 0; i < count; i++)
             {
                 Vector2Int pos = new Vector2Int(
-                    rand.Next(-(int)skillData.spot.range, (int)skillData.spot.range + 1),
-                    rand.Next(-(int)skillData.spot.range, (int)skillData.spot.range + 1)
+                    rand.Next(-skillData.range, skillData.range + 1),
+                    rand.Next(-skillData.range, skillData.range + 1)
                 );
                 pos += user.CellPos;
                 skillPos.Add(pos);

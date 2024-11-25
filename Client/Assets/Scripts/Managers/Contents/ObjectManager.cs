@@ -97,10 +97,6 @@ public class ObjectManager
             {
                 go = Managers.Resource.Instantiate($"{skillData.prefab}");
             }
-            else
-            {
-                go = Managers.Resource.Instantiate("Magic/PoisonShock");
-            }
             if (go == null)
                 return;
             _objects.Add(info.ObjectId, go);
