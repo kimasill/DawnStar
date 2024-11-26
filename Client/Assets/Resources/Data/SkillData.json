@@ -269,7 +269,10 @@
       "coolTime": "20",
       "damage": "50",
       "count": "10",
-      "term": "0.2",
+      "term": "0.7",
+      "terms": [
+        "0.2"
+      ],
       "range": "5",
       "skillType": "SkillAttack",
       "skillLogicType": "Summon",
@@ -287,6 +290,7 @@
       "name": "사생결단",
       "coolTime": "150",
       "skillType": "SkillBuff",
+      "term": "3",
       "buffList": [
         {
           "id": "5",

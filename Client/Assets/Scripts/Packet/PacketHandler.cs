@@ -111,7 +111,23 @@ class PacketHandler
         {
             return;
         }        
-        cc.UseSkill(skillPacket.Info.SkillId);
+        cc.UseSkill(skillPacket);
+    }
+
+    public static void S_EffectHandler(PacketSession session, IMessage packet)
+    {
+        S_Effect effectPacket = packet as S_Effect;
+        GameObject go = Managers.Object.FindById(effectPacket.ObjectId);
+        if (go == null)
+        {
+            return;
+        }
+        BaseController bc = go.GetComponent<BaseController>();
+        if (bc == null)
+        {
+            return;
+        }
+        bc.UseEffect(effectPacket.Prefab);
     }
 
     public static void S_ChangeHpHandler(PacketSession session, IMessage packet)

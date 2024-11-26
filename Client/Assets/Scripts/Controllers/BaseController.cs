@@ -382,10 +382,9 @@ public class BaseController : MonoBehaviour
 
     }
 
-    protected IEnumerator UseEffect(string prefab)
+    public IEnumerator UseEffect(string prefab)
     {
         GameObject effect = Managers.Resource.Instantiate(prefab, transform);
-        effect.transform.position = transform.position + new Vector3(0, 0.5f, 0);
         Animator animator = effect.GetComponent<Animator>();
         animator.Play("START");
         yield return new WaitForSeconds(0.01f);

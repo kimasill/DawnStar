@@ -4,14 +4,12 @@ using UnityEngine;
 public class TriggerController : InteractionController
 {
     private bool _isTriggered = false;
-    [SerializeField]
-    private Animator _animator;
 
     protected override void Init()
     {
         base.Init();
-        _animator.Play("IDLE", 0, 0);
-        _animator.speed = 0;
+        Animator.Play("ACTIVATE", 0, 0);
+        Animator.speed = 0;
     }
 
     public void ActivateTrigger()
@@ -34,22 +32,22 @@ public class TriggerController : InteractionController
 
     private IEnumerator CoActivateTrigger()
     {
-        _animator.speed = 1;
-        _animator.Play("ACTIVATE");
+        Animator.speed = 1;
+        Animator.Play("ACTIVATE");
         yield return new WaitForSeconds(0.01f);
-        yield return new WaitForSeconds(_animator.GetCurrentAnimatorStateInfo(0).length);
-        _animator.Play("IDLE", 0, 0);
-        _animator.speed = 0;
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
+        Animator.Play("DEACTIVATE", 0, 0);
+        Animator.speed = 0;
     }
 
     private IEnumerator CoDeactivateTrigger()
     {
-        _animator.speed = 1;
-        _animator.Play("DEACTIVATE");
+        Animator.speed = 1;
+        Animator.Play("DEACTIVATE");
         yield return new WaitForSeconds(0.01f);
-        yield return new WaitForSeconds(_animator.GetCurrentAnimatorStateInfo(0).length);
-        _animator.Play("IDLE", 0, 0);
-        _animator.speed = 0;
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
+        Animator.Play("ACTIVATE", 0, 0);
+        Animator.speed = 0;
     }
 
     public void HandleActivatePacket()
@@ -73,7 +71,7 @@ public class TriggerController : InteractionController
         }
         else if (success == false && action)
         {
-            // 상호작용 실패 처리 - notification
+            InteractAction();
         }
         _isInteracted = false;
     }

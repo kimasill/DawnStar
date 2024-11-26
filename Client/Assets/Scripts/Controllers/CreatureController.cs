@@ -130,21 +130,21 @@ public class CreatureController : BaseController
         Managers.Resource.Destroy(heal);
     }
 
-    public virtual void UseSkill(int skillId)
+    public virtual void UseSkill(S_Skill skill)
     {
         _rangedSkill = false;
-        SkillId = skillId;
+        SkillId = skill.Info.SkillId;
         State = CreatureState.Skill;        
         SkillData skillData = null;
-        Managers.Data.SkillDict.TryGetValue(skillId, out skillData);
+        Managers.Data.SkillDict.TryGetValue(SkillId, out skillData);
         if (skillData == null)
             return;
         if (skillData.prefab != null && skillData.IsObject != true)
         {
-            UseEffect(skillData);
+            UseEffect(skillData, skill.Phase);
         }
     }
-    public async void UseEffect(SkillData skillData)
+    public async void UseEffect(SkillData skillData, int phase = 0)
     {
         // 스킬 이펙트 생성 및 초기화
         if(TotalInvokeDelay>0)
@@ -155,8 +155,17 @@ public class CreatureController : BaseController
         {
             return;
         }
-        GameObject skill = Managers.Resource.Instantiate($"{skillData.prefab}", transform);
-        SkillController skillController = skill.GetComponent<SkillController>();
+
+        GameObject skillObj = null;
+        if (skillData.prefabs!=null)
+        {
+            skillObj = Managers.Resource.Instantiate($"{skillData.prefabs[phase]}", transform);
+        }
+        else
+        {
+            skillObj = Managers.Resource.Instantiate($"{skillData.prefab}", transform);
+        }
+        SkillController skillController = skillObj.GetComponent<SkillController>();
         if (skillController == null)
             return;
 

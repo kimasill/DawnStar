@@ -16,21 +16,36 @@ public class PrisonKeeperController : MonsterController
         {
             return;
         }
+        switch (LookDir)
+        {
+            case LookDir.LookLeft:
+                _sprite.flipX = true;
+                break;
+            case LookDir.LookRight:
+                _sprite.flipX = false;
+                break;
+        }
         if (State == CreatureState.Skill)
         {
-            switch (LookDir)
-            {
-                case LookDir.LookLeft:
-                    _sprite.flipX = true;
-                    break;
-                case LookDir.LookRight:
-                    _sprite.flipX = false;
-                    break;
-            }
             if (SkillId == 1)
                 Animator.Play("ATTACK");
-            else if (SkillId == 9)
-                Animator.Play("ATTACK_STRONG");
+            else if (SkillId == 17)
+                Animator.Play("SKILL");
+            else if (SkillId == 19)
+                Animator.Play("SKILL");
+            else if (SkillId == 18)
+            {
+                Animator.Play("IDLE");
+                _phase = 2;
+            }
+            SkillId = 0;
+        }
+        if (State == CreatureState.Idle)
+        {
+            if(_phase == 1)
+                Animator.Play("IDLE");
+            else if (_phase == 2)
+                Animator.Play("IDLE2");            
         }
         else
         {

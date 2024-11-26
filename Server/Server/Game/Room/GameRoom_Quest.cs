@@ -252,9 +252,9 @@ namespace Server.Game
             {
                 if (door.Triggers.Count > 0)
                 {
-                    foreach (var triggerId in door.Triggers.Keys)
+                    foreach (var trigger in door.Triggers.Values)
                     {
-                        if (door.Triggers[triggerId] == false)
+                        if (trigger == false)
                         {
                             interactionPacket.Success = false;
                             break;
@@ -282,7 +282,8 @@ namespace Server.Game
                     }
                 }                
             }
-
+            interactionPacket.ObjectId = doorId;
+            interactionPacket.InteractionType = InteractionType.Door;
             if (interactionPacket.Success)
             {
                 door.IsOpen = !door.IsOpen;
@@ -290,16 +291,16 @@ namespace Server.Game
                     door.Open();
                 else
                     door.Close();
-                interactionPacket.ObjectId = doorId;
+                
                 interactionPacket.PlayerId = player.Info.ObjectId;
-                interactionPacket.Success = door.IsOpen;
-                interactionPacket.InteractionType = InteractionType.Door;
+                interactionPacket.Success = door.IsOpen;                
                 player.Room.Broadcast(player.CellPos, interactionPacket);
             }
             else
             {
                 player.Session.Send(interactionPacket);
             }
+            Console.WriteLine($"Door Interaction - {interactionPacket.InteractionType}, ID:{doorId}, Success:{interactionPacket.Success}");
         }
 
         public void HandleTriggerInteraction(Player player, int triggerId)
@@ -347,6 +348,7 @@ namespace Server.Game
             {
                 player.Session.Send(interactionPacket);
             }
+            Console.WriteLine($"Trigger Interaction - {interactionPacket.InteractionType}, ID:{triggerId}, Success:{interactionPacket.Success}");
         }
     }
 }

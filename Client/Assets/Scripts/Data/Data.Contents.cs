@@ -508,6 +508,7 @@ namespace Data
         public string name;
         public bool multi;
         public InteractionType interactionType;
+        public List<string> script;
     }
     public class Vector2Set
     {
@@ -516,14 +517,12 @@ namespace Data
     }
     public class DoorData: InteractionData
     {
-        public List<string> script;
         public List<int> keyItems;
         public List<int> triggers;
         public List<Vector2Set> cells;
     }
     public class TriggerData : InteractionData
     {
-        public List<string> script;
         public List<int> keyItems;
         public List<int> targetInteraction;
     }

@@ -63,6 +63,7 @@ enum MsgId {
   S_INTERACTION = 55;
   S_CHANGE_ADDITIONAL_STAT = 56;
   C_REQUEST_STAT = 57;
+  S_EFFECT = 58;
 }
 enum CreatureState{
   IDLE = 0;
@@ -346,6 +347,11 @@ message S_SkillCool{
 	int32 objectId = 1;
 	int32 skillId = 2;
 	int32 coolTime = 3;
+}
+
+message S_Effect{
+	int32 objectId = 1;
+    string prefab = 2;
 }
 
 message S_ChangeHp {

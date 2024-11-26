@@ -15,7 +15,7 @@ public class DoorController : InteractionController
         {
             _decorator.Play("OPEN", 0, 0);
             _decorator.speed = 0;
-        }        
+        }                
     }
 
     public void OpenDoor()
@@ -88,7 +88,7 @@ public class DoorController : InteractionController
         }
         else if(success == false && action)
         {
-            // 상호작용 실패 처리 - notification
+            InteractAction();
         }
         _isInteracted = false;
     }

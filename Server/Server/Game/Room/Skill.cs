@@ -181,6 +181,7 @@ namespace Server.Game
                 case SkillLogicType.Magicball:
                     await Task.Delay((int)(1000*Owner.TotalInvokeSpeed));
                     MagicBall(data);
+                    
                     return;
                 default: return;
             }            
@@ -253,7 +254,7 @@ namespace Server.Game
         }
         private async void ApplyBuff(SkillData data)
         {
-            await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
+            await Task.Delay((int)(1000 * data.term));
             // Buff 적용 로직
             if (data.buff != null)
             {
@@ -284,7 +285,7 @@ namespace Server.Game
 
         private async void ApplyDeBuff(SkillData data)
         {
-            await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
+            await Task.Delay((int)(1000 * data.term));
             if (data.debuff != null)
             {
                 // Debuff 시작 시 로직
@@ -346,10 +347,10 @@ namespace Server.Game
             magicBall.Speed = data.projectile.speed;
             magicBall.DespawnAnim = true;
             magicBall.TemplateId = data.id;
-            if(data.debuff != null)
+            if (data.debuff != null)
             {
                 magicBall.OnHit = (target) => { HandleDebuffSkill(data, target); };
-            }            
+            }
             Owner.Room.Push(Owner.Room.EnterGame, magicBall, false);
         }
         public async void BasicAttakAsync(SkillData data, int range)
@@ -648,15 +649,14 @@ namespace Server.Game
         }
         private async void SummonAttack(SkillData data, int range, GameObject target = null)
         {
-            await Task.Delay(1000 * (int)Owner.TotalInvokeSpeed);
+            await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
             SummonAttackObj summon = ObjectManager.Instance.Add<SummonAttackObj>();
             summon.Owner = Owner;
             summon.Target = _target;
             summon.Owner.Room = Owner.Room;
             summon.Data = data;
             summon.Range = range;
-            summon.PosInfo.State = CreatureState.Moving;
-            summon.Delay = data.term;
+            summon.PosInfo.State = CreatureState.Moving;            
             summon.TemplateId = data.id;
             if (target != null)
             {
@@ -687,11 +687,10 @@ namespace Server.Game
                 int dist = (Owner.CellPos - target.CellPos).cellDistanceFromZero;
                 if (target != null && dist < range)
                 {
-                    S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
-                    skillPacket.ObjectId = Owner.Id;
-                    skillPacket.Info.SkillId = data.id;
-                    skillPacket.Phase = i+2;
-                    Owner.Room.Broadcast(Owner.CellPos, skillPacket);
+                    S_Effect effectPacket = new S_Effect();
+                    effectPacket.ObjectId = target.Id;
+                    effectPacket.Prefab = $"{data.prefabs[i*2 + 1]}";                    
+                    Owner.Room.Broadcast(Owner.CellPos, effectPacket);
                     target.OnDamaged(Owner, data.damage + Owner.TotalAttack);
                 }
             }

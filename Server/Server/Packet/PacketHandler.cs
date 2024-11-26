@@ -314,7 +314,9 @@ class PacketHandler
         if(interactionPacket.InteractionType == InteractionType.None)
             return;
         else if (interactionPacket.InteractionType == InteractionType.Door)
-            room.HandleDoorInteraction(clientSession.MyPlayer, interactionPacket.ObjectId);               
+            room.HandleDoorInteraction(clientSession.MyPlayer, interactionPacket.ObjectId);        
+        else if (interactionPacket.InteractionType == InteractionType.Trigger)
+            room.HandleTriggerInteraction(clientSession.MyPlayer, interactionPacket.ObjectId);
     }
 
     public static void C_RequestStatHandler(PacketSession session, IMessage packet)

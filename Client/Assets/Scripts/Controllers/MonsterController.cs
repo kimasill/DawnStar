@@ -25,9 +25,9 @@ public class MonsterController : CreatureController
 	{
         base.OnDamaged();
     }
-    public override void UseSkill(int skillId)
+    public override void UseSkill(S_Skill skill)
     {
-        base.UseSkill(skillId);
+        base.UseSkill(skill);
     }
     protected IEnumerator CoStartBasicAttack()
     {

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class InteractionController : BaseController
 {
@@ -13,6 +14,7 @@ public class InteractionController : BaseController
     public int TemplateId { get; private set; }
     public bool Multi { get; set; }
     public InteractionType Type { get; set; }
+    public List<string> Scripts { get; set; } = new List<string>();
     public List<Vector2Int> CellPoses { get; set; } = new List<Vector2Int>();
     protected override void Init()
     {
@@ -33,6 +35,7 @@ public class InteractionController : BaseController
             return;
         Multi = data.multi;
         Type = data.interactionType;
+        Scripts = data.script;
     }
 
     protected override void UpdateAnimation()
@@ -108,7 +111,12 @@ public class InteractionController : BaseController
         {
             Interact(true, true);
         }
-
+    }
+    protected virtual void InteractAction()
+    {
+        UI_GameScene gameUI = Managers.UI.SceneUI as UI_GameScene;
+        UI_GameWindow gameWindow = gameUI.GameWindow;
+        gameWindow.ShowScript(Scripts);
     }
 
     private IEnumerator CoInteract()
