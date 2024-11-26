@@ -53,7 +53,14 @@ public class SkillController : MonoBehaviour
     {
         if(User is PlayerController)
         { 
-            _animator.speed = User.TotalAttackSpeed;
+            if(SkillData.skillLogicType == SkillLogicType.Combat)
+            {
+                _animator.speed = User.TotalAttackSpeed;
+            }
+            else
+            {
+                _animator.speed = 1;
+            }
         }
 
         posX = -transform.localPosition.x;
@@ -63,12 +70,18 @@ public class SkillController : MonoBehaviour
         {
             case MoveDir.Up:
                 transform.localPosition = new Vector3(0, posX, 0);
-                transform.rotation = Quaternion.Euler(0, 0, 90);
+                if(SkillData.skillType == SkillType.SkillAttack)
+                {
+                    transform.rotation = Quaternion.Euler(0, 0, 90);
+                }
                 _sprite.flipX = false;
                 break;
             case MoveDir.Down:
                 transform.localPosition = new Vector3(0, -posX, 0);
-                transform.rotation = Quaternion.Euler(0, 0, -90);
+                if (SkillData.skillType == SkillType.SkillAttack)
+                {
+                    transform.rotation = Quaternion.Euler(0, 0, -90);
+                }
                 _sprite.flipX = false;
                 break;
             case MoveDir.Left:

@@ -73,14 +73,13 @@ namespace Server.Game
             Broadcast(player.CellPos, skill);
             player.Skill.StartSkill(player, skillData);
         }
-        
-        public int CalculateDamage(GameObject attacker,int id, int damage)
+
+        public int CalculateDamage(GameObject attacker, int id, int damage, GameObject victim)
         {
-            if (attacker == null)            
+            if (attacker == null || victim == null) // victim null 확인 추가
                 return damage;
 
             S_Damage damagePacket = new S_Damage();
-
             if (attacker is Player player)
             {
                 // TODO: critical 확률 계산
@@ -91,13 +90,21 @@ namespace Server.Game
                     if (randomValue < player.TotalCriticalChance)
                     {
                         // critical 공격
-                        damage *= player.TotalCriticalDamage;
+                        damage = damage * player.TotalCriticalDamage;
                         damagePacket.Critical = true;
                     }
                 }
             }
-            damage = Math.Max(damage - attacker.TotalDefense, 0);
-            if (damage > 0) {
+
+            // 방어력을 적용한 데미지 계산 (victim null 확인 추가)
+            if (victim != null)
+            {
+                float defenseFactor = (float)Math.Pow(victim.TotalDefense, 0.7f);
+                damage = (int)(damage * (1 - (defenseFactor / (defenseFactor + 100))));
+            }
+
+            if (damage > 0)
+            {
                 damagePacket.Damage = damage;
                 damagePacket.ObjectId = id;
                 Broadcast(attacker.CellPos, damagePacket);

@@ -20,9 +20,9 @@ namespace Server.Game.Object.Monsters
         private const double BuffInvokeTime = 3.0;
         private const double SkillInvokeTime = 0.5;
         private int _coolTick = 0;
-        private const int AssassinateSkillId = 17;
-        private const int EnhanceSkillId = 22;
-        private const int StepBackSkillId = 21;
+        private const int AssassinateSkillId = 19;
+        private const int EnhanceSkillId = 18;
+        private const int StepBackSkillId = 22;
         private bool _isUsingSkill = false;
 
         public PrisonKeeper(MonsterData data) : base(data)
@@ -33,11 +33,7 @@ namespace Server.Game.Object.Monsters
         public override int OnDamaged(GameObject attacker, int damage)
         {
             int resultDamage = base.OnDamaged(attacker, damage);
-            if (Stat.Hp <= Stat.MaxHp * PhaseTwoThreshold && !_isInPhaseTwo)
-            {
-                EnterPhaseTwo();
-            }
-            if(_isInPhaseTwo)
+            if (_isInPhaseTwo)
             {
                 if (_random.NextDouble() < SkillProbability)
                 {
@@ -45,14 +41,17 @@ namespace Server.Game.Object.Monsters
                     State = CreatureState.Moving;
                 }
             }
+            if (Stat.Hp <= Stat.MaxHp * PhaseTwoThreshold && !_isInPhaseTwo)
+            {
+                EnterPhaseTwo();
+            }            
             return resultDamage;
         }
         private void EnterPhaseTwo()
         {
             _isUsingSkill = true;
-            UseSkill(StepBackSkillId);
-            AdditionalInvokeSpeed = (float)(BuffInvokeTime - TotalInvokeSpeed);
-            UseSkill(EnhanceSkillId);
+            UseSkill(StepBackSkillId);            
+            UseSkill(EnhanceSkillId, term:true);
             _isInPhaseTwo = true;
             _isUsingSkill = false;
         }
@@ -164,7 +163,7 @@ namespace Server.Game.Object.Monsters
             if (_isInPhaseTwo && (dir.x == 0 || dir.y == 0))
             {
                 _coolTick = 0;
-                UseSkill(AssassinateSkillId, phase:1);
+                UseSkill(AssassinateSkillId, term:true);
                 State = CreatureState.Skill;                
                 return;
             }
@@ -178,7 +177,7 @@ namespace Server.Game.Object.Monsters
             Room.Map.ApplyMove(this, path[1]);
             BroadcastMove();
         }
-        private void UseSkill(int skillId, int phase = 0)
+        private void UseSkill(int skillId, int phase = 0, bool term = false)
         {
             SkillData skillData = null;
             DataManager.SkillDict.TryGetValue(skillId, out skillData);
@@ -198,7 +197,14 @@ namespace Server.Game.Object.Monsters
             }
             Room.Broadcast(CellPos, skillPacket);
             Skill.StartSkill(this, skillData, _target);
-            _coolTick = (int)(Environment.TickCount64 + (1000 / TotalAttackSpeed));
+            if (term)
+            {
+                _coolTick = (int)(Environment.TickCount64 + (1000  * skillData.terms[0]));
+            }
+            else
+            {
+                _coolTick = (int)(Environment.TickCount64 + (1000 / TotalAttackSpeed));
+            }            
         }
     }
 }

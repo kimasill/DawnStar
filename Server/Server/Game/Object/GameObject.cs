@@ -192,7 +192,7 @@ namespace Server.Game
         {
             if (Room == null)
                 return 0;
-            damage = Room.CalculateDamage(attacker,Id, damage);            
+            damage = Room.CalculateDamage(attacker,Id,damage,this);            
             Stat.Hp = Math.Max(Stat.Hp - damage, 0);
             Stat.Hp -= damage;
             S_ChangeHp changePacket = new S_ChangeHp();

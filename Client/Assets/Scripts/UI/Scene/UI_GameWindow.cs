@@ -19,7 +19,11 @@ public class UI_GameWindow : UI_Base
         SkillSlot = GetComponentInChildren<UI_SkillSlot>();
         StoryPanel.gameObject.SetActive(false);
     }
-
+    public void ShowScript(List<string> strings)
+    {
+        if(StoryPanel != null)
+            StoryPanel.ShowOnlyScript(strings);
+    }
     public void ShowStoryPanel(Dictionary<int, Script> scripts)
     {
         if (StoryPanel != null)

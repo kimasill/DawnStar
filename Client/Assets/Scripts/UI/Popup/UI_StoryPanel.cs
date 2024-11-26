@@ -53,7 +53,7 @@ public class UI_StoryPanel : UI_Popup
         }
     }
 
-    private void SetConversationImage(string imageName)
+    private void SetConversationImage(string imageName = null)
     {
         // 이미지 로드 로직 (예: Resources 폴더에서 로드)
         Sprite image = Resources.Load<Sprite>($"Textures/Images/{imageName}");
@@ -64,6 +64,8 @@ public class UI_StoryPanel : UI_Popup
         }
         else
         {
+            _conversationImage.sprite = null;
+            _conversationImage.color = Color.clear;
             Debug.LogWarning($"Image '{imageName}' not found in 'Textures/Image/'");
         }
     }
@@ -109,7 +111,13 @@ public class UI_StoryPanel : UI_Popup
         Script scripts = scriptData.scripts[id - 1];
         ShowStoryPanel(scripts, isQuestEnd);
     }
-
+    public void ShowOnlyScript(List<string> scripts)
+    {
+        gameObject.SetActive(true);
+        StartCoroutine(FadeIn());
+        SetConversationImage();
+        SetStoryTexts(scripts);
+    }
     private void ShowNextScript()
     {
         if (scriptQueue.Count > 0)

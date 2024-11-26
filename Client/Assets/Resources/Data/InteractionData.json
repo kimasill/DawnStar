@@ -60,6 +60,9 @@
       "multi": "true",
       "triggers": [
         "1001"
+      ],
+      "scripts": [
+        "강력한 기운이 뿜어져 나오는 대문. 다른 장치의 조작이 필요하다."
       ]
     },
     {
@@ -71,11 +74,12 @@
     {
       "id": "1001",
       "name": "PrisonBossRoomTrigger",
+      "multi": "true",
       "scripts": [
         "간수가 있는곳으로 들어가기 위한 장치"
       ],
       "targetInteraction": [
-          "10"        
+        "10"
       ]
     }
   ]

@@ -127,7 +127,7 @@ public class PlayerController : CreatureController
 	}
 	// 키보드 입력
 	
-	public override void UseSkill(int skillId)
+	public override void UseSkill(S_Skill skill)
 	{
         if (gameObject.activeSelf == false)
         {
@@ -136,15 +136,15 @@ public class PlayerController : CreatureController
         _isAttacking = true;
         _rangedSkill = false;
 
-        SkillId = skillId;
+        SkillId = skill.Info.SkillId;
         State = CreatureState.Skill;        
         SkillData skillData = null;
-        Managers.Data.SkillDict.TryGetValue(skillId, out skillData);
+        Managers.Data.SkillDict.TryGetValue(SkillId, out skillData);
         if (skillData == null)
             return;
         if (skillData.prefab != null && skillData.IsObject != true)
         {
-            UseEffect(skillData);
+            UseEffect(skillData, skill.Phase);
         }
         _coSkill = StartCoroutine(CoUseSkill());
     }

@@ -12,29 +12,27 @@ namespace Server.Game
     class SummonAttackObj : Magic
     {
         public GameObject Owner { get; set; }
-        private int _damage;
-        private float _delay;     
+        private int _damage;   
         public float Range { get; set; }
         public GameObject Target { get; set; }                
         int _count = 0;
         public Action<GameObject> OnHit { get; set; }
-        public float Delay
-        {
-            get { return _delay; }
-            set { _delay = value; }
-        }
         private GameRoom _room;
 
         private int _coolTick = 0;
-        public override void  Update()
+        public override async void  Update()
         {
             if (Data == null || Data.spot == null || Owner == null || Room == null)
                 return;
 
-            if (Delay <= 0)
-                return;
+            int tick = (int)(1000 / Data.terms[0]);
 
-            int tick = (int)(1000 / Delay);
+            if (_count == 0)
+            {
+                await Task.Delay((int)(1000 *Data.term));
+                _count = 1;
+            }
+            
             Room.PushAfter(tick, Update);
 
             if (_count == Data.count)
