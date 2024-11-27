@@ -235,7 +235,7 @@ public class BaseController : MonoBehaviour
         {
             switch (LookDir)
             {
-                case LookDir.LookLeft:
+                case LookDir.LookLeft:                    
                     Animator.Play("HURT");                    
                     _sprite.flipX = true;
                     break;
@@ -272,21 +272,12 @@ public class BaseController : MonoBehaviour
     {
         yield return null;
     }
-    
-    public IEnumerator WaitAnimationRunningTime(Action onComplete)
-    {
-        AnimatorStateInfo stateInfo = Animator.GetCurrentAnimatorStateInfo(0);
-        float clipLength = stateInfo.length;
-        float animationSpeed = Animator.speed;
-        float currentPlayTime = stateInfo.normalizedTime * clipLength;
 
-        float remainingTime = (clipLength - currentPlayTime) / animationSpeed;
-        if (float.IsNaN(remainingTime) || remainingTime < 0)
-        {
-            remainingTime = 0;
-        }
-        yield return new WaitForSeconds(remainingTime);
-        onComplete?.Invoke();
+    protected virtual IEnumerator PlayAnimationClip(Animator animator, string clip)
+    {
+        Animator.Play(clip);
+        float animationLength = Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed; // SKILL_PREP 애니메이션의 실제 재생 시간 계산
+        yield return new WaitForSeconds(animationLength);
     }
 
     void Start()
