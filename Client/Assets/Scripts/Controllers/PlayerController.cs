@@ -146,7 +146,7 @@ public class PlayerController : CreatureController
         {
             UseEffect(skillData, skill.Phase);
         }
-        StartMovementCoroutine(CoUseSkill());
+        StartPsychicsCoroutine(CoUseSkill());
     }
     public IEnumerator CoUseSkill()
     {

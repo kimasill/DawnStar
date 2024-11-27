@@ -94,7 +94,7 @@ public class CreatureController : BaseController
         }
         _coSkill = StartCoroutine(coroutine);
     }
-    protected void StartMovementCoroutine(IEnumerator coroutine)
+    protected void StartPsychicsCoroutine(IEnumerator coroutine)
     {
         if (_coMovement != null)
         {
@@ -120,8 +120,32 @@ public class CreatureController : BaseController
 		base.Init();
 		AddHpBar();
     }
-
-	public virtual void OnDamaged()
+    protected override void UpdateAnimation()
+    {
+        if (Animator == null)
+        {
+            return;
+        }
+        else if (State == CreatureState.Stiff)
+        {
+            switch (LookDir)
+            {
+                case LookDir.LookLeft:
+                    StartPsychicsCoroutine(PlayAnimationClip(Animator,"HURT"));
+                    _sprite.flipX = true;
+                    break;
+                case LookDir.LookRight:
+                    StartPsychicsCoroutine(PlayAnimationClip(Animator, "HURT"));
+                    _sprite.flipX = false;
+                    break;
+            }
+        }
+        else
+        {
+            base.UpdateAnimation();
+        }
+    }
+    public virtual void OnDamaged()
 	{
         State = CreatureState.Stiff;
 	}

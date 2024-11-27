@@ -56,6 +56,7 @@ namespace Server.Game.Object.Monsters
             _isUsingSkill = true;
             UseSkill(StepBackSkillId, term: true); // term 매개변수 추가
             UseSkill(EnhanceSkillId, term: true); // term 매개변수 추가
+            SkillRange = _skillRange;
             _isInPhaseTwo = true;
             _isUsingSkill = false;
         }
@@ -95,7 +96,8 @@ namespace Server.Game.Object.Monsters
 
             Vector2Int dir = _target.CellPos - CellPos;
             int dist = dir.cellDistanceFromZero;
-            bool canUseSkill = dist <= _skillRange;
+            
+            bool canUseSkill = dist <= SkillRange;
             if (canUseSkill == false)
             {
                 State = CreatureState.Moving;

@@ -25,7 +25,7 @@ public class SkeletonMageController : MonsterController
                         
                         if (SkillId == 20)
                         {
-                            StartMovementCoroutine(UseSkillRoutine());
+                            StartPsychicsCoroutine(UseSkillRoutine());
                         }
                         else if (SkillId == 23)
                         {
@@ -37,7 +37,7 @@ public class SkeletonMageController : MonsterController
                         
                         if (SkillId == 20)
                         {
-                            StartMovementCoroutine(UseSkillRoutine());
+                            StartPsychicsCoroutine(UseSkillRoutine());
                         }
                         else if (SkillId == 23)
                         {
