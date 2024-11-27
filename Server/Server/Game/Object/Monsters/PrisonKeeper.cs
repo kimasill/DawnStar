@@ -15,6 +15,7 @@ namespace Server.Game.Object.Monsters
         private bool _isInPhaseTwo = false;
 
         private int _skillRange = 5;
+        private int _assassinateRange = 10;
         private const double SkillProbability = 0.3; // 30% 확률로 스킬 사용
         private const double SkillCooldown = 2.0; // 스킬 쿨다운 시간 (초)
         private const double AssassinateInvokeTime = 1.0;
@@ -56,7 +57,7 @@ namespace Server.Game.Object.Monsters
             _isUsingSkill = true;
             UseSkill(StepBackSkillId, term: true); // term 매개변수 추가
             UseSkill(EnhanceSkillId, term: true); // term 매개변수 추가
-            SkillRange = _skillRange;
+            SkillRange = _assassinateRange;
             _isInPhaseTwo = true;
             _isUsingSkill = false;
         }
@@ -110,24 +111,46 @@ namespace Server.Game.Object.Monsters
             SkillData skillData = null;
             if (_isInPhaseTwo)
             {
-                skillId = 17;
-                AdditionalInvokeSpeed = (float)(SkillInvokeTime - TotalInvokeSpeed);
-                DataManager.SkillDict.TryGetValue(skillId, out skillData);
-                if (skillData == null || Skill.HandleSkillCool(skillData) == false) // skillData null 확인
+                if (dist > _skillRange)
                 {
-                    skillId = 1;
+                    skillId = AssassinateSkillId;
+                    AdditionalInvokeSpeed = (float)AssassinateInvokeTime;
+                    _coolTick = (int)(Environment.TickCount64 + (1000 / TotalAttackSpeed) + AssassinateInvokeTime*1000);
+                    DataManager.SkillDict.TryGetValue(skillId, out skillData);
+                    if (skillData == null || Skill.HandleSkillCool(skillData) == false)
+                    {
+                        SkillRange = _skillRange;
+                        State = CreatureState.Moving;
+                        BroadcastMove();
+                        return;
+                    }
+                }
+                if(dist <= _skillRange && dist > 1) 
+                {
+                    skillId = 17;
+                    AdditionalInvokeSpeed = (float)(SkillInvokeTime - TotalInvokeSpeed);
+                    _coolTick = (int)(Environment.TickCount64 + (1000 / TotalAttackSpeed));
+                    DataManager.SkillDict.TryGetValue(skillId, out skillData);
+                    SkillRange = _assassinateRange;
+                    if (skillData == null || Skill.HandleSkillCool(skillData) == false)
+                    {
+                        SkillRange = 1;
+                        State = CreatureState.Moving;
+                        BroadcastMove();
+                        return;                        
+                    }
                 }
             }
             if (skillId == 1)
             {
                 AdditionalInvokeSpeed = 0;
-                DataManager.SkillDict.TryGetValue(skillId, out skillData);
-                if (skillData == null || Skill.HandleSkillCool(skillData) == false) // skillData null 확인
+                UseSkill(skillId);
+                if (_isInPhaseTwo)
                 {
-                    State = CreatureState.Moving;
-                    BroadcastMove();
-                    return;
+                    SkillRange = _assassinateRange;
                 }
+                
+                return;
             }
             S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
             skillPacket.ObjectId = Id;
@@ -138,12 +161,7 @@ namespace Server.Game.Object.Monsters
             {
                 Skill.StartSkill(this, skillData, _target);
             }
-
-            _coolTick = (int)(Environment.TickCount64 + (1000 / TotalAttackSpeed));
         }
-
-        // ... (기존 코드) ...
-
         private void UseSkill(int skillId, int phase = 0, bool term = false)
         {
             SkillData skillData = null;

@@ -50,8 +50,6 @@ public class SkillController : MonoBehaviour
         {
             UpdateUserSkillFlag();
         }
-
-        yield return new WaitForSeconds(0.01f);
         AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
         yield return new WaitForSeconds(stateInfo.length / _animator.speed); // SkillData에서 지속 시간 가져오기
 
@@ -72,7 +70,7 @@ public class SkillController : MonoBehaviour
         switch (User.PosInfo.MoveDir)
         {
             case MoveDir.Up:
-                transform.localPosition = new Vector3(0, -sign * posX, 0);
+                transform.localPosition = new Vector3(0, posX, 0);
                 if(SkillData.skillType == SkillType.SkillAttack)
                 {
                     transform.rotation = Quaternion.Euler(0, 0, 90);
