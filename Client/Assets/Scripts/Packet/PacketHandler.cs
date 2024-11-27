@@ -629,7 +629,7 @@ class PacketHandler
     {
         S_Interaction interactionPacket = packet as S_Interaction;
         bool action = false;
-        if(Managers.Object.MyPlayer.Id == interactionPacket.ObjectId)
+        if(Managers.Object.MyPlayer.Id == interactionPacket.PlayerId)
         {
             action = true;
         }

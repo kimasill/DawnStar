@@ -146,7 +146,7 @@ public class PlayerController : CreatureController
         {
             UseEffect(skillData, skill.Phase);
         }
-        _coSkill = StartCoroutine(CoUseSkill());
+        StartMovementCoroutine(CoUseSkill());
     }
     public IEnumerator CoUseSkill()
     {
@@ -203,6 +203,6 @@ public class PlayerController : CreatureController
     }
     protected override void UpdateSortingLayer()
     {
-        _sortingLayer.sortingOrder = -CellPos.y;
+        _sortingLayer.sortingOrder = -CellPos.y * 10;
     }
 }

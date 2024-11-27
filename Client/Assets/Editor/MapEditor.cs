@@ -114,8 +114,8 @@ public class MapEditor : MonoBehaviour
                         {
                             int monsterId = int.Parse(tileName.Substring(8));
                             Vector3Int cellPosition = new Vector3Int(
-                                pos.x - bounds.xMin,
-                                pos.y - bounds.yMin,
+                                pos.x - bounds.xMin - 1,
+                                pos.y - bounds.yMin - 1,
                                 0
                             );
                             mapData[cellPosition.x, cellPosition.y] = monsterId.ToString();
@@ -189,8 +189,8 @@ public class MapEditor : MonoBehaviour
                             int interactionId = int.Parse(tileName.Split("_")[1]);
 
                             Vector3Int cellPosition = new Vector3Int(
-                                pos.x - bounds.xMin,
-                                pos.y - bounds.yMin,
+                                pos.x - bounds.xMin - 1,
+                                pos.y - bounds.yMin - 1,
                                 0
                             );
 

@@ -52,12 +52,12 @@ public class InteractionController : BaseController
         if(Type == InteractionType.Door)
         {
             _headUpIcon.gameObject.GetComponent<SpriteRenderer>().sprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Door");
-            _headUpIcon.transform.position = new Vector3(transform.position.x, transform.position.y + 1f, 0);
+            _headUpIcon.transform.position = new Vector3(transform.position.x, transform.position.y + 0.8f, 0);
         }
         else if(Type == InteractionType.Trigger)
         {
              _headUpIcon.gameObject.GetComponent<SpriteRenderer>().sprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Trigger");
-            _headUpIcon.transform.position = new Vector3(transform.position.x, transform.position.y + 1f, 0);
+            _headUpIcon.transform.position = new Vector3(transform.position.x, transform.position.y + 0.5f, 0);
         }
 
 
@@ -116,7 +116,10 @@ public class InteractionController : BaseController
     {
         UI_GameScene gameUI = Managers.UI.SceneUI as UI_GameScene;
         UI_GameWindow gameWindow = gameUI.GameWindow;
-        gameWindow.ShowScript(Scripts);
+        if(Scripts != null)
+        {
+            gameWindow.ShowScript(Scripts);
+        }
     }
 
     private IEnumerator CoInteract()

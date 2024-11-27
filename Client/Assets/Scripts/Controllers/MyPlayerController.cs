@@ -324,6 +324,7 @@ public class MyPlayerController : PlayerController
         {
             if (Managers.Object.FindCreature(destPos) == null)
             {
+                Debug.Log($"CellPos: {CellPos.x}, {CellPos.y}");
                 CellPos = destPos;
                 CheckIfPlayerAtPortal(destPos);
                 CheckIfPlayerAtItem();
@@ -461,7 +462,7 @@ public class MyPlayerController : PlayerController
         {
             for (int y = -1; y <= 1; y++)
             {
-                Vector3Int checkPos = playerCellPos + new Vector3Int(x, y, 0);
+                Vector3Int checkPos = playerCellPos + new Vector3Int(x+1, y+1, 0);
                 cc = Managers.Map.GetChest((Vector2Int)checkPos);
                 if (cc != null)
                 {
@@ -498,7 +499,7 @@ public class MyPlayerController : PlayerController
         {
             for (int y = -1; y <= 1; y++)
             {
-                Vector3Int checkPos = playerCellPos + new Vector3Int(x, y, 0);
+                Vector3Int checkPos = playerCellPos + new Vector3Int(x +1, y+1, 0);
                 ic = Managers.Map.GetInteraction((Vector2Int)checkPos);
                 if (ic != null)
                 {

@@ -88,7 +88,7 @@ public class UI_StoryPanel : UI_Popup
                     }
                 };
             }
-            SetConversationImage(name);
+            SetConversationImage(npcData.name);
             SetStoryTexts(script.script);
         }
     }

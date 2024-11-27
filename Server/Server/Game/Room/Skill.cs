@@ -219,11 +219,9 @@ namespace Server.Game
             switch (skillData.skillLogicType)
             {
                 case SkillLogicType.Block:
-                    
                     BlockAsync(skillData);
                     break;
-                default:
-                    
+                default:                    
                     ApplyBuff(skillData);
                     break;
             }
@@ -254,7 +252,7 @@ namespace Server.Game
         }
         private async void ApplyBuff(SkillData data)
         {
-            await Task.Delay((int)(1000 * data.term));
+            await Task.Delay((int)(1000 * data.terms[0]));
             // Buff 적용 로직
             if (data.buff != null)
             {
@@ -285,7 +283,7 @@ namespace Server.Game
 
         private async void ApplyDeBuff(SkillData data)
         {
-            await Task.Delay((int)(1000 * data.term));
+            await Task.Delay((int)(1000 * data.terms[0]));
             if (data.debuff != null)
             {
                 // Debuff 시작 시 로직
@@ -523,16 +521,16 @@ namespace Server.Game
                 {
                     if (i >= 1)
                     {
-                        await Task.Delay((int)((data.terms[i] - data.terms[i - 1]) / Owner.TotalAttackSpeed * 1000));
+                        await Task.Delay((int)((data.terms[i] - data.terms[i - 1]) * 1000));
                     }
                     else if (i == 0)
                     {
-                        await Task.Delay((int)((data.terms[i] / Owner.TotalAttackSpeed) * 1000));
+                        await Task.Delay((int)(data.terms[i]* 1000));
                     }
                 }
                 else if (data.term != 0)
                 {
-                    await Task.Delay((int)((data.term / Owner.TotalAttackSpeed) * 1000));
+                    await Task.Delay((int)(data.term* 1000));
                 }
                 foreach (Vector2Int pos in skillPos)
                 {

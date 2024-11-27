@@ -158,6 +158,9 @@
       "damage": "30",
       "skillType": "SkillProjectile",
       "skillLogicType": "MagicBall",
+      "terms": [
+        "0.3"
+      ],
       "projectile": {
         "speed": "5.0",
         "range": "10",
@@ -237,6 +240,9 @@
       "coolTime": "10",
       "damage": "30",
       "skillType": "SkillDebuff",
+      "terms": [
+        "0.5"
+      ],
       "debuff": {
         "id": "2",
         "name": "기절",
@@ -290,7 +296,11 @@
       "name": "사생결단",
       "coolTime": "150",
       "skillType": "SkillBuff",
+      "skillLogicType": "Invocation",
       "term": "3",
+      "terms": [
+        "3"
+      ],
       "buffList": [
         {
           "id": "5",
@@ -390,6 +400,9 @@
       "coolTime": "20",
       "skillType": "SkillMove",
       "skillLogicType": "Invocation",
+      "terms": [
+        "0.5"
+      ],
       "shape": {
         "shapeType": "ShapeLine",
         "range": "5.0",
@@ -404,6 +417,9 @@
       "coolTime": "6",
       "damage": "50",
       "range": "5",
+      "terms": [
+        "0.2"
+      ],
       "skillType": "SkillSpot",
       "skillLogicType": "SpotAttack",
       "shape": {

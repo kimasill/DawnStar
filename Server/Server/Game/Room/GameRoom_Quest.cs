@@ -244,9 +244,8 @@ namespace Server.Game
 
             Door door = Map.GetInteraction(doorId) as Door;
 
+            bool success = true;
             
-            S_Interaction interactionPacket = new S_Interaction();
-            interactionPacket.Success = true;
 
             if(door.IsOpen == false)
             {
@@ -256,7 +255,7 @@ namespace Server.Game
                     {
                         if (trigger == false)
                         {
-                            interactionPacket.Success = false;
+                            success = false;
                             break;
                         }
                     }
@@ -268,11 +267,11 @@ namespace Server.Game
                         Item key = player.Inven.FindByTemplateId(keyId);
                         if (key == null)
                         {
-                            interactionPacket.Success = false;
+                            success = false;
                             break;
                         }
                     }
-                    if(interactionPacket.Success)
+                    if(success)
                     {
                         foreach (var keyId in door.KeyItems)
                         {
@@ -282,18 +281,16 @@ namespace Server.Game
                     }
                 }                
             }
-            interactionPacket.ObjectId = doorId;
-            interactionPacket.InteractionType = InteractionType.Door;
+            S_Interaction interactionPacket = new S_Interaction()
+            {
+                Success = success,
+                ObjectId = doorId,
+                PlayerId = player.Id,
+                InteractionType = InteractionType.Door
+            };
             if (interactionPacket.Success)
             {
-                door.IsOpen = !door.IsOpen;
-                if (door.IsOpen)
-                    door.Open();
-                else
-                    door.Close();
-                
-                interactionPacket.PlayerId = player.Info.ObjectId;
-                interactionPacket.Success = door.IsOpen;                
+                door.OnInteraction();
                 player.Room.Broadcast(player.CellPos, interactionPacket);
             }
             else
@@ -314,7 +311,7 @@ namespace Server.Game
                 return;
             }
             bool success = true;
-            if (trigger.ActivationItems.Count>0 && trigger.IsActivated==false)
+            if (trigger.ActivationItems != null && trigger.IsActivated==false)
             {
                 foreach (var keyId in trigger.ActivationItems)
                 {
@@ -334,14 +331,16 @@ namespace Server.Game
                 }
             }
 
-            S_Interaction interactionPacket = new S_Interaction();
-            interactionPacket.Success = success;
+            S_Interaction interactionPacket = new S_Interaction()
+            {
+                Success = success,
+                ObjectId = triggerId,
+                PlayerId = player.Id,
+                InteractionType = InteractionType.Trigger
+            };
             if (success)
             {
-                trigger.OnInteraction();
-                interactionPacket.ObjectId = triggerId;
-                interactionPacket.PlayerId = player.Info.ObjectId;
-                interactionPacket.InteractionType = InteractionType.Door;
+                trigger.OnInteraction();                
                 player.Room.Broadcast(player.CellPos, interactionPacket);
             }
             else

@@ -17,7 +17,7 @@ namespace Server.Game.Room
         {
             Owner = owner;            
         }
-
+        private bool _initialize = false;
         public HashSet<GameObject> GatherObjects()
         {
             if (Owner == null || Owner.Room == null)
@@ -97,6 +97,13 @@ namespace Server.Game.Room
                 return;
             }
 
+            if(_initialize == false)
+            {
+                Owner.Room.PushAfter(500, Update);
+                _initialize = true;
+                return;
+            }
+                
             HashSet<GameObject> currentObjects = GatherObjects();
 
             // 기존에 없었는데 새로 생긴 애들 spawn
