@@ -9,7 +9,6 @@ public class MagicController : BaseController
     protected override void Init()
     {
         State = CreatureState.Moving;
-
         base.Init();
     }
 
@@ -25,7 +24,7 @@ public class MagicController : BaseController
     {
         Animator.speed = 1;
         Animator.Play("START");
-        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
         gameObject.SetActive(false);
         AfterAnimationAction?.Invoke();
     }

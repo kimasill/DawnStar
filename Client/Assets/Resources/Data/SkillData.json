@@ -342,14 +342,14 @@
       "coolTime": "20",
       "skillType": "SkillAttack",
       "skillLogicType": "Kinetic",
+      "range": "10",
       "count": "1",
       "terms": [
         "1.5"
-      ],      
+      ],
       "damage": "100",
       "shape": {
         "shapeType": "ShapeLine",
-        "range": "10.0",
         "direction": "DirectionBack"
       },
       "prefabs": [
