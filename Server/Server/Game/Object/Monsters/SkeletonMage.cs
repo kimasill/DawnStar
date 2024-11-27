@@ -48,12 +48,12 @@ namespace Server.Game
             int skillId = 23;
             LookAt(dir);
             SkillData skillData = null;
-            if (_blasterMinRange >= dist)
+            if (_blasterMinRange <= dist)
             {
                 skillId = 20;
                 DataManager.SkillDict.TryGetValue(skillId, out skillData);
                 AdditionalInvokeSpeed = (float)_blasterAttackDelay;
-                _coolTick = Environment.TickCount64 + (int)((_blasterDuration + Stat.InvokeSpeed) * 1000);
+                _coolTick = Environment.TickCount64 + (int)((_blasterDuration + Stat.InvokeSpeed + (int)(1 / TotalAttackSpeed)) * 1000);
                 if (Skill.HandleSkillCool(skillData) == false)
                 {                    
                     skillId = 23;

@@ -29,7 +29,7 @@
       "id": "6",
       "name": "WareHouseDoor",
       "multi": "true",
-      "scripts": [
+      "script": [
         "열쇠가 필요하다."
       ],
       "keyItems": [
@@ -40,7 +40,7 @@
       "id": "7",
       "name": "HiddenDoor",
       "multi": "true",
-      "scripts": [
+      "script": [
         "구석의 숨겨진 문. 무언가 있을것 같다."
       ]
     },
@@ -61,7 +61,7 @@
       "triggers": [
         "1001"
       ],
-      "scripts": [
+      "script": [
         "강력한 기운이 뿜어져 나오는 대문. 다른 장치의 조작이 필요하다."
       ]
     },
@@ -75,7 +75,7 @@
       "id": "1001",
       "name": "PrisonBossRoomTrigger",
       "multi": "true",
-      "scripts": [
+      "script": [
         "간수가 있는곳으로 들어가기 위한 장치"
       ],
       "targetInteraction": [

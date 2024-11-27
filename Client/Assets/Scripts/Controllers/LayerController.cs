@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static UnityEditor.PlayerSettings;
 
 public class LayerController : MonoBehaviour
 {
@@ -33,8 +34,35 @@ public class LayerController : MonoBehaviour
             if (spriteRenderer.sortingLayerName == "Object")
             {
                 Vector3Int cellPosition = _grid.WorldToCell(spriteRenderer.transform.position);
-                spriteRenderer.sortingOrder = -cellPosition.y;
+                spriteRenderer.sortingOrder += -cellPosition.y * 10;
             }
         }
+
+        TilemapRenderer[] tilemapRenderers = _grid.GetComponentsInChildren<TilemapRenderer>();
+        foreach (TilemapRenderer tilemapRenderer in tilemapRenderers)
+        {
+            if (tilemapRenderer.sortingLayerName == "Object")
+            {
+                Tilemap tilemap = tilemapRenderer.GetComponent<Tilemap>();
+                if (tilemap != null)
+                {
+                    AdjustTilemapSorting(tilemap, tilemapRenderer);
+                }
+            }
+        }
+    }
+    void AdjustTilemapSorting(Tilemap tilemap, TilemapRenderer tilemapRenderer)
+    {
+        BoundsInt bounds = tilemap.cellBounds;
+        int order = -100000;
+        foreach (Vector3Int pos in bounds.allPositionsWithin)
+        {
+            if (tilemap.HasTile(pos))
+            {
+                if (-pos.y > order)
+                    order = -pos.y;
+            }
+        }
+        tilemapRenderer.sortingOrder += order * 10;
     }
 }

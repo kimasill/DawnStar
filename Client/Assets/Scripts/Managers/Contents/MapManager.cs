@@ -317,6 +317,7 @@ public class MapManager
                         {
                             ic.CellPoses.Add(new Vector2Int(pos.x, pos.y));
                         }
+                        Debug.Log($"Interaction Pos:{pos.x},{pos.y}");
                     }
                 }
             }

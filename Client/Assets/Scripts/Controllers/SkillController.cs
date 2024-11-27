@@ -25,6 +25,17 @@ public class SkillController : MonoBehaviour
     {
         if (SkillData == null || User == null)
             yield break;
+        if (User is PlayerController)
+        {
+            if (SkillData.skillLogicType == SkillLogicType.Combat)
+            {
+                _animator.speed = User.TotalAttackSpeed;
+            }
+            else
+            {
+                _animator.speed = 1;
+            }
+        }
         // 스킬 애니메이션 재생
         PlayAnimation();
 
@@ -40,7 +51,7 @@ public class SkillController : MonoBehaviour
             UpdateUserSkillFlag();
         }
 
-        // 스킬 지속 시간 동안 대기
+        yield return new WaitForSeconds(0.01f);
         AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
         yield return new WaitForSeconds(stateInfo.length / _animator.speed); // SkillData에서 지속 시간 가져오기
 
@@ -51,25 +62,17 @@ public class SkillController : MonoBehaviour
     }
     private void PlayAnimation()
     {
-        if(User is PlayerController)
-        { 
-            if(SkillData.skillLogicType == SkillLogicType.Combat)
-            {
-                _animator.speed = User.TotalAttackSpeed;
-            }
-            else
-            {
-                _animator.speed = 1;
-            }
-        }
+        int sign = 1;
+        if (User is PlayerController)
+            sign = -1;
 
-        posX = -transform.localPosition.x;
+        posX = transform.localPosition.x;
         posY = transform.localPosition.y;
 
         switch (User.PosInfo.MoveDir)
         {
             case MoveDir.Up:
-                transform.localPosition = new Vector3(0, posX, 0);
+                transform.localPosition = new Vector3(0, -sign * posX, 0);
                 if(SkillData.skillType == SkillType.SkillAttack)
                 {
                     transform.rotation = Quaternion.Euler(0, 0, 90);
@@ -85,12 +88,12 @@ public class SkillController : MonoBehaviour
                 _sprite.flipX = false;
                 break;
             case MoveDir.Left:
-                    transform.localPosition = new Vector3(posX, posY, 0);
+                    transform.localPosition = new Vector3(-posX, posY, 0);
                     transform.rotation = Quaternion.Euler(0, 180, 0);
                     _sprite.flipX = false;
                 break;
             case MoveDir.Right:
-                    transform.localPosition = new Vector3(posX, posY, 0);
+                    transform.localPosition = new Vector3(sign*posX, posY, 0);
                     transform.rotation = Quaternion.Euler(0, 0, 0);
                     _sprite.flipX = false;
                 break;

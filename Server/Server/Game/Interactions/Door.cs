@@ -23,17 +23,29 @@ namespace Server.Game
             }
             IsOpen = false;
         }
+        public override void OnInteraction()
+        {
+            if (IsOpen)
+            {
+                Close();
+            }
+            else
+            {
+                Open();
+            }
+        }
         public void Open()
         {
             if (Room == null)
             {
                 return;
             }
-            IsOpen = true;
+            
             foreach (var cellPos in Cells)
             {
                 Room.Map.SetCollision(cellPos, false);
             }
+            IsOpen = true;
         }
 
         public void Close()
@@ -42,11 +54,12 @@ namespace Server.Game
             {
                 return;
             }
-            IsOpen = false;
             foreach (var cellPos in Cells)
             {
                 Room.Map.SetCollision(cellPos, true);
             }
+
+            IsOpen = false;
         }
 
         public override void OnTriggerEnter(int id)

@@ -13,6 +13,7 @@ public class CreatureController : BaseController
 	HpBar _hpBar;
 	StatInfo _stat = new StatInfo();
     protected Coroutine _coSkill;
+    protected Coroutine _coMovement;
     protected bool _rangedSkill = false;
 
     public float TotalAttackSpeed 
@@ -85,8 +86,23 @@ public class CreatureController : BaseController
 		_hpBar = go.GetComponent<HpBar>();
 		UpdateHpBar();
 	}
-
-	protected virtual void UpdateHpBar()
+    protected void StartSkillCoroutine(IEnumerator coroutine)
+    {
+        if (_coSkill != null)
+        {
+            StopCoroutine(_coSkill);
+        }
+        _coSkill = StartCoroutine(coroutine);
+    }
+    protected void StartMovementCoroutine(IEnumerator coroutine)
+    {
+        if (_coMovement != null)
+        {
+            StopCoroutine(_coMovement);
+        }
+        _coMovement = StartCoroutine(coroutine);
+    }
+    protected virtual void UpdateHpBar()
 	{
 		if (_hpBar == null)
 			return;
@@ -116,7 +132,7 @@ public class CreatureController : BaseController
     }
 	public virtual void OnHealed()
 	{
-		_coSkill = StartCoroutine("StartHeal");
+        StartSkillCoroutine(StartHeal());
     }
 
 	protected IEnumerator StartHeal()
@@ -141,7 +157,7 @@ public class CreatureController : BaseController
             return;
         if (skillData.prefab != null && skillData.IsObject != true)
         {
-            UseEffect(skillData, skill.Phase);
+             UseEffect(skillData, skill.Phase);
         }
     }
     public async void UseEffect(SkillData skillData, int phase = 0)
@@ -150,10 +166,6 @@ public class CreatureController : BaseController
         if(TotalInvokeDelay>0)
         {
             await Task.Delay((int)(1000 * TotalInvokeDelay));
-        }
-        if(gameObject == null)
-        {
-            return;
         }
 
         GameObject skillObj = null;
@@ -170,7 +182,13 @@ public class CreatureController : BaseController
             return;
 
         skillController.Init(skillData, gameObject);
-        StartCoroutine(skillController.ExecuteSkill());
+        if (_coSkill != null)
+        {
+            StopCoroutine(_coSkill);
+        }
+
+        // 새로운 코루틴 실행
+        StartSkillCoroutine(skillController.ExecuteSkill());
     }
     public bool IsPlayingDieAnimation()
     {
