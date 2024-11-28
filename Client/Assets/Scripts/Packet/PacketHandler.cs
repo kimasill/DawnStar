@@ -626,4 +626,13 @@ class PacketHandler
         InteractionController ic = Managers.Map.GetInteractionById(templateId:interactionPacket.ObjectId);
         ic.Interact(interactionPacket.Success, action);
     }
+    public static void S_BossKillHandler(PacketSession session, IMessage packet)
+    {
+        S_BossKill partyPacket = packet as S_BossKill;
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        Managers.Data.MonsterDict.TryGetValue(partyPacket.TemplateId, out MonsterData monsterData);
+        if(monsterData != null) {
+            gameSceneUI.NotificationUI.ShowBossKillNoti(monsterData.name);
+        }
+    }
 }

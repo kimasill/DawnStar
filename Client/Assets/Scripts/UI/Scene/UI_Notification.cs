@@ -11,6 +11,7 @@ public class UI_Notification : UI_Base
     [SerializeField] private Transform _itemNotiPanel;
     [SerializeField] private Transform _expNotiPanel;
     [SerializeField] private Transform _levelNotiPanel;
+    [SerializeField] private Transform _bossKillNotiPanel;
     [SerializeField] private int _maxNotis = 8;
     [SerializeField] private int _notiHeight = 50;
 
@@ -22,6 +23,7 @@ public class UI_Notification : UI_Base
     {
         if (_itemNotiPanel == null) { _itemNotiPanel = transform.Find("ItemNotiPanel"); }
         _levelNotiPanel.gameObject.SetActive(false);
+        _bossKillNotiPanel.gameObject.SetActive(false);
     }
 
     public void ShowItemNoti(Item item)
@@ -49,6 +51,13 @@ public class UI_Notification : UI_Base
             // 기존 알림이 없으면 바로 새로운 알림 생성
             CreateNewItemNoti(icon, itemData.name, item.Count);
         }
+    }
+    public void ShowBossKillNoti(string bossName)
+    {
+        _bossKillNotiPanel.gameObject.SetActive(true);
+        TMP_Text notiText = _bossKillNotiPanel.GetComponentInChildren<TMP_Text>();
+        notiText.text = $"{bossName} 처치!";
+        StartCoroutine(HideNoti(_bossKillNotiPanel.gameObject));
     }
     public void ShowExpNoti(int exp)
     {

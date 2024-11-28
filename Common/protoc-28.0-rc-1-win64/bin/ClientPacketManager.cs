@@ -93,7 +93,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SChangeAdditionalStat, MakePacket<S_ChangeAdditionalStat>);
 		_handler.Add((ushort)MsgId.SChangeAdditionalStat, PacketHandler.S_ChangeAdditionalStatHandler);		
 		_onRecv.Add((ushort)MsgId.SEffect, MakePacket<S_Effect>);
-		_handler.Add((ushort)MsgId.SEffect, PacketHandler.S_EffectHandler);
+		_handler.Add((ushort)MsgId.SEffect, PacketHandler.S_EffectHandler);		
+		_onRecv.Add((ushort)MsgId.SBossKill, MakePacket<S_BossKill>);
+		_handler.Add((ushort)MsgId.SBossKill, PacketHandler.S_BossKillHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

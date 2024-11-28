@@ -16,6 +16,8 @@ namespace Server.Data
         public int MaxHp;
         public int Attack;
         public int Defence;
+        public int Accuracy;
+        public int Avoid;
         public float Speed;
         public float AttackSpeed;
         public float InvokeSpeed;

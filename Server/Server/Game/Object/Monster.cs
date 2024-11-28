@@ -415,8 +415,10 @@ namespace Server.Game
                 _respawnTime = _respawnTime * 10;
             }                
             else if (monsterData.grade == MonsterGrade.Boss)
-            {
+            {   
                 room.CheckBossRewards(_target, monsterData.rewardBoxId);
+                S_BossKill bossKillPacket = new S_BossKill() { TemplateId = TemplateId };
+                room.Broadcast(CellPos, bossKillPacket);
                 return;
             }
                 

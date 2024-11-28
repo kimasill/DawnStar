@@ -64,6 +64,7 @@ enum MsgId {
   S_CHANGE_ADDITIONAL_STAT = 56;
   C_REQUEST_STAT = 57;
   S_EFFECT = 58;
+  S_BOSS_KILL = 59;
 }
 enum CreatureState{
   IDLE = 0;
@@ -550,6 +551,10 @@ message S_Interaction{
 	int32 playerId = 2;
 	bool success = 3;
 	InteractionType interactionType =4;
+}
+
+message S_BossKill{
+	int32 templateId = 1;
 }
 
 message LobbyPlayerInfo{
