@@ -62,7 +62,8 @@ namespace Data
         public string prefab;
         public List<string> prefabs;
         public string icon;
-        public bool IsObject;
+        public bool isObject;
+        public bool fix;
     }
     public class ShapeInfo
     {

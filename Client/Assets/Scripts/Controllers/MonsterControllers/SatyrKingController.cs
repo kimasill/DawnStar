@@ -40,7 +40,8 @@ public class SatyrKingController : MonsterController
     }
     IEnumerator StartEffectCoroutine()
     {
-        yield return StartCoroutine(UseEffect("Effect/Pulling"));
-        yield return StartCoroutine(UseEffect("Effect/Pulling"));
+        UseEffect("Effect/Pulling");
+        yield return new WaitForSeconds(0.4f);
+        UseEffect("Effect/Pulling");
     }
 }

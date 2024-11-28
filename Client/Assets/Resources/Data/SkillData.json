@@ -167,6 +167,10 @@
         "prefab": "Magic/PoisonExplosion",
         "isHoming": "true"
       },
+      "shape": {
+        "shapeType": "ShapeCircle",
+        "range": "1.0"
+      },
       "debuff": {
         "id": "1",
         "name": "독",
@@ -228,7 +232,7 @@
       "skillLogicType": "Pull",
       "shape": {
         "shapeType": "ShapeCircle",
-        "range": "10.0"
+        "range": "5.0"
       },
       "unchartedPoint": "20",
       "description": "주변적을 자신으로 끌어당긴다.",
@@ -272,7 +276,7 @@
     {
       "id": "17",
       "name": "본 스웜",
-      "coolTime": "20",
+      "coolTime": "10",
       "damage": "50",
       "count": "10",
       "term": "0.7",
@@ -284,7 +288,7 @@
       "skillLogicType": "Summon",
       "shape": {
         "shapeType": "ShapeCircle",
-        "range": "3.0"
+        "range": "1.0"
       },
       "prefab": "Magic/BoneSwarm",
       "isObject": "true",
@@ -334,7 +338,8 @@
       "unchartedPoint": "100",
       "description": "일정시간동안 치명타확률, 치명타데미지, 이동속도, 공격속도가 증가한다.",
       "prefab": "Effect/DeadlyDecision",
-      "isObject": "false"
+      "isObject": "false",
+      "fix": "true"
     },
     {
       "id": "19",
@@ -356,9 +361,10 @@
         "Effect/DarkSacrifice",
         "Effect/Blood_m"
       ],
-      "isObject": "false",
       "unchartedPoint": "20",
-      "description": "뒤에서 적을 공격하여 강력한 피해를 준다."
+      "description": "적 뒤로이동한 후, 공격하여 강력한 피해를 준다.",
+      "isObject": "false",
+      "fix": "true"
     },
     {
       "id": "20",
@@ -392,7 +398,9 @@
         "isPercent": "false"
       },
       "unchartedPoint": "20",
-      "description": "일정시간동안 생명력을 회복한다."
+      "description": "일정시간동안 생명력을 회복한다.",
+      "isObject": "false",
+      "fix": "true"
     },
     {
       "id": "22",
@@ -400,12 +408,12 @@
       "coolTime": "20",
       "skillType": "SkillMove",
       "skillLogicType": "Invocation",
+      "range" :  "5",
       "terms": [
         "0.5"
       ],
       "shape": {
         "shapeType": "ShapeLine",
-        "range": "5.0",
         "direction": "DirectionBack"
       },
       "unchartedPoint": "20",
@@ -442,7 +450,8 @@
       "isObject": "true",
       "prefab": "Magic/Icing",
       "unchartedPoint": "20",
-      "description": "좁은 범위를 순간적으로 동결시킨다."
+      "description": "좁은 범위를 순간적으로 동결시킨다.",
+      "fix": "true"
     }
   ]
 } 

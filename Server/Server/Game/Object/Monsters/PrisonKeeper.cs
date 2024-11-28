@@ -107,62 +107,24 @@ namespace Server.Game.Object.Monsters
             }
 
             LookAt(dir);
-            int skillId = 1;
-            SkillData skillData = null;
+            AdditionalInvokeSpeed = 0;
             if (_isInPhaseTwo)
             {
                 if (dist > _skillRange)
                 {
-                    skillId = AssassinateSkillId;
-                    AdditionalInvokeSpeed = (float)AssassinateInvokeTime;
-                    _coolTick = (int)(Environment.TickCount64 + (1000 / TotalAttackSpeed) + AssassinateInvokeTime*1000);
-                    DataManager.SkillDict.TryGetValue(skillId, out skillData);
-                    if (skillData == null || Skill.HandleSkillCool(skillData) == false)
-                    {
-                        SkillRange = _skillRange;
-                        State = CreatureState.Moving;
-                        BroadcastMove();
-                        return;
-                    }
+                    UseSkill(AssassinateSkillId, true);
                 }
-                if(dist <= _skillRange && dist > 1) 
+                else if(dist <= _skillRange && dist > 1) 
                 {
-                    skillId = 17;
-                    AdditionalInvokeSpeed = (float)(SkillInvokeTime - TotalInvokeSpeed);
-                    _coolTick = (int)(Environment.TickCount64 + (1000 / TotalAttackSpeed));
-                    DataManager.SkillDict.TryGetValue(skillId, out skillData);
-                    SkillRange = _assassinateRange;
-                    if (skillData == null || Skill.HandleSkillCool(skillData) == false)
-                    {
-                        SkillRange = 1;
-                        State = CreatureState.Moving;
-                        BroadcastMove();
-                        return;                        
-                    }
+                    UseSkill(17);
                 }
             }
-            if (skillId == 1)
+            if (dist <= 1)
             {
-                AdditionalInvokeSpeed = 0;
-                UseSkill(skillId);
-                if (_isInPhaseTwo)
-                {
-                    SkillRange = _assassinateRange;
-                }
-                
-                return;
-            }
-            S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
-            skillPacket.ObjectId = Id;
-            skillPacket.Info.SkillId = skillData.id;
-            Room.Broadcast(CellPos, skillPacket);
-
-            if (_target != null) // _target null 확인
-            {
-                Skill.StartSkill(this, skillData, _target);
-            }
+                UseSkill(1);
+            }          
         }
-        private void UseSkill(int skillId, int phase = 0, bool term = false)
+        private void UseSkill(int skillId, bool term = false)
         {
             SkillData skillData = null;
             DataManager.SkillDict.TryGetValue(skillId, out skillData);
@@ -176,20 +138,87 @@ namespace Server.Game.Object.Monsters
             S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
             skillPacket.ObjectId = Id;
             skillPacket.Info.SkillId = skillData.id;
-            if (phase != 0)
-            {
-                skillPacket.Phase = phase;
-            }
             Room.Broadcast(CellPos, skillPacket);
             Skill.StartSkill(this, skillData, _target);
             if (term)
             {
-                _coolTick = (int)(Environment.TickCount64 + (1000 * skillData.terms[0]));
+                _coolTick = (int)(Environment.TickCount64 + (1000 * skillData.terms[0]) + 1000 * SkillInvokeTime);
             }
             else
             {
                 _coolTick = (int)(Environment.TickCount64 + (1000 / TotalAttackSpeed));
             }
+        }
+
+        protected override void UpdateMoving()
+        {
+            if (_nextMoveTick > Environment.TickCount64)
+                return;
+            int moveTick = (int)(1000 / Speed);
+            _nextMoveTick = Environment.TickCount64 + moveTick;
+
+            if (_target == null || _target.Room != Room)
+            {
+                _target = null;
+                State = CreatureState.Idle;
+                BroadcastMove();
+                return;
+            }
+
+            Vector2Int dir = _target.CellPos - CellPos;
+            int dist = dir.cellDistanceFromZero;
+            if (dist == 0 || dist > _chaseRange)
+            {
+                _target = null;
+                State = CreatureState.Idle;
+                BroadcastMove();
+                return;
+            }
+
+            List<Vector2Int> path = Room.Map.FindPath(CellPos, _target.CellPos);
+            if (path.Count < 2 || path.Count > _chaseRange)
+            {
+                _target = null;
+                State = CreatureState.Idle;
+                BroadcastMove();
+                return;
+            }
+            SkillData skillData = null;
+                       
+            if(_isInPhaseTwo)
+            {
+                if (_skillRange < dist && dist <= _assassinateRange)
+                {                    
+                    DataManager.SkillDict.TryGetValue(AssassinateSkillId, out skillData);
+                    if (Skill.HandleSkillCool(skillData, peek:true) == true) // skillData null 확인
+                    {
+                        _coolTick = 0;
+                        State = CreatureState.Skill;
+                        return;
+                    }
+                }
+                else if (dist <= _skillRange && dist > 1)
+                {
+                    DataManager.SkillDict.TryGetValue(17, out skillData);
+                    if (Skill.HandleSkillCool(skillData, peek: true) == true) // skillData null 확인
+                    {
+                        _coolTick = 0;
+                        State = CreatureState.Skill;
+                        return;
+                    }
+                }
+            }
+
+            if (dist <= 1 && (dir.x == 0 || dir.y == 0))
+            {
+                _coolTick = 0;
+                State = CreatureState.Skill;
+                return;
+            }
+
+            UpdateDir(path[1]);
+            Room.Map.ApplyMove(this, path[1]);
+            BroadcastMove();
         }
     }
 }

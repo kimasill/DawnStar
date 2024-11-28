@@ -12,7 +12,7 @@ public class CreatureController : BaseController
 {
 	HpBar _hpBar;
 	StatInfo _stat = new StatInfo();
-    protected Coroutine _coSkill;
+    protected List<Coroutine> _coSkills = new List<Coroutine>();
     protected Coroutine _coMovement;
     protected bool _rangedSkill = false;
 
@@ -88,11 +88,8 @@ public class CreatureController : BaseController
 	}
     protected void StartSkillCoroutine(IEnumerator coroutine)
     {
-        if (_coSkill != null)
-        {
-            StopCoroutine(_coSkill);
-        }
-        _coSkill = StartCoroutine(coroutine);
+        Coroutine co = StartCoroutine(coroutine);
+        _coSkills.Add(co);
     }
     protected void StartPsychicsCoroutine(IEnumerator coroutine)
     {
@@ -179,38 +176,50 @@ public class CreatureController : BaseController
         Managers.Data.SkillDict.TryGetValue(SkillId, out skillData);
         if (skillData == null)
             return;
-        if (skillData.prefab != null && skillData.IsObject != true)
+        if ((skillData.prefab != null || skillData.prefabs != null) && skillData.isObject != true)
         {
-             UseEffect(skillData, skill.Phase);
+            UseSkillEffect(skillData, skill.Phase);
         }
     }
-    public async void UseEffect(SkillData skillData, int phase = 0)
+    public async void UseSkillEffect(SkillData skillData, int phase = 0)
     {
         // 스킬 이펙트 생성 및 초기화
         if(TotalInvokeDelay>0)
         {
             await Task.Delay((int)(1000 * TotalInvokeDelay));
         }
-
+        if (gameObject == null)
+            return;
         GameObject skillObj = null;
         if (skillData.prefabs!=null)
         {
-            skillObj = Managers.Resource.Instantiate($"{skillData.prefabs[phase]}", transform);
+            if (skillData.fix)
+            {
+                UseEffect(skillData.prefabs[phase]);
+                return;
+            }
+            else
+            {
+                skillObj = Managers.Resource.Instantiate($"{skillData.prefabs[phase]}", transform);
+            }           
         }
         else
         {
-            skillObj = Managers.Resource.Instantiate($"{skillData.prefab}", transform);
+            if (skillData.fix)
+            {
+                UseEffect(skillData.prefab);
+                return;
+            }
+            else
+            {
+                skillObj = Managers.Resource.Instantiate($"{skillData.prefab}", transform);
+            }   
         }
         SkillController skillController = skillObj.GetComponent<SkillController>();
         if (skillController == null)
             return;
 
         skillController.Init(skillData, gameObject);
-        if (_coSkill != null)
-        {
-            StopCoroutine(_coSkill);
-        }
-
         // 새로운 코루틴 실행
         StartSkillCoroutine(skillController.ExecuteSkill());
     }

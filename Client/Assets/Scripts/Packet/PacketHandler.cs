@@ -127,7 +127,7 @@ class PacketHandler
         {
             return;
         }
-        bc.UseEffect(effectPacket.Prefab);
+         bc.UseEffect(effectPacket.Prefab);
     }
 
     public static void S_ChangeHpHandler(PacketSession session, IMessage packet)
@@ -293,18 +293,8 @@ class PacketHandler
             return;
         }
         CreatureController cc = go.GetComponent<CreatureController>();
-        if (changePosPacket.Position.State == CreatureState.Skill)
-        {
-            cc.PosInfo.PosX = changePosPacket.Position.PosX;
-            cc.PosInfo.PosY = changePosPacket.Position.PosY;
-            cc.PosInfo.LookDir = changePosPacket.Position.LookDir;
-            cc.UpdatePositionSmooth();
-        }
-        else
-        {
-            cc.PosInfo = changePosPacket.Position;
-            cc.SyncPos();
-        }
+        cc.PosInfo = changePosPacket.Position;
+        cc.SyncPos();
         
     }
 

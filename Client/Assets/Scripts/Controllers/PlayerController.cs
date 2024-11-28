@@ -142,9 +142,9 @@ public class PlayerController : CreatureController
         Managers.Data.SkillDict.TryGetValue(SkillId, out skillData);
         if (skillData == null)
             return;
-        if (skillData.prefab != null && skillData.IsObject != true)
+        if (skillData.prefab != null && skillData.isObject != true)
         {
-            UseEffect(skillData, skill.Phase);
+            UseSkillEffect(skillData, skill.Phase);
         }
         StartPsychicsCoroutine(CoUseSkill());
     }
@@ -158,31 +158,6 @@ public class PlayerController : CreatureController
         CheckUpdatedFlag();
     }
     
-    private IEnumerator CoStartShootArrow()
-    {
-        // 대기 시간
-        _rangedSkill = true;
-        _isAttacking = true;
-        State = CreatureState.Skill;
-        Animator.speed = TotalAttackSpeed;
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
-        Animator.speed = 1.0f;
-        State = CreatureState.Idle;
-        _coSkill = null;
-        _isAttacking = false;
-        CheckUpdatedFlag();
-    }
-    private IEnumerator CoStartBasicAttack()
-    {
-        Animator.speed = TotalAttackSpeed;
-        AnimatorStateInfo stateInfo = Animator.GetCurrentAnimatorStateInfo(0);
-        yield return new WaitForSeconds(stateInfo.length / Animator.speed); // SkillData에서 지속 시간 가져오기
-        Animator.speed = 1.0f;
-        State = CreatureState.Idle;
-        _coSkill = null;
-        UpdateSkillFlag(false);
-        CheckUpdatedFlag();
-    }
     protected virtual void CheckUpdatedFlag(){ }
 	public override void OnDamaged()
 	{
@@ -197,7 +172,6 @@ public class PlayerController : CreatureController
         }
         else
         {
-            _coSkill = null;
             _isAttacking = false;
         }
     }

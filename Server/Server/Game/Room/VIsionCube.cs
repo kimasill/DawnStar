@@ -99,7 +99,7 @@ namespace Server.Game.Room
 
             if(_initialize == false)
             {
-                Owner.Room.PushAfter(500, Update);
+                Owner.Room.PushAfter(1000, Update);
                 _initialize = true;
                 return;
             }

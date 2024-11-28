@@ -711,11 +711,11 @@
     },
     {
       "id": "1156",
-      "name": "지하 창고 열쇠",
+      "name": "감옥 지하창고 열쇠",
       "maxCount": "9999",
       "materialType": "Drop",
       "price": "100",
-      "iconPath": "Textures/Item/Materials/Drop/PrisonKey_1",
+      "iconPath": "Textures/Item/Materials/Drop/Prison_Key",
       "description": "알맞는 문이 있을것 같다."
     },
     {

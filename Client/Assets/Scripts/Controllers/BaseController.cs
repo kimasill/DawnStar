@@ -8,6 +8,7 @@ public class BaseController : MonoBehaviour
 {
     public int Id { get; set; }
     StatInfo _stat = new StatInfo();
+    protected List<Coroutine> _coEffects = new List<Coroutine>();
     public virtual StatInfo Stat
     {
         get { return _stat; }
@@ -368,12 +369,18 @@ public class BaseController : MonoBehaviour
         uiDamage.ShowDamage(transform.position);
     }
 
-    protected virtual void MoveToNextPos()
+    protected virtual void MoveToNextPos(){}
+    protected virtual void StartEffectCoroutine(IEnumerator coroutine)
     {
-
+        Coroutine co = StartCoroutine(coroutine);
+        _coEffects.Add(co);
     }
 
-    public IEnumerator UseEffect(string prefab)
+    public virtual void UseEffect(string prefab)
+    {
+        StartEffectCoroutine(CoUseEffect(prefab));
+    }
+    public virtual IEnumerator CoUseEffect(string prefab)
     {
         GameObject effect = Managers.Resource.Instantiate(prefab, transform);
         Animator animator = effect.GetComponent<Animator>();

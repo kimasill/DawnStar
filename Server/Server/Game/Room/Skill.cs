@@ -21,7 +21,7 @@ namespace Server.Game
     {
         List<GameObject> _targetList = new List<GameObject>();
         GameObject _target = null;
-        private Queue<(SkillData skillData, GameObject target, int range)> _skillQueue = new Queue<(SkillData, GameObject, int)>();
+        private List<(SkillData skillData, GameObject target, int range)> _skillList = new List<(SkillData, GameObject, int)>();
         Dictionary<int, long> _skillCooldowns = new Dictionary<int, long>();
         public GameObject Owner { get; set; }
         public Skill(GameObject owner)
@@ -64,30 +64,43 @@ namespace Server.Game
             {
                 range += addRange;
             }
-            _skillQueue.Enqueue((skillData, target, range));
-            switch (skillData.skillType)
-            {
-                case SkillType.SkillAttack:
-                    HandleAttackSkill(skillData.skillLogicType);
-                    break;
-                case SkillType.SkillProjectile:
-                    HandleProjectileSkill(skillData.skillLogicType);
-                    break;
-                case SkillType.SkillSpot:
-                    HandleSpotSkill(skillData.skillLogicType);
-                    break;
-                case SkillType.SkillBuff:
-                    HandleBuffSkill(skillData);
-                    break;
-                case SkillType.SkillDebuff:
-                    HandleDebuffSkill(skillData);
-                    break;
-                case SkillType.SkillMove:
-                    HandleMoveSkill(skillData);
-                    break;
-            }
+            _skillList.Add((skillData, target, range));
+            Update();
         }
-        public bool HandleSkillCool(SkillData skillData, bool attackSpeed = false, float time = 0)
+        public void Update() // Update 메서드 추가
+        {
+            for (int i = 0; i < _skillList.Count; i++) // List 순회
+            {
+                var skill = _skillList[i];
+                SkillData data = skill.skillData;
+                int range = skill.range;
+                GameObject target = skill.target;
+
+                switch (data.skillType)
+                {
+                    case SkillType.SkillAttack:
+                        HandleAttackSkill(data, range, target);
+                        break;
+                    case SkillType.SkillProjectile:
+                        HandleProjectileSkill(data);
+                        break;
+                    case SkillType.SkillSpot:
+                        HandleSpotSkill(data, target);
+                        break;
+                    case SkillType.SkillBuff:
+                        HandleBuffSkill(data);
+                        break;
+                    case SkillType.SkillDebuff:
+                        HandleDebuffSkill(data);
+                        break;
+                    case SkillType.SkillMove:
+                        HandleMoveSkill(data);
+                        break;
+                }
+            }
+            _skillList.Clear(); // List 초기화
+        }
+        public bool HandleSkillCool(SkillData skillData, bool attackSpeed = false, float time = 0, bool peek = false)
         {
             bool coolDown = true;
             long currentTime = Environment.TickCount64;
@@ -96,13 +109,16 @@ namespace Server.Game
             {
                 if (cooldownEnd > currentTime)
                 {
-                    // 쿨타임이 끝나지 않았음
                     coolDown = false;
                     if (time != 0)
                     {
                         _skillCooldowns[skillData.id] += (long)(time * 1000);
                     }
                 }
+            }
+            if(peek)
+            {
+                return coolDown;
             }
 
             if (coolDown)
@@ -133,18 +149,12 @@ namespace Server.Game
             return coolDown;
         }
         #region LogicDivide
-        public void HandleAttackSkill(SkillLogicType skillLogic)
-        {
-            _skillQueue.TryDequeue(out var skill);
-            SkillData data = skill.skillData;
-            if (data.skillLogicType != skillLogic)
-            {
-                return;
-            }
-            switch (skillLogic)
+        public void HandleAttackSkill(SkillData data, int range, GameObject target)
+        {   
+            switch (data.skillLogicType)
             {
                 case SkillLogicType.Basicattack:
-                    BasicAttakAsync(data, skill.range);
+                    BasicAttakAsync(data, range);
                     return;
                 case SkillLogicType.Knockback:
                     KnockBack(data);
@@ -153,30 +163,23 @@ namespace Server.Game
                     CombatAsync(data);
                     return;
                 case SkillLogicType.Pull:
-                    Pull(data, skill.range);
+                    Pull(data, range);
                     return;
                 case SkillLogicType.Summon:
-                    SummonAttack(data, skill.range, skill.target);
+                    SummonAttack(data, range, target);
                     return;
                 case SkillLogicType.Kinetic:
-                    KineticAttack(data , skill.range, skill.target);
+                    KineticAttack(data , target);
                     return;
                 case SkillLogicType.Invocation:
-                    InvokeSkill(data, skill.target);
+                    InvokeSkill(data, target);
                     return;
                 default: return;
             }
         }
-        public async void HandleProjectileSkill(SkillLogicType skillLogic)
+        public async void HandleProjectileSkill(SkillData data)
         {
-            _skillQueue.TryDequeue(out var skill);
-            SkillData data = skill.skillData;
-            if(data.skillLogicType != skillLogic)
-            {
-                return;
-            }
-
-            switch (skillLogic) 
+            switch (data.skillLogicType) 
             {
                 case SkillLogicType.Magicball:
                     await Task.Delay((int)(1000*Owner.TotalInvokeSpeed));
@@ -186,16 +189,10 @@ namespace Server.Game
                 default: return;
             }            
         }
-        public void HandleSpotSkill(SkillLogicType skillLogic)
+        public void HandleSpotSkill(SkillData data, GameObject target)
         {
-            _skillQueue.TryDequeue(out var skill);
-            SkillData data = skill.skillData;
             List<Vector2Int> skillPos = null;
-            if (data.skillLogicType != skillLogic)
-            {
-                return;
-            }
-            switch (skillLogic)
+            switch (data.skillLogicType)
             {
                 case SkillLogicType.Spotattack:
                     if (data.spot.maxCount - data.spot.minCount > 0)
@@ -204,7 +201,7 @@ namespace Server.Game
                     }
                     else if(data.spot.maxCount == 1)
                     {
-                        skillPos = [skill.target.CellPos];
+                        skillPos = [target.CellPos];
                     }
                     if (skillPos.Count == 0)
                     {
@@ -252,7 +249,7 @@ namespace Server.Game
         }
         private async void ApplyBuff(SkillData data)
         {
-            await Task.Delay((int)(1000 * data.terms[0]));
+            await Task.Delay((int)(1000 * data.term));
             // Buff 적용 로직
             if (data.buff != null)
             {
@@ -283,7 +280,7 @@ namespace Server.Game
 
         private async void ApplyDeBuff(SkillData data)
         {
-            await Task.Delay((int)(1000 * data.terms[0]));
+            await Task.Delay((int)(1000 * data.term));
             if (data.debuff != null)
             {
                 // Debuff 시작 시 로직
@@ -564,7 +561,7 @@ namespace Server.Game
             {
                 if (data.shape.shapeType == ShapeType.ShapeLine)
                 {
-                    destPos = Owner.CellPos + new Vector2Int((int)(dir.x * data.shape.range), (int)(dir.y * data.shape.range));
+                    destPos = Owner.CellPos + new Vector2Int(dir.x * data.range, dir.y * data.range);
 
                     if (!Owner.Room.Map.CanGo(destPos))
                     {
@@ -675,7 +672,7 @@ namespace Server.Game
 
             Owner.Room.Push(Owner.Room.EnterGame, summon, false);            
         }
-        private async void KineticAttack(SkillData data, int range, GameObject target = null)
+        private async void KineticAttack(SkillData data,  GameObject target = null)
         {
             for(int i = 0; i < data.count; i++)
             {
@@ -683,7 +680,7 @@ namespace Server.Game
                 MoveSkill(data, target);
 
                 int dist = (Owner.CellPos - target.CellPos).cellDistanceFromZero;
-                if (target != null && dist < range)
+                if (target != null && dist < data.range)
                 {
                     S_Effect effectPacket = new S_Effect();
                     effectPacket.ObjectId = target.Id;
