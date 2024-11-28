@@ -29,12 +29,4 @@ public class MonsterController : CreatureController
     {
         base.UseSkill(skill);
     }
-    protected IEnumerator CoStartBasicAttack()
-    {
-        // 대기 시간
-        _rangedSkill = false;      
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
-        State = CreatureState.Idle;
-        _coSkill = null;
-    }
 }

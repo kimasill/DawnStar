@@ -22,14 +22,13 @@ namespace Server.Game
         private int _coolTick = 0;
         public override async void  Update()
         {
-            if (Data == null || Data.spot == null || Owner == null || Room == null)
+            if (Data == null || Owner == null || Room == null)
                 return;
-
-            int tick = (int)(1000 / Data.terms[0]);
-
+            
+            int tick = (int)(1000 * Data.terms[0]);
             if (_count == 0)
             {
-                await Task.Delay((int)(1000 *Data.term));
+                await Task.Delay((int)(1000 * Data.term));
                 _count = 1;
             }
             
@@ -40,9 +39,8 @@ namespace Server.Game
                 Room.Push(Room.LeaveGame, Id);
                 return;
             }
-
-            Vector2Int summonPos = Target != null ? Target.CellPos : Owner.CellPos;
-            List<Vector2Int> attackTiles = SkillLogic.GetAllTargetsInRange(summonPos, (int)Range);
+            
+            List<Vector2Int> attackTiles = SkillLogic.GetAllTargetsInRange(CellPos, (int)Range);
             foreach (Vector2Int pos in attackTiles)
             {
                 GameObject target = Owner.Room.Map.Find(pos);

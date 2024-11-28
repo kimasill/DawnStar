@@ -12,21 +12,21 @@ public class PrisonKeeperController : MonsterController
     }
     protected override void UpdateAnimation()
     {
-        if (Animator == null)
+        if (Animator == null || _sprite == null)
         {
             return;
         }
         if (State == CreatureState.Skill)
         {
             if (SkillId == 1)
-                Animator.Play("ATTACK");
+                StartPsychicsCoroutine(PlayAnimationClip(Animator, "ATTACK"));
             else if (SkillId == 17)
-                Animator.Play("SKILL");
+                StartPsychicsCoroutine(PlayAnimationClip(Animator, "SKILL"));
             else if (SkillId == 19)
-                Animator.Play("SKILL");
+                StartPsychicsCoroutine(PlayAnimationClip(Animator, "IDLE"));
             else if (SkillId == 18)
             {
-                Animator.Play("IDLE");
+                StartPsychicsCoroutine(PlayAnimationClip(Animator, "IDLE"));
                 _phase = 2;
             }
             switch (LookDir)

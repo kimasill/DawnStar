@@ -106,9 +106,9 @@ namespace Server.Game
         {
             List<Vector2Int> tiles = new List<Vector2Int>();
 
-            for (int x = -range/2; x < range/2 + 1; x++)
+            for (int x = -range; x <= range; x++)
             {
-                for (int y = -range / 2; y < range /2 + 1; y++)
+                for (int y = -range; y <= range; y++)
                 {
                     Vector2Int tile = center + new Vector2Int(x, y);
                     tiles.Add(tile);

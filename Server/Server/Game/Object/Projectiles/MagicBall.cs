@@ -88,7 +88,7 @@ namespace Server.Game
         }        
         public void ExplosionDamage()
         {
-            List<Vector2Int> targetPositions = SkillLogic.GetAllTargetsInRange(CellPos, Data.range);
+            List<Vector2Int> targetPositions = SkillLogic.GetAllTargetsInRange(CellPos, (int)Data.shape.range);
 
             foreach (Vector2Int pos in targetPositions)
             {
