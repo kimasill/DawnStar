@@ -2404,7 +2404,7 @@ PrefabInstance:
     - target: {fileID: 5962302045281053152, guid: 20d3bcf9de4469a4d889ca6c92dff1b1,
         type: 3}
       propertyPath: m_Size
-      value: 0.9999983
+      value: 0.9999982
       objectReference: {fileID: 0}
     - target: {fileID: 5962302045281053152, guid: 20d3bcf9de4469a4d889ca6c92dff1b1,
         type: 3}
@@ -2500,7 +2500,7 @@ PrefabInstance:
     - target: {fileID: 8445886407060104869, guid: 20d3bcf9de4469a4d889ca6c92dff1b1,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.0010206389
+      value: 0.00087438733
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -2527,6 +2527,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI_Notification
       objectReference: {fileID: 0}
+    - target: {fileID: 2532704838928179222, guid: a8d678b3170bc2649ac44625110695d0,
+        type: 3}
+      propertyPath: _bossKillNotiPanel
+      value: 
+      objectReference: {fileID: 6150787448650565065}
     - target: {fileID: 2846826311606495392, guid: a8d678b3170bc2649ac44625110695d0,
         type: 3}
       propertyPath: m_IsActive
@@ -2657,6 +2662,12 @@ PrefabInstance:
 --- !u!224 &4487260307435748516 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5762990320989931626, guid: a8d678b3170bc2649ac44625110695d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 8196465904879695054}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &6150787448650565065 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2658336305054478599, guid: a8d678b3170bc2649ac44625110695d0,
     type: 3}
   m_PrefabInstance: {fileID: 8196465904879695054}
   m_PrefabAsset: {fileID: 0}
