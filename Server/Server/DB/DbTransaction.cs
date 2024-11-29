@@ -660,6 +660,43 @@ namespace Server.DB
                 }
             });
         }
+        public static void SaveInteractionDb(Player player, InteractionDb interactionDb, GameRoom room)
+        {
+            if (player == null || interactionDb == null)
+                return;
+
+            Instance.Push(() =>
+            {
+                using (AppDbContext db = new AppDbContext())
+                {
+                    InteractionDb existingInteractionDb = db.Interactions
+                        .Where(i => i.TemplateId == interactionDb.TemplateId && i.PlayerDbId == player.PlayerDbId)
+                        .FirstOrDefault();
+                    if (existingInteractionDb == null)
+                    {
+                        db.Interactions.Add(interactionDb);
+                    }
+                    else
+                    {
+                        existingInteractionDb = interactionDb;
+                    }
+                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                    if (success)
+                    {
+                        room.Push(() =>
+                        {
+                            {
+                                S_Interaction interactPacket = new S_Interaction();
+                                interactPacket.PlayerId = interactionDb.PlayerDbId;
+                                interactPacket.ObjectId = interactionDb.TemplateId;                                
+                                interactPacket.Success = true;                                
+                                player.Session.Send(interactPacket);
+                            }
+                        });
+                    }
+                }
+            });
+        }
     }
 
 }

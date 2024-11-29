@@ -8,7 +8,7 @@ public abstract class BaseScene : MonoBehaviour
 {
     public Define.Scene SceneType { get; protected set; } = Define.Scene.Unknown;
     Dictionary<int, GameObject> _npcs = new Dictionary<int, GameObject>();
-
+    public float ZoomLevel = 2f;
     void Awake()
 	{
 		Init();

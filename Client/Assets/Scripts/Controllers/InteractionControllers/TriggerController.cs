@@ -34,8 +34,7 @@ public class TriggerController : InteractionController
     {
         Animator.speed = 1;
         Animator.Play("ACTIVATE");
-        yield return new WaitForSeconds(0.01f);
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
+        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
         Animator.Play("DEACTIVATE", 0, 0);
         Animator.speed = 0;
     }
@@ -44,8 +43,7 @@ public class TriggerController : InteractionController
     {
         Animator.speed = 1;
         Animator.Play("DEACTIVATE");
-        yield return new WaitForSeconds(0.01f);
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
+        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
         Animator.Play("ACTIVATE", 0, 0);
         Animator.speed = 0;
     }

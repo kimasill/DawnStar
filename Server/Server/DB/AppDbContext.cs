@@ -19,6 +19,7 @@ namespace Server.DB
         public DbSet<ChestDb> Chests { get; set; }
         public DbSet<ShopDb> Shops { get; set; }
         public DbSet<ShopItemDb> ShopItems { get; set; }
+        public DbSet<InteractionDb> Interactions { get; set; }
 
         static readonly ILoggerFactory _logger
             = LoggerFactory.Create(builder => { builder.AddConsole(); });

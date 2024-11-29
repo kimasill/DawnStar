@@ -419,6 +419,7 @@ namespace Data
         public int id;
         public string name;
         public AcquireType type;
+        public Grade grade;
         public List<RewardData> rewards;
     }
     [Serializable]
@@ -528,10 +529,15 @@ namespace Data
         public List<int> targetInteraction;
     }
 
+    public class ItemTableData: InteractionData
+    {
+        public List<int> itemIds;
+    }
     public class InteractionLoader : ILoader<int, InteractionData>
     {
         public List<DoorData> doors = new List<DoorData>();
         public List<TriggerData> triggers = new List<TriggerData>();
+        public List<ItemTableData> itemTables = new List<ItemTableData>();
 
         public Dictionary<int, InteractionData> MakeDict()
         {
@@ -544,6 +550,11 @@ namespace Data
             foreach (InteractionData interaction in triggers)
             {
                 interaction.interactionType = InteractionType.Trigger;
+                dict.Add(interaction.id, interaction);
+            }
+            foreach (InteractionData interaction in itemTables)
+            {
+                interaction.interactionType = InteractionType.ItemTable;
                 dict.Add(interaction.id, interaction);
             }
             return dict;

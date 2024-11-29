@@ -44,7 +44,6 @@ namespace Server.Game
             if (player == null)
                 return;
             ObjectInfo info = player.Info;
-            Console.WriteLine(player.Info.Position.State);
             if (info.Position.State != CreatureState.Idle)
                 return;
 

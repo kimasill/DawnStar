@@ -162,6 +162,7 @@ namespace Server.Game
             player.MapInfo.Scene = map.name;
             player.MapInfo.PortalId = portalData.id;
             player.Session.UpdateMapChests(player, map.id);
+            player.Session.UpdateMapInteractions(player, map.id);
         }
         public void HandleStatChange(Player player)
         {

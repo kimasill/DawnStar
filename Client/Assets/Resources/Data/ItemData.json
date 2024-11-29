@@ -148,9 +148,18 @@
       "iconPath": "Textures/Item/Helmet/Helmet_Seeker",
       "description": "구도자가 사용하던 투구. 미지의 기운이 깃들어 있다.",
       "options": {
-        "Avoid": "10",        
+        "Avoid": "10",
         "Skill": "16"
       }
+    },
+    {
+      "id": "103",
+      "name": "에르도아 중갑",
+      "armorType": "Armor",
+      "defence": "60",
+      "price": "7800",
+      "iconPath": "Textures/Item/Armor/Armor_Erdoa",
+      "description": "에르도아 왕국의 중갑. 강력한 방어력을 자랑한다.",
     }
   ],
   "jewelry": [

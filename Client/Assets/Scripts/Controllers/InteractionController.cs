@@ -9,6 +9,7 @@ using UnityEngine.UIElements;
 public class InteractionController : BaseController
 {
     protected bool _isInteracted = false;
+    public bool CanInteract { get; set; } = true;
     private GameObject _headUpIcon;
     private TextMeshPro _headUpText;    
     public int TemplateId { get; private set; }
@@ -59,6 +60,11 @@ public class InteractionController : BaseController
              _headUpIcon.gameObject.GetComponent<SpriteRenderer>().sprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Trigger");
             _headUpIcon.transform.position = new Vector3(transform.position.x, transform.position.y + 0.5f, 0);
         }
+        else if(Type == InteractionType.ItemTable)
+        {
+            _headUpIcon.gameObject.GetComponent<SpriteRenderer>().sprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Take");
+            _headUpIcon.transform.position = new Vector3(transform.position.x, transform.position.y + 0.6f, 0);
+        }
 
 
         if (_headUpText == null)
@@ -85,11 +91,9 @@ public class InteractionController : BaseController
         StopCoroutine(BlinkText(_headUpText));
         _headUpIcon?.SetActive(false);
     }
-
     public virtual void Interact(bool success, bool action)
     {
     }
-
     public void StartInteraction()
     {
         if (_isInteracted)
@@ -121,7 +125,6 @@ public class InteractionController : BaseController
             gameWindow.ShowScript(Scripts);
         }
     }
-
     private IEnumerator CoInteract()
     {
         // 상호작용 애니메이션 재생
@@ -132,7 +135,6 @@ public class InteractionController : BaseController
 
         yield return StartCoroutine(CoEndInteraction());
     }
-
     private IEnumerator CoEndInteraction()
     {
         // 상호작용 종료 애니메이션 재생
@@ -141,5 +143,9 @@ public class InteractionController : BaseController
 
         gameObject.SetActive(false);
         Destroy(gameObject);
+    }
+    public virtual void DeactivateInteraction()
+    {
+        CanInteract = false;
     }
 }

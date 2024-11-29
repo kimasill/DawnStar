@@ -349,5 +349,34 @@ namespace Server.Game
             }
             Console.WriteLine($"Trigger Interaction - {interactionPacket.InteractionType}, ID:{triggerId}, Success:{interactionPacket.Success}");
         }
+
+        public void HandleItemTableInteraction(Player player, int itemTableId)
+        {
+            if (player == null)
+                return;
+
+            DataManager.InteractionDict.TryGetValue(itemTableId, out InteractionData interactionData);
+            if (interactionData == null)
+                return;
+            ItemTableData itemTableData = interactionData as ItemTableData;
+
+            foreach (int id in itemTableData.itemIds)
+            {
+                DataManager.ItemDict.TryGetValue(id, out ItemData itemData);
+                if (itemData == null)
+                    return;
+                DbTransaction.RewardPlayer(player, itemData, 1, this);
+            }
+            // 인터랙션 성공 여부를 DbTransaction에 저장합니다.
+            InteractionDb interactionDb = new InteractionDb
+            {
+                PlayerDbId = player.PlayerDbId,
+                TemplateId = itemTableId,
+                MapDbId = player.MapInfo.MapDbId,
+                Completed = true
+            };
+
+            DbTransaction.SaveInteractionDb(player, interactionDb, this);
+        }
     }
 }

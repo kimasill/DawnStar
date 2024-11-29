@@ -1,4 +1,5 @@
 ﻿using Data;
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -154,10 +155,20 @@ public class MapManager
     {
         foreach (var chest in _chestDict.Values)
         {
-            if (chestIds.Contains(chest.ChestId)) continue;
-            else chest.gameObject.SetActive(false);
+            if (!chestIds.Contains(chest.ChestId))
+                chest.gameObject.SetActive(false);
         }
     }
+
+    public void SetInteractions(List<int> interactionIds)
+    {
+        foreach (var interaction in _interactionDict.Values)
+        {
+            if (interactionIds.Contains(interaction.TemplateId))
+                interaction.DeactivateInteraction();
+        }
+    }
+
     public Vector2Int GetCameraPosition(int id)
     {
         return _cameraDict[id];

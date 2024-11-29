@@ -4,6 +4,7 @@
       "id": "1",
       "name": "나무 상자",
       "type": "chest",
+      "grade": "normal",
       "rewards": [
         {
           "probability": "100",
@@ -41,6 +42,7 @@
       "id": "2",
       "name": "정예상자(오크대족장)",
       "type": "chest",
+      "grade": "elite",
       "rewards": [
         {
           "probability": "100",
@@ -90,6 +92,7 @@
       "id": "3",
       "name": "정예상자(사티로스 구도자)",
       "type": "chest",
+      "grade": "elite",
       "rewards": [
         {
           "probability": "100",
@@ -139,6 +142,7 @@
       "id": "4",
       "name": "보스상자(간수)",
       "type": "chest",
+      "grade": "epic",
       "rewards": [
         {
           "probability": "100",
@@ -194,6 +198,7 @@
       "id": "5",
       "name": "돌 상자",
       "type": "chest",
+      "grade": "rare",
       "rewards": [
         {
           "probability": "100",

@@ -82,5 +82,15 @@
         "10"
       ]
     }
+  ],
+  "itemtables": [
+    {
+      "id": "2001",
+      "name": "Prison_RewardTable",
+      "multi": "true",
+      "itemIds": [
+        "103"
+      ]  
+    }
   ]
 }

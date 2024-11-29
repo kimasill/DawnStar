@@ -9,9 +9,11 @@ public class ChestController : BaseController
     private bool _isOpened = false;
     public string Name { get; private set; }
     public int TemplateId { get; private set; }
+    public Grade Grade { get; set; }
     public int ChestId { get; private set; }
     private GameObject _headUpIcon;
     private TextMeshPro _headUpText;
+    IEnumerator _routine;
     protected override void Init()
     {
         Animator = GetComponent<Animator>();
@@ -22,7 +24,7 @@ public class ChestController : BaseController
         CellPos = Managers.Map.CurrentGrid.WorldToCell(transform.position);
         UpdateSortingLayer();
 
-        Animator.Play("OPEN_H",0,0);
+        Animator.Play("OPEN",0,0);
         Animator.speed = 0;
     }
     public void SetChest(int chsetId, int templateId)
@@ -33,6 +35,7 @@ public class ChestController : BaseController
         if (data == null)
             return;
         Name = data.name;
+        Grade = data.grade;
     }
     public void ActivateNotification()
     {
@@ -79,35 +82,43 @@ public class ChestController : BaseController
             return;
         _isOpened = true;
         Animator.speed = 1;
+
         DeactivateNotification();
         Destroy(_headUpIcon);
-        C_OpenChest packet = new C_OpenChest() 
-        { 
+        C_OpenChest packet = new C_OpenChest()
+        {
             ChestId = ChestId,
             TemplateId = TemplateId,
             PosX = PosInfo.PosX,
             PosY = PosInfo.PosY
         };
         Managers.Network.Send(packet);
-        
+
         StartCoroutine(CoOpenChest());
     }
-
+    private IEnumerator CoShakeChest()
+    {
+        Animator.Play("SHAKE");        
+        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
+    }
     private IEnumerator CoOpenChest()
     {
-        Animator.Play("OPEN_H");
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);        
-        Animator.Play("CLOSE_H", 0, 0);
+        if (CheckAnimatorLayer("SHAKE") == true)
+            yield return StartCoroutine(CoShakeChest());
+
+        Animator.Play("OPEN");
+        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
+
         Animator.speed = 0;
         yield return new WaitForSeconds(3f);
-        
-        yield return StartCoroutine(CoCloseChest());
+        if (CheckAnimatorLayer("CLOSE") == true)
+            yield return StartCoroutine(CoCloseChest());
     }
 
     private IEnumerator CoCloseChest()
-    {
+    {        
         Animator.speed = 1;
-        Animator.Play("CLOSE_H");
+        Animator.Play("CLOSE");
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length - 0.05f);
         gameObject.SetActive(false);
         Destroy(gameObject);
@@ -115,5 +126,18 @@ public class ChestController : BaseController
 
     protected override void UpdateAnimation()
     {
+    }
+    private bool CheckAnimatorLayer(string layerName)
+    {
+        if (Animator == null)
+            return false;
+
+        for (int i = 0; i < Animator.layerCount; i++)
+        {
+            if (Animator.GetLayerName(i) == layerName)
+                return true;
+        }
+
+        return false;
     }
 }
