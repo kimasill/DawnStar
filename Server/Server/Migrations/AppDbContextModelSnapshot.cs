@@ -76,6 +76,31 @@ namespace Server.Migrations
                     b.ToTable("Chest");
                 });
 
+            modelBuilder.Entity("Server.DB.InteractionDb", b =>
+                {
+                    b.Property<int>("InteractionDbId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InteractionDbId"));
+
+                    b.Property<bool>("Completed")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MapDbId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlayerDbId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TemplateId")
+                        .HasColumnType("int");
+
+                    b.HasKey("InteractionDbId");
+
+                    b.ToTable("Interaction");
+                });
+
             modelBuilder.Entity("Server.DB.ItemDb", b =>
                 {
                     b.Property<int>("ItemDbId")

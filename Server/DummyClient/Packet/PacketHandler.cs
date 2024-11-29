@@ -216,4 +216,14 @@ class PacketHandler
     {
         S_ChangeAdditionalStat additionalStat = packet as S_ChangeAdditionalStat;
     }
+
+    public static void S_EffectHandler(PacketSession session, IMessage packet)
+    {
+        S_Effect effect = packet as S_Effect;
+    }
+
+    public static void S_BossKillHandler(PacketSession session, IMessage packet)
+    {
+        S_BossKill bossKill = packet as S_BossKill;
+    }
 }

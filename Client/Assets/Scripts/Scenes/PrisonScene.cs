@@ -16,6 +16,7 @@ class PrisonScene : BaseScene
         SceneType = Define.Scene.EastEnd;
         Managers.Map.LoadMap(6); // DawnTownDead ¸Ê ·Îµå
         Screen.SetResolution(640, 480, false);
+        Camera.main.orthographicSize = ZoomLevel;
         _sceneUi = Managers.UI.ShowSceneUI<UI_GameScene>();
         _sceneUi.SetActive(_sceneUi.GameWindow, true);
         _description = Managers.UI.ShowPopupUI<UI_Description>();

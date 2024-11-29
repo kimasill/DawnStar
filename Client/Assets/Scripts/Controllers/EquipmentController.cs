@@ -42,47 +42,62 @@ public class EquipmentController : MonoBehaviour
     }
     public void SetItemInSlot(Item item)
     {
-        ItemData itemData = null; 
+        ItemData itemData = null;
         Managers.Data.ItemDict.TryGetValue(item.TemplateId, out itemData);
         Sprite[] sprite = Managers.Resource.LoadAll<Sprite>(itemData.iconPath);
 
         if (item is Weapon weapon)
-        {            
+        {
             if (weapon.WeaponType == WeaponType.Sword || weapon.WeaponType == WeaponType.Bow)
             {
                 _weaponList[0].sprite = sprite[0];
+                _weaponList[0].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
             }
             else if (weapon.WeaponType == WeaponType.Shield)
             {
                 _weaponList[3].sprite = sprite[0];
+                _weaponList[3].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
             }
         }
         else if (item is Armor armor)
-        {            
+        {
             if (armor.ArmorType == ArmorType.Helmet)
             {
                 _hairList[2].sprite = sprite[0];
+                _hairList[2].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
             }
             else if (armor.ArmorType == ArmorType.Armor)
             {
-                foreach(var t in sprite)
+                foreach (var t in sprite)
                 {
                     if (t.name == "Body")
+                    {
                         _armorList[0].sprite = t;
-                    else if(t.name == "Left")
+                        _armorList[0].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
+                    }
+                    else if (t.name == "Left")
+                    {
                         _armorList[1].sprite = t;
+                        _armorList[1].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
+                    }
                     else if (t.name == "Right")
+                    {
                         _armorList[2].sprite = t;
+                        _armorList[2].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
+                    }
                 }
             }
             else if (armor.ArmorType == ArmorType.Boots)
             {
                 _pantList[0].sprite = sprite[0];
+                _pantList[0].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
                 _pantList[1].sprite = sprite[1];
+                _pantList[1].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
             }
             else if (armor.ArmorType == ArmorType.Back)
             {
                 _backList[0].sprite = sprite[0];
+                _backList[0].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
             }
         }
     }

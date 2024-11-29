@@ -202,6 +202,14 @@ namespace Server.Game
             Room.Broadcast(CellPos, changePacket);
             if (Stat.Hp <= 0)
             {
+                if(ObjectType == GameObjectType.Monster)
+                {
+                    if (attacker is not Player)
+                    {
+                        Stat.Hp = 0;
+                        return damage;
+                    }
+                }
                 Ondead(attacker);
                 IsDead = true;
             }

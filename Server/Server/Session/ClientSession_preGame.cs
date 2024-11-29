@@ -125,6 +125,7 @@ namespace Server
                     {
                         MyPlayer.Info.Position.PosX = player.PosX;
                         MyPlayer.Info.Position.PosY = player.PosY;
+                        MyPlayer.MapInfo.MapDbId = player.MapDbId;
                     }
                 }
                 MyPlayer.Stat.MergeFrom(playerInfo.StatInfo);
@@ -187,18 +188,14 @@ namespace Server
                 int mapId = 1;
                 using (AppDbContext db = new AppDbContext())
                 {
-                    List<MapDb> maps = db.Maps
-                        .Where(m => m.PlayerDbId == playerInfo.PlayerDbId)
-                        .ToList();
-                    foreach (MapDb mapDb in maps)
-                    {
-                        ChangeServerState(mapDb.TemplateId);
-                        MyPlayer.MapInfo.MapDbId = mapDb.MapDbId;
-                        MyPlayer.MapInfo.TemplateId = mapDb.TemplateId;
-                        MyPlayer.MapInfo.Scene = mapDb.Scene;
-                        MyPlayer.MapInfo.MapName = mapDb.MapName;
-                        mapId = mapDb.TemplateId;
-                    }
+                    MapDb mapDb = db.Maps
+                        .Where(m => m.MapDbId == MyPlayer.MapInfo.MapDbId).FirstOrDefault();
+
+                    ChangeServerState(mapDb.TemplateId);                    
+                    MyPlayer.MapInfo.TemplateId = mapDb.TemplateId;
+                    MyPlayer.MapInfo.Scene = mapDb.Scene;
+                    MyPlayer.MapInfo.MapName = mapDb.MapName;
+                    mapId = mapDb.TemplateId;
                 }
                 UpdateMapChests(MyPlayer, mapId);
                 MyPlayer.Skill = new Skill(MyPlayer);
@@ -298,72 +295,92 @@ namespace Server
             MyPlayer.MapInfo.ChestIds.Clear();
             MyPlayer.MapInfo.ChestIds.AddRange(chestIds);
         }
-        public void HandleCreatePlayer(C_CreatePlayer createPacket)
+        public void UpdateMapInteractions(Player player, int mapId)
         {
-            // TODO : 이런 저런 보안 체크
-            if (ServerState != PlayerServerState.ServerStateLobby)
-                return;
+            List<int> interactionIds = new List<int>();
 
             using (AppDbContext db = new AppDbContext())
             {
-                PlayerDb findPlayer = db.Players
-                    .Where(p => p.PlayerName == createPacket.Name).FirstOrDefault();
-
-                if (findPlayer != null)
+                List<InteractionDb> interactions = db.Interactions
+                    .Where(i => i.MapDbId == MyPlayer.MapInfo.MapDbId)
+                    .ToList();
+                foreach (var interaction in interactions)
                 {
-                    // 이름이 겹친다
-                    Send(new S_CreatePlayer());
+                    if(interaction.Completed)
+                        interactionIds.Add(interaction.TemplateId);
                 }
-                else
+            }
+            MyPlayer.MapInfo.InteractionIds.Clear();
+            MyPlayer.MapInfo.InteractionIds.AddRange(interactionIds);
+
+        }
+        public void HandleCreatePlayer(C_CreatePlayer createPacket)
+            {
+                // TODO : 이런 저런 보안 체크
+                if (ServerState != PlayerServerState.ServerStateLobby)
+                    return;
+
+                using (AppDbContext db = new AppDbContext())
                 {
-                    // 1레벨 스탯 정보 추출
-                    StatData stat = null;
-                    DataManager.StatDict.TryGetValue(1, out stat);
+                    PlayerDb findPlayer = db.Players
+                        .Where(p => p.PlayerName == createPacket.Name).FirstOrDefault();
 
-                    // DB에 플레이어 만들어줘야 함
-                    PlayerDb newPlayerDb = new PlayerDb()
+                    if (findPlayer != null)
                     {
-                        PlayerName = createPacket.Name,
-                        Level = stat.Level,
-                        Hp = stat.MaxHp,
-                        MaxHp = stat.MaxHp,
-                        Attack = stat.Attack,                        
-                        Speed = stat.Speed,
-                        Exp = 0,
-                        AccountDbId = AccountDbId
-                    };
-
-                    db.Players.Add(newPlayerDb);
-                    bool success = db.SaveChangesEx();
-                    if (success == false)
-                        return;
-
-                    // 메모리에 추가
-                    LobbyPlayerInfo lobbyPlayer = new LobbyPlayerInfo()
+                        // 이름이 겹친다
+                        Send(new S_CreatePlayer());
+                    }
+                    else
                     {
-                        PlayerDbId = newPlayerDb.PlayerDbId,
-                        Name = createPacket.Name,
-                        StatInfo = new StatInfo()
+                        // 1레벨 스탯 정보 추출
+                        StatData stat = null;
+                        DataManager.StatDict.TryGetValue(1, out stat);
+
+                        // DB에 플레이어 만들어줘야 함
+                        PlayerDb newPlayerDb = new PlayerDb()
                         {
+                            PlayerName = createPacket.Name,
                             Level = stat.Level,
                             Hp = stat.MaxHp,
                             MaxHp = stat.MaxHp,
-                            Attack = stat.Attack,
+                            Attack = stat.Attack,                        
                             Speed = stat.Speed,
-                            TotalExp = 0
-                        }
-                    };
+                            Exp = 0,
+                            AccountDbId = AccountDbId
+                        };
 
-                    // 메모리에도 들고 있다
-                    LobbyPlayers.Add(lobbyPlayer);
+                        db.Players.Add(newPlayerDb);
+                        bool success = db.SaveChangesEx();
+                        if (success == false)
+                            return;
 
-                    // 클라에 전송
-                    S_CreatePlayer newPlayer = new S_CreatePlayer() { Player = new LobbyPlayerInfo() };
-                    newPlayer.Player.MergeFrom(lobbyPlayer);
+                        // 메모리에 추가
+                        LobbyPlayerInfo lobbyPlayer = new LobbyPlayerInfo()
+                        {
+                            PlayerDbId = newPlayerDb.PlayerDbId,
+                            Name = createPacket.Name,
+                            StatInfo = new StatInfo()
+                            {
+                                Level = stat.Level,
+                                Hp = stat.MaxHp,
+                                MaxHp = stat.MaxHp,
+                                Attack = stat.Attack,
+                                Speed = stat.Speed,
+                                TotalExp = 0
+                            }
+                        };
 
-                    Send(newPlayer);
+                        // 메모리에도 들고 있다
+                        LobbyPlayers.Add(lobbyPlayer);
+
+                        // 클라에 전송
+                        S_CreatePlayer newPlayer = new S_CreatePlayer() { Player = new LobbyPlayerInfo() };
+                        newPlayer.Player.MergeFrom(lobbyPlayer);
+
+                        Send(newPlayer);
+                    }
                 }
             }
         }
     }
-}
+

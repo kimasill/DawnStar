@@ -142,4 +142,14 @@ namespace Server.DB
         public int Count { get; set; }
         public string ItemType { get; set; }
     }
+
+    [Table("Interaction")]
+    public class InteractionDb
+    {
+        public int InteractionDbId { get; set; }
+        public int TemplateId { get; set; }
+        public int PlayerDbId { get; set; }
+        public int MapDbId { get; set; }
+        public bool Completed { get; set; } = false;
+    }
 }

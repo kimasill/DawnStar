@@ -78,7 +78,8 @@ namespace Server.DB
             {
                 using (AppDbContext db = new AppDbContext())
                 {
-                    MapDb mapDb = db.Maps.FirstOrDefault(m => m.PlayerDbId == player.PlayerDbId);
+                    MapDb mapDb = db.Maps.FirstOrDefault(m => m.PlayerDbId == player.PlayerDbId && m.TemplateId == map.TemplateId);
+
                     if (mapDb == null)
                     {
                         mapDb = new MapDb()

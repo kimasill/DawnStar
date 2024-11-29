@@ -163,6 +163,14 @@ enum MonsterGrade{
 	MONSTER_GRADE_ANIMAL = 3;
 }
 
+enum Grade{
+	GRADE_NORMAL = 0;	
+	GRADE_RARE = 1;
+	GRADE_ELITE = 2;
+	GRADE_EPIC = 3;
+	GRADE_UNCHARTED = 4;
+}
+
 enum ShapeType{
 	SHAPE_NONE = 0;
 	SHAPE_CIRCLE = 1;
@@ -276,6 +284,7 @@ enum InteractionType{
 	INTERACTION_TYPE_DOOR = 5;
 	INTERACTION_TYPE_QUEST = 6;
 	INTERACTION_TYPE_TRIGGER = 7;
+	INTERACTION_TYPE_ITEM_TABLE= 8;
 }
 
 enum RespawnType{
@@ -646,6 +655,7 @@ message MapInfo{
 	int32 portalId = 4;
 	string scene = 5;
 	repeated int32 chestIds = 6;
+	repeated int32 interactionIds = 7;
 }
 
 message TutorialInfo {

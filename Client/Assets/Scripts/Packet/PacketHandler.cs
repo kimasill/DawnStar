@@ -274,6 +274,7 @@ class PacketHandler
             Managers.Object.MyPlayer.PosInfo = objectInfo.Position;
             Managers.Object.MyPlayer.Stat.MergeFrom(objectInfo.StatInfo);
             Managers.Map.SetChests(objectInfo.MapInfo.ChestIds.ToList());
+            Managers.Map.SetInteractions(objectInfo.MapInfo.InteractionIds.ToList());
             Managers.Scene.CurrentScene.CheckOnSceneLoadedQuest();
 
             C_RequestStat request = new C_RequestStat();

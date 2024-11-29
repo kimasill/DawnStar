@@ -44,8 +44,7 @@ public class DoorController : InteractionController
             _decorator.speed = 1;
             _decorator.Play("OPEN");
         }
-        yield return new WaitForSeconds(0.01f);
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length - 0.05f); // 애니메이션 재생 시간 동안 대기
+        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f); // 애니메이션 재생 시간 동안 대기
         if (CellPoses != null)
         {
             foreach (var cellPos in CellPoses)
@@ -64,8 +63,7 @@ public class DoorController : InteractionController
     {
         Animator.speed = 1;
         Animator.Play("CLOSE");
-        yield return new WaitForSeconds(0.01f);
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length - 0.05f);
+        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
         if (CellPoses != null)
         {
             foreach (var cellPos in CellPoses)

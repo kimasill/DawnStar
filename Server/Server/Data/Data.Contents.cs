@@ -402,6 +402,7 @@ namespace Server.Data
         public int id;
         public string name;
         public AcquireType type;
+        public Grade grade;
         public List<ItemRewardData> rewards;
     }
     [Serializable]
@@ -456,7 +457,9 @@ namespace Server.Data
     {
         public int id;
         public string name;
+        public bool multi;
         public InteractionType interactionType;
+        public List<string> script;
     }
     public class Vector2Set
     {
@@ -465,20 +468,25 @@ namespace Server.Data
     }
     public class DoorData : InteractionData
     {
-        public List<string> script;
         public List<int> keyItems;
         public List<int> triggers;
+        public List<Vector2Set> cells;
     }
     public class TriggerData : InteractionData
     {
-        public List<string> script;
         public List<int> keyItems;
         public List<int> targetInteraction;
+    }
+
+    public class ItemTableData : InteractionData
+    {
+        public List<int> itemIds;
     }
     public class InteractionLoader : ILoader<int, InteractionData>
     {
         public List<DoorData> doors = new List<DoorData>();
         public List<TriggerData> triggers = new List<TriggerData>();
+        public List<ItemTableData> itemTables = new List<ItemTableData>();
 
         public Dictionary<int, InteractionData> MakeDict()
         {
@@ -491,6 +499,11 @@ namespace Server.Data
             foreach (InteractionData interaction in triggers)
             {
                 interaction.interactionType = InteractionType.Trigger;
+                dict.Add(interaction.id, interaction);
+            }
+            foreach (InteractionData interaction in itemTables)
+            {
+                interaction.interactionType = InteractionType.ItemTable;
                 dict.Add(interaction.id, interaction);
             }
             return dict;

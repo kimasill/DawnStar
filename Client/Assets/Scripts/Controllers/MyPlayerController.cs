@@ -501,7 +501,7 @@ public class MyPlayerController : PlayerController
             {
                 Vector3Int checkPos = playerCellPos + new Vector3Int(x +1, y+1, 0);
                 ic = Managers.Map.GetInteraction((Vector2Int)checkPos);
-                if (ic != null)
+                if (ic != null && ic.CanInteract)
                 {
                     if (_interactionController != ic)
                     {
