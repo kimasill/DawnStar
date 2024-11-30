@@ -400,11 +400,11 @@ class PacketHandler
 
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
         gameSceneUI.InvenUI.RefreshUI();
-        gameSceneUI.StatUI.RefreshUI();
         if (Managers.Object.MyPlayer != null)
-        {
-            Managers.Object.MyPlayer.Equipment.SetItemInSlot(item);
+        { 
+            Managers.Object.MyPlayer.Equipment.EquipItem(item);
             Managers.Object.MyPlayer.RefreshAdditionalStat();
+            gameSceneUI.StatUI.RefreshUI();
             gameSceneUI.GameWindow.SkillSlot.RefreshUI();
         }            
     }
@@ -446,54 +446,20 @@ class PacketHandler
             return;
         }
 
-        if(statPacket.StatInfo.Attack != 0)
-        {
-            Managers.Object.MyPlayer.AdditionalAttack = statPacket.StatInfo.Attack;
-        }
-        if (statPacket.StatInfo.Defense != 0)
-        {
-            Managers.Object.MyPlayer.AdditionalDefense = statPacket.StatInfo.Defense;
-        }
-        if (statPacket.StatInfo.InvokeSpeed != 0)
-        {
-            Managers.Object.MyPlayer.AdditionalInvokeSpeed = statPacket.StatInfo.InvokeSpeed;
-        }
-        if (statPacket.StatInfo.CoolTime != 0)
-        {
-            Managers.Object.MyPlayer.AdditionalCoolTime = statPacket.StatInfo.CoolTime;
-        }
-        if (statPacket.StatInfo.CriticalChance != 0)
-        {
-            Managers.Object.MyPlayer.AdditionalCriticalChance = statPacket.StatInfo.CriticalChance;
-        }
-        if (statPacket.StatInfo.CriticalDamage != 0)
-        {
-            Managers.Object.MyPlayer.AdditionalCriticalDamage = statPacket.StatInfo.CriticalDamage;
-        }
-        if (statPacket.StatInfo.Avoid != 0)
-        {
-            Managers.Object.MyPlayer.AdditionalAvoidance = statPacket.StatInfo.Avoid;
-        }
-        if (statPacket.StatInfo.Accuracy != 0)
-        {
-            Managers.Object.MyPlayer.AdditionalAccuracy = statPacket.StatInfo.Accuracy;
-        }
-        if (statPacket.StatInfo.AttackSpeed != 0)
-        {
-            Managers.Object.MyPlayer.AdditionalAttackSpeed = statPacket.StatInfo.AttackSpeed;
-        }
-        if (statPacket.StatInfo.Speed != 0)
-        {
-            Managers.Object.MyPlayer.AdditionalSpeed = statPacket.StatInfo.Speed;
-        }
-        if (statPacket.StatInfo.Hp != 0)
-        {
-            Managers.Object.MyPlayer.AdditionalHp = statPacket.StatInfo.Hp;
-        }
-        if (statPacket.StatInfo.Up != 0)
-        {
-            Managers.Object.MyPlayer.AdditionalUp = statPacket.StatInfo.Up;
-        }
+        MyPlayerController mc = Managers.Object.MyPlayer;
+        mc.AdditionalAttack = statPacket.StatInfo.Attack;
+        mc.AdditionalDefense = statPacket.StatInfo.Defense;
+        mc.AdditionalSpeed = statPacket.StatInfo.Speed;
+        mc.AdditionalAttackSpeed = statPacket.StatInfo.AttackSpeed;
+        mc.AdditionalHp = statPacket.StatInfo.Hp;
+        mc.AdditionalUp = statPacket.StatInfo.Up;
+        mc.AdditionalCriticalChance = statPacket.StatInfo.CriticalChance;
+        mc.AdditionalCriticalDamage = statPacket.StatInfo.CriticalDamage;
+        mc.AdditionalAccuracy = statPacket.StatInfo.Accuracy;
+        mc.AdditionalAvoidance = statPacket.StatInfo.Avoid;
+        mc.AdditionalCoolTime = statPacket.StatInfo.CoolTime;
+        mc.AdditionalInvokeSpeed = statPacket.StatInfo.InvokeSpeed;
+
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
         gameSceneUI.StatUI.RefreshUI();
     }

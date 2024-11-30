@@ -276,6 +276,14 @@ namespace Server.Game
                         foreach (var keyId in door.KeyItems)
                         {
                             Item key = player.Inven.FindByTemplateId(keyId);
+                            ItemDb itemDb = new ItemDb()
+                            {
+                                TemplateId = key.TemplateId,
+                                Count = 1,
+                                OwnerDbId = player.PlayerDbId,
+                                Slot = key.Slot
+                            };
+                            DbTransaction.SaveRemovedItemDB(player, itemDb, player.Room);
                             player.Inven.Remove(key.ItemDbId, 1);
                         }
                     }

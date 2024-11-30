@@ -19,6 +19,7 @@ public class CameraController : MonoBehaviour
 
     private IEnumerator SmoothMove(Vector3 targetPosition)
     {
+        target = null;
         while ((transform.position - targetPosition).sqrMagnitude > 0.01f)
         {
             Vector3 smoothedPosition = Vector3.Lerp(transform.position, targetPosition, smoothSpeed);

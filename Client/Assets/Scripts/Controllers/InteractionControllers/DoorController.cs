@@ -53,16 +53,23 @@ public class DoorController : InteractionController
             }
         }
         Animator.speed = 0;
+        Animator.Play("CLOSE", 0, 0);
         if (_decorator != null)
         {
             _decorator.speed = 0;
+            _decorator.Play("CLOSE", 0, 0);
         }
     }
 
     private IEnumerator CoCloseDoor()
     {
-        Animator.speed = 1;
         Animator.Play("CLOSE");
+        Animator.speed = 1;        
+        if (_decorator != null)
+        {
+            _decorator.speed = 1;
+            _decorator.Play("CLOSE");
+        }
         yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
         if (CellPoses != null)
         {
@@ -71,9 +78,13 @@ public class DoorController : InteractionController
                 Managers.Map.SetCollision(cellPos, true);
             }
         }
-            
-        Animator.Play("OPEN", 0, 0);
         Animator.speed = 0;
+        Animator.Play("OPEN", 0, 0);
+        if (_decorator != null)
+        {
+            _decorator.speed = 0;
+            _decorator.Play("OPEN", 0, 0);
+        }
     }
     public void HandleOpenPacket()
     {

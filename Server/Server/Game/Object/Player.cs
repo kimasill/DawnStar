@@ -360,6 +360,13 @@ namespace Server.Game
                         i => i.Equipped && i.ItemType == ItemType.Armor
                         && ((Armor)i).ArmorType == armorType);
                 }
+                else if (item.ItemType == ItemType.Jewelry)
+                {
+                    JewelryType jewelryType = ((Jewelry)item).JewelryType;
+                    unequipItem = Inven.Find(
+                        i => i.Equipped && i.ItemType == ItemType.Jewelry
+                        && ((Jewelry)i).JewelryType == jewelryType);
+                }
                 if (unequipItem != null)
                 {
                     //해당 아이템을 해제
@@ -393,8 +400,6 @@ namespace Server.Game
             RefreshAdditionalStat();
             SendAdditionalStat();
         }
-
-        
 
         public void RefreshAdditionalStat()
         {

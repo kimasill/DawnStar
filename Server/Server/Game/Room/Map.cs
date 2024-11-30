@@ -389,24 +389,24 @@ namespace Server.Game.Room
                         if (int.TryParse(tokens[x], out int interactionId))
                         {
                             _interactionPoints[y, x] = interactionId;
-                            if(interactionId != 0)
+                            if (interactionId != 0)
                             {
-                                if(_interactions.TryGetValue(interactionId, out Interaction interaction) == false)
+                                if (_interactions.TryGetValue(interactionId, out Interaction interaction) == false)
                                 {
                                     InteractionData data = null;
                                     DataManager.InteractionDict.TryGetValue(interactionId, out data);
                                     if (data != null)
                                     {
                                         interaction = Interaction.CreateInteraction(data);
-                                        if(interaction != null)
-                                        {
-                                            interaction.Id = interactionId;
-                                            interaction.Room = room;
-                                            _interactions[interactionId] = interaction;
-                                        }
-                                    }                                    
-                                }                                
-                                interaction.Cells.Add(new Vector2Int(x + MinX, MaxY - y));
+                                        if (interaction == null)
+                                            continue;
+                                        interaction.Id = interactionId;
+                                        interaction.Room = room;
+                                        _interactions[interactionId] = interaction;
+                                    }
+                                }
+                                Vector2Int cellPos = new Vector2Int(x + MinX, MaxY - y);
+                                interaction.Cells.Add(cellPos);
                             }
                         }
                     }
@@ -421,10 +421,10 @@ namespace Server.Game.Room
             if (cellPos.y < MinY || cellPos.y > MaxY)
                 return;
 
-            int x = cellPos.x - MinX;
-            int y = MaxY - cellPos.y;
+            int x = cellPos.x - MinX + 1;
+            int y = MaxY - cellPos.y - 1 ;
             _collision[y, x] = collision;
-            Console.WriteLine($"{x},{y}");
+            Console.WriteLine($"collision changed {x},{y}, {collision}");
         }
 
         #region A* PathFinding
