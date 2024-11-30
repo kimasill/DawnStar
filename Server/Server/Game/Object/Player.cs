@@ -337,7 +337,7 @@ namespace Server.Game
         public void HandleEquipItem(C_EquipItem equipPacket)
         {
             Item item = Inven.Get(equipPacket.ItemDbId);
-            if(item.ItemType == ItemType.Goods || item.ItemType == ItemType.Material)
+            if (item.ItemType == ItemType.Goods || item.ItemType == ItemType.Material)
             {
                 return;
             }
@@ -347,7 +347,7 @@ namespace Server.Game
             if (equipPacket.Equipped)
             {
                 Item unequipItem = null;
-                //장비를 착용하려는데 이미 착용중인 아이템이 있다면
+                // 장비를 착용하려는데 이미 착용중인 아이템이 있다면
                 if (item.ItemType == ItemType.Weapon)
                 {
                     unequipItem = Inven.Find(
@@ -363,39 +363,56 @@ namespace Server.Game
                 else if (item.ItemType == ItemType.Jewelry)
                 {
                     JewelryType jewelryType = ((Jewelry)item).JewelryType;
-                    unequipItem = Inven.Find(
-                        i => i.Equipped && i.ItemType == ItemType.Jewelry
-                        && ((Jewelry)i).JewelryType == jewelryType);
+
+                    // Ring 타입의 아이템은 최대 2개까지 장착 가능
+                    if (jewelryType == JewelryType.Ring)
+                    {
+                        List<Item> equippedRings = Inven.Items.Values
+                            .Where(i => i.Equipped && i.ItemType == ItemType.Jewelry && ((Jewelry)i).JewelryType == JewelryType.Ring)
+                            .ToList();
+
+                        if (equippedRings.Count >= 2)
+                        {
+                            // 이미 2개의 반지가 장착되어 있으면 가장 오래된 반지 해제
+                            unequipItem = equippedRings.OrderBy(i => i.ItemDbId).First();
+                        }
+                    }
+                    else
+                    {
+                        // Ring 이외의 장신구는 기존 로직과 동일하게 처리
+                        unequipItem = Inven.Find(
+                            i => i.Equipped && i.ItemType == ItemType.Jewelry
+                            && ((Jewelry)i).JewelryType == jewelryType);
+                    }
                 }
                 if (unequipItem != null)
                 {
-                    //해당 아이템을 해제
-                    //메모리 선적용
+                    // 해당 아이템을 해제
+                    // 메모리 선적용
                     unequipItem.Equipped = false;
 
-                    //DB에 적용
+                    // DB에 적용
                     DbTransaction.EquipItemNoti(this, unequipItem);
 
-                    //클라이언트에게 알림
+                    // 클라이언트에게 알림
                     S_EquipItem equipOkItem = new S_EquipItem();
                     equipOkItem.ItemDbId = unequipItem.ItemDbId;
                     equipOkItem.Equipped = unequipItem.Equipped;
                     Session.Send(equipOkItem);
                 }
             }
-            {
-                //메모리 선적용
-                item.Equipped = equipPacket.Equipped;
 
-                //DB에 적용
-                DbTransaction.EquipItemNoti(this, item);
+            // 메모리 선적용
+            item.Equipped = equipPacket.Equipped;
 
-                //클라이언트에게 알림
-                S_EquipItem equipNoti = new S_EquipItem();
-                equipNoti.ItemDbId = equipPacket.ItemDbId;
-                equipNoti.Equipped = equipPacket.Equipped;
-                Session.Send(equipNoti);
-            }
+            // DB에 적용
+            DbTransaction.EquipItemNoti(this, item);
+
+            // 클라이언트에게 알림
+            S_EquipItem equipNoti = new S_EquipItem();
+            equipNoti.ItemDbId = equipPacket.ItemDbId;
+            equipNoti.Equipped = equipPacket.Equipped;
+            Session.Send(equipNoti);
 
             RefreshAdditionalStat();
             SendAdditionalStat();
