@@ -16,7 +16,7 @@ public class ItemTableController : InteractionController
         Item = GetComponent<GameObject>();
     }
 
-    public override void Interact(bool success, int id, bool action)
+    public override void Interact(bool success, bool action, List<int> ids=null)
     {
         if (success && action)
         {

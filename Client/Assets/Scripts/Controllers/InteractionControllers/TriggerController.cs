@@ -19,22 +19,24 @@ public class TriggerController : InteractionController
         TriggerData triggerData = (TriggerData)data;
         _targetInteraction = triggerData.targetInteraction;
     }
-    public void ActivateTrigger()
+    public bool ActivateTrigger()
     {
         if (_isTriggered)
-            return;
+            return false;
 
         _isTriggered = true;
         StartCoroutine(CoActivateTrigger());
+        return true;
     }
 
-    public void DeactivateTrigger()
+    public bool DeactivateTrigger()
     {
         if (!_isTriggered)
-            return;
+            return false;
 
         _isTriggered = false;
-        StartCoroutine(CoDeactivateTrigger());
+         StartCoroutine(CoDeactivateTrigger());
+        return true;
     }
 
     private IEnumerator CoActivateTrigger()
@@ -42,8 +44,8 @@ public class TriggerController : InteractionController
         Animator.speed = 1;
         Animator.Play("ACTIVATE");
         yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
-        Animator.Play("DEACTIVATE", 0, 0);
         Animator.speed = 0;
+        Animator.Play("DEACTIVATE", 0, 0);        
     }
 
     private IEnumerator CoDeactivateTrigger()
@@ -51,37 +53,30 @@ public class TriggerController : InteractionController
         Animator.speed = 1;
         Animator.Play("DEACTIVATE");
         yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
-        Animator.Play("ACTIVATE", 0, 0);
         Animator.speed = 0;
+        Animator.Play("ACTIVATE", 0, 0);        
     }
 
-    public void HandleActivatePacket()
-    {
-        ActivateTrigger();
-    }
-
-    public void HandleDeactivatePacket()
-    {
-        DeactivateTrigger();
-    }
-
-    public override void Interact(bool success, int id, bool action)
+    public override void Interact(bool success, bool action, List<int> ids=null)
     {
         if (success)
         {
             if (_isTriggered)
             {
                 DeactivateTrigger();
-                if(InteractionData.cameraMove)
-                {
-                    InteractionController ic = Managers.Map.GetInteractionById(id);
-                    Vector3 targetPosition = new Vector3(ic.transform.position.x, ic.transform.position.y, -10);
-                    StartCoroutine(InteractionCameraMove(targetPosition));
-                                        
-                }
             }               
             else
-                ActivateTrigger();
+            {
+                if(ActivateTrigger() == true)
+                {
+                    if (InteractionData.cameraMove)
+                    {
+                        InteractionController ic = Managers.Map.GetInteractionById(ids[0]);
+                        StartCoroutine(InteractionCameraMove(ic.transform));
+                    }
+                }
+            }
+                
         }
         else if (success == false && action)
         {

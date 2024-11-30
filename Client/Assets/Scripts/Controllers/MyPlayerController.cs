@@ -22,7 +22,7 @@ public class MyPlayerController : PlayerController
     private GameObject _headUpIcon;
     public CameraController CameraController { get; private set; }
 
-    public KeyCode[] SkillKeys { get; private set;} = new KeyCode[4];
+    public KeyCode[] SkillKeys { get; private set;} = new KeyCode[5];
 
     public int Gold
     {
@@ -69,6 +69,7 @@ public class MyPlayerController : PlayerController
         SkillKeys[1] = KeyCode.R;
         SkillKeys[2] = KeyCode.F;
         SkillKeys[3] = KeyCode.T;
+        SkillKeys[4] = KeyCode.V;
     }
 
     protected override void UpdateController() 

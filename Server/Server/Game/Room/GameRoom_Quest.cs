@@ -330,11 +330,12 @@ namespace Server.Game
                     }
                 }
             }
-            
+            List<int> targetIds = new List<int>();
             if (trigger.Conditions.Count > 0 && success)
             {
                 foreach (var targetInteraction in trigger.Conditions.Keys)
                 {
+                    targetIds.Add(targetInteraction);
                     Map.GetInteraction(targetInteraction).OnTriggerEnter(triggerId);                    
                 }
             }
@@ -343,9 +344,10 @@ namespace Server.Game
             {
                 Success = success,
                 ObjectId = triggerId,
-                PlayerId = player.Id,
+                PlayerId = player.Id,                
                 InteractionType = InteractionType.Trigger
             };
+            interactionPacket.TargetId.AddRange(targetIds);
             if (success)
             {
                 trigger.OnInteraction();                

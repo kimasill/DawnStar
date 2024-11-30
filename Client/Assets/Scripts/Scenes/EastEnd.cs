@@ -66,9 +66,9 @@ class EastEnd : BaseScene
         if (questId == 9)
         {
             Managers.Object.MyPlayer.gameObject.SetActive(false);
-            Vector2Int cameraPos = Managers.Map.GetCameraPosition(1);
+            GameObject camera = Managers.Map.GetCameraPosition(1);
             _cameraController.SetTarget(null);
-            _cameraController.MoveToPosition(new Vector3(cameraPos.x, cameraPos.y, -10));
+            StartCoroutine(_cameraController.MoveToPosition(camera.transform));
             // 3초 후에 카메라를 원래 위치로 되돌리고 타겟을 플레이어로 설정
             StartCoroutine(_cameraController.ResetCameraAndTarget(3.0f));
             Managers.Quest.ShowQuestScript(9, 1);

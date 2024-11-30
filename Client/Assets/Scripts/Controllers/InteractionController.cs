@@ -130,7 +130,7 @@ public class InteractionController : BaseController
         StopCoroutine(BlinkText(_headUpText));
         _headUpIcon?.SetActive(false);
     }
-    public virtual void Interact(bool success, int id, bool action)
+    public virtual void Interact(bool success,  bool action, List<int> ids = null)
     {
     }
     public void StartInteraction()
@@ -152,7 +152,7 @@ public class InteractionController : BaseController
         }
         else
         {
-            Interact(true, TemplateId, true);
+            Interact(true, true);
         }
     }
     protected virtual void InteractAction()
@@ -187,10 +187,23 @@ public class InteractionController : BaseController
     {
         CanInteract = false;
     }
-    protected virtual IEnumerator InteractionCameraMove(Vector3 targetPosition)
+    protected virtual IEnumerator InteractionCameraMove(Transform target)
     {
-        _cameraController.MoveToPosition(targetPosition);
-        yield return new WaitForSeconds(3.0f);
-        _cameraController.ResetCameraAndTarget(3.0f);
+        yield return StartCoroutine(_cameraController.MoveToPosition(target));
+        yield return new WaitForSeconds(1.0f);
+        StartCoroutine(_cameraController.ResetCameraAndTarget(3.0f));
+    }
+    protected bool CheckAnimatorLayer(string layerName)
+    {
+        if (Animator == null)
+            return false;
+
+        for (int i = 0; i < Animator.layerCount; i++)
+        {
+            if (Animator.GetLayerName(i) == layerName)
+                return true;
+        }
+
+        return false;
     }
 }

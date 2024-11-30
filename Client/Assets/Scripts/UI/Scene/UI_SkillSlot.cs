@@ -9,33 +9,40 @@ public class UI_SkillSlot : UI_Base
 {
     UI_SkillSlot_Icon _weaponSkill;
     UI_SkillSlot_Icon _ringSkill;
+    UI_SkillSlot_Icon _ringSkill2;
     UI_SkillSlot_Icon _helmetSkill;
     UI_SkillSlot_Icon _necklaceSkill;
     public Dictionary<int, UI_SkillSlot_Icon> SkillSlots = new Dictionary<int, UI_SkillSlot_Icon>();
-
     public override void Init()
     {
-        _weaponSkill = transform.GetChild(0).GetComponent<UI_SkillSlot_Icon>();
-        _helmetSkill = transform.GetChild(1).GetComponent<UI_SkillSlot_Icon>();
-        _ringSkill = transform.GetChild(2).GetComponent<UI_SkillSlot_Icon>();
-        _necklaceSkill = transform.GetChild(3).GetComponent<UI_SkillSlot_Icon>();
+        _weaponSkill = CreateSkillSlotIcon();
+        _helmetSkill = CreateSkillSlotIcon();
+        _ringSkill = CreateSkillSlotIcon();
+        _ringSkill2 = CreateSkillSlotIcon();
+        _necklaceSkill = CreateSkillSlotIcon();
         SkillSlots.Add(0, _weaponSkill);
         SkillSlots.Add(1, _helmetSkill);
         SkillSlots.Add(2, _ringSkill);
-        SkillSlots.Add(3, _necklaceSkill);
+        SkillSlots.Add(3, _ringSkill2);
+        SkillSlots.Add(4, _necklaceSkill);
         foreach (var skillSlot in SkillSlots)
         {
-            if(skillSlot.Value.IsInit == false)
+            if (skillSlot.Value.IsInit == false)
                 skillSlot.Value.Init();
         }
         RefreshUI();
     }
-
+    private UI_SkillSlot_Icon CreateSkillSlotIcon()
+    {
+        GameObject go = Managers.Resource.Instantiate("UI/Scene/UI_SkillSlot_Icon", transform);
+        UI_SkillSlot_Icon slot = go.GetComponent<UI_SkillSlot_Icon>();
+        return slot;
+    }
     public void RefreshUI()
     {
-        for(int i = 0; i<SkillSlots.Count; i++)
+        for (int i = 0; i < SkillSlots.Count; i++)
         {
-            if(SkillSlots[i].SkillData == null)
+            if (SkillSlots[i].SkillData == null)
             {
                 SkillSlots[i].ClearSlot();
             }
@@ -46,6 +53,7 @@ public class UI_SkillSlot : UI_Base
         }
         if (Managers.Object.MyPlayer)
         {
+            int ringCount = 0;
             foreach (var item in Managers.Inventory.Items)
             {
                 if (item.Value.Options.ContainsKey("Skill") && item.Value.Equipped)
@@ -53,7 +61,7 @@ public class UI_SkillSlot : UI_Base
                     if (item.Value is Item.Weapon)
                     {
                         _weaponSkill.KeyText.text = Managers.Object.MyPlayer.SkillKeys[0].ToString();
-                        if(_weaponSkill.KeyText.text == "None")
+                        if (_weaponSkill.KeyText.text == "None")
                             _weaponSkill.KeyText.text = "E";
                     }
                     else if (item.Value is Item.Armor)
@@ -67,20 +75,31 @@ public class UI_SkillSlot : UI_Base
                     {
                         if (((Item.Jewelry)item.Value).JewelryType == JewelryType.Ring)
                         {
-                            _ringSkill.KeyText.text = Managers.Object.MyPlayer.SkillKeys[2].ToString();
-                            if (_ringSkill.KeyText.text == "None")
-                                _ringSkill.KeyText.text = "F";
+                            if (ringCount == 0)
+                            {
+                                _ringSkill.KeyText.text = Managers.Object.MyPlayer.SkillKeys[2].ToString();
+                                if (_ringSkill.KeyText.text == "None")
+                                    _ringSkill.KeyText.text = "F";
+                                ringCount++;
+                            }
+                            else if (ringCount == 1)
+                            {
+                                _ringSkill2.KeyText.text = Managers.Object.MyPlayer.SkillKeys[4].ToString();
+                                if (_ringSkill2.KeyText.text == "None")
+                                    _ringSkill2.KeyText.text = "V";
+                                ringCount++;
+                            }
                         }
-                        else if(((Item.Jewelry)item.Value).JewelryType == JewelryType.Necklace)
+                        else if (((Item.Jewelry)item.Value).JewelryType == JewelryType.Necklace)
                         {
                             _necklaceSkill.KeyText.text = Managers.Object.MyPlayer.SkillKeys[3].ToString();
                             if (_necklaceSkill.KeyText.text == "None")
                                 _necklaceSkill.KeyText.text = "T";
                         }
                     }
-                    
+
                     SetSkill(item.Value);
-                }                
+                }
             }
         }
     }
@@ -99,13 +118,22 @@ public class UI_SkillSlot : UI_Base
             }
             else if (item is Item.Armor)
             {
-                if(((Item.Armor)item).ArmorType == ArmorType.Helmet)
+                if (((Item.Armor)item).ArmorType == ArmorType.Helmet)
                     _helmetSkill.SetSkill(skillData);
             }
             else if (item is Item.Jewelry)
             {
-                if(((Item.Jewelry)item).JewelryType == JewelryType.Ring)
-                    _ringSkill.SetSkill(skillData);
+                if (((Item.Jewelry)item).JewelryType == JewelryType.Ring)
+                {
+                    if (_ringSkill.SkillData == null)
+                        _ringSkill.SetSkill(skillData);
+                    else
+                        _ringSkill2.SetSkill(skillData);
+                }
+                else if (((Item.Jewelry)item).JewelryType == JewelryType.Necklace)
+                {
+                    _necklaceSkill.SetSkill(skillData);
+                }
             }
         }
         else
@@ -122,13 +150,22 @@ public class UI_SkillSlot : UI_Base
             else if (item is Item.Jewelry)
             {
                 if (((Item.Jewelry)item).JewelryType == JewelryType.Ring)
-                    _ringSkill.ClearSlot();
+                {
+                    if (_ringSkill.SkillData != null)
+                        _ringSkill.ClearSlot();
+                    else
+                        _ringSkill2.ClearSlot();
+                }
+                else if (((Item.Jewelry)item).JewelryType == JewelryType.Necklace)
+                {
+                    _necklaceSkill.ClearSlot();
+                }
             }
         }
     }
 
     public SkillData GetSkill(int index)
-    {        
+    {
         return SkillSlots[index].SkillData;
     }
 
