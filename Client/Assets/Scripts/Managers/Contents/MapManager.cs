@@ -43,7 +43,7 @@ public class MapManager
 	bool[,] _collision;
     private Dictionary<Vector3Int, GameObject> _portalDict = new Dictionary<Vector3Int, GameObject>(); // 문 객체들을 저장할 Dictionary
 	private Dictionary<Vector3Int, GameObject> _questDict = new Dictionary<Vector3Int, GameObject>(); // 문 객체들을 저장할 Dictionary
-    private Dictionary<int, Vector2Int> _cameraDict = new Dictionary<int, Vector2Int>(); // 카메라 포인트를 저장할 Dictionary
+    private Dictionary<int, GameObject> _cameraDict = new Dictionary<int, GameObject>(); // 카메라 포인트를 저장할 Dictionary
     private Dictionary<Vector2Int, ChestController> _chestDict = new Dictionary<Vector2Int, ChestController>(); // 상자 위치를 저장할 Dictionary
     private Dictionary<int , InteractionController> _interactionDict = new Dictionary< int, InteractionController>(); // 상호작용 위치를 저장할 Dictionary
     public bool CanGo(Vector3Int cellPos)
@@ -169,7 +169,7 @@ public class MapManager
         }
     }
 
-    public Vector2Int GetCameraPosition(int id)
+    public GameObject GetCameraPosition(int id)
     {
         return _cameraDict[id];
     }
@@ -273,8 +273,7 @@ public class MapManager
         foreach (GameObject cameraObject in cameraObjects)
         {
             int cameraId = int.Parse(cameraObject.name.Replace("Camera_", ""));
-            Vector3Int cameraCellPos = CurrentGrid.WorldToCell(cameraObject.transform.position);
-            _cameraDict[cameraId] = (Vector2Int)cameraCellPos;
+            _cameraDict[cameraId] = cameraObject;
         }
     }
 

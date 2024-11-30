@@ -591,7 +591,7 @@ class PacketHandler
             action = true;
         }
         InteractionController ic = Managers.Map.GetInteractionById(templateId:interactionPacket.ObjectId);
-        ic.Interact(interactionPacket.Success, interactionPacket.ObjectId, action);
+        ic.Interact(interactionPacket.Success, action , interactionPacket.TargetId.ToList());
     }
     public static void S_BossKillHandler(PacketSession session, IMessage packet)
     {

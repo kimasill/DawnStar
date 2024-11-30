@@ -558,8 +558,9 @@ message C_Interaction{
 message S_Interaction{
 	int32 objectId = 1;
 	int32 playerId = 2;
-	bool success = 3;
-	InteractionType interactionType =4;
+	repeated int32 targetId = 3;
+	bool success = 4;
+	InteractionType interactionType =5;
 }
 
 message S_BossKill{

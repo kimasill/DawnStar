@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class DoorController : InteractionController
@@ -53,11 +54,13 @@ public class DoorController : InteractionController
             }
         }
         Animator.speed = 0;
-        Animator.Play("CLOSE", 0, 0);
+        if (CheckAnimatorLayer("CLOSE") == true)
+            Animator.Play("CLOSE", 0, 0);
         if (_decorator != null)
         {
             _decorator.speed = 0;
-            _decorator.Play("CLOSE", 0, 0);
+            if (CheckAnimatorLayer("CLOSE") == true)
+                _decorator.Play("CLOSE", 0, 0);
         }
     }
 
@@ -79,11 +82,13 @@ public class DoorController : InteractionController
             }
         }
         Animator.speed = 0;
-        Animator.Play("OPEN", 0, 0);
+        if (CheckAnimatorLayer("OPEN") == true)
+            Animator.Play("OPEN", 0, 0);
         if (_decorator != null)
         {
             _decorator.speed = 0;
-            _decorator.Play("OPEN", 0, 0);
+            if (CheckAnimatorLayer("OPEN") == true)
+                _decorator.Play("OPEN", 0, 0);
         }
     }
     public void HandleOpenPacket()
@@ -94,7 +99,7 @@ public class DoorController : InteractionController
     {
         CloseDoor();
     }
-    public override void Interact(bool success, int id, bool action)
+    public override void Interact(bool success, bool action, List<int> ids = null)
     {
         if (success)
         {
