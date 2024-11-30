@@ -17,13 +17,16 @@ public class InteractionController : BaseController
     public InteractionType Type { get; set; }
     public List<string> Scripts { get; set; } = new List<string>();
     public List<Vector2Int> CellPoses { get; set; } = new List<Vector2Int>();
+    public InteractionData InteractionData { get; set; }
+
+    private CameraController _cameraController;
     protected override void Init()
     {
         Animator = GetComponent<Animator>();
         if (Animator != null)
             _animatorSpeed = Animator.speed;
         _sprite = GetComponent<SpriteRenderer>();
-
+        _cameraController = Managers.Scene.CurrentScene.MainCamera.GetComponent<CameraController>();
         CellPos = Managers.Map.CurrentGrid.WorldToCell(transform.position);
         UpdateSortingLayer();
     }
@@ -34,11 +37,47 @@ public class InteractionController : BaseController
         Managers.Data.InteractionDict.TryGetValue(interactionId, out InteractionData data);
         if (data == null)
             return;
+        InteractionData = data;
         Multi = data.multi;
         Type = data.interactionType;
         Scripts = data.script;
+        switch (Type)
+        {
+            case InteractionType.Door:
+                HandleDoorInteraction(data);
+                break;
+            case InteractionType.Trigger:
+                HandleTriggerInteraction(data);
+                break;
+            case InteractionType.ItemTable:
+                HandleItemTableInteraction(data);
+                break;
+            default:
+                Debug.LogWarning($"Unknown InteractionType: {Type}");
+                break;
+        }
+        
+    }
+    protected virtual void HandleDoorInteraction(InteractionData data)
+    {
+        // Door 타입에 대한 추가 설정 로직
+        // 예: 특정 애니메이션 설정, 사운드 설정 등
+        Debug.Log("Handling Door Interaction");
     }
 
+    protected virtual void HandleTriggerInteraction(InteractionData data)
+    {
+        // Trigger 타입에 대한 추가 설정 로직
+        // 예: 특정 이벤트 트리거 설정 등
+        Debug.Log("Handling Trigger Interaction");
+    }
+
+    protected virtual void HandleItemTableInteraction(InteractionData data)
+    {
+        // ItemTable 타입에 대한 추가 설정 로직
+        // 예: 아이템 리스트 설정 등
+        Debug.Log("Handling ItemTable Interaction");
+    }
     protected override void UpdateAnimation()
     {
     }
@@ -91,7 +130,7 @@ public class InteractionController : BaseController
         StopCoroutine(BlinkText(_headUpText));
         _headUpIcon?.SetActive(false);
     }
-    public virtual void Interact(bool success, bool action)
+    public virtual void Interact(bool success, int id, bool action)
     {
     }
     public void StartInteraction()
@@ -113,7 +152,7 @@ public class InteractionController : BaseController
         }
         else
         {
-            Interact(true, true);
+            Interact(true, TemplateId, true);
         }
     }
     protected virtual void InteractAction()
@@ -147,5 +186,11 @@ public class InteractionController : BaseController
     public virtual void DeactivateInteraction()
     {
         CanInteract = false;
+    }
+    protected virtual IEnumerator InteractionCameraMove(Vector3 targetPosition)
+    {
+        _cameraController.MoveToPosition(targetPosition);
+        yield return new WaitForSeconds(3.0f);
+        _cameraController.ResetCameraAndTarget(3.0f);
     }
 }

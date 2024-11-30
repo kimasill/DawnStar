@@ -281,6 +281,8 @@ namespace Server.Game.Room
                 if (data != null)
                 {
                     interaction = Interaction.CreateInteraction(data);
+                    if (interaction == null)
+                        return null;
                     interaction.Id = interactionId;
                     interaction.Room = null;
                     _interactions[interactionId] = interaction;
@@ -396,9 +398,12 @@ namespace Server.Game.Room
                                     if (data != null)
                                     {
                                         interaction = Interaction.CreateInteraction(data);
-                                        interaction.Id = interactionId;
-                                        interaction.Room = room;  
-                                        _interactions[interactionId] = interaction;
+                                        if(interaction != null)
+                                        {
+                                            interaction.Id = interactionId;
+                                            interaction.Room = room;
+                                            _interactions[interactionId] = interaction;
+                                        }
                                     }                                    
                                 }                                
                                 interaction.Cells.Add(new Vector2Int(x + MinX, MaxY - y));
@@ -419,6 +424,7 @@ namespace Server.Game.Room
             int x = cellPos.x - MinX;
             int y = MaxY - cellPos.y;
             _collision[y, x] = collision;
+            Console.WriteLine($"{x},{y}");
         }
 
         #region A* PathFinding

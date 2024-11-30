@@ -8,6 +8,7 @@ public abstract class BaseScene : MonoBehaviour
 {
     public Define.Scene SceneType { get; protected set; } = Define.Scene.Unknown;
     Dictionary<int, GameObject> _npcs = new Dictionary<int, GameObject>();
+    public Camera MainCamera { get; protected set; }
     public float ZoomLevel = 2f;
     void Awake()
 	{
@@ -19,7 +20,8 @@ public abstract class BaseScene : MonoBehaviour
         Object obj = GameObject.FindObjectOfType(typeof(EventSystem));
         if (obj == null)
             Managers.Resource.Instantiate("UI/EventSystem").name = "@EventSystem";
-        
+
+        MainCamera = Camera.main;
     }
     protected void RequestShop(int mapId)
     {

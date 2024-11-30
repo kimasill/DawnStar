@@ -80,7 +80,8 @@
       ],
       "targetInteraction": [
         "10"
-      ]
+      ],
+      "cameraMove": "true"
     }
   ],
   "itemtables": [

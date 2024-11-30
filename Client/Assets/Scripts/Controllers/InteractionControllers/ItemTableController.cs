@@ -15,7 +15,7 @@ public class ItemTableController : InteractionController
         base.Init();
     }
 
-    public override void Interact(bool success, bool action)
+    public override void Interact(bool success,int id, bool action)
     {
         if (success && action)
         {

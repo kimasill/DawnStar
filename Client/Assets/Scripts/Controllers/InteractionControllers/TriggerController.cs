@@ -1,9 +1,12 @@
+using Data;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TriggerController : InteractionController
 {
     private bool _isTriggered = false;
+    private List<int> _targetInteraction;
 
     protected override void Init()
     {
@@ -11,7 +14,11 @@ public class TriggerController : InteractionController
         Animator.Play("ACTIVATE", 0, 0);
         Animator.speed = 0;
     }
-
+    protected override void HandleTriggerInteraction(InteractionData data)
+    {
+        TriggerData triggerData = (TriggerData)data;
+        _targetInteraction = triggerData.targetInteraction;
+    }
     public void ActivateTrigger()
     {
         if (_isTriggered)
@@ -58,12 +65,21 @@ public class TriggerController : InteractionController
         DeactivateTrigger();
     }
 
-    public override void Interact(bool success, bool action)
+    public override void Interact(bool success, int id, bool action)
     {
         if (success)
         {
             if (_isTriggered)
+            {
                 DeactivateTrigger();
+                if(InteractionData.cameraMove)
+                {
+                    InteractionController ic = Managers.Map.GetInteractionById(id);
+                    Vector3 targetPosition = new Vector3(ic.transform.position.x, ic.transform.position.y, -10);
+                    StartCoroutine(InteractionCameraMove(targetPosition));
+                                        
+                }
+            }               
             else
                 ActivateTrigger();
         }

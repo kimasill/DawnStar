@@ -36,6 +36,8 @@ namespace Server.Game
                 case InteractionType.Trigger:
                     interaction = new Trigger((TriggerData)data);
                     break;
+                case InteractionType.ItemTable:
+                    return null;
             }
             interaction.ObjectType = GameObjectType.Interaction;
             interaction.Id = ObjectManager.Instance.GenerateId(GameObjectType.Interaction);

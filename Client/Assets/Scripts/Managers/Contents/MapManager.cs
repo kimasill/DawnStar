@@ -344,6 +344,7 @@ public class MapManager
         int x = cellPos.x - MinX;
         int y = MaxY - cellPos.y;
         _collision[y, x] = collision;
+        Debug.Log($"SetCollision {cellPos} {collision}");
     }
     private void ClearAllDict()
     {

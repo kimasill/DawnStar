@@ -511,6 +511,7 @@ namespace Data
         public bool multi;
         public InteractionType interactionType;
         public List<string> script;
+        public bool cameraMove;
     }
     public class Vector2Set
     {
