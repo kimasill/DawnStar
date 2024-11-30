@@ -46,7 +46,9 @@ public class UI_Stat : UI_Base
         Slot_Shield,
         Slot_Boots,
         Slot_Back,
+        Slot_Earing,
         Slot_Ring,
+        Slot_Ring2,
         Slot_Necklace,
         Card_Uncharted,
         Card_Rage,        
@@ -208,6 +210,8 @@ public class UI_Stat : UI_Base
         Get<Image>((int)Images.Slot_Boots).enabled = false;
         Get<Image>((int)Images.Slot_Back).enabled = false;
         Get<Image>((int)Images.Slot_Ring).enabled = false;
+        Get<Image>((int)Images.Slot_Ring2).enabled = false;
+        Get<Image>((int)Images.Slot_Earing).enabled = false;
         Get<Image>((int)Images.Slot_Necklace).enabled = false;
 
         foreach (Item item in Managers.Inventory.Items.Values)
@@ -251,9 +255,21 @@ public class UI_Stat : UI_Base
                 Jewelry jewelry = (Jewelry)item;
                 switch (jewelry.JewelryType)
                 {
+                    case JewelryType.Earring:
+                        Get<Image>((int)Images.Slot_Earing).enabled = true;
+                        Get<Image>((int)Images.Slot_Earing).sprite = icon;
+                        break;
                     case JewelryType.Ring:
-                        Get<Image>((int)Images.Slot_Ring).enabled = true;
-                        Get<Image>((int)Images.Slot_Ring).sprite = icon;
+                        if (GetImage((int)Images.Slot_Ring).enabled == false)
+                        {
+                            GetImage((int)Images.Slot_Ring).enabled = true;
+                            GetImage((int)Images.Slot_Ring).sprite = icon;
+                        }
+                        else
+                        {
+                            GetImage((int)Images.Slot_Ring2).enabled = true;
+                            GetImage((int)Images.Slot_Ring2).sprite = icon;
+                        }
                         break;
                     case JewelryType.Necklace:
                         Get<Image>((int)Images.Slot_Necklace).enabled = true;
