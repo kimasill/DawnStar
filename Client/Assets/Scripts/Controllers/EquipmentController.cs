@@ -19,6 +19,14 @@ public class EquipmentController : MonoBehaviour
     public List<SpriteRenderer> _weaponList = new List<SpriteRenderer>();
     public List<SpriteRenderer> _backList = new List<SpriteRenderer>();
 
+    public Weapon Weapon;
+    public Weapon Shield;
+    public Cloth Cloth;
+    public Armor Helmet;
+    public Armor Armor;
+    public Armor Boots;
+    public Armor Back;
+
     public SPUM_HorseSpriteList _spHorseSPList;
     public string _spHorseString;
     // Start is called before the first frame update
@@ -37,8 +45,18 @@ public class EquipmentController : MonoBehaviour
     {
         foreach (var item in items.Values)
         {
-            SetItemInSlot(item);
+            if(item.Equipped)
+                SetItemInSlot(item);
+            else if (item.Equipped == false)
+                RemoveItemFromSlot(item);
         }
+    }
+    public void EquipItem(Item item)
+    {
+        if (item.Equipped)
+            SetItemInSlot(item);
+        else if (item.Equipped == false)
+            RemoveItemFromSlot(item);
     }
     public void SetItemInSlot(Item item)
     {
@@ -50,11 +68,13 @@ public class EquipmentController : MonoBehaviour
         {
             if (weapon.WeaponType == WeaponType.Sword || weapon.WeaponType == WeaponType.Bow)
             {
+                Weapon = weapon;
                 _weaponList[0].sprite = sprite[0];
                 _weaponList[0].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
             }
             else if (weapon.WeaponType == WeaponType.Shield)
             {
+                Shield = weapon;
                 _weaponList[3].sprite = sprite[0];
                 _weaponList[3].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
             }
@@ -63,44 +83,115 @@ public class EquipmentController : MonoBehaviour
         {
             if (armor.ArmorType == ArmorType.Helmet)
             {
+                Helmet = armor;
                 _hairList[2].sprite = sprite[0];
-                _hairList[2].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
+                //_hairList[2].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
             }
             else if (armor.ArmorType == ArmorType.Armor)
             {
+                Armor = armor;
                 foreach (var t in sprite)
                 {
                     if (t.name == "Body")
                     {
                         _armorList[0].sprite = t;
-                        _armorList[0].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
                     }
                     else if (t.name == "Left")
                     {
                         _armorList[1].sprite = t;
-                        _armorList[1].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
+                        //_armorList[1].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
                     }
                     else if (t.name == "Right")
                     {
                         _armorList[2].sprite = t;
-                        _armorList[2].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
+                        //_armorList[2].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
                     }
                 }
             }
             else if (armor.ArmorType == ArmorType.Boots)
             {
+                Boots = armor;
                 _pantList[0].sprite = sprite[0];
-                _pantList[0].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
+                //_pantList[0].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
                 _pantList[1].sprite = sprite[1];
-                _pantList[1].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
+                //_pantList[1].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
             }
             else if (armor.ArmorType == ArmorType.Back)
             {
+                Back = armor;
                 _backList[0].sprite = sprite[0];
-                _backList[0].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
+                //_backList[0].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
             }
         }
     }
+    public void RemoveItemFromSlot(Item item)
+    {
+        ItemData itemData = null;
+        Managers.Data.ItemDict.TryGetValue(item.TemplateId, out itemData);
+        if (itemData == null)
+            return;
+
+        if (item is Weapon weapon)
+        {
+            if (weapon.WeaponType == WeaponType.Sword || weapon.WeaponType == WeaponType.Bow)
+            {
+                if(Weapon == weapon)
+                {
+                    Weapon = null;
+                    _weaponList[0].sprite = null;
+                    _weaponList[0].transform.localScale = Vector3.one; // 크기를 원래 크기로 설정
+                }
+            }
+            else if (weapon.WeaponType == WeaponType.Shield)
+            {
+                if (Shield == weapon)
+                {
+                    Shield = null;
+                    _weaponList[3].sprite = null;
+                    _weaponList[3].transform.localScale = Vector3.one; // 크기를 원래 크기로 설정
+                }
+            }
+        }
+        else if (item is Armor armor)
+        {
+            if (armor.ArmorType == ArmorType.Helmet)
+            {
+                if (Helmet == armor)
+                {
+                    Helmet = null;
+                    _hairList[2].sprite = null;                    
+                }
+            }
+            else if (armor.ArmorType == ArmorType.Armor)
+            {
+                if (Armor == armor)
+                {
+                    Armor = null;
+                    _armorList[0].sprite = null;
+                    _armorList[1].sprite = null;
+                    _armorList[2].sprite = null;
+                }
+            }
+            else if (armor.ArmorType == ArmorType.Boots)
+            {
+                if (Boots == armor)
+                {
+                    Boots = null;
+                    _pantList[0].sprite = null;
+                    _pantList[1].sprite = null;
+                }
+            }
+            else if (armor.ArmorType == ArmorType.Back)
+            {
+                if (Back == armor)
+                {
+                    Back = null;
+                    _backList[0].sprite = null;
+                }
+            }
+        }
+    }
+
     public void Reset()
     {
         for(var i = 0 ; i < _hairList.Count;i++)

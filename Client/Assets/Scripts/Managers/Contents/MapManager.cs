@@ -340,11 +340,11 @@ public class MapManager
             return;
         if (cellPos.y < MinY || cellPos.y > MaxY)
             return;
-
+        
         int x = cellPos.x - MinX;
         int y = MaxY - cellPos.y;
         _collision[y, x] = collision;
-        Debug.Log($"SetCollision {cellPos} {collision}");
+        Debug.Log($"SetCollision {x}, {y} ");
     }
     private void ClearAllDict()
     {

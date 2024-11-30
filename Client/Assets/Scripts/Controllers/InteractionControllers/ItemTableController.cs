@@ -13,50 +13,54 @@ public class ItemTableController : InteractionController
     protected override void Init()
     {
         base.Init();
+        Item = GetComponent<GameObject>();
     }
 
-    public override void Interact(bool success,int id, bool action)
+    public override void Interact(bool success, int id, bool action)
     {
         if (success && action)
         {
-            StartCoroutine(CoInteract());
+            AfterInteract();
         }
     }
 
-    private IEnumerator CoInteract()
+    private void AfterInteract()
     {
-        float fadeDuration = 1f; // Fade out duration in seconds
-        float elapsedTime = 0f; // Elapsed time since starting the fade
-
-        // Get all SpriteRenderers in the Item object and its children
-        SpriteRenderer[] spriteRenderers = Item.GetComponentsInChildren<SpriteRenderer>();
-
-        while (elapsedTime < fadeDuration)
+        _isInteracted = false;
+        CanInteract = false;
+        var items = Item.GetComponentsInChildren<GameObject>();
+        foreach (var item in items)
         {
-            float alpha = 1f - (elapsedTime / fadeDuration); // Calculate the alpha value based on elapsed time
+            item.SetActive(false);
+        }
+    }
 
-            // Apply the alpha value to all SpriteRenderers
+    private IEnumerator FadeOutSprites(GameObject target, float duration)
+    {
+        float elapsedTime = 0f;
+        SpriteRenderer[] spriteRenderers = target.GetComponentsInChildren<SpriteRenderer>();
+
+        while (elapsedTime < duration)
+        {
+            float alpha = 1f - (elapsedTime / duration);
+
             foreach (var spriteRenderer in spriteRenderers)
             {
-                Color itemColor = spriteRenderer.color; // Get the current color of the sprite
-                itemColor.a = alpha; // Set the alpha value of the color
-                spriteRenderer.color = itemColor; // Apply the new color to the sprite
+                Color itemColor = spriteRenderer.color;
+                itemColor.a = alpha;
+                spriteRenderer.color = itemColor;
             }
 
-            elapsedTime += Time.deltaTime; // Increase the elapsed time
-            yield return null; // Wait for the next frame
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
 
-        // Ensure all sprites are fully transparent at the end of the fade
         foreach (var spriteRenderer in spriteRenderers)
         {
             Color itemColor = spriteRenderer.color;
             itemColor.a = 0f;
             spriteRenderer.color = itemColor;
         }
-
-        _isInteracted = false;
-        CanInteract = false;
     }
 
     public override void DeactivateInteraction()
