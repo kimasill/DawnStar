@@ -83,7 +83,7 @@ public class DoorController : InteractionController
     {
         CloseDoor();
     }
-    public override void Interact(bool success, bool action)
+    public override void Interact(bool success, int id, bool action)
     {
         if (success)
         {
