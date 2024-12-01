@@ -2,8 +2,6 @@ using Data;
 using Google.Protobuf.Protocol;
 using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor.Animations;
 using UnityEngine;
 
 public class ChestController : BaseController
@@ -146,23 +144,5 @@ public class ChestController : BaseController
 
     protected override void UpdateAnimation()
     {
-    }
-
-    protected bool CheckAnimationClip(string inspectorName)
-    {
-        if (Animator == null || Animator.runtimeAnimatorController == null)
-            return false;
-
-        AnimatorController animatorController = Animator.runtimeAnimatorController as AnimatorController;
-        if (animatorController == null)
-            return false;
-
-        foreach (ChildAnimatorState state in animatorController.layers[0].stateMachine.states) // 첫 번째 레이어의 상태 머신에서 states 가져오기
-        {
-            if (state.state.name == inspectorName) // state 이름과 inspectorName 비교
-                return true;
-        }
-
-        return false;
     }
 }

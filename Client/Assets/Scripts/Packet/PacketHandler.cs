@@ -2,6 +2,7 @@
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -210,8 +211,8 @@ class PacketHandler
         Debug.Log("S_ConnectedHandler");
         C_Login loginPacket = new C_Login();
 
-        string path = Application.dataPath;
-        loginPacket.UniqueId = path.GetHashCode().ToString();
+        // GUID를 사용하여 UniqueId 생성
+        loginPacket.UniqueId = Guid.NewGuid().ToString();
 
         Managers.Network.Send(loginPacket);
     }

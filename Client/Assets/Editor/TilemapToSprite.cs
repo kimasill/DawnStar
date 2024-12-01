@@ -1,5 +1,3 @@
-using Tiled2Unity;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -45,7 +43,6 @@ public class TilemapToSprite : MonoBehaviour
             // 텍스처를 스프라이트로 변환합니다.
             Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
             string spriteName = $"{tilemap.gameObject.name}_{y}.png";
-            SaveSprite(sprite, spriteSavePath, spriteName);
 
             GameObject tilemapObject = GameObject.Find(tilemap.gameObject.name);
             if (tilemapObject == null)
@@ -62,15 +59,5 @@ public class TilemapToSprite : MonoBehaviour
 
         // 기존 Tilemap을 비활성화합니다.
         tilemap.gameObject.SetActive(false);
-    }
-
-    private void SaveSprite(Sprite sprite, string path, string name)
-    {
-        // Sprite를 PNG 파일로 저장합니다.
-        byte[] bytes = sprite.texture.EncodeToPNG();
-        string filePath = $"{path}{name}";
-        System.IO.File.WriteAllBytes(filePath, bytes);
-        AssetDatabase.Refresh();
-        Debug.Log($"Sprite 저장 완료: {filePath}");
     }
 }

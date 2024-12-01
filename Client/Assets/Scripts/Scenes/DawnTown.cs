@@ -20,6 +20,7 @@ public class DawnTown : BaseScene
         Managers.Map.LoadMap(1);
 
         Screen.SetResolution(640, 480, false);
+        Camera.main.orthographicSize = ZoomLevel;
         _sceneUi = Managers.UI.ShowSceneUI<UI_GameScene>();
         _sceneUi.GetMap("001");
         _description = Managers.UI.ShowPopupUI<UI_Description>();

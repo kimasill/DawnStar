@@ -101,6 +101,7 @@ namespace Server.DB
                     bool success = db.SaveChangesEx(); // 저장할 때 예외처리를 해준다.
                     if (success)
                     {
+                        player.MapInfo.MapDbId = mapDb.MapDbId;
                         // 성공적으로 저장된 경우 추가 작업을 수행할 수 있습니다.
                     }
                 }

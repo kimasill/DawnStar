@@ -26,7 +26,7 @@ namespace Server.Game
             if (_coolTick > Environment.TickCount64)
                 return;
 
-            _coolTick = Environment.TickCount64 + 1000/(int)TotalAttackSpeed;
+            _coolTick = Environment.TickCount64 + (int)(1000/TotalAttackSpeed);
 
             
             if (_target == null || _target.Room != Room || _target.Hp == 0)

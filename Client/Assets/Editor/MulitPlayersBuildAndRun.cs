@@ -27,11 +27,16 @@ public class MulitPlayersBuildAndRun
     static void PerformWin64Build(int playerCount)
     {
         EditorUserBuildSettings.SwitchActiveBuildTarget(
-            BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows);
-        for(int i = 1; i<=playerCount; i++)
+        BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows);
+
+        // 로그인 씬을 첫 번째로 설정
+        string[] scenes = GetScenePaths();
+        Array.Sort(scenes, (x, y) => x.Contains("Login") ? -1 : y.Contains("Login") ? 1 : 0);
+
+        for (int i = 1; i <= playerCount; i++)
         {
             BuildPipeline.BuildPlayer(
-                GetScenePaths(),
+                scenes,
                 "Builds/Win64/" + GetProjectName() + i.ToString() + "/" + GetProjectName() + i.ToString() + ".exe",
                 BuildTarget.StandaloneWindows,
                 BuildOptions.AutoRunPlayer);

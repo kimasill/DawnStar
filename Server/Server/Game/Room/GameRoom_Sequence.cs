@@ -125,22 +125,23 @@ namespace Server.Game
             {
                 Console.WriteLine("There is not pRoom");
                 return;
-            }    
+            }
+            LeaveGame(player.Id);
             UpdatePlayerMapInfo(player, map, destPortalId);
             if (pRoom != null)
             {
                 player.Room = pRoom;
                 pRoom.Push(pRoom.EnterGame, player, false);
             }
+            DbTransaction.SavePlayerMap(player, player.MapInfo);
             PlayerDb playerDb = new PlayerDb()
             {
-                PlayerDbId = player.PlayerDbId,                
+                PlayerDbId = player.PlayerDbId,
+                MapDbId = player.MapInfo.MapDbId,
                 PosX = player.CellPos.x,
                 PosY = player.CellPos.y,
             };
             DbTransaction.SavePlayerPosDb(player, playerDb, player.Room);
-            DbTransaction.SavePlayerMap(player, player.MapInfo);
-
             GameLogic.Instance.UpdateRoom(this);
         }
 
@@ -209,7 +210,7 @@ namespace Server.Game
             MapData mapData = null;
             DataManager.MapDict.TryGetValue(Map.MapId, out mapData);
 
-            if (mapData == null)
+            if (mapData == null || mapData.spawns == null)
                 return;
 
             if (ids == null)
