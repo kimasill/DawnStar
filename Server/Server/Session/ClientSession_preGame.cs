@@ -110,6 +110,8 @@ namespace Server
             LobbyPlayerInfo playerInfo = LobbyPlayers.Find(p => p.Name == enterGamePacket.Name);
             if (playerInfo == null)
                 return;
+
+            int mapId = 1;
             bool isFirstLogin = false;
             MyPlayer = ObjectManager.Instance.Add<Player>();
             {
@@ -118,6 +120,24 @@ namespace Server
                 MyPlayer.Info.Position.State = CreatureState.Idle;
                 MyPlayer.Info.Position.MoveDir = MoveDir.Down;
                 MyPlayer.Info.Position.LookDir = LookDir.LookRight;
+
+                MyPlayer.Stat.MergeFrom(playerInfo.StatInfo);
+                if (MyPlayer.Stat.Hp <= 0)
+                {
+                    MyPlayer.Stat.Hp = MyPlayer.Stat.MaxHp;
+                }
+
+                if (MyPlayer.Stat.Level == 1)
+                {
+                    isFirstLogin = true;
+                    ServerState = PlayerServerState.ServerStateSingle;
+                }
+
+                if (isFirstLogin)
+                {
+                    MyPlayer = SingleGameSetting(MyPlayer);
+                }
+
                 using (AppDbContext db = new AppDbContext())
                 {
                     PlayerDb player = db.Players.FirstOrDefault(p => p.PlayerDbId == playerInfo.PlayerDbId);
@@ -128,18 +148,7 @@ namespace Server
                         MyPlayer.MapInfo.MapDbId = player.MapDbId;
                     }
                 }
-                MyPlayer.Stat.MergeFrom(playerInfo.StatInfo);
-                if(MyPlayer.Stat.Hp <= 0)
-                {
-                    MyPlayer.Stat.Hp = MyPlayer.Stat.MaxHp;
-                }
 
-
-                if (MyPlayer.Stat.Level == 0)
-                {
-                    isFirstLogin = true;
-                    ServerState = PlayerServerState.ServerStateSingle;
-                }
                 MyPlayer.Session = this;
                 S_ItemList itemListPacket = new S_ItemList();
 
@@ -160,9 +169,9 @@ namespace Server
                             itemListPacket.Items.Add(info);
                         }
                     }
-                    //클라한테 아이템 전달
                 }
                 Send(itemListPacket);
+
                 S_QuestList questListPacket = new S_QuestList();
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -184,43 +193,48 @@ namespace Server
                 Send(questListPacket);
 
                 ServerState = PlayerServerState.ServerStateSingle;
-
-                int mapId = 1;
+                
                 using (AppDbContext db = new AppDbContext())
                 {
                     MapDb mapDb = db.Maps
                         .Where(m => m.MapDbId == MyPlayer.MapInfo.MapDbId).FirstOrDefault();
 
-                    ChangeServerState(mapDb.TemplateId);                    
-                    MyPlayer.MapInfo.TemplateId = mapDb.TemplateId;
-                    MyPlayer.MapInfo.Scene = mapDb.Scene;
-                    MyPlayer.MapInfo.MapName = mapDb.MapName;
-                    mapId = mapDb.TemplateId;
-                }
-                UpdateMapChests(MyPlayer, mapId);
-                MyPlayer.Skill = new Skill(MyPlayer);
-                if (ServerState == PlayerServerState.ServerStateSingle)
-                {
-                    if(isFirstLogin)
+                    if (mapDb != null)
                     {
-                        MyPlayer = SingleGameSetting(MyPlayer);
+                        ChangeServerState(mapDb.TemplateId);
+                        MyPlayer.MapInfo.TemplateId = mapDb.TemplateId;
+                        MyPlayer.MapInfo.Scene = mapDb.Scene;
+                        MyPlayer.MapInfo.MapName = mapDb.MapName;
+                        mapId = mapDb.TemplateId;
                     }
-                    GameLogic.Instance.Push(() =>
-                    {
-                        GameRoom room = GameLogic.Instance.Add(mapId);
-                        room.Push(room.EnterGame, MyPlayer, false);
-                    });
-                }                
-                else
-                {
-                    ServerState = PlayerServerState.ServerStateGame;
-                    //GameLogic 담당 스레드에 등록
-                    GameLogic.Instance.Push(() =>
-                    {
-                        GameRoom room = GameLogic.Instance.Find(1); //멀티서버
-                        room.Push(room.EnterGame, MyPlayer, false);
-                    });
                 }
+            }
+            UpdateMapChests(MyPlayer, mapId);
+            MyPlayer.Skill = new Skill(MyPlayer);
+
+            if (ServerState == PlayerServerState.ServerStateSingle)
+            {
+                GameLogic.Instance.Push(() =>
+                {
+                    GameRoom room = GameLogic.Instance.Add(mapId);
+                    room.Push(room.EnterGame, MyPlayer, false);
+                });
+            }
+            else
+            {
+                ServerState = PlayerServerState.ServerStateGame;
+                GameLogic.Instance.Push(() =>
+                {
+                    GameRoom room = GameLogic.Instance.Find(1); // 멀티서버
+                    if (room != null)
+                    {
+                        room.Push(room.EnterGame, MyPlayer, false);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Failed to find game room for multiplayer.");
+                    }
+                });
             }
         }
 
@@ -250,7 +264,16 @@ namespace Server
                         player.MapInfo.PortalId = portal.id;
                         player.MapInfo.MapName = mapData.name;
                         player.MapInfo.Scene = "DawnTown";
+                        player.PosInfo.PosX = (int)portal.posX;
+                        player.PosInfo.PosY = (int)portal.posY;
+                        PlayerDb playerDb = new PlayerDb()
+                        {
+                            PlayerDbId = player.PlayerDbId,
+                            PosX = player.CellPos.x,
+                            PosY = player.CellPos.y,
+                        };                        
                         DB.DbTransaction.SavePlayerMap(player, player.MapInfo);
+                        DB.DbTransaction.SavePlayerPosDb(player, playerDb, player.Room);
                     }
                 }
                 return player;
@@ -261,7 +284,7 @@ namespace Server
         {
             List<int> chestIds = new List<int>();
             DataManager.MapDict.TryGetValue(mapId, out MapData mapData);
-            if (mapData == null)
+            if (mapData == null || mapData.chests == null)
                 return;
 
             

@@ -184,7 +184,11 @@ namespace Server.DB
                     if (property.Name == "PlayerDbId")
                         continue;
                     var value = property.GetValue(playerDb);
-                    if(property.Name != "PosX" && property.Name != "PosY")
+                    if (property.Name == "MapDbId")
+                    {
+                        db.Entry(playerDb).Property(property.Name).IsModified = true;
+                    }
+                    if (property.Name != "PosX" && property.Name != "PosY")
                     {
                         continue;
                     }

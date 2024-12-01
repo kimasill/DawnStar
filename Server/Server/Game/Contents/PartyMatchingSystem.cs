@@ -27,6 +27,8 @@ namespace Server
                 return;
 
             _waitingLists[mapId].Add(session);
+            Console.WriteLine($"Matching Register: {session.SessionId}");
+            Console.WriteLine($"Waiting Count: {_waitingLists[mapId].Count}/4");
             TryMatch(mapId);
         }
 
@@ -41,7 +43,7 @@ namespace Server
         private void TryMatch(int mapId)
         {
             if (_waitingLists.ContainsKey(mapId) && _waitingLists[mapId].Count >= 4)
-            {
+            {                
                 List<ClientSession> matchedSessions = _waitingLists[mapId].GetRange(0, 4);
                 _waitingLists[mapId].RemoveRange(0, 4);
 
@@ -50,6 +52,7 @@ namespace Server
                 {
                     session.JoinParty(newParty);
                 }
+                Console.WriteLine($"Matching Success: {mapId}, Party Id: {newParty.PartyId}");
                 EnterMap(newParty, mapId);
             }
         }

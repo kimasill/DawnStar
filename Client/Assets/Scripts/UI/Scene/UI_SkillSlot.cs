@@ -13,6 +13,7 @@ public class UI_SkillSlot : UI_Base
     UI_SkillSlot_Icon _helmetSkill;
     UI_SkillSlot_Icon _necklaceSkill;
     public Dictionary<int, UI_SkillSlot_Icon> SkillSlots = new Dictionary<int, UI_SkillSlot_Icon>();
+    bool _isInit = false;
     public override void Init()
     {
         _weaponSkill = CreateSkillSlotIcon();
@@ -30,6 +31,7 @@ public class UI_SkillSlot : UI_Base
             if (skillSlot.Value.IsInit == false)
                 skillSlot.Value.Init();
         }
+        _isInit = true;
         RefreshUI();
     }
     private UI_SkillSlot_Icon CreateSkillSlotIcon()
@@ -40,6 +42,11 @@ public class UI_SkillSlot : UI_Base
     }
     public void RefreshUI()
     {
+        if(_isInit == false)
+        {
+            Init();
+            _isInit = true;
+        }
         for (int i = 0; i < SkillSlots.Count; i++)
         {
             if (SkillSlots[i].SkillData == null)

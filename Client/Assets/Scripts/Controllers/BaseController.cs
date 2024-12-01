@@ -389,6 +389,17 @@ public class BaseController : MonoBehaviour
         yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
         Managers.Resource.Destroy(effect);
     }
+    protected bool CheckAnimationClip(string inspectorName)
+    {
+        if (Animator == null)
+            return false;
+
+        // Base Layer의 현재 상태 정보를 가져옵니다.
+        AnimatorStateInfo stateInfo = Animator.GetCurrentAnimatorStateInfo(0);
+
+        // 현재 상태의 이름이 inspectorName과 일치하는지 확인합니다.
+        return stateInfo.IsName(inspectorName);
+    }
     protected virtual void UpdateSkill()
     {
 

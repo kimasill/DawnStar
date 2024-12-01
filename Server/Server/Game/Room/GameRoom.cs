@@ -157,7 +157,7 @@ namespace Server.Game
                     return;
                 }
                 zone.Monsters.Add(monster);
-                Console.WriteLine($"Monster Id:{monster.Id} Type:{monster.MonsterType} Pos:{monster.CellPos} Added");
+                Console.WriteLine($"Monster Id:{monster.Id} Type:{monster.MonsterType} Added");
                 Map.ApplyMove(monster, new Vector2Int(monster.CellPos.x, monster.CellPos.y));
 
                 monster.Update();

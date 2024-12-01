@@ -53,7 +53,6 @@ class PacketHandler
 
     public static void C_LoginHandler(PacketSession session, IMessage packet)
     {
-
         C_Login loginPacket = packet as C_Login;
         ClientSession clientSession = session as ClientSession;
         clientSession.HandleLogin(loginPacket);
