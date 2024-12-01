@@ -89,25 +89,35 @@ namespace Server.Game
         {
             MapData mapData = null;
             DataManager.MapDict.TryGetValue(player.MapInfo.TemplateId, out  mapData);
-            if (mapData != null) {
-                foreach (var portal in mapData.portals)
+            if (mapData == null)
+            {
+                return;
+            }
+            int mapId = 0;
+            int destPortalId = 0;
+            foreach (var portal in mapData.portals)
+            {
+                if (portal.id == portalId)
                 {
-                    if (portal.id == portalId)
-                    {
-                        int mapId = portal.mapId;
-
-                        bool add = false;
-                        if (mapData.type == MapType.Dungeon)
-                            add = true;
-                        else if (mapData.type == MapType.Field)
-                            add = false;
-
-                        GameRoom room = GameLogic.Instance.GetRoom(player, mapId, this, add);
-                        HandleMapChanged(player, mapData, portal.destination, room);
-                        break;
-                    }
+                    mapId = portal.mapId;
+                    destPortalId = portal.destination;
                 }
             }
+            MapData nextMapData = null;
+            DataManager.MapDict.TryGetValue(mapId, out nextMapData);
+            if (nextMapData == null)
+            {
+                return;
+            }
+
+            bool add = false;
+            if (nextMapData.type == MapType.Dungeon)
+                add = true;
+            else if (nextMapData.type == MapType.Field)
+                add = false;
+
+            GameRoom room = GameLogic.Instance.GetRoom(player, mapId, this, add);
+            HandleMapChanged(player, nextMapData, destPortalId, room);            
         }
         public void HandleMapChanged(Player player, MapData map, int destPortalId, GameRoom pRoom)
         {

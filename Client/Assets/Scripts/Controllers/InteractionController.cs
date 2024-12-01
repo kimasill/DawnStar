@@ -3,6 +3,7 @@ using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -201,6 +202,25 @@ public class InteractionController : BaseController
         for (int i = 0; i < Animator.layerCount; i++)
         {
             if (Animator.GetLayerName(i) == layerName)
+                return true;
+        }
+
+        return false;
+    }
+
+
+    protected bool CheckAnimationClip(string inspectorName)
+    {
+        if (Animator == null || Animator.runtimeAnimatorController == null)
+            return false;
+
+        AnimatorController animatorController = Animator.runtimeAnimatorController as AnimatorController;
+        if (animatorController == null)
+            return false;
+
+        foreach (ChildAnimatorState state in animatorController.layers[0].stateMachine.states) // 첫 번째 레이어의 상태 머신에서 states 가져오기
+        {
+            if (state.state.name == inspectorName) // state 이름과 inspectorName 비교
                 return true;
         }
 

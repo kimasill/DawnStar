@@ -158,8 +158,9 @@
       "armorType": "Armor",
       "defence": "60",
       "price": "7800",
-      "iconPath": "Textures/Item/Armors/Armor/Armor_Erdoa",
-      "description": "에르도아 왕국의 중갑. 강력한 방어력을 자랑한다.",
+      "iconPath": "Textures/Item/Armors/Armor/Armor_Erdoa_Icon",
+      "prefabPath": "Textures/Item/Armors/Armor/Armor_Erdoa",
+      "description": "에르도아 왕국의 중갑. 강력한 방어력을 자랑한다."
     }
   ],
   "jewelry": [

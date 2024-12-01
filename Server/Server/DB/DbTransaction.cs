@@ -687,7 +687,7 @@ namespace Server.DB
                         {
                             {
                                 S_Interaction interactPacket = new S_Interaction();
-                                interactPacket.PlayerId = interactionDb.PlayerDbId;
+                                interactPacket.PlayerId = player.Id;
                                 interactPacket.ObjectId = interactionDb.TemplateId;                                
                                 interactPacket.Success = true;                                
                                 player.Session.Send(interactPacket);

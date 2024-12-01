@@ -2,6 +2,8 @@ using Data;
 using Google.Protobuf.Protocol;
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class ChestController : BaseController
@@ -93,33 +95,51 @@ public class ChestController : BaseController
             PosY = PosInfo.PosY
         };
         Managers.Network.Send(packet);
-
-        StartCoroutine(CoOpenChest());
+        if(CheckAnimationClip("SHAKE"))
+            StartCoroutine(CoShakeChest());
+        else StartCoroutine(CoOpenChest());
     }
     private IEnumerator CoShakeChest()
     {
         Animator.Play("SHAKE");        
         yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
+        StartCoroutine(CoOpenChest());
     }
     private IEnumerator CoOpenChest()
     {
-        if (CheckAnimatorLayer("SHAKE") == true)
-            yield return StartCoroutine(CoShakeChest());
-
-        Animator.Play("OPEN");
-        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
-
-        Animator.speed = 0;
-        yield return new WaitForSeconds(3f);
-        if (CheckAnimatorLayer("CLOSE") == true)
-            yield return StartCoroutine(CoCloseChest());
+        if (CheckAnimationClip("CLOSE"))
+        {
+            Animator.Play("OPEN"); // OPEN 애니메이션 재생
+            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f); // 애니메이션 종료 대기
+            Animator.speed = 0;
+            Animator.Play("CLOSE", 0, 0); // CLOSE 애니메이션 첫 프레임으로 고정
+        }
+        else
+        {
+            Animator.Play("CLOSE"); // CLOSE 애니메이션 재생
+            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f); // 애니메이션 종료 대기
+            Animator.speed = 0;
+            Animator.Play("CLOSE", 0, 1.0f); // CLOSE 애니메이션 마지막 프레임으로 고정
+        }
     }
 
     private IEnumerator CoCloseChest()
-    {        
+    {
         Animator.speed = 1;
-        Animator.Play("CLOSE");
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length - 0.05f);
+        if (CheckAnimationClip("CLOSE"))
+        {
+            Animator.Play("OPEN"); // OPEN 애니메이션 재생
+            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f); // 애니메이션 종료 대기
+            Animator.speed = 0;
+            Animator.Play("CLOSE", 0, 0); // CLOSE 애니메이션 첫 프레임으로 고정
+        }
+        else
+        {
+            Animator.Play("CLOSE"); // CLOSE 애니메이션 재생
+            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f); // 애니메이션 종료 대기
+            Animator.speed = 0;
+            Animator.Play("CLOSE", 0, 1.0f); // CLOSE 애니메이션 마지막 프레임으로 고정
+        }
         gameObject.SetActive(false);
         Destroy(gameObject);
     }
@@ -127,14 +147,19 @@ public class ChestController : BaseController
     protected override void UpdateAnimation()
     {
     }
-    private bool CheckAnimatorLayer(string layerName)
+
+    protected bool CheckAnimationClip(string inspectorName)
     {
-        if (Animator == null)
+        if (Animator == null || Animator.runtimeAnimatorController == null)
             return false;
 
-        for (int i = 0; i < Animator.layerCount; i++)
+        AnimatorController animatorController = Animator.runtimeAnimatorController as AnimatorController;
+        if (animatorController == null)
+            return false;
+
+        foreach (ChildAnimatorState state in animatorController.layers[0].stateMachine.states) // 첫 번째 레이어의 상태 머신에서 states 가져오기
         {
-            if (Animator.GetLayerName(i) == layerName)
+            if (state.state.name == inspectorName) // state 이름과 inspectorName 비교
                 return true;
         }
 
