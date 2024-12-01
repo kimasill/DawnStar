@@ -90,7 +90,8 @@ public class EquipmentController : MonoBehaviour
             else if (armor.ArmorType == ArmorType.Armor)
             {
                 Armor = armor;
-                foreach (var t in sprite)
+                Sprite[] armorSprite = Managers.Resource.LoadAll<Sprite>(itemData.prefabPath);
+                foreach (var t in armorSprite)
                 {
                     if (t.name == "Body")
                     {

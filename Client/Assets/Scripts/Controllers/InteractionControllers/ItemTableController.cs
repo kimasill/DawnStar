@@ -13,7 +13,8 @@ public class ItemTableController : InteractionController
     protected override void Init()
     {
         base.Init();
-        Item = GetComponent<GameObject>();
+        if(Item == null)
+            Item = GetComponentInChildren<GameObject>();
     }
 
     public override void Interact(bool success, bool action, List<int> ids=null)
@@ -28,11 +29,7 @@ public class ItemTableController : InteractionController
     {
         _isInteracted = false;
         CanInteract = false;
-        var items = Item.GetComponentsInChildren<GameObject>();
-        foreach (var item in items)
-        {
-            item.SetActive(false);
-        }
+        Item.SetActive(false);
     }
 
     private IEnumerator FadeOutSprites(GameObject target, float duration)

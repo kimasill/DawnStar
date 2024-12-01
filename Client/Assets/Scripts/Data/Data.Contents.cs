@@ -128,6 +128,7 @@ namespace Data
         public int price;
         public ItemType itemType;
         public string iconPath;
+        public string prefabPath;
         public string description;
         public Dictionary<string, string> options = new Dictionary<string, string>();
     }
