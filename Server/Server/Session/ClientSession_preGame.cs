@@ -8,6 +8,7 @@ using Server.Game.Room;
 using Server.Migrations;
 using Server.Utils;
 using ServerCore;
+using SharedDB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,10 +36,22 @@ namespace Server
             LobbyPlayers.Clear();
 
             using (AppDbContext db = new AppDbContext())
+            using (SharedDbContext sharedDb = new SharedDbContext())            
             {
+                TokenDb token = sharedDb.Tokens
+                   .Where(t => t.Token == int.Parse(loginPacket.UniqueId))
+                   .FirstOrDefault();
+
+                if (token == null)
+                {
+                    // 토큰이 유효하지 않음
+                    return;
+                }
+
                 AccountDb findAccount = db.Accounts
                     .Include(a => a.Players)
-                    .Where(a => a.AccountName == loginPacket.UniqueId).FirstOrDefault();
+                    .Where(a => a.AccountName == token.AccountDbId.ToString())
+                    .FirstOrDefault();
 
                 if (findAccount != null)
                 {
@@ -85,7 +98,7 @@ namespace Server
                 }
                 else
                 {
-                    AccountDb newAccount = new AccountDb() { AccountName = loginPacket.UniqueId };
+                    AccountDb newAccount = new AccountDb() { AccountName = token.AccountDbId.ToString()};
                     db.Accounts.Add(newAccount);
                     bool success = db.SaveChangesEx();
                     if (success == false)

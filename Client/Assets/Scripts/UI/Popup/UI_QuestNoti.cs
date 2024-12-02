@@ -10,7 +10,7 @@ public class UI_QuestNoti : UI_Popup
     enum Images
     {
         QuestNotiImage,
-        QuestNotiPanel,            
+        QuestNotiPanel,
     }
     enum Texts
     {
@@ -21,6 +21,8 @@ public class UI_QuestNoti : UI_Popup
     Image _questNotiImage;
     GameObject _questNotiPanel;
     CanvasGroup _canvasGroup;
+    Coroutine _currentCoroutine;
+
     public override void Init()
     {
         base.Init();
@@ -30,30 +32,39 @@ public class UI_QuestNoti : UI_Popup
         _questNotiImage = GetImage((int)Images.QuestNotiImage);
         _questNotiText = GetTextMeshPro((int)Texts.QuestNotiText);
         _canvasGroup = _questNotiPanel.GetOrAddComponent<CanvasGroup>();
-        
+
         _questNotiPanel.gameObject.SetActive(false);
     }
 
     public void ShowQuestStart(string questName)
     {
+        if (_currentCoroutine != null)
+        {
+            StopCoroutine(_currentCoroutine);
+        }
+
         _questNotiPanel.gameObject.SetActive(true);
         if (_questNotiPanel != null && _questNotiText != null)
         {
             _questNotiText.text = $"{questName}";
             _questNotiImage.gameObject.SetActive(true);
-            StartCoroutine(HideQuestNoti());
+            _currentCoroutine = StartCoroutine(HideQuestNoti());
         }
     }
 
     public void ShowQuestComplete(string questName)
     {
-        
+        if (_currentCoroutine != null)
+        {
+            StopCoroutine(_currentCoroutine);
+        }
+
         if (_questNotiPanel != null && _questNotiText != null)
         {
             _questNotiText.text = $"¿Ï·á: {questName}";
             _questNotiImage.gameObject.SetActive(false);
-            _questNotiPanel.SetActive(true);            
-            StartCoroutine(HideQuestNoti());
+            _questNotiPanel.SetActive(true);
+            _currentCoroutine = StartCoroutine(HideQuestNoti());
         }
     }
 

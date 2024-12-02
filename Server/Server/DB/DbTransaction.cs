@@ -356,18 +356,9 @@ namespace Server.DB
                 using (AppDbContext db = new AppDbContext())
                 {
                     db.Entry(questDb).State = EntityState.Unchanged;
-                    var properties = typeof(PlayerDb).GetProperties();
-                    foreach (var property in properties)
-                    {
-                        if(property.Name == "Progress")
-                        {
-                            db.Entry(questDb).Property(nameof(questDb.Progress)).IsModified = true;
-                        }
-                        if (property.Name == "Completed")
-                        {
-                            db.Entry(questDb).Property(nameof(questDb.Completed)).IsModified = true;
-                        }
-                    }
+                    db.Entry(questDb).Property(nameof(questDb.Progress)).IsModified = true;
+                    db.Entry(questDb).Property(nameof(questDb.Completed)).IsModified = true;
+                    
                     bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
                     if (success)
                     {
@@ -555,7 +546,7 @@ namespace Server.DB
                     bool success = db.SaveChangesEx();
 
                     List<ShopItemDb> shopItemDbs = db.ShopItems
-                        .Where(s => s.ShopDbId == existingShopDb.ShopDbId)
+                        .Where(s => s.ShopDbId == shopDb.ShopDbId)
                         .ToList();
 
                     

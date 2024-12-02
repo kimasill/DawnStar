@@ -81,6 +81,21 @@ public class UI_Map_Icon : UI_Base
         Debug.Log($"{icon.name} 아이콘이 클릭되었습니다.");
     }
 
+    public void UpdateIcons()
+    {
+        if(ToolTips.Count == 0)
+        {
+            return;
+        }
+        foreach (var tooltip in ToolTips)
+        {
+            if(tooltip.transform.localPosition.y < 100)
+            {
+                tooltip.transform.localPosition = new Vector3(tooltip.transform.localPosition.x, 100, tooltip.transform.localPosition.z);
+            }
+        }
+    }
+
     private void UpdateTooltip(GameObject icon, GameObject tooltip)
     {
         Text tooltipText = tooltip.GetComponentInChildren<Text>();

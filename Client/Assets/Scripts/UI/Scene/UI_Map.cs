@@ -81,7 +81,6 @@ public class UI_Map : UI_Base
             _items.Add(image.gameObject);
         }
     }
-
     public void ResetMapSize()
     {
         if (_mapRectTransform != null)
@@ -135,6 +134,7 @@ public class UI_Map : UI_Base
         }
 
         UpdatePlayerPosition();
+        _icon.UpdateIcons();
         CenterPlayerIcon();
         GetTextMeshPro((int)Texts.ScrollPercentageText).text = $"{(int)(delta * 100 * 2)}%";
     }
