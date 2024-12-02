@@ -39,20 +39,22 @@ namespace Server.Game
                         // 퀘스트가 없으면 새로 0번 퀘스트를 할당합니다.
                         questDb = new QuestDb()
                         {
-                            TemplateId = 0,
-                            Progress = 0,
+                            OwnerDbId = player.PlayerDbId,
+                            TemplateId = 1,
+                            Progress = 1,
                             Completed = false,                            
                         };
                     }
-                    else
+                    else                                                                                                                                                                                                                                                                                                                                                          
                     {
                         QuestData questData = DataManager.QuestDict.GetValueOrDefault(questId);
                         if (questData == null)
                             return;
                         questDb = new QuestDb()
                         {
+                            OwnerDbId = player.PlayerDbId,
                             TemplateId = questData.id,
-                            Progress = 0,
+                            Progress = 1,
                             Completed = false,                            
                         };
                     }
@@ -86,13 +88,15 @@ namespace Server.Game
 
             QuestDb questDb = new QuestDb()
             {
+                QuestDbId = quest.QuestDbId,
+                OwnerDbId = player.PlayerDbId,
                 TemplateId = quest.TemplateId,
                 Progress = quest.Progress,
                 Completed = quest.IsCompleted,
             };
 
             // DB에 퀘스트 진행 상태 저장
-            DbTransaction.SaveQuestDB(player, questDb, player.Room);
+            DbTransaction.UpdateQuestProgress(player, questDb, player.Room);
         }
 
         public void HandleQuestComplete(Player player, int questId)
@@ -112,6 +116,7 @@ namespace Server.Game
 
             QuestDb questDb = new QuestDb()
             {
+                OwnerDbId = player.PlayerDbId,
                 QuestDbId = quest.QuestDbId,
                 TemplateId = quest.TemplateId,
                 Progress = quest.Progress,
