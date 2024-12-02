@@ -41,7 +41,10 @@ public class ObjectManager
                 MyPlayer.SyncPos();
                 Managers.Inventory.RefreshEquipment(MyPlayer.Equipment);
                 UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-                gameSceneUI.GameWindow.SkillSlot.RefreshUI();
+                if(gameSceneUI.GameWindow.isActiveAndEnabled)
+                {
+                    gameSceneUI.GameWindow.SkillSlot.RefreshUI();
+                }                
             }
             else
             {

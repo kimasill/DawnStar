@@ -12,9 +12,10 @@ public class UI_Description : UI_Popup
     private CanvasGroup _canvas;
     private Queue<string> scriptQueue = new Queue<string>();
     private Coroutine typingCoroutine;
+    private string currentTypingText = "";
     private bool isTyping = false;
 
-    enum Buttons
+    enum Images
     {
         Description_Panel
     }
@@ -27,13 +28,12 @@ public class UI_Description : UI_Popup
     public override void Init()
     {
         Bind<TMP_Text>(typeof(TextMeshPro));
-        Bind<Button>(typeof(Buttons));
+        Bind<Image>(typeof(Images));
 
         _canvas = GetComponent<CanvasGroup>();
         _canvas.alpha = 0;
 
-        GetButton((int)Buttons.Description_Panel).gameObject.BindEvent(OnPanelClick);
-            
+        GetImage((int)Images.Description_Panel).gameObject.BindEvent(OnPanelClick);
 
         _textField = GetTextMeshPro((int)TextMeshPro.Description_Text);
     }
@@ -52,12 +52,12 @@ public class UI_Description : UI_Popup
     {
         if (scriptQueue.Count > 0)
         {
-            string nextScript = scriptQueue.Dequeue();
+            currentTypingText = scriptQueue.Dequeue();
             if (typingCoroutine != null)
             {
                 StopCoroutine(typingCoroutine);
             }
-            typingCoroutine = StartCoroutine(TypeText(nextScript));
+            typingCoroutine = StartCoroutine(TypeText(currentTypingText));
         }
         else
         {
@@ -73,12 +73,15 @@ public class UI_Description : UI_Popup
         {
             _textField.text += letter;
             yield return new WaitForSeconds(0.05f); // 한 글자씩 출력되는 속도 조절
+            if (letter == '\n')
+            {
+                yield return new WaitForSeconds(0.5f);
+            }
         }
         isTyping = false;
         yield return new WaitForSeconds(1f); // 텍스트가 모두 출력된 후 대기 시간
         ShowNextScript();
     }
-
     private IEnumerator FadeIn()
     {
         float alpha = 0;
@@ -115,10 +118,10 @@ public class UI_Description : UI_Popup
         if (isTyping)
         {
             // 현재 타이핑 중인 텍스트를 모두 출력
-            if (scriptQueue.Count > 0)
+            if (currentTypingText != null)
             {
                 StopCoroutine(typingCoroutine);
-                _textField.text = scriptQueue.Peek();
+                _textField.text = currentTypingText;
                 isTyping = false;
             }
         }

@@ -37,6 +37,7 @@ public abstract class BaseScene : MonoBehaviour
     {
         C_StartQuest startQuestPacket = new C_StartQuest();
         startQuestPacket.TemplateId = 0;
+        Managers.Network.Send(startQuestPacket);
     }
     public virtual void ShowStoryScene(ScriptData scriptData) 
     {
