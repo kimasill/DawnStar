@@ -91,19 +91,6 @@ public class MapManager
         }
         return null;
     }
-
-	public void RemovePortalByName(string portalName)
-	{
-		foreach(var portal in _portalDict)
-        {
-            if (portal.Value.name == portalName)
-            {
-                _portalDict.Remove(portal.Key);
-                break;
-            }
-        }
-    }
-
 	public GameObject IsPlayerAtQuest(Vector3Int cellPos)
 	{
 		Vector3Int adjustedPos = new Vector3Int(cellPos.x + 1, cellPos.y + 1, 0);

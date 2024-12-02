@@ -212,7 +212,7 @@ class PacketHandler
         C_Login loginPacket = new C_Login();
 
         // GUID를 사용하여 UniqueId 생성
-        loginPacket.UniqueId = Guid.NewGuid().ToString();
+        loginPacket.UniqueId = Managers.Network.Token.ToString();
 
         Managers.Network.Send(loginPacket);
     }

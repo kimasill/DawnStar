@@ -115,16 +115,8 @@ public class DawnTown_Home : DawnTown
 
     private void DoorChangeAfterQuest06()
     {
-        Managers.Map.RemovePortalByName("DawnTown");
-        GameObject[] doorObjects = GameObject.FindGameObjectsWithTag("Door");
-        if (doorObjects != null && doorObjects.Length > 0)
-        {
-            foreach (var doorObject in doorObjects)
-            {
-                doorObject.name = "DawnTownDead";
-            }
-        }
-        Managers.Map.FindPortals();
+        GameObject portal = Managers.Map.GetPortalById(400);        
+        portal.gameObject.name = "Portal_401";
     }
 
     private void OnInventoryItemAdded(Item item)
