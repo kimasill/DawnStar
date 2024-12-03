@@ -13,12 +13,16 @@ class PacketHandler
 {
 	public static void S_EnterGameHandler(PacketSession session, IMessage packet)
 	{
-		S_EnterGame enterGamePacket = packet as S_EnterGame; 
-        
+		S_EnterGame enterGamePacket = packet as S_EnterGame;
+
         if (enterGamePacket.Player.MapInfo != null)
         {
+            Managers.Scene.IsSceneLoaded = false;
+            SceneManager.sceneLoaded -= (scene, mode) => OnSceneLoadedCallback(scene, mode, enterGamePacket.Player);
+            SceneManager.sceneLoaded += (scene, mode) => OnSceneLoadedCallback(scene, mode, enterGamePacket.Player);
+
             Managers.Scene.LoadScene(enterGamePacket.Player.MapInfo.Scene);
-            SceneManager.sceneLoaded += (scene, mode) => OnSceneLoaded(enterGamePacket.Player);                  
+         
         }
 	}
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)
@@ -254,10 +258,19 @@ class PacketHandler
         
         Managers.Object.Remove(Managers.Object.MyPlayer.Id);
         Managers.Data.MapDict.TryGetValue(mapChangePacket.MapId, out MapData map);
-        Managers.Scene.LoadScene(map.name);
+        
         SceneManager.sceneLoaded += (scene, mode) => OnSceneLoaded(mapChangePacket.ObjectInfo);
+        Managers.Scene.LoadScene(map.name);
     }
+    private static void OnSceneLoadedCallback(Scene scene, LoadSceneMode mode, ObjectInfo objectInfo)
+    {
+        // 씬 로드가 완료되었을 때 호출되는 콜백
+        // 필요한 초기화 작업 수행        
+        OnSceneLoaded(objectInfo);
 
+        // 콜백 등록 해제
+        SceneManager.sceneLoaded -= (scene, mode) => OnSceneLoadedCallback(scene, mode, objectInfo);
+    }
     public static void OnSceneLoaded(ObjectInfo objectInfo)
     {
         if (objectInfo == null)
@@ -281,9 +294,7 @@ class PacketHandler
             C_RequestStat request = new C_RequestStat();
             Managers.Network.Send(request);
         }
-
-        // 이벤트 핸들러 제거
-        SceneManager.sceneLoaded -= (s, m) => OnSceneLoaded(objectInfo);
+        Managers.Scene.IsSceneLoaded = true;
     }
 
     public static void S_ChangePositionHandler(PacketSession session, IMessage packet)
@@ -501,7 +512,7 @@ class PacketHandler
     public static void S_QuestListHandler(PacketSession session, IMessage packet)
     {
         S_QuestList questListPacket = (S_QuestList)packet;
-        Managers.Quest.Clear();
+        Managers.Quest.Quests.Clear();
         foreach (QuestInfo questInfo in questListPacket.Quests)
         {
             Quest quest = Quest.MakeQuest(questInfo);

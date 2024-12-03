@@ -14,17 +14,23 @@ public class DawnTown_Store : DawnTown
         Managers.Map.LoadMap(2);
 
         Screen.SetResolution(640, 480, false);
+        Camera.main.orthographicSize = ZoomLevel;
         _sceneUi = Managers.UI.ShowSceneUI<UI_GameScene>();
         _sceneUi.SetActive(_sceneUi.GameWindow, true);
         // 추가적인 초기화 작업이 필요하면 여기에 작성        
         InitializeNPCs();
         RequestShop(2);
-        CheckQuestAndShowScript(3); //Quest id
     }
-
-    private void CheckQuestAndShowScript(int questId)
+    public override void CheckOnSceneLoadedQuest()
     {
-        // 퀘스트 진행 중인지 확인
+        if (Managers.Scene.IsSceneLoaded)
+        {
+            return;
+        }
+        StartQuest(3);
+    }
+    private void StartQuest(int questId)
+    {
         if (Managers.Quest.IsQuestInProgress(questId))
         {
             // 퀘스트 스크립트 데이터를 가져옴
@@ -35,7 +41,7 @@ public class DawnTown_Store : DawnTown
             {
                 // UI_StoryPanel을 통해 스크립트 출력
                 UI_GameWindow gameWindow = _sceneUi.GameWindow;
-                gameWindow.StoryPanel.ShowStoryPanel(questScriptData, 0);
+                gameWindow.StoryPanel.ShowStoryPanel(questScriptData, 1);
             }
         }
     }

@@ -1,3 +1,4 @@
+using Google.Protobuf.Protocol;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -31,11 +32,6 @@ public class UI_Quest : UI_Base
         {
             Destroy(child.gameObject);
         }
-
-        GameObject go = Managers.Resource.Instantiate("UI/Scene/UI_Quest_Title", grid.transform);
-        UI_Quest_Title quest = go.GetOrAddComponent<UI_Quest_Title>();
-        Quests.Add(quest);
-
         Bind<Image>(typeof(Images));
         Bind<TMP_Text>(typeof(Texts));
         GetImage((int)Images.QuestExitButton).gameObject.BindEvent(OnClickExitButton);
@@ -49,14 +45,14 @@ public class UI_Quest : UI_Base
         if (_init == false)
             return;
 
-        if (Quests.Count == 0)
+        foreach (Transform child in grid.transform)
         {
-            return;
+            Destroy(child.gameObject);
         }
 
-        List<Quest> questList = Managers.Quest.Quests.Values
-            .OrderBy(quest => quest.TemplateId)
-            .ToList();
+        Quests.Clear();
+
+        List<Quest> questList = Managers.Quest.Quests.Values.ToList();
 
         foreach (Quest quest in questList)
         {
@@ -92,7 +88,6 @@ public class UI_Quest : UI_Base
         else
         {
             questTitle.Clicked = false;
-            
         }       
 
         GetTextMeshPro((int)Texts.DescriptionText).text = questTitle.Description;

@@ -1,4 +1,5 @@
-﻿using Server.DB;
+﻿using Microsoft.EntityFrameworkCore;
+using Server.DB;
 using SharedDB;
 using System;
 using System.Collections.Generic;
@@ -24,18 +25,48 @@ namespace Server.Utils
             }
         }
 
-            public static bool SaveChangesEx(this SharedDbContext db)
+        public static bool SaveChangesEx(this SharedDbContext db)
+        {
+            try
             {
-                try
+                db.SaveChanges();
+                return true;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                // 동시성 예외 처리
+                foreach (var entry in ex.Entries)
                 {
-                    db.SaveChanges();
-                    return true;
+                    if (entry.Entity is ShopDb)
+                    {
+                        var proposedValues = entry.CurrentValues;
+                        var databaseValues = entry.GetDatabaseValues();
+
+                        if (databaseValues == null)
+                        {
+                            // 데이터베이스에 엔터티가 존재하지 않음
+                            entry.State = EntityState.Detached;
+                        }
+                        else
+                        {
+                            // 데이터베이스 값으로 현재 값을 덮어씌움
+                            entry.OriginalValues.SetValues(databaseValues);
+                        }
+                    }
+                    else
+                    {
+                        throw new NotSupportedException("동시성 예외는 ShopDb 엔터티에서만 지원됩니다.");
+                    }
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    return false;
-                }
+
+                // 재시도
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
+    }
 }

@@ -22,6 +22,15 @@ namespace Server.Game
             if (player == null)
                 return;
 
+            Quest quest = player.Quest.Get(questId);
+            if(quest != null)
+            {
+                if(quest.Progress == 1)
+                {
+                    return;
+                }
+            }
+
             using (AppDbContext db = new AppDbContext())
             {
                 // 주어진 questId가 0이 아니면 해당 퀘스트를 찾고, 0이면 가장 최근 퀘스트를 찾습니다.
@@ -124,7 +133,18 @@ namespace Server.Game
             };
 
             // DB에 퀘스트 완료 상태 저장
-            DbTransaction.SaveCompleteQuest(player, questDb, player.Room);                
+            DbTransaction.SaveCompleteQuest(player, questDb, player.Room);
+
+            // 플레이어의 퀘스트 정보를 QuestInfo 리스트로 반환
+            List<QuestInfo> questInfos = new List<QuestInfo>();
+            foreach (Quest q in player.Quest.Quests.Values)
+            {
+                questInfos.Add(q.Info);
+            }
+
+            S_QuestList questListPacket = new S_QuestList();
+            questListPacket.Quests.AddRange(questInfos);
+            player.Session.Send(questListPacket);
         }
         public void HandleSelectStat(Player player, int statId)
         {

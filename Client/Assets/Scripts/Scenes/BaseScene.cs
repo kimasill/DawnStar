@@ -35,6 +35,10 @@ public abstract class BaseScene : MonoBehaviour
     public virtual void CheckInteractionQuest(int questId) { }
     public virtual void CheckOnSceneLoadedQuest() 
     {
+        if (Managers.Scene.IsSceneLoaded)
+        {
+            return;
+        }
         C_StartQuest startQuestPacket = new C_StartQuest();
         startQuestPacket.TemplateId = 0;
         Managers.Network.Send(startQuestPacket);

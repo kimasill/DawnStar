@@ -12,6 +12,7 @@ public class PlayerController : CreatureController
 {
 	
     protected EquipmentController _equipmentController;
+    [SerializeField]
     protected SortingGroup _sortingLayer;
     protected bool _isAttacking = false;
     public EquipmentController Equipment 
@@ -40,8 +41,8 @@ public class PlayerController : CreatureController
 
     protected override void Init()
 	{
-        base.Init();
-        _sortingLayer = GetComponent<SortingGroup>();   
+        _sortingLayer = GetComponent<SortingGroup>();
+        base.Init();         
     }
 
     protected override void UpdateAnimation()
@@ -177,6 +178,9 @@ public class PlayerController : CreatureController
     }
     protected override void UpdateSortingLayer()
     {
+        if (_sortingLayer == null)
+            return;
+
         _sortingLayer.sortingOrder = -CellPos.y * 10;
     }
 }

@@ -29,9 +29,14 @@ public class UI_StoryPanel : UI_Popup
     private Action onCloseAction;
     private Image _conversationImage;
     private string currentTypingText = "";
+    bool _isInit = false;
+
 
     public override void Init()
     {
+        if (_isInit == true)
+            return;
+
         _canvas = GetComponent<CanvasGroup>();
         _canvas.alpha = 0;
         Bind<TMP_Text>(typeof(Texts));
@@ -39,14 +44,18 @@ public class UI_StoryPanel : UI_Popup
         _storyText = GetTextMeshPro((int)Texts.UI_Conversation_Text);
         _conversationImage = GetImage((int)Images.UI_Conversation_Image);
         gameObject.BindEvent(OnPanelClick);
+
+        _isInit = true;
     }
 
     public void SetStoryTexts(List<string> scripts)
     {
+        scriptQueue.Clear();
         foreach (var script in scripts)
         {
             scriptQueue.Enqueue(script);
         }
+        isEndOfScript = false;
         if (!isTyping)
         {
             ShowNextScript();
@@ -100,7 +109,7 @@ public class UI_StoryPanel : UI_Popup
             {
                 Managers.Quest.EndQuest();
             };
-        }
+        }        
         gameObject.SetActive(true);
         StartCoroutine(FadeIn());
         SetConversationImage(scripts.name);
@@ -129,7 +138,7 @@ public class UI_StoryPanel : UI_Popup
             }
             typingCoroutine = StartCoroutine(TypeText(nextScript));
         }
-        else
+        if(scriptQueue.Count == 0)
         {
             isEndOfScript = true;
         }
@@ -188,12 +197,18 @@ public class UI_StoryPanel : UI_Popup
         else if (isEndOfScript)
         {
             // 스크립트가 끝났을 때 패널을 닫음
+            isEndOfScript = false;
             StartCoroutine(FadeOut());
         }
         else
         {
-            // 다음 스크립트로 넘어감
-            ShowNextScript();
+            if (scriptQueue.Count > 0)
+                ShowNextScript();
+            else
+            {
+                isEndOfScript = true;
+                StartCoroutine(FadeOut());
+            }
         }
     }
 }
