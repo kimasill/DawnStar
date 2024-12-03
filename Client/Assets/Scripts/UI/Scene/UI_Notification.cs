@@ -12,18 +12,20 @@ public class UI_Notification : UI_Base
     [SerializeField] private Transform _expNotiPanel;
     [SerializeField] private Transform _levelNotiPanel;
     [SerializeField] private Transform _bossKillNotiPanel;
+    [SerializeField] private Transform _basicNotiPanel;
     [SerializeField] private int _maxNotis = 8;
     [SerializeField] private int _notiHeight = 50;
 
 
     private Queue<UI_ItemNoti> _activeNotis = new Queue<UI_ItemNoti>();
     private Queue<GameObject> _activeExpNotis = new Queue<GameObject>();
-
+    Coroutine _basicNotiCoroutine;
     public override void Init()
     {
         if (_itemNotiPanel == null) { _itemNotiPanel = transform.Find("ItemNotiPanel"); }
         _levelNotiPanel.gameObject.SetActive(false);
         _bossKillNotiPanel.gameObject.SetActive(false);
+        _basicNotiPanel.gameObject.SetActive(false);
     }
 
     public void ShowItemNoti(Item item)
@@ -76,6 +78,20 @@ public class UI_Notification : UI_Base
     {
         _levelNotiPanel.gameObject.SetActive(true);
         StartCoroutine(HideNoti(_levelNotiPanel.gameObject));
+    }
+    public IEnumerator ShowBasicNoti(string script)
+    {
+        // 기존 코루틴이 실행 중이면 중지
+        if (_basicNotiCoroutine != null)
+        {
+            StopCoroutine(_basicNotiCoroutine);
+        }
+        _basicNotiPanel.gameObject.SetActive(true);
+        TMP_Text notiText = _basicNotiPanel.GetComponentInChildren<TMP_Text>();
+        notiText.text = $"{script}";
+
+        _basicNotiCoroutine = StartCoroutine(ShowAndHideBasicNoti(notiText));
+        yield return _basicNotiCoroutine;
     }
     private void CreateNewExpNoti(string exp)
     {
@@ -134,6 +150,19 @@ public class UI_Notification : UI_Base
 
         onComplete?.Invoke();
     }
+    private IEnumerator ShowNoti(GameObject noti)
+    {
+        CanvasGroup canvasGroup = noti.GetComponent<CanvasGroup>();
+        float fadeDuration = 1f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            canvasGroup.alpha = Mathf.Lerp(0, 1, elapsedTime / fadeDuration);
+            yield return null;
+        }
+    }
     private IEnumerator HideNoti(GameObject noti)
     {
         CanvasGroup canvasGroup = noti.GetComponent<CanvasGroup>();
@@ -147,7 +176,36 @@ public class UI_Notification : UI_Base
             yield return null;
         }
         noti.SetActive(false);
-
+    }
+    private IEnumerator ShowAndHideBasicNoti(TMP_Text notiText)
+    {
+        yield return StartCoroutine(ShowTextNoti(notiText));
+        yield return new WaitForSeconds(2f); // 알림이 표시되는 시간
+        yield return StartCoroutine(HideTextNoti(notiText));
+        _basicNotiPanel.gameObject.SetActive(false);
+        _basicNotiCoroutine = null; // 코루틴 완료 후 null로 설정
+    }
+    private IEnumerator ShowTextNoti(TMP_Text text)
+    {
+        float fadeDuration = 1f;
+        float elapsedTime = 0f;
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            text.alpha = Mathf.Lerp(0, 1, elapsedTime / fadeDuration);
+            yield return null;
+        }
+    }
+    private IEnumerator HideTextNoti(TMP_Text text)
+    {
+        float fadeDuration = 1f;
+        float elapsedTime = 0f;
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            text.alpha = Mathf.Lerp(1, 0, elapsedTime / fadeDuration);
+            yield return null;
+        }
     }
     private IEnumerator FadeOutAndRemove(GameObject noti)
     {

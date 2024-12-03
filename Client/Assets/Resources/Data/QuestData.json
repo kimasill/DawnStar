@@ -5,7 +5,7 @@
       "title": "새벽마을",
       "rewards": [
         {
-          "rewardType": "Reward_Exp",
+          "rewardType": "Exp",
           "amount": "50"
         }
       ],
@@ -18,11 +18,11 @@
       "title": "일상",
       "rewards": [
         {
-          "rewardType": "Reward_Gold",
+          "rewardType":"Gold",
           "amount": "10"
         },
         {
-          "rewardType": "Reward_Exp",
+          "rewardType": "Exp",
           "amount": "50"
         }
       ],
@@ -35,7 +35,7 @@
       "title": "일상2",
       "rewards": [
         {
-          "rewardType": "Reward_Exp",
+          "rewardType": "Exp",
           "amount": "50"
         }
       ],
@@ -48,7 +48,7 @@
       "title": "전조",
       "rewards": [
         {
-          "rewardType": "Reward_Exp",
+          "rewardType": "Exp",
           "amount": "50"
         }
       ],
@@ -61,7 +61,7 @@
       "title": "죽음",
       "rewards": [
         {
-          "rewardType": "Reward_Exp",
+          "rewardType": "Exp",
           "amount": "50"
         }
       ],
@@ -74,7 +74,7 @@
       "title": "분노",
       "rewards": [
         {
-          "rewardType": "Reward_Exp",
+          "rewardType": "Exp",
           "amount": "50"
         }
       ],
@@ -87,7 +87,7 @@
       "title": "발걸음",
       "rewards": [
         {
-          "rewardType": "Reward_Exp",
+          "rewardType": "Exp",
           "amount": "50"
         }
       ],
@@ -100,7 +100,7 @@
       "title": "East End",
       "rewards": [
         {
-          "rewardType": "Reward_Exp",
+          "rewardType": "Exp",
           "amount": "50"
         }
       ],
@@ -113,7 +113,7 @@
       "title": "우회",
       "rewards": [
         {
-          "rewardType": "Reward_Exp",
+          "rewardType": "Exp",
           "amount": "50"
         }
       ],
@@ -126,7 +126,7 @@
       "title": "tutorial07",
       "rewards": [
         {
-          "rewardType": "Reward_Exp",
+          "rewardType": "Exp",
           "amount": "50"
         }
       ],
@@ -139,7 +139,7 @@
       "title": "tutorial08",
       "rewards": [
         {
-          "rewardType": "Reward_Exp",
+          "rewardType": "Exp",
           "amount": "50"
         }
       ],
@@ -152,7 +152,7 @@
       "title": "tutorial09",
       "rewards": [
         {
-          "rewardType": "Reward_Exp",
+          "rewardType": "Exp",
           "amount": "50"
         }
       ],
@@ -165,7 +165,7 @@
       "title": "tutorial10",
       "rewards": [
         {
-          "rewardType": "Reward_Exp",
+          "rewardType": "Exp",
           "amount": "50"
         }
       ],

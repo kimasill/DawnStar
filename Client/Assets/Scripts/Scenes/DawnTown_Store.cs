@@ -27,23 +27,30 @@ public class DawnTown_Store : DawnTown
         {
             return;
         }
-        StartQuest(3);
+        if(Managers.Quest.IsQuestInProgress(2))
+        {
+            Managers.Quest.EndQuest(2);
+        }
+        else if(Managers.Quest.IsQuestInProgress(3))
+        {
+            StartQuest(3);
+        }
     }
     private void StartQuest(int questId)
     {
-        if (Managers.Quest.IsQuestInProgress(questId))
-        {
-            // 퀘스트 스크립트 데이터를 가져옴
-            ScriptData questScriptData = null;
-            Managers.Data.ScriptDict.TryGetValue(questId, out questScriptData);
+        ScriptData questScriptData = null;
+        Managers.Data.ScriptDict.TryGetValue(questId, out questScriptData);
 
-            if (questScriptData != null && questScriptData.scripts.Count > 0)
-            {
-                // UI_StoryPanel을 통해 스크립트 출력
-                UI_GameWindow gameWindow = _sceneUi.GameWindow;
-                gameWindow.StoryPanel.ShowStoryPanel(questScriptData, 1);
-            }
+        if (questScriptData != null && questScriptData.scripts.Count > 0)
+        {
+            // UI_StoryPanel을 통해 스크립트 출력
+            UI_GameWindow gameWindow = _sceneUi.GameWindow;
+            gameWindow.StoryPanel.ShowStoryPanel(questScriptData, 1);
         }
+    }
+    public override void StartInteractionQuest(int questId)
+    {
+        StartQuest(questId);
     }
     public override void Clear()
     {

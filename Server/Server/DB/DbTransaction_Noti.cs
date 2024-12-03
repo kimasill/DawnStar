@@ -93,6 +93,7 @@ namespace Server.DB
                     }
                     else
                     {
+                        mapDb.PlayerDbId = player.PlayerDbId;
                         mapDb.TemplateId = map.TemplateId;
                         mapDb.Scene = map.Scene;
                         mapDb.MapName = map.MapName;

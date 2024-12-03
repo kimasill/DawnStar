@@ -85,7 +85,7 @@ namespace Server.Game
             return closestPortalPos;
         }
 
-        public void HandleMapChanged(Player player, int portalId)
+        public async void HandleMapChanged(Player player, int portalId)
         {
             MapData mapData = null;
             DataManager.MapDict.TryGetValue(player.MapInfo.TemplateId, out  mapData);
@@ -116,7 +116,7 @@ namespace Server.Game
             else if (nextMapData.type == MapType.Field)
                 add = false;
 
-            GameRoom room = GameLogic.Instance.GetRoom(player, mapId, this, add);
+            GameRoom room = await GameLogic.Instance.GetRoom(player, mapId, this, add);
             HandleMapChanged(player, nextMapData, destPortalId, room);            
         }
         public void HandleMapChanged(Player player, MapData map, int destPortalId, GameRoom pRoom)

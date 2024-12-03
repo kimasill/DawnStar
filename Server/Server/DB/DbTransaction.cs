@@ -182,7 +182,7 @@ namespace Server.DB
                     {
                         db.Entry(playerDb).Property(property.Name).IsModified = true;
                     }
-                    if (property.Name != "PosX" && property.Name != "PosY")
+                    if (property.Name != "PosX" || property.Name != "PosY")
                     {
                         continue;
                     }
@@ -340,9 +340,9 @@ namespace Server.DB
                 return;
 
             // 연계 정보 가져오기
-            int exp = questData.rewards.FirstOrDefault(r => r.type == RewardType.RewardExp)?.amount ?? 0;
+            int exp = questData.rewards.FirstOrDefault(r => r.rewardType == RewardType.Exp)?.amount ?? 0;
             int connection = questData.connection;
-            int gold = questData.rewards.FirstOrDefault(r => r.type == RewardType.RewardGold)?.amount ?? 0;
+            int gold = questData.rewards.FirstOrDefault(r => r.rewardType == RewardType.Gold)?.amount ?? 0;
 
             // 퀘스트 완료 처리
             Instance.Push(() =>
@@ -363,7 +363,7 @@ namespace Server.DB
                             RewardInfo rewardInfo = new RewardInfo();
                             foreach (RewardData rewardData in questData.rewards)
                             {
-                                rewardInfo.RewardType = rewardData.type;
+                                rewardInfo.RewardType = rewardData.rewardType;
                                 rewardInfo.RewardValue = rewardData.amount;
                             }
                             QuestInfo questInfo = new QuestInfo()

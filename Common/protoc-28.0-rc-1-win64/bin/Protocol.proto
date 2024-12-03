@@ -195,9 +195,9 @@ enum DirectionType{
 }
 
 enum RewardType{
-	REWARD_EXP = 0;
-	REWARD_ITEM = 1;
-	REWARD_GOLD = 2;
+	REWARD_TYPE_EXP = 0;
+	REWARD_TYPE_ITEM = 1;
+	REWARD_TYPE_GOLD = 2;
 }
 
 enum PlayerServerState{

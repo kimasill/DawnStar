@@ -328,7 +328,7 @@ namespace Server.Data
     [Serializable]
     public class RewardData
     {
-        public RewardType type;
+        public RewardType rewardType;
         public int amount;
     }
 

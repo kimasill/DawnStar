@@ -286,6 +286,7 @@ class PacketHandler
         if (Managers.Object.MyPlayer != null)
         {
             Managers.Object.MyPlayer.PosInfo = objectInfo.Position;
+            Managers.Object.MyPlayer.State = CreatureState.Idle;
             Managers.Object.MyPlayer.Stat.MergeFrom(objectInfo.StatInfo);
             Managers.Map.SetChests(objectInfo.MapInfo.ChestIds.ToList());
             Managers.Map.SetInteractions(objectInfo.MapInfo.InteractionIds.ToList());
@@ -524,8 +525,12 @@ class PacketHandler
     {
         S_BuyItem buyItemPacket = packet as S_BuyItem;
 
-        if (buyItemPacket == null || buyItemPacket.Count == 0)
+        if (buyItemPacket.Count == 0)
+        {
+            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+            gameSceneUI.NotificationUI.ShowBasicNoti("소지금이 부족합니다.");
             return;
+        }
     }
 
     public static void S_DropItemHandler(PacketSession session, IMessage packet)
