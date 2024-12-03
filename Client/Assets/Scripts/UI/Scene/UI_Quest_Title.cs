@@ -68,7 +68,6 @@ public class UI_Quest_Title : UI_Base
         Description = quest.QuestDescription;
 
         _titleText.text = Title;
-        _titleText.gameObject.SetActive(true);
     }
 
     public void OnClick(PointerEventData evt)

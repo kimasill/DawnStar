@@ -22,6 +22,7 @@ public class SceneManagerEx : MonoBehaviour
         }
     }
     public BaseScene CurrentScene { get { return GameObject.FindObjectOfType<BaseScene>(); } }
+    public bool IsSceneLoaded { get; set; } = false;
     public void LoadScene(Define.Scene type)
     {
         Managers.Clear();

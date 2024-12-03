@@ -4,16 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Game;
 using Server.Game.Job;
-using Server.Game.Room;
-using Server.Migrations;
 using Server.Utils;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Server.DB
 {
@@ -544,19 +538,24 @@ namespace Server.DB
                         }                        
                     }
                     bool success = db.SaveChangesEx();
-
-                    List<ShopItemDb> shopItemDbs = db.ShopItems
-                        .Where(s => s.ShopDbId == shopDb.ShopDbId)
-                        .ToList();
-
                     
                     if (success)
                     {
+                        if (existingShopDb == null)
+                        {
+                            existingShopDb = shopDb;
+                            existingShopDb.ShopDbId = db.Entry(shopDb).Property(s => s.ShopDbId).CurrentValue;
+                        }
+
+                        List<ShopItemDb> shopItemDbs = db.ShopItems
+                       .Where(s => s.ShopDbId == existingShopDb.ShopDbId)
+                       .ToList();
+
                         room.Push(() =>
                         {
                             {
                                 S_ShopList shopPacket = new S_ShopList();
-                                shopPacket.ShopId = existingShopDb.TemplateId;
+                                shopPacket.ShopId = shopDb.TemplateId;
                                 shopPacket.ShopDbId = existingShopDb.ShopDbId;                                
                                 List<ItemInfo> items = shopItemDbs.Select(x => new ItemInfo()
                                 {                                   
