@@ -139,8 +139,29 @@ namespace Server
                 {
                     MyPlayer.Stat.Hp = MyPlayer.Stat.MaxHp;
                 }
+                S_QuestList questListPacket = new S_QuestList();
+                using (AppDbContext db = new AppDbContext())
+                {
+                    List<QuestDb> quests = db.Quests
+                        .Where(q => q.OwnerDbId == playerInfo.PlayerDbId)
+                        .ToList();
+                    foreach (QuestDb questDb in quests)
+                    {
+                        Quest quest = Quest.MakeQuest(questDb);
+                        if (quest != null)
+                        {
+                            MyPlayer.Quest.Add(quest);
+                            QuestInfo info = new QuestInfo();
+                            info.MergeFrom(quest.Info);
+                            questListPacket.Quests.Add(info);
+                        }
+                    }
+                }
+                Send(questListPacket);
 
-                if (MyPlayer.Stat.Level == 1)
+                
+
+                if (MyPlayer.Quest.Quests.Count == 0)
                 {
                     isFirstLogin = true;
                     ServerState = PlayerServerState.ServerStateSingle;
@@ -150,15 +171,17 @@ namespace Server
                 {
                     MyPlayer = SingleGameSetting(MyPlayer);
                 }
-
-                using (AppDbContext db = new AppDbContext())
+                else
                 {
-                    PlayerDb player = db.Players.FirstOrDefault(p => p.PlayerDbId == playerInfo.PlayerDbId);
-                    if (player != null)
+                    using (AppDbContext db = new AppDbContext())
                     {
-                        MyPlayer.Info.Position.PosX = player.PosX;
-                        MyPlayer.Info.Position.PosY = player.PosY;
-                        MyPlayer.MapInfo.MapDbId = player.MapDbId;
+                        PlayerDb player = db.Players.FirstOrDefault(p => p.PlayerDbId == playerInfo.PlayerDbId);
+                        if (player != null)
+                        {
+                            MyPlayer.Info.Position.PosX = player.PosX;
+                            MyPlayer.Info.Position.PosY = player.PosY;
+                            MyPlayer.MapInfo.MapDbId = player.MapDbId;
+                        }
                     }
                 }
 
@@ -184,26 +207,6 @@ namespace Server
                     }
                 }
                 Send(itemListPacket);
-
-                S_QuestList questListPacket = new S_QuestList();
-                using (AppDbContext db = new AppDbContext())
-                {
-                    List<QuestDb> quests = db.Quests
-                        .Where(q => q.OwnerDbId == playerInfo.PlayerDbId)
-                        .ToList();
-                    foreach (QuestDb questDb in quests)
-                    {
-                        Quest quest = Quest.MakeQuest(questDb);
-                        if (quest != null)
-                        {
-                            MyPlayer.Quest.Add(quest);
-                            QuestInfo info = new QuestInfo();
-                            info.MergeFrom(quest.Info);
-                            questListPacket.Quests.Add(info);
-                        }
-                    }
-                }
-                Send(questListPacket);
 
                 ServerState = PlayerServerState.ServerStateSingle;
                 
@@ -271,8 +274,6 @@ namespace Server
                     if (portal == null) continue;
                     if (portal.id == 100)
                     {
-                        Vector2Int respawnPos = new Vector2Int((int)(portal.posX * 3.2), (int)(portal.posY * 3.2));
-                        player.CellPos = respawnPos;
                         player.MapInfo.TemplateId = mapData.id;
                         player.MapInfo.PortalId = portal.id;
                         player.MapInfo.MapName = mapData.name;

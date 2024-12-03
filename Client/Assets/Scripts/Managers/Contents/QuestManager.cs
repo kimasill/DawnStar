@@ -72,7 +72,7 @@ public class QuestManager
                             gameSceneUI.SetActive<UI_GameWindow>(gameWindow, true);
                         if (gameWindow != null)
                         {
-                            gameWindow.ShowStoryPanel(quest.Description);
+                            gameWindow.ShowStoryPanel(quest.Description, false);
                         }
                         else
                         {

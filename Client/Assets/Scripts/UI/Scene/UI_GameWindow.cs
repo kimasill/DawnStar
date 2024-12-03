@@ -24,7 +24,7 @@ public class UI_GameWindow : UI_Base
         if(StoryPanel != null)
             StoryPanel.ShowOnlyScript(strings);
     }
-    public void ShowStoryPanel(Dictionary<int, Script> scripts)
+    public void ShowStoryPanel(Dictionary<int, Script> scripts, bool questEnd)
     {
         if (StoryPanel != null)
         {
@@ -32,7 +32,7 @@ public class UI_GameWindow : UI_Base
             foreach (var script in scripts.Values)
             {
                 //TODO : 여러개의 스토리를 보여주기 위한 처리. 지금은 조건을 따지지않고 순서대로 다보여줌
-                StoryPanel.ShowStoryPanel(script);
+                StoryPanel.ShowStoryPanel(script, questEnd);
             }
             StoryPanel.gameObject.SetActive(true);
         }

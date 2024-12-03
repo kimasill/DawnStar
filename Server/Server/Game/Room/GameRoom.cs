@@ -10,6 +10,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
+using System.Threading.Tasks;
 
 namespace Server.Game
 {
@@ -24,6 +25,8 @@ namespace Server.Game
         Dictionary<int, Magic> _magics = new Dictionary<int, Magic>();
         public Zone[,] Zones { get; private set ; }
         public int ZoneCells { get; private set; }
+
+        private TaskCompletionSource<bool> _initializationTcs = new TaskCompletionSource<bool>();
 
         public Map Map { get; private set; } = new Map();
 
@@ -72,6 +75,7 @@ namespace Server.Game
                 }
             }
             HandleSpawnMonster();
+            _initializationTcs.SetResult(true);
         }
 
         // 누군가 주기적으로 호출해줘야 한다
@@ -131,17 +135,15 @@ namespace Server.Game
                 }
                 zone.Players.Add(player);
                 // 본인한테 정보 전송
+                S_EnterGame enterPacket = new S_EnterGame();
+                enterPacket.Player = player.Info;
+                if (player.Session != null)
                 {
-                    S_EnterGame enterPacket = new S_EnterGame();
-                    enterPacket.Player = player.Info;
-                    if (player.Session != null)
-                    {
-                        player.Session.Send(enterPacket);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error: player.Session is null");
-                    }
+                    player.Session.Send(enterPacket);
+                }
+                else
+                {
+                    Console.WriteLine("Error: player.Session is null");
                 }
                 player.Vision.Update();
             }
@@ -325,9 +327,14 @@ namespace Server.Game
             int maxX = cellPos.x + range;
             int minX = cellPos.x - range;
 
+            if (ZoneCells == 0)
+            {
+                // Handle the case where ZoneCells is zero
+                throw new InvalidOperationException("ZoneCells cannot be zero.");   
+            }
             //좌측 상단
             Vector2Int topLeft = new Vector2Int(minX, maxY);
-                        
+
             int minIndexY = (Map.MaxY - topLeft.y) / ZoneCells;
             int minIndexX = (topLeft.x - Map.MinX) / ZoneCells;
 
@@ -336,7 +343,7 @@ namespace Server.Game
             int maxIndexY = (Map.MaxY - bottomRight.y) / ZoneCells;
             int maxIndexX = (bottomRight.x - Map.MinX) / ZoneCells;
 
-            for(int x = minIndexX; x <= maxIndexX; x++)
+            for (int x = minIndexX; x <= maxIndexX; x++)
             {
                 for(int y = minIndexY; y <= maxIndexY; y++)
                 {
@@ -376,6 +383,11 @@ namespace Server.Game
 
                 HandleSpawnMonster();
             }            
+        }
+
+        public Task WaitForInitializationAsync()
+        {
+            return _initializationTcs.Task;
         }
     }
 }

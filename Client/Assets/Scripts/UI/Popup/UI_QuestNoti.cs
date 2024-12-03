@@ -42,12 +42,11 @@ public class UI_QuestNoti : UI_Popup
         {
             StopCoroutine(_currentCoroutine);
         }
-
-        _questNotiPanel.gameObject.SetActive(true);
         if (_questNotiPanel != null && _questNotiText != null)
         {
             _questNotiText.text = $"{questName}";
             _questNotiImage.gameObject.SetActive(true);
+
             _currentCoroutine = StartCoroutine(HideQuestNoti());
         }
     }
@@ -67,7 +66,21 @@ public class UI_QuestNoti : UI_Popup
             _currentCoroutine = StartCoroutine(HideQuestNoti());
         }
     }
-
+    private IEnumerator ShowQuestNoti(float duration)
+    {
+        if(_questNotiPanel != null)
+        {
+            _questNotiPanel.SetActive(true);
+            float elapsedTime = 0f;
+            while (elapsedTime < duration)
+            {
+                elapsedTime += Time.deltaTime;
+                _canvasGroup.alpha = Mathf.Lerp(0, 1, elapsedTime / duration);
+                yield return null;
+            }
+            _questNotiPanel.SetActive(false);
+        }
+    }
     private IEnumerator HideQuestNoti()
     {
         yield return new WaitForSeconds(3f); // 3ÃÊ ÈÄ¿¡ ¾Ë¸²À» ¼û±é´Ï´Ù.

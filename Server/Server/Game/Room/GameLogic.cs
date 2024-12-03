@@ -69,8 +69,8 @@ namespace Server.Game
             });
         }
 
-        public GameRoom GetRoom(Player player, int newMapId, GameRoom room, bool add)
-        {            
+        public async Task<GameRoom> GetRoom(Player player, int newMapId, GameRoom room, bool add)
+        {
             GameRoom newRoom;
             if (add == false)
             {
@@ -78,11 +78,13 @@ namespace Server.Game
                 if (newRoom == null)
                 {
                     newRoom = Instance.Add(newMapId);
+                    await newRoom.WaitForInitializationAsync();
                 }
             }
             else
             {
                 newRoom = Instance.Add(newMapId);
+                await newRoom.WaitForInitializationAsync();
             }
             return newRoom;
         }
