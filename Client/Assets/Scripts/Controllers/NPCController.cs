@@ -60,7 +60,7 @@ public class NPCController : CreatureController
         }
         _headUpIcon.SetActive(true);
         _headUpIcon.GetComponent<SpriteRenderer>().sprite = iconSprite;
-        _headUpIcon.transform.position = new Vector3(transform.position.x, transform.position.y + 1f, 0);
+        _headUpIcon.transform.position = new Vector3(transform.position.x, transform.position.y + 0.5f, 0);
 
         if (_headUpText == null)
             _headUpText = _headUpIcon.GetComponentInChildren<TextMeshPro>();

@@ -21,7 +21,8 @@ public class UI_QuestNoti : UI_Popup
     Image _questNotiImage;
     GameObject _questNotiPanel;
     CanvasGroup _canvasGroup;
-    Coroutine _currentCoroutine;
+    Queue<IEnumerator> _coroutineQueue = new Queue<IEnumerator>();
+    bool _isCoroutineRunning = false;
 
     public override void Init()
     {
@@ -38,37 +39,56 @@ public class UI_QuestNoti : UI_Popup
 
     public void ShowQuestStart(string questName)
     {
-        if (_currentCoroutine != null)
-        {
-            StopCoroutine(_currentCoroutine);
-        }
         if (_questNotiPanel != null && _questNotiText != null)
         {
             _questNotiText.text = $"{questName}";
             _questNotiImage.gameObject.SetActive(true);
 
-            _currentCoroutine = StartCoroutine(HideQuestNoti());
+            EnqueueCoroutine(ShowAndHideQuestNoti());
         }
     }
 
     public void ShowQuestComplete(string questName)
     {
-        if (_currentCoroutine != null)
-        {
-            StopCoroutine(_currentCoroutine);
-        }
-
         if (_questNotiPanel != null && _questNotiText != null)
         {
             _questNotiText.text = $"완료: {questName}";
             _questNotiImage.gameObject.SetActive(false);
             _questNotiPanel.SetActive(true);
-            _currentCoroutine = StartCoroutine(HideQuestNoti());
+
+            EnqueueCoroutine(ShowAndHideQuestNoti());
         }
     }
+
+    private void EnqueueCoroutine(IEnumerator coroutine)
+    {
+        _coroutineQueue.Enqueue(coroutine);
+        if (!_isCoroutineRunning)
+        {
+            StartCoroutine(ProcessCoroutineQueue());
+        }
+    }
+
+    private IEnumerator ProcessCoroutineQueue()
+    {
+        _isCoroutineRunning = true;
+        while (_coroutineQueue.Count > 0)
+        {
+            yield return StartCoroutine(_coroutineQueue.Dequeue());
+        }
+        _isCoroutineRunning = false;
+    }
+
+    private IEnumerator ShowAndHideQuestNoti()
+    {
+        yield return StartCoroutine(ShowQuestNoti(1f)); // 알림을 표시하는 시간
+        yield return new WaitForSeconds(3f); // 알림이 표시되는 시간
+        yield return StartCoroutine(HideQuestNoti()); // 알림을 숨기는 시간
+    }
+
     private IEnumerator ShowQuestNoti(float duration)
     {
-        if(_questNotiPanel != null)
+        if (_questNotiPanel != null)
         {
             _questNotiPanel.SetActive(true);
             float elapsedTime = 0f;
@@ -78,12 +98,11 @@ public class UI_QuestNoti : UI_Popup
                 _canvasGroup.alpha = Mathf.Lerp(0, 1, elapsedTime / duration);
                 yield return null;
             }
-            _questNotiPanel.SetActive(false);
         }
     }
+
     private IEnumerator HideQuestNoti()
     {
-        yield return new WaitForSeconds(3f); // 3초 후에 알림을 숨깁니다.
         if (_questNotiPanel != null)
         {
             float fadeDuration = 1f; // 서서히 사라지는 시간

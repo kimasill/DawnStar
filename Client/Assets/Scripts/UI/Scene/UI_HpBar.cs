@@ -22,10 +22,13 @@ public class UI_HpBar : UI_Base
             _originalSize = transform.localScale;
 
         // HP 비율에 따라 HpGroup 오브젝트의 크기를 조정
-        float xScale = _originalSize.x * maxHp / 1000;
-        _hpGroup.localScale = new Vector3(xScale, 1, 1);
+        if(maxHp > 1000)
+        {
+            float xScale = _originalSize.x * maxHp / 1000;
+            _hpGroup.localScale = new Vector3(xScale, 1, 1);
 
-        _hpGroup.anchoredPosition = new Vector2(_hpGroup.rect.size.x, _hpGroup.anchoredPosition.y);
+            _hpGroup.anchoredPosition = new Vector2(_hpGroup.rect.size.x, _hpGroup.anchoredPosition.y);
+        }
     }
 
     public override void Init()

@@ -115,8 +115,8 @@ public class DawnTown_Home : DawnTown
 
     private void DoorChangeAfterQuest06()
     {
-        GameObject portal = Managers.Map.GetPortalById(400);        
-        portal.gameObject.name = "Portal_401";
+        GameObject portal = Managers.Map.GetPortalById(300);        
+        portal.gameObject.name = "Portal_301";
     }
 
     private void OnInventoryItemAdded(Item item)
