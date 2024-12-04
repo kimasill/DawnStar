@@ -2,6 +2,7 @@ using Data;
 using Google.Protobuf.Protocol;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
 public class QuestManager
@@ -99,8 +100,8 @@ public class QuestManager
             }
             Debug.Log($"퀘스트{quest.TemplateId} 진행 시작");
             quest.Progress = 2;
-            UI_QuestNoti popup = Managers.UI.ShowPopupUI<UI_QuestNoti>();
-            popup.ShowQuestStart(quest.Title);
+            UI_GameScene gameScene = (UI_GameScene)Managers.UI.SceneUI;
+            gameScene.NotificationUI.ShowQuestStartNoti(quest.Title);
             CurrentQuest = quest;
         }        
     }
@@ -125,8 +126,9 @@ public class QuestManager
         if (_quests.ContainsKey(questId))
         {
             _quests[questId].IsCompleted = true;
-            UI_QuestNoti popup = Managers.UI.ShowPopupUI<UI_QuestNoti>();
-            popup.ShowQuestComplete(_quests[questId].Title);
+            Quest quest = GetQuest(questId);
+            UI_GameScene gameScene = (UI_GameScene)Managers.UI.SceneUI;
+            gameScene.NotificationUI.ShowQuestCompleteNoti(quest.Title);
             CheckNextQuest(questInfo);
         }
         else

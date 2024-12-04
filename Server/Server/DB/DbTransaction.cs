@@ -29,8 +29,6 @@ namespace Server.DB
                 Attack = player.Stat.Attack,
                 Defense = player.Stat.Defense,
                 Exp = player.Exp,
-                PosX = player.CellPos.x,
-                PosY = player.CellPos.y,
                 MaxPotion = player.MaxPotion,
                 StatPoint = player.StatPoint,
             };
@@ -163,39 +161,38 @@ namespace Server.DB
                 }
             }            
         }
-        public static void SavePlayerPosDb(Player player, PlayerDb playerDb, GameRoom room)
+        public static void SavePlayerPosDb(Player player, PlayerDb playerDb)
         {
             if (playerDb == null)
                 return;
-
-            using (AppDbContext db = new AppDbContext())
+            Instance.Push(() =>
             {
-                db.Entry(playerDb).State = EntityState.Unchanged;
-
-                var properties = typeof(PlayerDb).GetProperties();
-                foreach (var property in properties)
+                using (AppDbContext db = new AppDbContext())
                 {
-                    if (property.Name == "PlayerDbId")
-                        continue;
-                    var value = property.GetValue(playerDb);
-                    if (property.Name == "MapDbId")
+                    db.Entry(playerDb).State = EntityState.Unchanged;
+
+                    var properties = typeof(PlayerDb).GetProperties();
+                    foreach (var property in properties)
                     {
-                        db.Entry(playerDb).Property(property.Name).IsModified = true;
+                        if (property.Name == "PlayerDbId")
+                            continue;
+                        var value = property.GetValue(playerDb);
+                        if (property.Name == "MapDbId")
+                        {
+                            db.Entry(playerDb).Property(property.Name).IsModified = true;
+                        }
+                        else if (property.Name == "PosX" || property.Name == "PosY")
+                        {
+                            db.Entry(playerDb).Property(property.Name).IsModified = true;
+                        }
                     }
-                    if (property.Name != "PosX" || property.Name != "PosY")
+                    bool success =  db.SaveChangesEx();
+                    if (success)
                     {
-                        continue;
-                    }
-                    if (value != null)
-                    {
-                        db.Entry(playerDb).Property(property.Name).IsModified = true;
+                        return;
                     }
                 }
-                bool success = db.SaveChangesEx();
-                if (success)
-                {                    
-                }
-            }
+            });
         }
         public static void RewardPlayer(Player player, ItemData itemData, int count, GameRoom room)
         {

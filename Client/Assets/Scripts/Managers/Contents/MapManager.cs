@@ -42,7 +42,6 @@ public class MapManager
 
 	bool[,] _collision;
     private Dictionary<Vector3Int, GameObject> _portalDict = new Dictionary<Vector3Int, GameObject>(); // 문 객체들을 저장할 Dictionary
-	private Dictionary<Vector3Int, GameObject> _questDict = new Dictionary<Vector3Int, GameObject>(); // 문 객체들을 저장할 Dictionary
     private Dictionary<int, GameObject> _cameraDict = new Dictionary<int, GameObject>(); // 카메라 포인트를 저장할 Dictionary
     private Dictionary<Vector2Int, ChestController> _chestDict = new Dictionary<Vector2Int, ChestController>(); // 상자 위치를 저장할 Dictionary
     private Dictionary<int , InteractionController> _interactionDict = new Dictionary< int, InteractionController>(); // 상호작용 위치를 저장할 Dictionary
@@ -90,15 +89,6 @@ public class MapManager
                 return portal.Value;
         }
         return null;
-    }
-	public GameObject IsPlayerAtQuest(Vector3Int cellPos)
-	{
-		Vector3Int adjustedPos = new Vector3Int(cellPos.x + 1, cellPos.y + 1, 0);
-		if (_questDict.TryGetValue(adjustedPos, out var result))
-        {
-            return result;
-        }
-		return null;
     }
     public ChestController GetChest(Vector2Int cellPos)
     {
@@ -198,7 +188,6 @@ public class MapManager
 		}
         CurrentMapId = mapId;
         FindPortals();
-        FindQuests();
         FindCameraPoints();
         FindChests();
         FindInteractions();
@@ -233,27 +222,6 @@ public class MapManager
             }
         }
     }
-	private void FindQuests()
-    {
-        GameObject[] questObjects = GameObject.FindGameObjectsWithTag("Quest");
-        foreach (GameObject questObject in questObjects)
-        {
-            // 퀘스트 오브젝트의 모든 타일을 _questDict에 추가
-            Bounds bounds = questObject.GetComponent<Collider2D>().bounds;
-            Vector3Int min = CurrentGrid.WorldToCell(bounds.min);
-            Vector3Int max = CurrentGrid.WorldToCell(bounds.max);
-
-            for (int x = min.x; x <= max.x; x++)
-            {
-                for (int y = min.y; y <= max.y; y++)
-                {
-                    Vector3Int cellPos = new Vector3Int(x, y, 0);
-                    _questDict[cellPos] = questObject;
-                }
-            }
-        }
-    }
-
     private void FindCameraPoints()
     {
         GameObject[] cameraObjects = GameObject.FindGameObjectsWithTag("Camera");
@@ -335,7 +303,6 @@ public class MapManager
     private void ClearAllDict()
     {
         _portalDict.Clear();
-        _questDict.Clear();
         _cameraDict.Clear();
         _chestDict.Clear();
         _interactionDict.Clear();

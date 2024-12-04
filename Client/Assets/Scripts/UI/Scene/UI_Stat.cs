@@ -68,10 +68,15 @@ public class UI_Stat : UI_Base
     bool _init = false;
     bool _isCardPanelActive = false;
     bool _isBaseStatPanelActive = true;
+    bool _isSpecialStatPanelActive = false;
     public List<GameObject> CardObjects = new List<GameObject>();
     int _statPoint = 0;
     public override void Init()
     {
+        if(_init)
+            return;
+        _init = true;
+
         Bind<TMP_Text>(typeof(Texts)); // Change TMPro to TextMeshProUGUI
         Bind<Image>(typeof(Images));
         Bind<GameObject>(typeof(Objects));
@@ -93,7 +98,12 @@ public class UI_Stat : UI_Base
         }
         ShowImage((int)Images.Card_Panel, false);
         ShowImage((int)Images.Card_DescriptionPanel, false);
-        _init = true;
+
+        GetImage((int)Images.BaseStatPanel).gameObject.SetActive(true);
+        GetTextMeshPro((int)Texts.BaseStatText).gameObject.SetActive(true);
+        GetImage((int)Images.SpecialStatPanel).gameObject.SetActive(false);
+        GetTextMeshPro((int)Texts.SpecialStatText).gameObject.SetActive(false);
+
         RefreshUI();
     }
 
@@ -151,6 +161,7 @@ public class UI_Stat : UI_Base
             ShowImage((int)Images.BaseStatPanel, true);
             GetTextMeshPro((int)Texts.BaseStatText).gameObject.SetActive(true);
             _isBaseStatPanelActive = true;
+            _isSpecialStatPanelActive = false;
         }
         else
         {
@@ -160,6 +171,7 @@ public class UI_Stat : UI_Base
             ShowImage((int)Images.SpecialStatPanel, true);
             GetTextMeshPro((int)Texts.SpecialStatText).gameObject.SetActive(true);
             _isBaseStatPanelActive = false;
+            _isSpecialStatPanelActive = true;
         }
     }
     private void OnMouseOverCard(int index)
@@ -200,20 +212,11 @@ public class UI_Stat : UI_Base
     public void RefreshUI()
     {
         if (_init == false)
+        {
+            Init();
             return;
-
-        Get<Image>((int)Images.Slot_Helmet).enabled = false;
-        //Get<Image>((int)Images.Slot_Cloth).enabled = false;
-        Get<Image>((int)Images.Slot_Armor).enabled = false;
-        Get<Image>((int)Images.Slot_Weapon).enabled = false;
-        Get<Image>((int)Images.Slot_Shield).enabled = false;
-        Get<Image>((int)Images.Slot_Boots).enabled = false;
-        Get<Image>((int)Images.Slot_Back).enabled = false;
-        Get<Image>((int)Images.Slot_Ring).enabled = false;
-        Get<Image>((int)Images.Slot_Ring2).enabled = false;
-        Get<Image>((int)Images.Slot_Earing).enabled = false;
-        Get<Image>((int)Images.Slot_Necklace).enabled = false;
-
+        }
+        Get<TMP_Text>((int)Texts.StatPointText_Warning).gameObject.SetActive(false);
         foreach (Item item in Managers.Inventory.Items.Values)
         {
             if (item.Equipped == false)
@@ -301,7 +304,7 @@ public class UI_Stat : UI_Base
             Get<TMP_Text>((int)Texts.StatPointText).text = $"{player.Stat.StatPoint}";
             Get<TMP_Text>((int)Texts.StatPointText_Warning).gameObject.SetActive(false);
 
-            if (_isBaseStatPanelActive == true)
+            if (_isSpecialStatPanelActive == true)
                 OnClickInfoButton();
 
             if (player.Stat.StatPoint > 0 && _isCardPanelActive == false)

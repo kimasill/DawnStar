@@ -188,21 +188,21 @@ public class MyPlayerController : PlayerController
 
         if (Input.mouseScrollDelta.y != 0)
         {
-            if (GameScene.MapUI == null)
+            UI_Map mapUI = null;
+            if (GameScene.MapUI != null)
             {
-                return;
+                mapUI = GameScene.MapUI;
             }
-            UI_Map mapUI = GameScene.MapUI;
-            if (mapUI.gameObject.activeSelf)
+            UI_Inventory invenUI = GameScene.InvenUI;
+
+            if (mapUI != null && mapUI.gameObject.activeSelf)
             {
                 mapUI.ZoomMap(Input.mouseScrollDelta.y); // 스크롤에 따라 지도 크기 조절
             }
             // 인벤토리가 활성화된 경우 스크롤뷰를 내립니다.
-            UI_Inventory invenUI = GameScene.InvenUI;
-            if (invenUI.gameObject.activeSelf && invenUI.ScrollRect != null)
+            if (invenUI.gameObject.activeSelf)
             {
-                float scrollDelta = Input.mouseScrollDelta.y * 0.1f; // 스크롤 속도 조절
-                invenUI.ScrollRect.verticalNormalizedPosition = Mathf.Clamp01(invenUI.ScrollRect.verticalNormalizedPosition - scrollDelta);
+                invenUI.InvenScroll(Input.mouseScrollDelta.y);
             }
         }
     }
@@ -331,8 +331,7 @@ public class MyPlayerController : PlayerController
                 CheckIfPlayerAtItem();
                 DetectNearbyNPCs();
                 DetectNearbyChests();
-                DetectNearbyInteractions();
-                CheckQuest();                
+                DetectNearbyInteractions();    
             }
         }
         CheckUpdatedFlag();
@@ -404,20 +403,6 @@ public class MyPlayerController : PlayerController
             }
         }
     }
-
-    private void CheckQuest()
-    {
-        GameObject go = Managers.Map.IsPlayerAtQuest(CellPos);
-        if (go == null)
-            return;
-        string questIdString = go.name.Replace("quest_", "");
-        int questId;
-        if (int.TryParse(questIdString, out questId))
-        {
-            Managers.Scene.CurrentScene.CheckInteractionQuest(questId);
-        }        
-    }
-
     private void DetectNearbyNPCs()
     {
         BaseScene currentScene = Managers.Scene.CurrentScene as BaseScene;

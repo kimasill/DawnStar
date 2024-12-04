@@ -14,6 +14,7 @@ public class DawnTown_Home : DawnTown
         Managers.Map.LoadMap(3);
 
         Screen.SetResolution(640, 480, false);
+        Camera.main.orthographicSize = ZoomLevel;
         _sceneUi = Managers.UI.ShowSceneUI<UI_GameScene>();
         _sceneUi.SetActive(_sceneUi.GameWindow, true);
 

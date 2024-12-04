@@ -1747,7 +1747,7 @@ GameObject:
   - component: {fileID: 4554644400131094368}
   - component: {fileID: 5590433464414148173}
   m_Layer: 0
-  m_Name: Slot_Ring
+  m_Name: Slot_Ring2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4663,9 +4663,9 @@ RectTransform:
   - {fileID: 7496240641977970390}
   m_Father: {fileID: 3804672483944306426}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 501.05786, y: -248.995}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 300, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8382017039305463686
@@ -6055,7 +6055,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3804672483944306426
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6312,9 +6312,9 @@ RectTransform:
   - {fileID: 1437302183325148108}
   m_Father: {fileID: 3804672483944306426}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1169.135, y: -248.995}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 300, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1535526533566855025
@@ -6607,8 +6607,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -223.02716, y: 68.201}
-  m_SizeDelta: {x: -466.7475, y: -284.07}
+  m_AnchoredPosition: {x: -223.02716, y: 29.7908}
+  m_SizeDelta: {x: -466.7475, y: -207.2496}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &300361072449475785
 CanvasRenderer:
@@ -7644,9 +7644,9 @@ RectTransform:
   - {fileID: 4865966042497318776}
   m_Father: {fileID: 3804672483944306426}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 835.09644, y: -248.995}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 300, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &607574460916627994
@@ -8363,8 +8363,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 227.87103, y: 68.200714}
-  m_SizeDelta: {x: -468.7692, y: -284.0664}
+  m_AnchoredPosition: {x: 227.87103, y: 29.792}
+  m_SizeDelta: {x: -468.7692, y: -207.25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &556817943496966992
 CanvasRenderer:
@@ -8710,7 +8710,7 @@ GameObject:
   - component: {fileID: 4603986088101709615}
   - component: {fileID: 6747607858288559577}
   m_Layer: 0
-  m_Name: Slot_Ring
+  m_Name: Slot_Earing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9741,9 +9741,9 @@ RectTransform:
   - {fileID: 2550089655395420564}
   m_Father: {fileID: 3804672483944306426}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 167.01929, y: -248.995}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 300, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &19247677734843583
