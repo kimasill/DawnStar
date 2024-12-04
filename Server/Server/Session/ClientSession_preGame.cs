@@ -275,19 +275,18 @@ namespace Server
                     if (portal.id == 100)
                     {
                         player.MapInfo.TemplateId = mapData.id;
-                        player.MapInfo.PortalId = portal.id;
-                        player.MapInfo.MapName = mapData.name;
-                        player.MapInfo.Scene = "DawnTown";
                         player.PosInfo.PosX = (int)portal.posX;
                         player.PosInfo.PosY = (int)portal.posY;
-                        PlayerDb playerDb = new PlayerDb()
+                        player.MapInfo.MapName = "DawnTown";
+                        player.MapInfo.Scene = player.MapInfo.MapName;
+                        MapDb mapDb = new MapDb()
                         {
                             PlayerDbId = player.PlayerDbId,
-                            PosX = player.CellPos.x,
-                            PosY = player.CellPos.y,
-                        };                        
-                        DB.DbTransaction.SavePlayerMap(player, player.MapInfo);
-                        DB.DbTransaction.SavePlayerPosDb(player, playerDb, player.Room);
+                            TemplateId = mapData.id,
+                            MapName = mapData.name,
+                            Scene = "DawnTown"
+                        };
+                        DB.DbTransaction.SavePlayerMap(player, mapDb);
                     }
                 }
                 return player;

@@ -17,8 +17,7 @@ public class InteractionController : BaseController
     public List<string> Scripts { get; set; } = new List<string>();
     public List<Vector2Int> CellPoses { get; set; } = new List<Vector2Int>();
     public InteractionData InteractionData { get; set; }
-
-    private CameraController _cameraController;
+    protected CameraController _cameraController;
     protected override void Init()
     {
         Animator = GetComponent<Animator>();
@@ -26,7 +25,8 @@ public class InteractionController : BaseController
             _animatorSpeed = Animator.speed;
         _sprite = GetComponent<SpriteRenderer>();
         _cameraController = Managers.Scene.CurrentScene.MainCamera.GetComponent<CameraController>();
-        CellPos = Managers.Map.CurrentGrid.WorldToCell(transform.position);
+        if(Managers.Map!= null)
+            CellPos = Managers.Map.CurrentGrid.WorldToCell(transform.position);
         UpdateSortingLayer();
     }
 
@@ -50,6 +50,9 @@ public class InteractionController : BaseController
                 break;
             case InteractionType.ItemTable:
                 HandleItemTableInteraction(data);
+                break;
+            case InteractionType.Quest:
+                HandleQuestInteraction(data);
                 break;
             default:
                 Debug.LogWarning($"Unknown InteractionType: {Type}");
@@ -77,6 +80,9 @@ public class InteractionController : BaseController
         // 예: 아이템 리스트 설정 등
         Debug.Log("Handling ItemTable Interaction");
     }
+    protected virtual void HandleQuestInteraction(InteractionData data)
+    {
+    }
     protected override void UpdateAnimation()
     {
     }
@@ -102,6 +108,11 @@ public class InteractionController : BaseController
         {
             _headUpIcon.gameObject.GetComponent<SpriteRenderer>().sprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Take");
             _headUpIcon.transform.position = new Vector3(transform.position.x, transform.position.y + 0.6f, 0);
+        }
+        else if(Type == InteractionType.Quest)
+        {
+            _headUpIcon.gameObject.GetComponent<SpriteRenderer>().sprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Quest");
+            _headUpIcon.transform.position = new Vector3(transform.position.x, transform.position.y + 0.5f, 0);
         }
 
 
@@ -132,6 +143,11 @@ public class InteractionController : BaseController
     public virtual void Interact(bool success,  bool action, List<int> ids = null)
     {
     }
+    public virtual void Interact()
+    {
+        _isInteracted = false;
+        CanInteract = false;
+    }
     public void StartInteraction()
     {
         if (_isInteracted)
@@ -151,7 +167,7 @@ public class InteractionController : BaseController
         }
         else
         {
-            Interact(true, true);
+            Interact();
         }
     }
     protected virtual void InteractAction()

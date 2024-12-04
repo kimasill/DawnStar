@@ -69,7 +69,7 @@ namespace Server.DB
                 }
             }
         }
-        public static void SavePlayerMap(Player player, MapInfo map)
+        public static void SavePlayerMap(Player player, MapDb mapDb)
         {
             if (player == null)
                 return;
@@ -78,32 +78,37 @@ namespace Server.DB
             {
                 using (AppDbContext db = new AppDbContext())
                 {
-                    MapDb mapDb = db.Maps.FirstOrDefault(m => m.PlayerDbId == player.PlayerDbId && m.TemplateId == map.TemplateId);
+                    MapDb exMapDb = db.Maps.FirstOrDefault(m => m.PlayerDbId == player.PlayerDbId && m.TemplateId == mapDb.TemplateId);
 
-                    if (mapDb == null)
+                    if (exMapDb == null)
                     {
-                        mapDb = new MapDb()
-                        {
-                            TemplateId = map.TemplateId,
-                            Scene = map.Scene,
-                            PlayerDbId = player.PlayerDbId,
-                            MapName = map.MapName
-                        };
                         db.Maps.Add(mapDb);
                     }
                     else
                     {
-                        mapDb.PlayerDbId = player.PlayerDbId;
-                        mapDb.TemplateId = map.TemplateId;
-                        mapDb.Scene = map.Scene;
-                        mapDb.MapName = map.MapName;
+                        exMapDb.PlayerDbId = mapDb.PlayerDbId;
+                        exMapDb.TemplateId = mapDb.TemplateId;
+                        exMapDb.Scene = mapDb.Scene;
+                        exMapDb.MapName = mapDb.MapName;
                     }
 
                     bool success = db.SaveChangesEx(); // 저장할 때 예외처리를 해준다.
                     if (success)
                     {
-                        player.MapInfo.MapDbId = mapDb.MapDbId;
-                        // 성공적으로 저장된 경우 추가 작업을 수행할 수 있습니다.
+                        exMapDb = db.Maps.FirstOrDefault(m => m.PlayerDbId == player.PlayerDbId && m.TemplateId == mapDb.TemplateId);
+                        player.MapInfo.MapDbId = exMapDb.MapDbId;
+                        player.MapInfo.TemplateId = exMapDb.TemplateId;
+                        player.MapInfo.Scene = exMapDb.Scene;
+                        player.MapInfo.MapName = exMapDb.MapName;
+
+                        PlayerDb playerDb = new PlayerDb()
+                        {
+                            PlayerDbId = player.PlayerDbId,
+                            MapDbId = player.MapInfo.MapDbId,
+                            PosX = player.PosInfo.PosX,
+                            PosY = player.PosInfo.PosY
+                        };
+                        SavePlayerPosDb(player, playerDb);
                     }
                 }
             });

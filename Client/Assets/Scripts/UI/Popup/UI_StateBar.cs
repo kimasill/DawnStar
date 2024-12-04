@@ -17,10 +17,6 @@ public class UI_StateBar : UI_Base
         LevelText,
         ExpText,
     }
-    enum Images
-    {
-        ProfileImage,
-    }
     bool _init = false;
     public bool Set = false;
     UI_ExpBar _expBar;
@@ -31,7 +27,6 @@ public class UI_StateBar : UI_Base
     public override void Init()
     {
         Bind<TMP_Text>(typeof(Texts));
-        Bind<Image>(typeof(Images));
         _expBar = GetComponentInChildren<UI_ExpBar>();
         _hpBar = GetComponentInChildren<UI_HpBar>();
         _upBar = GetComponentInChildren<UI_UpBar>();

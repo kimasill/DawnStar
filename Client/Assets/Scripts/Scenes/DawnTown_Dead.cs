@@ -8,6 +8,7 @@ public class DawnTownDead : DawnTown
     {
         base.Init();
         SceneType = Define.Scene.DawnTownDead;
+        Camera.main.orthographicSize = ZoomLevel;
 
         Managers.Map.LoadMap(4); // DawnTownDead 맵 로드
 

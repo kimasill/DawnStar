@@ -91,7 +91,15 @@
       "multi": "true",
       "itemIds": [
         "103"
-      ]  
+      ]
+    }
+  ],
+  "questSigns": [
+    {
+      "id": 3001,
+      "name": "DawnTown_Home_QuestMarker",
+      "multi": false,
+      "endId": 4
     }
   ]
 }

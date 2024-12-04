@@ -331,7 +331,15 @@ namespace Server.Game
             if(Quest.CurrentQuest != null && Quest.CurrentQuest.Progress<50)
                 Room.Push(Room.HandleUpdateQuest,this, Quest.CurrentQuest.TemplateId, 0);
             DbTransaction.SavePlayerStatus_All(this, Room);
-            DbTransaction.SavePlayerMap(this, MapInfo);
+            MapDb mapDb = new MapDb()
+            {
+                PlayerDbId = PlayerDbId,
+                MapDbId = MapInfo.MapDbId,
+                TemplateId = MapInfo.TemplateId,
+                Scene = MapInfo.Scene,
+                MapName = MapInfo.MapName
+            };
+            DbTransaction.SavePlayerMap(this, mapDb);
         }
 
         public void HandleEquipItem(C_EquipItem equipPacket)

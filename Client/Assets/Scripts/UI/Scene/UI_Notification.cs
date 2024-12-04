@@ -13,12 +13,15 @@ public class UI_Notification : UI_Base
     [SerializeField] private Transform _levelNotiPanel;
     [SerializeField] private Transform _bossKillNotiPanel;
     [SerializeField] private Transform _basicNotiPanel;
+    [SerializeField] private UI_QuestNoti _questNoti;
     [SerializeField] private int _maxNotis = 8;
     [SerializeField] private int _notiHeight = 50;
 
 
     private Queue<UI_ItemNoti> _activeNotis = new Queue<UI_ItemNoti>();
     private Queue<GameObject> _activeExpNotis = new Queue<GameObject>();
+    private Queue<IEnumerator> _coroutineQueue = new Queue<IEnumerator>();
+    private bool _isCoroutineRunning = false;
     Coroutine _basicNotiCoroutine;
     public override void Init()
     {
@@ -78,6 +81,48 @@ public class UI_Notification : UI_Base
     {
         _levelNotiPanel.gameObject.SetActive(true);
         StartCoroutine(HideNoti(_levelNotiPanel.gameObject));
+    }
+    public void ShowQuestStartNoti(string questName)
+    {
+        if (_questNoti != null)
+        {
+            string text = $"{questName}";
+            EnqueueCoroutine(ShowAndHideQuestNoti(text));
+        }
+    }
+    public void ShowQuestCompleteNoti(string questName)
+    {
+        if (_questNoti != null)
+        {
+            string text = $"완료:{questName} ";
+            EnqueueCoroutine(ShowAndHideQuestNoti(text));
+        }
+    }
+    private void EnqueueCoroutine(IEnumerator coroutine)
+    {
+        _coroutineQueue.Enqueue(coroutine);
+
+        if (!_isCoroutineRunning)
+        {
+            StartCoroutine(ProcessCoroutineQueue());
+        }
+    }
+    private IEnumerator ProcessCoroutineQueue()
+    {
+        _isCoroutineRunning = true;
+        while (_coroutineQueue.Count > 0)
+        {
+            IEnumerator coroutine = _coroutineQueue.Dequeue();
+            yield return StartCoroutine(coroutine);
+        }
+        _isCoroutineRunning = false;
+    }
+    private IEnumerator ShowAndHideQuestNoti(string text)
+    {
+        _questNoti.SetText(text);
+        yield return StartCoroutine(ShowNoti(_questNoti.gameObject)); // 알림을 표시하는 시간
+        yield return new WaitForSeconds(2f); // 알림이 표시되는 시간
+        yield return StartCoroutine(HideNoti(_questNoti.gameObject)); // 알림을 숨기는 시간
     }
     public IEnumerator ShowBasicNoti(string script)
     {
@@ -152,6 +197,7 @@ public class UI_Notification : UI_Base
     }
     private IEnumerator ShowNoti(GameObject noti)
     {
+        noti.SetActive(true);
         CanvasGroup canvasGroup = noti.GetComponent<CanvasGroup>();
         float fadeDuration = 1f;
         float elapsedTime = 0f;

@@ -482,11 +482,18 @@ namespace Server.Data
     {
         public List<int> itemIds;
     }
+
+    public class QuestSignData : InteractionData
+    {
+        public int questId;
+    }
+
     public class InteractionLoader : ILoader<int, InteractionData>
     {
         public List<DoorData> doors = new List<DoorData>();
         public List<TriggerData> triggers = new List<TriggerData>();
         public List<ItemTableData> itemTables = new List<ItemTableData>();
+        public List<QuestSignData> questSigns = new List<QuestSignData>();
 
         public Dictionary<int, InteractionData> MakeDict()
         {
@@ -504,6 +511,11 @@ namespace Server.Data
             foreach (InteractionData interaction in itemTables)
             {
                 interaction.interactionType = InteractionType.ItemTable;
+                dict.Add(interaction.id, interaction);
+            }
+            foreach(InteractionData interaction in questSigns)
+            {
+                interaction.interactionType = InteractionType.Quest;
                 dict.Add(interaction.id, interaction);
             }
             return dict;

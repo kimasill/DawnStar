@@ -127,21 +127,21 @@ namespace Server.Game
                 return;
             }
             LeaveGame(player.Id);
-            UpdatePlayerMapInfo(player, map, destPortalId);
+            DbTransaction.Instance.Push(UpdatePlayerMapInfo, player, map, destPortalId);
+
+            MapDb mapDb = new MapDb()
+            {                
+                PlayerDbId = player.PlayerDbId,
+                TemplateId = map.id,
+                Scene = map.name,
+                MapName = map.name
+            };
+            DbTransaction.SavePlayerMap(player, mapDb);
             if (pRoom != null)
             {
                 player.Room = pRoom;
-                pRoom.Push(pRoom.EnterGame, player, false);
+                DbTransaction.Instance.Push(pRoom.EnterGame, player, false);
             }
-            DbTransaction.SavePlayerMap(player, player.MapInfo);
-            PlayerDb playerDb = new PlayerDb()
-            {
-                PlayerDbId = player.PlayerDbId,
-                MapDbId = player.MapInfo.MapDbId,
-                PosX = player.CellPos.x,
-                PosY = player.CellPos.y,
-            };
-            DbTransaction.SavePlayerPosDb(player, playerDb, player.Room);
             GameLogic.Instance.UpdateRoom(this);
         }
 
