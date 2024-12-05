@@ -114,30 +114,23 @@ public class ChestController : BaseController
         }
         else
         {
-            Animator.Play("CLOSE"); // CLOSE 애니메이션 재생
+            Animator.Play("OPEN");
             yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f); // 애니메이션 종료 대기
             Animator.speed = 0;
-            Animator.Play("CLOSE", 0, 1.0f); // CLOSE 애니메이션 마지막 프레임으로 고정
+            Animator.Play("OPEN", 0, 1.0f);
         }
+
+        yield return new WaitForSeconds(1.0f);
+        gameObject.SetActive(false);
     }
 
     private IEnumerator CoCloseChest()
     {
         Animator.speed = 1;
-        if (CheckAnimationClip("CLOSE"))
-        {
-            Animator.Play("OPEN"); // OPEN 애니메이션 재생
-            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f); // 애니메이션 종료 대기
-            Animator.speed = 0;
-            Animator.Play("CLOSE", 0, 0); // CLOSE 애니메이션 첫 프레임으로 고정
-        }
-        else
-        {
-            Animator.Play("CLOSE"); // CLOSE 애니메이션 재생
-            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f); // 애니메이션 종료 대기
-            Animator.speed = 0;
-            Animator.Play("CLOSE", 0, 1.0f); // CLOSE 애니메이션 마지막 프레임으로 고정
-        }
+        Animator.Play("CLOSE");
+        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f); // 애니메이션 종료 대기
+        Animator.speed = 0;
+        Animator.Play("OPEN", 0, 0);
         gameObject.SetActive(false);
         Destroy(gameObject);
     }
