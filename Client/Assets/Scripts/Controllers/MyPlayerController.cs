@@ -24,19 +24,13 @@ public class MyPlayerController : PlayerController
 
     public KeyCode[] SkillKeys { get; private set;} = new KeyCode[5];
 
-    public int Gold
-    {
-        get { return Stat.Gold; }
-        set { Stat.Gold = value; }
-    }
-
     public override int Exp
     {
         get { return Stat.TotalExp; }
         set 
         { 
             Stat.TotalExp = value;
-            GameScene.GameWindow.UpdateStateInfo();
+            GameScene.GameWindow.StateUI.RefreshUI();
         }
     }
     
@@ -49,8 +43,8 @@ public class MyPlayerController : PlayerController
         get { return base.Stat; }
         set
         {
-            base.Stat = value;            
-            GameScene.GameWindow.UpdateStateInfo();
+            base.Stat = value;
+            GameScene.GameWindow.StateUI.RefreshUI();
             UpdateHpBar();
         }
     }
@@ -58,8 +52,9 @@ public class MyPlayerController : PlayerController
     {
         base.Init();
 
-        RefreshExpBar();
+        
         RefreshAdditionalStat();
+        GameScene.GameWindow.StateUI.SetInfo();
         _cameraController = Camera.main.GetComponent<CameraController>();
         if (_cameraController != null)
         {
@@ -601,11 +596,6 @@ public class MyPlayerController : PlayerController
             }
 
         }
-    }
-    public void RefreshExpBar()
-    {
-        UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;
-        gameScene.GameWindow.UpdateStateInfo();
     }
     protected override void AddHpBar()
     {

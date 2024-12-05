@@ -37,6 +37,10 @@ namespace Server.Game.Job
                 _jobQueue.Enqueue(job);               
             }
         }
+        public void Push(Func<Task> asyncAction)
+        {
+            Push(new AsyncJob(asyncAction));
+        }
 
         public void Flush()
         {
@@ -64,5 +68,18 @@ namespace Server.Game.Job
             }
         }
     }
-    
+    public class AsyncJob : IJob
+    {
+        private readonly Func<Task> _asyncAction;
+
+        public AsyncJob(Func<Task> asyncAction)
+        {
+            _asyncAction = asyncAction;
+        }
+
+        public override void Execute()
+        {
+            _asyncAction().GetAwaiter().GetResult();
+        }
+    }
 }

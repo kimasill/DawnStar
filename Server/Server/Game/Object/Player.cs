@@ -320,7 +320,7 @@ namespace Server.Game
             Room.Push(Room.HandleStatChange, this);
         }
 
-        public void OnLeaveGame()
+        public void OnLeaveGame(bool save)
         {            
             //문제 : 플레이어가 게임을 나가면, 플레이어의 정보를 저장해야 한다.
             // 코드흐름 막아버린다. 데이터 베이스 접근하는 부분이 Core한 부분에 있으면 안됨.
@@ -331,15 +331,18 @@ namespace Server.Game
             if(Quest.CurrentQuest != null && Quest.CurrentQuest.Progress<50)
                 Room.Push(Room.HandleUpdateQuest,this, Quest.CurrentQuest.TemplateId, 0);
             DbTransaction.SavePlayerStatus_All(this, Room);
-            MapDb mapDb = new MapDb()
+            if (save)
             {
-                PlayerDbId = PlayerDbId,
-                MapDbId = MapInfo.MapDbId,
-                TemplateId = MapInfo.TemplateId,
-                Scene = MapInfo.Scene,
-                MapName = MapInfo.MapName
-            };
-            DbTransaction.SavePlayerMap(this, mapDb);
+                MapDb mapDb = new MapDb()
+                {
+                    PlayerDbId = PlayerDbId,
+                    MapDbId = MapInfo.MapDbId,
+                    TemplateId = MapInfo.TemplateId,
+                    Scene = MapInfo.Scene,
+                    MapName = MapInfo.MapName
+                };
+                DbTransaction.Instance.Push(DbTransaction.SavePlayerMap, this, mapDb);
+            }
             if(Session.ServerState == PlayerServerState.ServerStateSingle)
             {
                 Room.Push(Room.ResetRoom);

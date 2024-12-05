@@ -195,8 +195,11 @@ namespace Server.Game
         }
 
         
-
         public void LeaveGame(int objectId)
+        {
+            LeaveGame(objectId, true);
+        }
+        public void LeaveGame(int objectId, bool save)
         {
             GameObjectType type = ObjectManager.GetObjectType(objectId);
             Vector2Int cellPos;
@@ -209,7 +212,7 @@ namespace Server.Game
                     return;
                 cellPos = player.CellPos;
 
-                player.OnLeaveGame();
+                player.OnLeaveGame(save);
                 Map.ApplyLeave(player);
                 player.Room = null;
 

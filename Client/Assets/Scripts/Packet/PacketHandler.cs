@@ -442,12 +442,13 @@ class PacketHandler
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
     {
         S_ChangeStat statPacket = (S_ChangeStat)packet;
-        Managers.Object.MyPlayer.Stat.MergeFrom(statPacket.StatInfo);
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
         if (Managers.Object.MyPlayer.Stat.Level != statPacket.StatInfo.Level)
         {
+            gameSceneUI.GameWindow.StateUI.SetInfo();
             gameSceneUI.NotificationUI.ShowLevelNoti();
         }
+        Managers.Object.MyPlayer.Stat.MergeFrom(statPacket.StatInfo);
         gameSceneUI.StatUI.RefreshUI();
     }
 
