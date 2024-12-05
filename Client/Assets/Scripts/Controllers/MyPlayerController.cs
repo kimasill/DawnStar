@@ -486,6 +486,13 @@ public class MyPlayerController : PlayerController
                 {
                     if (_interactionController != ic)
                     {
+                        if(ic.Type == InteractionType.Camera)
+                        {
+                            interactionFound = true;
+                            ic.StartInteraction();
+                            return;
+                        }
+                            
                         ic.ActivateNotification();
                         if (_interactionController != null)
                         {

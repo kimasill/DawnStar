@@ -222,18 +222,19 @@ namespace Google.Protobuf.Protocol {
             "VEVSSUFMX1RZUEVfR09MRBACEhYKEk1BVEVSSUFMX1RZUEVfRFJPUBADEhYK",
             "Ek1BVEVSSUFMX1RZUEVfQkFTRRAEKkoKCUdvb2RzVHlwZRITCg9HT09EU19U",
             "WVBFX05PTkUQABIUChBHT09EU19UWVBFX1FVRVNUEAESEgoOR09PRFNfVFlQ",
-            "RV9LRVkQAiqQAgoPSW50ZXJhY3Rpb25UeXBlEhkKFUlOVEVSQUNUSU9OX1RZ",
+            "RV9LRVkQAiqtAgoPSW50ZXJhY3Rpb25UeXBlEhkKFUlOVEVSQUNUSU9OX1RZ",
             "UEVfTk9ORRAAEhoKFklOVEVSQUNUSU9OX1RZUEVfQ0hFU1QQARIbChdJTlRF",
             "UkFDVElPTl9UWVBFX1BPUlRBTBACEhgKFElOVEVSQUNUSU9OX1RZUEVfTlBD",
             "EAMSGQoVSU5URVJBQ1RJT05fVFlQRV9TSE9QEAQSGQoVSU5URVJBQ1RJT05f",
             "VFlQRV9ET09SEAUSGgoWSU5URVJBQ1RJT05fVFlQRV9RVUVTVBAGEhwKGElO",
             "VEVSQUNUSU9OX1RZUEVfVFJJR0dFUhAHEh8KG0lOVEVSQUNUSU9OX1RZUEVf",
-            "SVRFTV9UQUJMRRAIKlQKC1Jlc3Bhd25UeXBlEhUKEVJFU1BBV05fVFlQRV9O",
-            "T05FEAASFQoRUkVTUEFXTl9UWVBFX1NQT1QQARIXChNSRVNQQVdOX1RZUEVf",
-            "UkVQRUFUEAIqagoHTlBDVHlwZRIRCg1OUENfVFlQRV9OT05FEAASEQoNTlBD",
-            "X1RZUEVfVEFMSxABEhEKDU5QQ19UWVBFX1NIT1AQAhISCg5OUENfVFlQRV9R",
-            "VUVTVBADEhIKDk5QQ19UWVBFX1NNSVRIEARCG6oCGEdvb2dsZS5Qcm90b2J1",
-            "Zi5Qcm90b2NvbGIGcHJvdG8z"));
+            "SVRFTV9UQUJMRRAIEhsKF0lOVEVSQUNUSU9OX1RZUEVfQ0FNRVJBEAkqVAoL",
+            "UmVzcGF3blR5cGUSFQoRUkVTUEFXTl9UWVBFX05PTkUQABIVChFSRVNQQVdO",
+            "X1RZUEVfU1BPVBABEhcKE1JFU1BBV05fVFlQRV9SRVBFQVQQAipqCgdOUENU",
+            "eXBlEhEKDU5QQ19UWVBFX05PTkUQABIRCg1OUENfVFlQRV9UQUxLEAESEQoN",
+            "TlBDX1RZUEVfU0hPUBACEhIKDk5QQ19UWVBFX1FVRVNUEAMSEgoOTlBDX1RZ",
+            "UEVfU01JVEgQBEIbqgIYR29vZ2xlLlByb3RvYnVmLlByb3RvY29sYgZwcm90",
+            "bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.MoveDir), typeof(global::Google.Protobuf.Protocol.LookDir), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.SkillLogicType), typeof(global::Google.Protobuf.Protocol.OptionType), typeof(global::Google.Protobuf.Protocol.AdmitType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.MonsterGrade), typeof(global::Google.Protobuf.Protocol.Grade), typeof(global::Google.Protobuf.Protocol.ShapeType), typeof(global::Google.Protobuf.Protocol.DirectionType), typeof(global::Google.Protobuf.Protocol.RewardType), typeof(global::Google.Protobuf.Protocol.PlayerServerState), typeof(global::Google.Protobuf.Protocol.AcquireType), typeof(global::Google.Protobuf.Protocol.ItemType), typeof(global::Google.Protobuf.Protocol.WeaponType), typeof(global::Google.Protobuf.Protocol.ArmorType), typeof(global::Google.Protobuf.Protocol.MapType), typeof(global::Google.Protobuf.Protocol.JewelryType), typeof(global::Google.Protobuf.Protocol.ConsumableType), typeof(global::Google.Protobuf.Protocol.MaterialType), typeof(global::Google.Protobuf.Protocol.GoodsType), typeof(global::Google.Protobuf.Protocol.InteractionType), typeof(global::Google.Protobuf.Protocol.RespawnType), typeof(global::Google.Protobuf.Protocol.NPCType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -594,6 +595,7 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("INTERACTION_TYPE_QUEST")] Quest = 6,
     [pbr::OriginalName("INTERACTION_TYPE_TRIGGER")] Trigger = 7,
     [pbr::OriginalName("INTERACTION_TYPE_ITEM_TABLE")] ItemTable = 8,
+    [pbr::OriginalName("INTERACTION_TYPE_CAMERA")] Camera = 9,
   }
 
   public enum RespawnType {

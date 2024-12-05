@@ -54,6 +54,9 @@ public class InteractionController : BaseController
             case InteractionType.Quest:
                 HandleQuestInteraction(data);
                 break;
+            case InteractionType.Camera:
+                HandleCameraInteraction(data);
+                break;
             default:
                 Debug.LogWarning($"Unknown InteractionType: {Type}");
                 break;
@@ -81,6 +84,9 @@ public class InteractionController : BaseController
         Debug.Log("Handling ItemTable Interaction");
     }
     protected virtual void HandleQuestInteraction(InteractionData data)
+    {
+    }
+    protected virtual void HandleCameraInteraction(InteractionData data)
     {
     }
     protected override void UpdateAnimation()
