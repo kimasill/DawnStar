@@ -540,13 +540,19 @@ namespace Data
         public int startId;
         public int endId;
     }
+    public class CameraPointData : InteractionData
+    {
+        public int questId;
+        public List<int> targetInteraction;
+    }
+
     public class InteractionLoader : ILoader<int, InteractionData>
     {
         public List<DoorData> doors = new List<DoorData>();
         public List<TriggerData> triggers = new List<TriggerData>();
         public List<ItemTableData> itemTables = new List<ItemTableData>();
         public List<QuestSignData> questSigns = new List<QuestSignData>();
-
+        public List<CameraPointData> cameraPoints = new List<CameraPointData>();
         public Dictionary<int, InteractionData> MakeDict()
         {
             Dictionary<int, InteractionData> dict = new Dictionary<int, InteractionData>();
@@ -568,6 +574,11 @@ namespace Data
             foreach (InteractionData interaction in questSigns)
             {
                 interaction.interactionType = InteractionType.Quest;
+                dict.Add(interaction.id, interaction);
+            }
+            foreach (InteractionData interaction in cameraPoints)
+            {
+                interaction.interactionType = InteractionType.Camera;
                 dict.Add(interaction.id, interaction);
             }
             return dict;

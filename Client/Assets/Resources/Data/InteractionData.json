@@ -101,5 +101,25 @@
       "multi": false,
       "endId": 4
     }
+  ],
+  "cameraPoints": [
+    {
+      "id": 10001,
+      "name": "EastEnd_Start_Point",
+      "multi": false,
+      "questId": 8,
+      "targetInteraction": [
+        "10002"
+      ],
+      "cameraMove": true
+    },
+    {
+      "id": 10002,
+      "name": "EastEnd_Broken_Bridge",
+      "multi": false,
+      "questId": 8,
+      "cameraMove": false
+    }
   ]
+
 }
