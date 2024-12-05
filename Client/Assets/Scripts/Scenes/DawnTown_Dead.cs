@@ -24,10 +24,6 @@ public class DawnTownDead : DawnTown
 
     private void StartQuest07()
     {
-        if(Managers.Quest.CurrentQuest != null)
-        {
-            return;
-        }
         // 퀘스트 07 시작
         if(Managers.Quest.Quests == null || Managers.Quest.Quests.Count == 0)
         {
@@ -48,7 +44,7 @@ public class DawnTownDead : DawnTown
         }
 
         // 현재 진행 중인 퀘스트가 7번인지 확인
-        if (Managers.Quest.GetCurrentQuestId() == 7)
+        if (Managers.Quest.IsQuestInProgress(7))
         {
             Debug.Log("현재 진행 중인 퀘스트가 7번입니다.");
             C_StartQuest quest = new C_StartQuest() { TemplateId = 7 };
@@ -60,6 +56,9 @@ public class DawnTownDead : DawnTown
     {
         if(quest.TemplateId == 7)
         {
+            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+            gameSceneUI.GameWindow.ShowStoryPanel(quest.Description, false);
+
             C_RequestMonster spawnPacket = new C_RequestMonster();
             spawnPacket.Id.Add(1);
             Managers.Network.Send(spawnPacket);

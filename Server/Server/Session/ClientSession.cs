@@ -16,7 +16,7 @@ namespace Server
 {
     public partial class ClientSession : PacketSession
 	{
-        public PlayerServerState ServerState { get; private set; } = PlayerServerState.ServerStateLogin;
+        public PlayerServerState ServerState { get; set; } = PlayerServerState.ServerStateLogin;
         public Player MyPlayer { get; set; }
 		public int SessionId { get; set; }
         object _lock = new object();

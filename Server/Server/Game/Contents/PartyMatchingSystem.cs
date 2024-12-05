@@ -1,6 +1,8 @@
-﻿using Server.Data;
+﻿using Google.Protobuf.Protocol;
+using Server.Data;
 using Server.Game;
 using Server.Game.Contents;
+using ServerCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,6 +69,7 @@ namespace Server
             }
             foreach (var member in party.Members)
             {
+                member.Session.ServerState = PlayerServerState.ServerStateGame;
                 member.Room.Push(member.Room.HandleMapChanged, member, mapData, mapData.portals.First().id, room);
             }
         }

@@ -3,7 +3,7 @@
     {
       "id": "001",
       "name": "DawnTown",
-      "type": "village",
+      "type": "quest",
       "portals": [
         {
           "id": "100",
@@ -56,7 +56,7 @@
     {
       "id": "002",
       "name": "DawnTownStore",
-      "type": "village",
+      "type": "quest",
       "portals": [
         {
           "id": "200",
@@ -71,7 +71,7 @@
     {
       "id": "003",
       "name": "DawnTownHome",
-      "type": "village",
+      "type": "quest",
       "portals": [
         {
           "id": "300",

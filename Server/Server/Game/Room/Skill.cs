@@ -357,7 +357,6 @@ namespace Server.Game
             {
                 Vector2Int center = Owner.GetFrontCellPos();   
                 skillPos.AddRange(SkillLogic.GetBentAttackTiles(center, Owner.Info.Position.LookDir, range));
-                
             }
             else if(data.shape.shapeType == ShapeType.ShapeRect)
             {

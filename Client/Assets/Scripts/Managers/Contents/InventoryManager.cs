@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -39,6 +40,16 @@ public class InventoryManager : MonoBehaviour
         Item item = null;
         Items.TryGetValue(itemId, out item);
         return item;
+    }
+
+    public Item GetItemById(int templateId)
+    {
+        foreach(Item item in Items.Values)
+        {
+            if (item.TemplateId == templateId)
+                return item;
+        }
+        return null;
     }
 
     public Item Find(Func<Item, bool> condition)

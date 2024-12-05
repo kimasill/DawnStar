@@ -11,7 +11,7 @@
       ],
       "connection": "2",
       "questType": "epic",
-      "description": "새벽마을에 도착했다."
+      "description": "새벽마을에 도착했다. 대륙의 동쪽 끝, 아름다운 새벽마을은 평화롭기만 하다."
     },
     {
       "id": "2",
@@ -28,7 +28,7 @@
       ],
       "connection": "3",
       "questType": "story",
-      "description": "마을 사람들과 대화를 나누었다."
+      "description": "루시의 부탁을 들어주자. 그녀는 케일라드에게 양파하나, 사과하나를 사오라고 부탁했다."
     },
     {
       "id": "3",
@@ -41,7 +41,7 @@
       ],
       "connection": "4",
       "questType": "interaction",
-      "description": "마을 사람들과 대화를 나누었다."
+      "description": "집으로 돌아가자. 나른한 오후, 잠이 쏟아진다."
     },
     {
       "id": "4",
@@ -54,7 +54,7 @@
       ],
       "connection": "5",
       "questType": "interaction",
-      "description": "마을 사람들과 대화를 나누었다."
+      "description": "계단을 통해 테라스로 올라가자. 케일라드는 테라스에서 햇살을 맞으며 오후를 보내기로 결심한다."
     },
     {
       "id": "5",
@@ -67,7 +67,7 @@
       ],
       "connection": "6",
       "questType": "scene",
-      "description": "마을 사람들과 대화를 나누었다."
+      "description": "마을은 순식간에 아수라장이 되고, 루시는 자신의 몸속에 숨어있던 악마에게 잡아먹혔다. /n 케일라드는 온몸을 감싸는 절망감을 겨우 이겨내고, 삶의 목적을 바로세운다."
     },
     {
       "id": "6",
@@ -80,7 +80,7 @@
       ],
       "connection":"0",
       "questType": "interaction",
-      "description": "마을 사람들과 대화를 나누었다."
+      "description": "케일라드는 다시 검을 집어들었다. 아수라장이 된 마을을 정리해야 한다. 밖으로 나가보자."
     },
     {
       "id": "7",
@@ -93,7 +93,7 @@
       ],
       "connection": "8",
       "questType": "battle",
-      "description": "나타나는 몬스터들을 처치하며, 동쪽으로 향하세요."
+      "description": "보이는 괴물들. 온몸에 살점하나 없는 언데드들이다. 동쪽 결계가 망가져, 미지의 존재들이 흘러들어온것이 분명하다. 이들을 처단해야한다."
     },
     {
       "id": "8",

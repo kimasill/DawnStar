@@ -380,8 +380,6 @@ namespace Server.Game
                     LeaveGame(monster.Value.Id);
                 }
                 _projectiles.Clear();
-
-                HandleSpawnMonster();
             }            
         }
 

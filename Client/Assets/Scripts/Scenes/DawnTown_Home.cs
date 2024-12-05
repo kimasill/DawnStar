@@ -26,9 +26,12 @@ public class DawnTown_Home : DawnTown
         {
             CheckInventoryAndHandleQuest03();
         }    
+        if (Managers.Quest.IsQuestInProgress(6))
+        {
+            CheckInventoryAndHandleQuest06();
+        }
         if(Managers.Quest.GetQuest(6) == null)
         {
-            // 퀘스트 6을 완료하고 재접한 경우
             DoorChangeAfterQuest06();
         }
     }
@@ -63,7 +66,12 @@ public class DawnTown_Home : DawnTown
             Managers.Quest.ShowQuestScript(3, 2);
         }
     }
-
+    private void CheckInventoryAndHandleQuest06()
+    {
+        bool hasItem03 = Managers.Inventory.Items.Any(item => item.Value.TemplateId == 3);
+        Item item = Managers.Inventory.GetItemById(3);
+        item.OnEquipped += HandleAddedItem03;
+    }
     public override void StartInteractionQuest(int questId)
     {
         if(questId == 4)
@@ -111,7 +119,6 @@ public class DawnTown_Home : DawnTown
             ic.ItemData = itemData;
         }
         Managers.Inventory.ItemAdded += OnInventoryItemAdded;
-        DoorChangeAfterQuest06();
     }
 
     private void DoorChangeAfterQuest06()
@@ -133,8 +140,10 @@ public class DawnTown_Home : DawnTown
     {
         if(item.TemplateId == 3)
         {
-            Managers.Quest.EndQuest();
+            Managers.Quest.EndQuest(6);
+            DoorChangeAfterQuest06();
         }
+        item.OnEquipped -= HandleAddedItem03;
     }
 
     public override void Clear()

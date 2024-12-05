@@ -340,6 +340,10 @@ namespace Server.Game
                 MapName = MapInfo.MapName
             };
             DbTransaction.SavePlayerMap(this, mapDb);
+            if(Session.ServerState == PlayerServerState.ServerStateSingle)
+            {
+                Room.Push(Room.ResetRoom);
+            }
         }
 
         public void HandleEquipItem(C_EquipItem equipPacket)

@@ -207,8 +207,6 @@ namespace Server
                     }
                 }
                 Send(itemListPacket);
-
-                ServerState = PlayerServerState.ServerStateSingle;
                 
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -225,6 +223,8 @@ namespace Server
                     }
                 }
             }
+
+            UpdateMapInteractions(MyPlayer, mapId);
             UpdateMapChests(MyPlayer, mapId);
             MyPlayer.Skill = new Skill(MyPlayer);
 
@@ -256,11 +256,17 @@ namespace Server
 
         public bool ChangeServerState(int mapId)
         {
-            if (mapId == 5)
+            DataManager.MapDict.TryGetValue(mapId, out MapData mapData);
+            if (mapData == null)
+                return false;
+            if(mapData.type == MapType.Quest)
+            {
+                ServerState = PlayerServerState.ServerStateSingle;
+            }
+            else
             {
                 ServerState = PlayerServerState.ServerStateGame;
-                return true;
-            }            
+            }
             return false;
         }
 
