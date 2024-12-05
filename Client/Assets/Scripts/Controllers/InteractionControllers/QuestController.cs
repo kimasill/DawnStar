@@ -15,11 +15,6 @@ public class QuestController : InteractionController
     }
     public override void Interact()
     {
-        if (StartId == 0 || EndId == 0)
-        {
-            Debug.Log("QuestController: StartId or EndId is not set");
-            return;
-        }
         C_Interaction interaction = new C_Interaction()
         {
             InteractionType = InteractionType.Quest,

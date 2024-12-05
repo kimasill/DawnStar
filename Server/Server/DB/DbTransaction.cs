@@ -645,7 +645,7 @@ namespace Server.DB
                     }
                     else
                     {
-                        existingInteractionDb = interactionDb;
+                        existingInteractionDb.Completed = interactionDb.Completed;
                     }
                     bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
                     if (success)

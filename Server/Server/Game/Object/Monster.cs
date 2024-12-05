@@ -284,15 +284,15 @@ namespace Server.Game
                 LookAt(dir);
                 SkillData skillData = null;
                 DataManager.SkillDict.TryGetValue(1, out skillData);
-                //데미지 판정
-                _target.OnDamaged(this, skillData.damage + TotalAttack);
-                
-                //스킬 사용
-                S_Skill skillPacket = new S_Skill() { Info = new SkillInfo()};
+                if (skillData == null)
+                    return;
+
+                S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
                 skillPacket.ObjectId = Id;
                 skillPacket.Info.SkillId = skillData.id;
                 Room.Broadcast(CellPos, skillPacket);
 
+                Skill.StartSkill(this, skillData, target:_target);
                 //쿨타임
                 int coolTick = (int)(1000/TotalAttackSpeed);
                 _coolTick = Environment.TickCount64 + coolTick;
