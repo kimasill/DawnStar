@@ -348,7 +348,6 @@ namespace Server
             }
             MyPlayer.MapInfo.InteractionIds.Clear();
             MyPlayer.MapInfo.InteractionIds.AddRange(interactionIds);
-
         }
         public void HandleCreatePlayer(C_CreatePlayer createPacket)
             {

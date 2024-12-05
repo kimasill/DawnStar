@@ -485,7 +485,8 @@ namespace Server.Data
 
     public class QuestSignData : InteractionData
     {
-        public int questId;
+        public int startId;
+        public int endId;
     }
 
     public class InteractionLoader : ILoader<int, InteractionData>

@@ -562,7 +562,6 @@ message S_Interaction{
 	bool success = 4;
 	InteractionType interactionType =5;
 }
-
 message S_BossKill{
 	int32 templateId = 1;
 }
