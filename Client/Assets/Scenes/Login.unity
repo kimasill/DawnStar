@@ -402,6 +402,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd584bf06ecaa59418f10620b65f3e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ZoomLevel: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

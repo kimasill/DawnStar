@@ -56,12 +56,22 @@ public class SceneManagerEx : MonoBehaviour
 
         // 씬 로드 시작
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+        float startTime = Time.time;
         while (!asyncLoad.isDone)
         {
             // 로딩 진행 상황 업데이트
-            //TODO: 외부인자로 변경
-            Managers.UI.SetLoadingText($"Loading... {asyncLoad.progress * 100}%");
+            float elapsedTime = Time.time - startTime;
+            float progress = Mathf.Clamp01(elapsedTime / 5.0f); // 5초 동안 로딩 진행
+
+            Managers.UI.SetLoadingText($"Loading... {(int)(progress * 100)}%");
             Managers.UI.SetLoadingImage("Textures/Images/StoryScene009");
+
+            if (asyncLoad.progress >= 1.0f || progress >= 1.0f)
+            {
+                Managers.UI.SetLoadingText("Loading... 100%");
+                asyncLoad.allowSceneActivation = true;
+            }
+
             yield return null;
         }
 

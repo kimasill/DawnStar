@@ -256,6 +256,10 @@
         {
           "chestId": "5",
           "templateId": "3"
+        },
+        {
+          "chestId": 11,
+          "templateId": 5
         }
       ]
     },

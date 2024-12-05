@@ -2269,6 +2269,7 @@ MonoBehaviour:
   - {fileID: 9010776560122566714}
   _backList:
   - {fileID: 2093097539372893746}
+  Cloth: {fileID: 0}
   _spHorseSPList: {fileID: 0}
   _spHorseString: 
   _bodyTexture: {fileID: 0}
@@ -2898,8 +2899,8 @@ SortingGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6173933979834809945}
   m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -825368885
+  m_SortingLayer: 3
   m_SortingOrder: 15
   m_SortAtRoot: 0
 --- !u!95 &3300443643675399274

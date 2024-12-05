@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,10 @@ public class DoorController : InteractionController
     private bool _isOpen = false;
     [SerializeField]
     private Animator _decorator;
+
+    public Action _openAction;
+    public Action _closeAction;
+
     protected override void Init()
     {
         base.Init();
