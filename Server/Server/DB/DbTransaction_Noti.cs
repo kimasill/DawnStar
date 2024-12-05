@@ -74,7 +74,7 @@ namespace Server.DB
             if (player == null)
                 return;
 
-            Instance.Push(() =>
+            Instance.Push(async () =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -108,7 +108,7 @@ namespace Server.DB
                             PosX = player.PosInfo.PosX,
                             PosY = player.PosInfo.PosY
                         };
-                        SavePlayerPosDb(player, playerDb);
+                        await SavePlayerPosDb(player, playerDb);
                     }
                 }
             });

@@ -8,6 +8,7 @@ using Server.Utils;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Server.DB
 {
@@ -161,38 +162,31 @@ namespace Server.DB
                 }
             }            
         }
-        public static void SavePlayerPosDb(Player player, PlayerDb playerDb)
+        public static async Task SavePlayerPosDb(Player player, PlayerDb playerDb)
         {
             if (playerDb == null)
                 return;
-            Instance.Push(() =>
+            using (AppDbContext db = new AppDbContext())
             {
-                using (AppDbContext db = new AppDbContext())
-                {
-                    db.Entry(playerDb).State = EntityState.Unchanged;
+                db.Entry(playerDb).State = EntityState.Unchanged;
 
-                    var properties = typeof(PlayerDb).GetProperties();
-                    foreach (var property in properties)
+                var properties = typeof(PlayerDb).GetProperties();
+                foreach (var property in properties)
+                {
+                    if (property.Name == "PlayerDbId")
+                        continue;
+                    var value = property.GetValue(playerDb);
+                    if (property.Name == "MapDbId")
                     {
-                        if (property.Name == "PlayerDbId")
-                            continue;
-                        var value = property.GetValue(playerDb);
-                        if (property.Name == "MapDbId")
-                        {
-                            db.Entry(playerDb).Property(property.Name).IsModified = true;
-                        }
-                        else if (property.Name == "PosX" || property.Name == "PosY")
-                        {
-                            db.Entry(playerDb).Property(property.Name).IsModified = true;
-                        }
+                        db.Entry(playerDb).Property(property.Name).IsModified = true;
                     }
-                    bool success =  db.SaveChangesEx();
-                    if (success)
+                    else if (property.Name == "PosX" || property.Name == "PosY")
                     {
-                        return;
+                        db.Entry(playerDb).Property(property.Name).IsModified = true;
                     }
                 }
-            });
+                await db.SaveChangesExAsync();
+            }
         }
         public static void RewardPlayer(Player player, ItemData itemData, int count, GameRoom room)
         {

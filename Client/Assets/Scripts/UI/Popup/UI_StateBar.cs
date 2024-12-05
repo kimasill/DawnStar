@@ -49,6 +49,7 @@ public class UI_StateBar : UI_Base
         {
             _prevExp = prevStat.TotalExp;
         }
+        RefreshUI();
     }
     public void UpdateExpBar()
     {
