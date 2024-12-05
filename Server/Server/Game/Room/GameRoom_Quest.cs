@@ -413,5 +413,40 @@ namespace Server.Game
 
             DbTransaction.SaveInteractionDb(player, interactionDb, this);
         }
+
+        public void HandleQuestSignInteraction(Player player, int questSignId)
+        {
+            if (player == null) return;
+
+            DataManager.InteractionDict.TryGetValue(questSignId, out InteractionData interactionData);
+            if (interactionData == null)
+                return;
+            QuestSignData questData = interactionData as QuestSignData;
+
+            if(questData == null)
+            {
+                return;
+            }
+
+            if(questData.startId > 0)
+            {
+                HandleStartQuest(player, questData.startId);
+            }
+            else if (questData.endId > 0)
+            {
+                HandleQuestComplete(player, questData.endId);
+            }
+
+            // 인터랙션 성공 여부를 DbTransaction에 저장합니다.
+            InteractionDb interactionDb = new InteractionDb
+            {
+                PlayerDbId = player.PlayerDbId,
+                TemplateId = questData.id,
+                MapDbId = player.MapInfo.MapDbId,
+                Completed = true
+            };
+
+            DbTransaction.SaveInteractionDb(player, interactionDb, this);
+        }
     }
 }

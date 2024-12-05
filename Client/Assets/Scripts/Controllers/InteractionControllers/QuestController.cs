@@ -15,10 +15,17 @@ public class QuestController : InteractionController
     }
     public override void Interact()
     {
-        if (StartId > 0)
-            Managers.Quest.StartQuest(StartId);
-        else if (EndId > 0)
-            Managers.Quest.EndQuest(EndId);
+        if (StartId == 0 || EndId == 0)
+        {
+            Debug.Log("QuestController: StartId or EndId is not set");
+            return;
+        }
+        C_Interaction interaction = new C_Interaction()
+        {
+            InteractionType = InteractionType.Quest,
+            ObjectId = TemplateId,            
+        };
+        Managers.Network.Send(interaction);
         base.Interact();
     }
     protected override void HandleQuestInteraction(InteractionData data)

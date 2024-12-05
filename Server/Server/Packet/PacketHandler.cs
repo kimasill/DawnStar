@@ -318,6 +318,8 @@ class PacketHandler
             room.HandleTriggerInteraction(clientSession.MyPlayer, interactionPacket.ObjectId);
         else if (interactionPacket.InteractionType == InteractionType.ItemTable)
             room.HandleItemTableInteraction(clientSession.MyPlayer, interactionPacket.ObjectId);
+        else if (interactionPacket.InteractionType == InteractionType.Quest)
+            room.HandleQuestSignInteraction(clientSession.MyPlayer, interactionPacket.ObjectId);
     }
 
     public static void C_RequestStatHandler(PacketSession session, IMessage packet)

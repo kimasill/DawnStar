@@ -97,7 +97,7 @@ namespace Server.DB
                     {
                         exMapDb = db.Maps.FirstOrDefault(m => m.PlayerDbId == player.PlayerDbId && m.TemplateId == mapDb.TemplateId);
                         player.MapInfo.MapDbId = exMapDb.MapDbId;
-                        player.MapInfo.TemplateId = exMapDb.TemplateId;
+                        player.MapInfo.TemplateId = exMapDb.TemplateId;                        
                         player.MapInfo.Scene = exMapDb.Scene;
                         player.MapInfo.MapName = exMapDb.MapName;
 
