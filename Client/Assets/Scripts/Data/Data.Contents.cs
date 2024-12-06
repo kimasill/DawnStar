@@ -131,6 +131,7 @@ namespace Data
         public string prefabPath;
         public string description;
         public Dictionary<string, string> options = new Dictionary<string, string>();
+        public List<CostData> pieces;
     }
 
     public class WeaponData : ItemData
@@ -580,6 +581,37 @@ namespace Data
             {
                 interaction.interactionType = InteractionType.Camera;
                 dict.Add(interaction.id, interaction);
+            }
+            return dict;
+        }
+    }
+    #endregion
+    #region Enhance
+    [Serializable]
+    public class CostData
+    {
+        public int templateId;
+        public int count;
+    }
+    public class EnhanceData
+    {
+        public int id;
+        public int rank;
+        public ItemType itemType;
+        public List<CostData> costData;
+        public float value;
+        public bool isPercent;
+    }
+    public class EnhanceLoader : ILoader<int, EnhanceData>
+    {
+        public List<EnhanceData> enhances = new List<EnhanceData>();
+
+        public Dictionary<int, EnhanceData> MakeDict()
+        {
+            Dictionary<int, EnhanceData> dict = new Dictionary<int, EnhanceData>();
+            foreach (EnhanceData enhance in enhances)
+            {
+                dict.Add(enhance.id, enhance);
             }
             return dict;
         }

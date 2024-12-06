@@ -8,14 +8,17 @@ using UnityEngine.UI;
 public class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField]
-    private Image _icon;
+    protected Image _icon = null;
 
     [SerializeField]
-    private UI_ItemDescription _itemDescription;
-    bool _isDescription = false;
-    private Item _item;
+    protected UI_ItemDescription _itemDescription = null;
+    protected bool _isDescription = false;
+    protected Item _item;
     private bool _init = false;
-
+    public UI_GameWindow GameWindow { get; set; }
+    public int ItemDbId { get; protected set; }
+    public int TemplateId { get; protected set; }
+    public int Count { get; protected set; }
     public override void Init()
     {
         if (_init)
@@ -26,7 +29,7 @@ public class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitHandler
         _init = true;
     }
 
-    public void SetItem(Item item)
+    public virtual void SetItem(Item item)
     {
         if(!_init)
             Init();
@@ -38,7 +41,7 @@ public class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitHandler
         _icon.sprite = icon;        
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public virtual void OnPointerEnter(PointerEventData eventData)
     {
         if (_isDescription)
             return;
@@ -49,7 +52,7 @@ public class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitHandler
         _itemDescription.OnPointerEnter(eventData);
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public virtual void OnPointerExit(PointerEventData eventData)
     {
         if (!_isDescription)
             return;

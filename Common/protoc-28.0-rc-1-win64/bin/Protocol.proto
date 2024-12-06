@@ -647,6 +647,8 @@ message ItemInfo{
 	bool equipped = 5;
 	int32 price = 6;
 	map<string, string> options = 7;
+	int32 rank = 8;
+	Grade grade = 9;
 }
 
 message MapInfo{

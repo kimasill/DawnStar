@@ -25,6 +25,7 @@ namespace Server.Data
         public static Dictionary<int, Data.AcquireData> AcquireDict { get; private set; } = new Dictionary<int, Data.AcquireData>();
         public static Dictionary<int, Data.RealizationData> RealizationDict { get; private set; } = new Dictionary<int, Data.RealizationData>();
         public static Dictionary<int, Data.InteractionData> InteractionDict { get; private set; } = new Dictionary<int, Data.InteractionData>();
+        public static Dictionary<int, Data.EnhanceData> EnhanceDict { get; private set; } = new Dictionary<int, Data.EnhanceData>();
 
         public static void LoadData()
         {
@@ -38,6 +39,7 @@ namespace Server.Data
             AcquireDict = LoadJson<Data.AcquireLoader, int, Data.AcquireData>("AcquireData").MakeDict();
             RealizationDict = LoadJson<Data.RealizationLoader, int, Data.RealizationData>("RealizationData").MakeDict();
             InteractionDict = LoadJson<Data.InteractionLoader, int, Data.InteractionData>("InteractionData").MakeDict();
+            EnhanceDict = LoadJson<Data.EnhanceLoader, int, Data.EnhanceData>("EnhanceData").MakeDict();
         }
 
         static Loader LoadJson<Loader, Key, Value>(string path) where Loader : ILoader<Key, Value>
