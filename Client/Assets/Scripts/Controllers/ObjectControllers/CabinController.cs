@@ -27,7 +27,7 @@ public class CabinController : BaseController
         if (Animator != null)
         {
             Animator.speed = 0;
-            Animator.Play($"CLOSE{TemplateId}", 0, 1.0f);
+            Animator.Play($"OPEN{TemplateId}", 0, 0);
         }
     }
     private void OpenCabinTop()
@@ -51,16 +51,16 @@ public class CabinController : BaseController
         Animator.Play($"OPEN{TemplateId}"); // OPEN 애니메이션 재생
         yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f); // 애니메이션 종료 대기
         Animator.speed = 0;
-        Animator.Play($"CLOSE{TemplateId}", 0, 0); // CLOSE 애니메이션 첫 프레임으로 고정
+        Animator.Play($"CLOSE{TemplateId}", 0, 0);
     }
 
     private IEnumerator CoCloseTop()
     {
         Animator.speed = 1;
-        Animator.Play($"OPEN{TemplateId}"); // OPEN 애니메이션 재생
+        Animator.Play($"CLOSE{TemplateId}"); // OPEN 애니메이션 재생
         yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f); // 애니메이션 종료 대기
         Animator.speed = 0;
-        Animator.Play($"CLOSE{TemplateId}", 0, 0); // CLOSE 애니메이션 첫 프레임으로 고정
+        Animator.Play($"OPEN{TemplateId}", 0, 0); // CLOSE 애니메이션 첫 프레임으로 고정
     }
 
     protected override void UpdateAnimation()

@@ -260,6 +260,10 @@
         {
           "chestId": 11,
           "templateId": 5
+        },
+        {
+          "chestId": 12,
+          "templateId": 6
         }
       ]
     },

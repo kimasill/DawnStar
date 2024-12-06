@@ -67,7 +67,8 @@
     },
     {
       "id": "11",
-      "name": "NormalDoor"
+      "name": "NormalDoor",
+      "multi": "true"
     }
   ],
   "triggers": [

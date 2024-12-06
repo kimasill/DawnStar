@@ -83,8 +83,8 @@
         {
           "probability": "100",
           "itemId": "10002",
-          "minCount": "20",
-          "maxCount": "20"
+          "minCount": "50",
+          "maxCount": "50"
         }
       ]
     },
@@ -133,8 +133,8 @@
         {
           "probability": "100",
           "itemId": "10002",
-          "minCount": "20",
-          "maxCount": "20"
+          "minCount": "50",
+          "maxCount": "50"
         }
       ]
     },
@@ -189,8 +189,8 @@
         {
           "probability": "100",
           "itemId": "10002",
-          "minCount": "50",
-          "maxCount": "50"
+          "minCount": "100",
+          "maxCount": "100"
         }
       ]
     },
@@ -198,7 +198,7 @@
       "id": "5",
       "name": "돌 상자",
       "type": "chest",
-      "grade": "rare",
+      "grade": "normal",
       "rewards": [
         {
           "probability": "100",
@@ -229,6 +229,50 @@
           "itemId": "10002",
           "minCount": "10",
           "maxCount": "10"
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "name": "골동품 상자",
+      "type": "chest",
+      "grade": "rare",
+      "rewards": [
+        {
+          "probability": "100",
+          "itemId": "10001",
+          "minCount": "500",
+          "maxCount": "1000"
+        },
+        {
+          "probability": "50",
+          "itemId": "1130",
+          "minCount": "3",
+          "maxCount": "7"
+        },
+        {
+          "probability": "40",
+          "itemId": "1133",
+          "minCount": "3",
+          "maxCount": "7"
+        },
+        {
+          "probability": "30",
+          "itemId": "1136",
+          "minCount": "3",
+          "maxCount": "7"
+        },
+        {
+          "probability": "100",
+          "itemId": "1140",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "10002",
+          "minCount": "20",
+          "maxCount": "20"
         }
       ]
     }
