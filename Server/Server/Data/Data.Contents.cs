@@ -42,7 +42,6 @@ namespace Server.Data
         }
     }
     #endregion
-
     #region Skill
     [Serializable]
     public class SkillData
@@ -128,7 +127,6 @@ namespace Server.Data
         }
     }
     #endregion
-
     #region Item
     [Serializable]
     public class ItemData
@@ -140,6 +138,7 @@ namespace Server.Data
         public string iconPath;
         public string description;
         public Dictionary<string, string> options = new Dictionary<string, string>();
+        public List<CostData> pieces;
     }
 
     public class WeaponData : ItemData
@@ -223,7 +222,6 @@ namespace Server.Data
         }
     }
     #endregion 
-
     #region Monster
     [Serializable]
     public class ItemRewardData
@@ -260,7 +258,6 @@ namespace Server.Data
         }
     }
     #endregion
-
     #region Map
 
     [Serializable]
@@ -322,7 +319,6 @@ namespace Server.Data
         }
     }
     #endregion
-
     #region Quest
 
     [Serializable]
@@ -359,7 +355,6 @@ namespace Server.Data
     }
 
     #endregion
-
     #region Shop
     [Serializable]
     public class ShopItemData
@@ -394,7 +389,6 @@ namespace Server.Data
         }
     }
     #endregion
-
     #region Acquire
     [Serializable]
     public class AcquireData
@@ -529,6 +523,37 @@ namespace Server.Data
             {
                 interaction.interactionType = InteractionType.Camera;
                 dict.Add(interaction.id, interaction);
+            }
+            return dict;
+        }
+    }
+    #endregion
+    #region Enhance
+    [Serializable]
+    public class CostData
+    {
+        public int templateId;        
+        public int count;
+    }
+    public class EnhanceData
+    {
+        public int id;
+        public int rank;
+        public ItemType itemType;
+        public List<CostData> costData;
+        public float value;
+        public float percent;
+    }
+    public class EnhanceLoader : ILoader<int, EnhanceData>
+    {
+        public List<EnhanceData> enhances = new List<EnhanceData>();
+
+        public Dictionary<int, EnhanceData> MakeDict()
+        {
+            Dictionary<int, EnhanceData> dict = new Dictionary<int, EnhanceData>();
+            foreach (EnhanceData enhance in enhances)
+            {
+                dict.Add(enhance.id, enhance);
             }
             return dict;
         }

@@ -23,6 +23,7 @@ public class DataManager
     public Dictionary<int, Data.ShopData> ShopDict { get; private set; } = new Dictionary<int, Data.ShopData>();
     public Dictionary<int, Data.RealizationData> RealizationDict { get; private set; } = new Dictionary<int, Data.RealizationData>();
     public Dictionary<int, Data.InteractionData> InteractionDict { get; private set; } = new Dictionary<int, Data.InteractionData>();
+    public Dictionary<int, Data.EnhanceData> EnhanceDict { get; private set; } = new Dictionary<int, Data.EnhanceData>();
 
     public void Init()
     {

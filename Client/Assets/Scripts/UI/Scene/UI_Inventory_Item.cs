@@ -8,29 +8,16 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 //이미지 찾고 교체
-public class UI_Inventory_Item : UI_Base, IPointerEnterHandler, IPointerExitHandler
+public class UI_Inventory_Item : UI_ItemIcon
 {
-    [SerializeField]
-    Image _icon = null;
-
     [SerializeField]
     Image _frame = null;
 
     [SerializeField]
     TMP_Text _itemCount = null;
 
-    [SerializeField]
-    private UI_ItemDescription _itemDescription = null;
-
-    public UI_GameWindow GameWindow { get; set; }
-
     UI_QuickSlot _quickSlot = null;
-    private bool _isDescription = false;
-    public int ItemDbId { get; private set; }
-    public int TemplateId { get; private set; }
-    public int Count { get; private set; }
-    public bool Equipped { get; private set; }
-    Item _item = null;
+    public bool Equipped { get; protected set; }
     public override void Init()
     {
         gameObject.BindEvent(OnPointerEnter, Define.UIEvent.MouseOver);
@@ -61,7 +48,7 @@ public class UI_Inventory_Item : UI_Base, IPointerEnterHandler, IPointerExitHand
         });
     }
 
-    public void SetItem(Item item)
+    public override void SetItem(Item item)
     {
         if (item == null)
         {
@@ -98,7 +85,7 @@ public class UI_Inventory_Item : UI_Base, IPointerEnterHandler, IPointerExitHand
         _frame.gameObject.SetActive(Equipped);
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public override void OnPointerEnter(PointerEventData eventData)
     {
         if (_isDescription)
             return;
@@ -111,7 +98,7 @@ public class UI_Inventory_Item : UI_Base, IPointerEnterHandler, IPointerExitHand
         _itemDescription.OnPointerEnter(eventData);
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public override void OnPointerExit(PointerEventData eventData)
     {
         if (!_isDescription)
             return;

@@ -745,6 +745,75 @@
       "price": "210",
       "iconPath": "Textures/Item/Materials/Drop/Silk",
       "description": "희귀한 옷감"
+    },
+    {
+      "id": "1159",
+      "name": "분노의 정수",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "10000",
+      "iconPath": "Textures/Item/Materials/Base/Essence_Rage",
+      "description": "분노의 기운이 담긴 정수",
+      "pieces": [
+        {
+          "templateId": 1132,
+          "count": 5
+        },
+        {
+          "templateId": 1111,
+          "count": 3
+        },
+        {
+          "templateId": 1125,
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "1159",
+      "name": "이성의 정수",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "10000",
+      "iconPath": "Textures/Item/Materials/Base/Essence_Reason",
+      "description": "분노의 기운이 담긴 정수",
+      "pieces": [
+        {
+          "templateId": 1129,
+          "count": 5
+        },
+        {
+          "templateId": 1110,
+          "count": 3
+        },
+        {
+          "templateId": 1125,
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "1160",
+      "name": "기교의 정수",
+      "maxCount": "9999",
+      "materialType": "Base",
+      "price": "10000",
+      "iconPath": "Textures/Item/Materials/Base/Essence_Technique",
+      "description": "기교의 기운이 담긴 정수",
+      "pieces": [
+        {
+          "templateId": 1135,
+          "count": 5
+        },
+        {
+          "templateId": 1114,
+          "count": 3
+        },
+        {
+          "templateId": 1125,
+          "count": 1
+        }
+      ]
     }
   ],
   "goods": [

@@ -43,11 +43,20 @@ public class Item
             OnEquipped?.Invoke(this);
         }
     }
-
     public int Price
     {
         get { return Info.Price; }
         set { Info.Price = value; }
+    }
+    public int Rank
+    {
+        get { return Info.Rank; }
+        set { Info.Rank = value; }
+    }
+    public Grade Grade
+    {
+        get { return Info.Grade; }
+        set { Info.Grade = value; }
     }
 
     public MapField<string, string> Options
