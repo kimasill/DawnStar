@@ -46,6 +46,19 @@
           ]
         }
       ]
-    }
-  ]
-} 
+    },
+    {
+      "id": "4",
+      "name": "USCCampBlackSmith",
+      "npcType": "Smith",
+      "scripts": [
+        {
+          "id": "40001",
+          "name": "USC장비재련소",
+          "type": "UI_Enchant",
+          "script": [
+            "그 무장상태로는 이 앞으로 갈 수 없네."
+          ]
+        }
+      ]
+    } 
