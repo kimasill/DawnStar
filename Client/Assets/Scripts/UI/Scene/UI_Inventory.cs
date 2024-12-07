@@ -100,7 +100,6 @@ public class UI_Inventory : UI_Base
             ScrollRect.verticalNormalizedPosition = Mathf.Clamp01(ScrollRect.verticalNormalizedPosition - scrollAmount);
         }
     }
-
     public void ScrollToTop()
     {
         if (ScrollRect != null)
@@ -108,7 +107,6 @@ public class UI_Inventory : UI_Base
             ScrollRect.verticalNormalizedPosition = 1.0f;
         }
     }
-
     public void ScrollToBottom()
     {
         if (ScrollRect != null)

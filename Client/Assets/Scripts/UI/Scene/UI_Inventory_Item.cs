@@ -46,6 +46,13 @@ public class UI_Inventory_Item : UI_ItemIcon
                 Managers.Network.Send(equipItemPacket);
             }
         });
+        gameObject.BindEvent((e) =>
+        {
+            UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;      
+            if(gameScene.EnhanceUI.enabled == false)
+                return;
+            gameScene.EnhanceUI.SetItem(_item);
+        }, Define.UIEvent.RightClick);
     }
 
     public override void SetItem(Item item)

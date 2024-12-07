@@ -8,14 +8,21 @@ using UnityEngine.UIElements;
 public class UI_EventHandler : MonoBehaviour, IPointerClickHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public Action<PointerEventData> OnClickHandler = null;
+    public Action<PointerEventData> OnRightClickHandler = null;
     public Action<PointerEventData> OnDragHandler = null;
     public Action<PointerEventData> OnMouseOverHandler = null;
     public Action<PointerEventData> OnMouseOutHandler = null;
 
     public void OnPointerClick(PointerEventData eventData)
 	{
-		if (OnClickHandler != null)
-			OnClickHandler.Invoke(eventData);
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            OnClickHandler?.Invoke(eventData);
+        }
+        else if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            OnRightClickHandler?.Invoke(eventData);
+        }
 	}
 
 	public void OnDrag(PointerEventData eventData)

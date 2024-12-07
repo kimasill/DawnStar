@@ -81,7 +81,9 @@ namespace Server.Game
         }
         public Item FindByTemplateId(int templateId)
         {
-            return Items.Values.FirstOrDefault(item => item.TemplateId == templateId);
+            Item item = null;
+            item = Items.Values.FirstOrDefault(item => item.TemplateId == templateId);
+            return item;
         }
 
         public int? GetSlot(int itemId, int count)

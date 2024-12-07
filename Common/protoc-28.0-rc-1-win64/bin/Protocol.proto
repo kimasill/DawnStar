@@ -65,6 +65,8 @@ enum MsgId {
   C_REQUEST_STAT = 57;
   S_EFFECT = 58;
   S_BOSS_KILL = 59;
+  C_ENHANCE = 60;
+  S_ENHANCE = 61;
 }
 enum CreatureState{
   IDLE = 0;
@@ -302,6 +304,23 @@ enum NPCType{
 	NPC_TYPE_SMITH = 4;
 }
 
+enum ItemOptionType{
+	ITEM_OPTION_TYPE_NONE = 0;
+	ITEM_OPTION_TYPE_ATTACK = 1;
+	ITEM_OPTION_TYPE_DEFENSE = 2;
+	ITEM_OPTION_TYPE_SPEED = 3;
+	ITEM_OPTION_TYPE_CIRITICAL_CHANCE = 4;
+	ITEM_OPTION_TYPE_CRITICAL_DAMAGE = 5;
+	ITEM_OPTION_TYPE_AVOID = 6;
+	ITEM_OPTION_TYPE_ACCURACY = 7;
+	ITEM_OPTION_TYPE_ATTACK_SPEED = 8;
+	ITEM_OPTION_TYPE_HP = 9;
+	ITEM_OPTION_TYPE_UP = 10;
+	ITEM_OPTION_TYPE_INVOKE_SPEED = 11;
+	ITEM_OPTION_TYPE_COOL_TIME = 12;
+	ITEM_OPTION_TYPE_UP_REGEN = 13;
+}
+
 message S_EnterGame {
   ObjectInfo player = 1;
   PlayerServerState serverState = 2;
@@ -462,6 +481,16 @@ message S_BuyItem{
 	int32 count = 2;
 	int32 gold = 3;
 	int32 shopId = 4;
+}
+
+message C_Enhance{
+	int32 itemDbId = 1;
+	int32 templateId = 2;
+}
+
+message S_Enhance{
+	ItemInfo itemInfo = 1;
+	bool success = 2;
 }
 
 message C_LootItem{

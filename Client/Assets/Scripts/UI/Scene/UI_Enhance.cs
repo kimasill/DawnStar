@@ -1,7 +1,9 @@
 using Data;
 using Google.Protobuf.Protocol;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Tiled2Unity;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -11,7 +13,7 @@ using static UnityEditor.Progress;
 
 public class UI_Enhance : UI_Base
 {
-    public GameObject enhancePanel;
+    public GameObject _enhanceItemPanel;
     public Button enhanceButton;        
     private Item _selectedItem;
     private UI_Enhance_Item _enhanceItem;
@@ -19,8 +21,9 @@ public class UI_Enhance : UI_Base
     private List<UI_Display_Item> Items = new List<UI_Display_Item>();
     enum Texts
     {
+        EnhanceShopTitle_Text,
         Enhance_Item_Name,
-        EnhanceResultText,
+        EnhanceResultNoti_Text,
         Enhance_Item_Rank,
     }
 
@@ -34,6 +37,7 @@ public class UI_Enhance : UI_Base
     {
         Enhance_Item_Icon,
         EnhanceCostPanel,
+        EnhanceResultNoti,
     }
 
     bool _isInit = false;
@@ -49,9 +53,11 @@ public class UI_Enhance : UI_Base
 
         BindEvent(GetButton((int)Buttons.EnhanceButton).gameObject, (PointerEventData data) => { OnClickEnhanceButton(); });
         BindEvent(GetButton((int)Buttons.EnhanceExitButton).gameObject, (PointerEventData data) => { OnClickExitButton(); });
-
+        GetImage((int)Images.EnhanceResultNoti).gameObject.SetActive(false);
         _enhanceCostPanel = GetImage((int)Images.EnhanceCostPanel);
+        _enhanceItem = _enhanceItemPanel.GetOrAddComponent<UI_Enhance_Item>();
 
+        RefreshUI();
     }
     public void RefreshUI()
     {
@@ -60,8 +66,12 @@ public class UI_Enhance : UI_Base
             Init();
             return;
         }
-
-        if (_enhanceItem == null)
+        foreach(var item in Items)
+        {
+            Destroy(item.gameObject);
+        }
+        Items.Clear();
+        if(_selectedItem == null)
         {
             return;
         }
@@ -94,7 +104,7 @@ public class UI_Enhance : UI_Base
             }
         }
     }
-    public void SelectItem(Item item)
+    public void SetItem(Item item)
     {
         _selectedItem = item;
         ItemData itemData = null;
@@ -106,31 +116,58 @@ public class UI_Enhance : UI_Base
             GetTextMeshPro((int)Texts.Enhance_Item_Name).text = itemData.name;
             GetTextMeshPro((int)Texts.Enhance_Item_Rank).text = item.Grade.ToString();
         }
+        RefreshUI();
     }
-    private void OnEnhanceButtonClicked()
+    private void EnhanceItem(Item item)
     {
-        if (_selectedItem == null)
-        {
-            GetTextMeshPro((int)Texts.EnhanceResultText).text = "No item selected.";
+        if (item == null)
             return;
-        }
-
-        bool success = EnhanceItem(_selectedItem);
-        GetTextMeshPro((int)Texts.EnhanceResultText).text = success ? "Enhancement successful!" : "Enhancement failed.";
-    }
-
-    private bool EnhanceItem(Item item)
-    {
-        // 강화 로직 구현 (성공 확률 등)
-        float successRate = 0.5f; // 50% 성공 확률
-        bool isSuccess = Random.value < successRate;
-
-        if (isSuccess)
+        C_Enhance enhance = new C_Enhance() 
         {
-        }
-        return isSuccess;
+            ItemDbId = item.ItemDbId,
+            TemplateId = item.TemplateId
+        };
+        Managers.Network.Send(enhance);
     }
+    public void EnhanceResult(S_Enhance enhance)
+    {
+        if (enhance == null)
+            return;
+        StartCoroutine(CoEnhance(enhance.Success, enhance.ItemInfo));
+    }
+    private IEnumerator CoEnhance(bool success, ItemInfo itemInfo)
+    {
+        GameObject effect = Managers.Resource.Instantiate("UI/Scene/EnhanceEffect", transform);
+        Animator anim = effect.GetComponent<Animator>();
+        anim.Play("START");
 
+        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f);
+
+        Managers.Resource.Destroy(effect);
+        anim.StopPlayback(); // Stop the animation playback
+
+        GetImage((int)Images.EnhanceResultNoti).gameObject.SetActive(true);
+        FadeInAll(GetImage((int)Images.EnhanceResultNoti).gameObject, 0.5f);
+        if (success)
+        {
+            GetTextMeshPro((int)Texts.EnhanceResultNoti_Text).text = "강화 성공";
+        }
+        else
+        {
+            GetTextMeshPro((int)Texts.EnhanceResultNoti_Text).text = "강화 실패";
+        }
+        yield return new WaitForSeconds(1.0f);
+        FadeOutAll(GetImage((int)Images.EnhanceResultNoti).gameObject, 0.5f);
+        GetImage((int)Images.EnhanceResultNoti).gameObject.SetActive(false);
+
+
+        if (success)
+        {
+            Item item = Item.MakeItem(itemInfo);
+            SetItem(item);
+        }
+        RefreshUI();
+    }
     private void OnClickEnhanceButton()
     {
         EnhanceItem(_selectedItem);
@@ -138,6 +175,19 @@ public class UI_Enhance : UI_Base
 
     private void OnClickExitButton()
     {
-        enhancePanel.SetActive(false);
+        CloseUI();
+    }
+    public void OpenUI(string title, string description)
+    {
+        gameObject.SetActive(true);
+        GetText((int)Texts.EnhanceShopTitle_Text).text = title;
+    }
+    public void CloseUI()
+    {
+        _selectedItem = null;
+        _enhanceItem.SetItem(null);
+        GetTextMeshPro((int)Texts.Enhance_Item_Name).text = "";
+        GetTextMeshPro((int)Texts.Enhance_Item_Rank).text = "";
+        gameObject.SetActive(false);
     }
 }

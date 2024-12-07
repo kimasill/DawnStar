@@ -620,4 +620,10 @@ class PacketHandler
             gameSceneUI.NotificationUI.ShowBossKillNoti(monsterData.name);
         }
     }
+    public static void S_EnhanceHandler(PacketSession session, IMessage packet)
+    {
+        S_Enhance enhancePacket = packet as S_Enhance;
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        gameSceneUI.EnhanceUI.EnhanceResult(enhancePacket);
+    }
 }

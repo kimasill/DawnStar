@@ -15,7 +15,7 @@ namespace Data
         public int Level;
         public int MaxHp;
         public int Attack;
-        public int Defence;
+        public int Defense;
         public float Speed;
         public int TotalExp;
         public int StatPoint;
@@ -145,7 +145,7 @@ namespace Data
     public class ArmorData : ItemData
     {
         public ArmorType armorType;
-        public int defence;
+        public int defense;
     }
 
     public class JewelryData : ItemData
