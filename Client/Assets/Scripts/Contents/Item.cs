@@ -179,7 +179,7 @@ public class Item
                 TemplateId = data.id;
                 Count = 1;
                 ArmorType = data.armorType;
-                Defense = data.defence;
+                Defense = data.defense;
                 Stackable = false;
             }
         }

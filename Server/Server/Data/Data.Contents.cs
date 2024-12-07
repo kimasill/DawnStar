@@ -151,7 +151,7 @@ namespace Server.Data
     public class ArmorData : ItemData
     {
         public ArmorType armorType;
-        public int defence;
+        public int defense;
     }
 
     public class JewelryData : ItemData

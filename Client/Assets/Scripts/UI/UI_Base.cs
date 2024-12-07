@@ -10,7 +10,7 @@ public abstract class UI_Base : MonoBehaviour
 {
 	protected Dictionary<Type, UnityEngine.Object[]> _objects = new Dictionary<Type, UnityEngine.Object[]>();
 	public abstract void Init();
-
+	protected bool _isFading = false;
 	private void Awake()
 	{
 		Init();
@@ -59,7 +59,11 @@ public abstract class UI_Base : MonoBehaviour
 				evt.OnClickHandler -= action;
 				evt.OnClickHandler += action;
 				break;
-			case Define.UIEvent.Drag:
+			case Define.UIEvent.RightClick:
+                evt.OnRightClickHandler -= action;
+                evt.OnRightClickHandler += action;
+                break;
+            case Define.UIEvent.Drag:
 				evt.OnDragHandler -= action;
 				evt.OnDragHandler += action;
 				break;
@@ -73,4 +77,53 @@ public abstract class UI_Base : MonoBehaviour
                 break;
         }
 	}
+    protected virtual IEnumerator FadeIn(Image image, float fadingTime)
+    {
+        _isFading = true; // 페이드 인 시작
+        float alpha = 0;
+        while (alpha < 1)
+        {
+            alpha += Time.deltaTime / fadingTime;
+            image.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
+            yield return null;
+        }
+        _isFading = false; // 페이드 인 종료
+    }
+    protected virtual IEnumerator FadeOut(Image image, float fadingTime)
+    {
+        _isFading = true; // 페이드 아웃 시작
+        float alpha = 1;
+        while (alpha > 0)
+        {
+            alpha -= Time.deltaTime / fadingTime;
+            image.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
+            yield return null;
+        }
+        _isFading = false; // 페이드 아웃 종료
+    }
+	protected virtual IEnumerator FadeInAll(GameObject gameObject, float fadingTime)
+	{
+		_isFading = true;
+        float alpha = 0;
+        while (alpha < 1)
+        {
+            alpha += Time.deltaTime / fadingTime;
+            gameObject.GetComponent<CanvasGroup>().alpha = alpha;
+            yield return null;
+        }
+        _isFading = false;
+    }
+    protected virtual IEnumerator FadeOutAll(GameObject gameObject, float fadingTime)
+    {
+        _isFading = true;
+        float alpha = 1;
+        while (alpha > 0)
+        {
+            alpha -= Time.deltaTime / fadingTime;
+            gameObject.GetComponent<CanvasGroup>().alpha = alpha;
+            yield return null;
+        }
+        _isFading = false;
+    }
+
 }

@@ -51,6 +51,10 @@ namespace Server.Game
         public ItemType ItemType { get; private set; }
         public bool Stackable { get; protected set; }
 
+        public int Rank { get; protected set; }
+        public Grade Grade { get; protected set; }
+
+
         public Item(ItemType itemType)
         {
             ItemType = itemType;
@@ -162,7 +166,7 @@ namespace Server.Game
                     TemplateId = data.id;
                     Count = 1;
                     ArmorType = data.armorType;
-                    Defense = data.defence;
+                    Defense = data.defense;
                     Stackable = false;
                 }
             }

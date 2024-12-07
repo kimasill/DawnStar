@@ -229,5 +229,63 @@ namespace Server.Game
                 }
             }
         }
+
+        public void HandleEnhanceItem(Player player, C_Enhance enhancePacket)
+        {
+            if (player == null)
+                return;
+
+            Item item = player.Inven.Get(enhancePacket.ItemDbId);
+            if (item == null)
+                return;
+
+            ItemData itemData = null;
+            DataManager.ItemDict.TryGetValue(item.TemplateId, out itemData);
+            if (itemData == null)
+                return;
+            
+            EnhanceData enhanceData = DataManager.EnhanceDict.Select(x => x.Value).Where(x => x.rank == item.Rank && x.itemType == item.ItemType).FirstOrDefault();
+            List<Item> costItems = new List<Item>();
+            foreach (CostData cost in enhanceData.costData)
+            {
+                Item costItem = player.Inven.FindByTemplateId(cost.templateId);
+                if (costItem.Count < cost.count || costItem == null)
+                    return;
+
+                costItems.Add(costItem);
+            }
+
+            foreach (Item costItem in costItems)
+            {                
+                ItemDb itemDb = new ItemDb()
+                {
+                    TemplateId = costItem.TemplateId,
+                    Count = costItem.Count,
+                    OwnerDbId = player.PlayerDbId,
+                    Slot = costItem.Slot
+                };
+                DbTransaction.SaveRemovedItemDB(player, itemDb, this);
+            }
+
+            //강화실행
+            bool success = true;
+            ItemDb newItemDb = ItemLogic.EnhanceItem(player, item, enhanceData);
+            if (newItemDb == null)
+                success = false;            
+            
+            if (success == false)
+            {
+                S_Enhance enhanceResultPacket = new S_Enhance()
+                {
+                    ItemInfo = item.Info,
+                    Success = success
+                };
+                player.Session.Send(enhanceResultPacket);
+            }
+            else
+            {
+                DbTransaction.SaveEnhancedItemDB(player, newItemDb, this); // DB Save -> Client Notify
+            }
+        }
     }
 }

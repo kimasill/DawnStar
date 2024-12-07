@@ -23,7 +23,6 @@ public class UI_StoryScene : UI_Base
     private Coroutine typingCoroutine;
     private bool isTyping = false;
     private bool isEndOfScript = false;
-    private bool isFading = false; // 페이드 인/아웃 중인지 여부를 나타내는 플래그
 
     public enum Images
     {
@@ -67,7 +66,7 @@ public class UI_StoryScene : UI_Base
 
     private IEnumerator InitialFadeIn()
     {
-        isFading = true; // 페이드 인 시작
+        _isFading = true; // 페이드 인 시작
         
         yield return StartCoroutine(FadeIn(SceneChangeImage, 1.0f));
 
@@ -82,7 +81,7 @@ public class UI_StoryScene : UI_Base
 
         yield return StartCoroutine(FadeOut(SceneChangeImage, 1.0f));
 
-        isFading = false; // 페이드 인 종료
+        _isFading = false; // 페이드 인 종료
         ShowNextScript();
     }
 
@@ -111,7 +110,7 @@ public class UI_StoryScene : UI_Base
 
     private IEnumerator FadeInOut(Image image, System.Action onFaded, System.Action onComplete, float waitTime)
     {
-        isFading = true; // 페이드 인/아웃 중에는 클릭 이벤트 무시
+        _isFading = true; // 페이드 인/아웃 중에는 클릭 이벤트 무시
         yield return StartCoroutine(FadeIn(image, 1.0f));
 
         onFaded?.Invoke();     
@@ -119,36 +118,12 @@ public class UI_StoryScene : UI_Base
         yield return new WaitForSeconds(waitTime);
 
         yield return StartCoroutine(FadeOut(image, 1.0f));
-        isFading = false; // 페이드 인/아웃 종료
+        _isFading = false; // 페이드 인/아웃 종료
 
         onComplete?.Invoke();
     }
 
-    private IEnumerator FadeIn(Image image, float fadingTime)
-    {
-        isFading = true; // 페이드 인 시작
-        float alpha = 0;
-        while (alpha < 1)
-        {
-            alpha += Time.deltaTime / fadingTime;
-            image.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
-            yield return null;
-        }
-        isFading = false; // 페이드 인 종료
-    }
-
-    private IEnumerator FadeOut(Image image, float fadingTime)
-    {
-        isFading = true; // 페이드 아웃 시작
-        float alpha = 1;
-        while (alpha > 0)
-        {
-            alpha -= Time.deltaTime / fadingTime;
-            image.color = new Color(image.color.r, image.color.g, image.color.b, alpha);
-            yield return null;
-        }
-        isFading = false; // 페이드 아웃 종료
-    }
+    
 
     private void ShowNextScene()
     {
@@ -269,7 +244,7 @@ public class UI_StoryScene : UI_Base
 
     public void OnScriptPanelClick(PointerEventData evt)
     {
-        if (isFading) return; // 페이드 인/아웃 중에는 클릭 이벤트 무시
+        if (_isFading) return; // 페이드 인/아웃 중에는 클릭 이벤트 무시
 
         Debug.Log(currentLineIndex);
         if (isTyping)

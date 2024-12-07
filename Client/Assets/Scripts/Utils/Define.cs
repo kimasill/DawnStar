@@ -27,6 +27,7 @@ public class Define
     public enum UIEvent
     {
         Click,
+        RightClick,
         Drag,
         MouseOver,
         MouseOut,

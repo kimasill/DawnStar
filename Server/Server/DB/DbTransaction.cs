@@ -209,6 +209,7 @@ namespace Server.DB
             {
                 TemplateId = itemData.id,
                 Count = count,
+                Enhance = 0,                
                 OwnerDbId = player.PlayerDbId,
                 Slot = slot.Value,
                 Options = itemData.options
@@ -319,7 +320,46 @@ namespace Server.DB
                 }
             });
         }
-            
+        public static void SaveEnhancedItemDB(Player player, ItemDb itemDb, GameRoom room)
+        {
+            Instance.Push(() =>
+            {
+                using (AppDbContext db = new AppDbContext())
+                {
+                    ItemDb existingItemDb = db.Items
+                        .FirstOrDefault(i => i.OwnerDbId == itemDb.OwnerDbId && i.ItemDbId == itemDb.ItemDbId);
+                    if (existingItemDb != null)
+                    {                        
+                        existingItemDb.Enhance = itemDb.Enhance;
+                        existingItemDb.Damage = itemDb.Damage;
+                        existingItemDb.Defense = itemDb.Defense;
+                        existingItemDb.Options = itemDb.Options;
+                    }
+                    else return;
+
+                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                    if (success)
+                    {
+                        room.Push(() =>
+                        {
+                            Item newItem = Item.MakeItem(itemDb);
+                            player.Inven.Add(newItem);
+
+                            //client noti
+                            {
+                                S_Enhance itemPacket = new S_Enhance();
+                                ItemInfo info = new ItemInfo();
+                                info.MergeFrom(newItem.Info);
+                                itemPacket.ItemInfo = info;
+                                itemPacket.Success = true;
+                                player.Session.Send(itemPacket);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
         public static void SaveCompleteQuest(Player player, QuestDb questDb, GameRoom room)
         {
             if (player == null || questDb == null)

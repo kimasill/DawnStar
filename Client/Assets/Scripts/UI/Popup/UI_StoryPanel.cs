@@ -97,6 +97,18 @@ public class UI_StoryPanel : UI_Popup
                     }
                 };
             }
+            if(script.type == "UI_Smith")
+            {
+                onCloseAction = () =>
+                {
+                    UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+                    if (gameSceneUI != null && gameSceneUI.EnhanceUI != null)
+                    {
+                        gameSceneUI.EnhanceUI.OpenUI(script.name, "");
+                        gameSceneUI.EnhanceUI.RefreshUI();
+                    }
+                };
+            }
             SetConversationImage(npcData.name);
             SetStoryTexts(script.script);
         }

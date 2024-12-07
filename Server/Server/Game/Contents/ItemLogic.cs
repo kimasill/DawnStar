@@ -1,4 +1,7 @@
-﻿using Server.Data;
+﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
+using Server.Data;
+using Server.DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +34,74 @@ namespace Server.Game
             int min = rewardData.minCount;
             int max = rewardData.maxCount;
             return new Random().Next(min, max + 1);
+        }
+
+        public static ItemDb EnhanceItem(Player player, Item item, EnhanceData enhanceData)
+        {
+            Random rand = new Random();
+            double chance = rand.NextDouble();
+            if (chance <= enhanceData.percent)
+            {
+                ItemDb itemDb = new ItemDb();
+                ItemData itemData = null;
+                DataManager.ItemDict.TryGetValue(item.TemplateId, out itemData);
+                if (item.ItemType == ItemType.Weapon)
+                {
+                    WeaponData weaponData = (WeaponData)itemData;
+                    itemDb.Damage = (int)(weaponData.damage * enhanceData.value);
+                }
+                else if(item.ItemType == ItemType.Armor)
+                {
+                    ArmorData armorData = (ArmorData)itemData;
+                    itemDb.Defense = (int)(armorData.defense * enhanceData.value);
+                }
+
+                foreach(KeyValuePair<string, string> option in item.Options)
+                {
+                    string value = option.Value;
+                    if (option.Key == ItemOptionType.CiriticalChance.ToString())
+                    {
+                        value = (float.Parse(option.Value) * (enhanceData.value * 2)).ToString();
+                    }
+                    else if (option.Key == ItemOptionType.CriticalDamage.ToString())
+                    {
+                        value = (int.Parse(option.Value) * enhanceData.value).ToString();
+                    }
+                    else if (option.Key == ItemOptionType.Avoid.ToString())
+                    {
+                        value = (int.Parse(option.Value) * enhanceData.value).ToString();
+                    }
+                    else if (option.Key == ItemOptionType.Accuracy.ToString())
+                    {
+                        value = (int.Parse(option.Value) * enhanceData.value).ToString();
+                    }
+                    else if (option.Key == ItemOptionType.Hp.ToString())
+                    {
+                        value = (int.Parse(option.Value) * (enhanceData.value*2)).ToString();
+                    }
+                    else if (option.Key == ItemOptionType.Up.ToString())
+                    {
+                        value = (int.Parse(option.Value) * enhanceData.value).ToString();
+                    }
+                    else if (option.Key == ItemOptionType.UpRegen.ToString())
+                    {
+                        value = (int.Parse(option.Value) * enhanceData.value).ToString();
+                    }
+                    itemDb.Options.Add(option.Key, value);
+                }
+
+
+                itemDb.TemplateId = item.TemplateId;
+                itemDb.Count = item.Count;
+                itemDb.Slot = item.Slot;
+                itemDb.Equipped = item.Equipped;
+                itemDb.Enhance = item.Rank + 1;
+                //itemDb.Grade = item.Grade,
+                itemDb.OwnerDbId = player.PlayerDbId;
+                
+                return itemDb;
+            }
+            return null;
         }
     }
 }
