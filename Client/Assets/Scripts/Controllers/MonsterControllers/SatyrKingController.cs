@@ -26,12 +26,11 @@ public class SatyrKingController : MonsterController
                     _sprite.flipX = false;
                     break;
             }
-            if (SkillId == 1)
+            if (SkillId == 24)
             {
                 Animator.Play("ATTACK");
                 StartCoroutine(StartEffectCoroutine());
             }
-
         }
         else
         {

@@ -287,5 +287,53 @@ namespace Server.Game
                 DbTransaction.SaveEnhancedItemDB(player, newItemDb, this); // DB Save -> Client Notify
             }
         }
+
+        public void HandleMakeItem(Player player, C_MakeItem makeItemPacket)
+        {
+            if (player == null)
+                return;
+
+            ItemData itemData = null;
+            DataManager.ItemDict.TryGetValue(makeItemPacket.TemplateId, out itemData);
+            if (itemData == null || itemData.pieces == null)
+                return;
+
+            // 필요한 재료가 인벤토리에 있는지 확인
+            List<Item> requiredItems = new List<Item>();
+            foreach (var piece in itemData.pieces)
+            {
+                Item item = player.Inven.FindByTemplateId(piece.templateId);
+                if (item == null || item.Count < piece.count * makeItemPacket.Count)
+                    return; // 재료가 부족하면 종료
+
+                requiredItems.Add(item);
+            }
+
+            // 재료를 인벤토리에서 제거
+            foreach (var item in requiredItems)
+            {
+                ItemDb itemDb = new ItemDb()
+                {
+                    TemplateId = item.TemplateId,
+                    Count = item.Count * makeItemPacket.Count,
+                    OwnerDbId = player.PlayerDbId,
+                    Slot = item.Slot
+                };
+                DbTransaction.SaveRemovedItemDB(player, itemDb, this);
+            }
+            ItemDb newItemDb = new ItemDb()
+            {
+                TemplateId = itemData.id,
+                Count = makeItemPacket.Count,
+                OwnerDbId = player.PlayerDbId,
+                Slot = player.Inven.GetEmptySlot().Value
+            };
+            // 완성된 아이템 생성
+            Item newItem = Item.MakeItem(newItemDb);
+            if (newItem == null)
+                return;
+
+            DbTransaction.SaveItemDB(player, newItemDb, this);
+        }
     }
 }

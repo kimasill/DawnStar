@@ -363,7 +363,15 @@ namespace Server.Game
                 Vector2Int center = Owner.GetFrontCellPos();
                 skillPos.AddRange(SkillLogic.GetRectAttackTiles(center, Owner.Info.Position.MoveDir, range));
             }
-
+            else if(data.shape.shapeType == ShapeType.ShapeCircle)
+            {
+                Vector2Int center = Owner.GetFrontCellPos();
+                skillPos.AddRange(SkillLogic.GetAllTargetsInRange(center, range));
+            }
+            else if (data.shape.shapeType == ShapeType.ShapeLine)
+            {
+                skillPos.AddRange(SkillLogic.GetTargetsInLine(Owner.CellPos, Owner.Info.Position.MoveDir, range));
+            }
             foreach (Vector2Int pos in skillPos)
             {
                 GameObject target = Owner.Room.Map.Find(pos);
