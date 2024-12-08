@@ -329,4 +329,34 @@ class PacketHandler
         
         clientSession.MyPlayer.SendAdditionalStat();
     }
+
+    public static void C_EnhanceHandler(PacketSession session, IMessage packet)
+    {
+        C_Enhance enhancePacket = packet as C_Enhance;
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession == null || clientSession.MyPlayer == null)
+            return;
+
+        GameRoom room = clientSession.MyPlayer.Room;
+        if (room == null)
+            return;
+
+        room.HandleEnhanceItem(clientSession.MyPlayer, enhancePacket);
+    }
+
+    public static void C_MakeItemHandler(PacketSession session, IMessage packet)
+    {
+        C_MakeItem makeItemPacket = packet as C_MakeItem;
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession == null || clientSession.MyPlayer == null)
+            return;
+
+        GameRoom room = clientSession.MyPlayer.Room;
+        if (room == null)
+            return;
+
+        room.HandleMakeItem(clientSession.MyPlayer, makeItemPacket);
+    }
 }

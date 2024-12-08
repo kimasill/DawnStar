@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using static Define;
 using static Item;
 
@@ -190,17 +191,21 @@ public class MyPlayerController : PlayerController
             }
             UI_Inventory invenUI = GameScene.InvenUI;
 
-            if (mapUI != null && mapUI.gameObject.activeSelf)
+            if (mapUI.gameObject.activeSelf && mapUI.IsMouseover)
             {
-                mapUI.ZoomMap(Input.mouseScrollDelta.y); // 스크롤에 따라 지도 크기 조절
+                mapUI.OnScroll(Input.mouseScrollDelta.y); // 스크롤에 따라 지도 크기 조절
             }
-            // 인벤토리가 활성화된 경우 스크롤뷰를 내립니다.
-            if (invenUI.gameObject.activeSelf)
+            else if(GameScene.EnhanceUI.IsProduction && GameScene.EnhanceUI.IsMouseover)
             {
-                invenUI.InvenScroll(Input.mouseScrollDelta.y);
+                GameScene.EnhanceUI.ItemProduction.OnScroll(Input.mouseScrollDelta.y);
+            }
+            else if (invenUI.gameObject.activeSelf && invenUI.IsMouseover)
+            {
+                invenUI.OnScroll(Input.mouseScrollDelta.y);
             }
         }
     }
+
     void GetDirInput()
     {
         _moveKeyPressed = true;
@@ -550,41 +555,41 @@ public class MyPlayerController : PlayerController
                 continue;
             foreach (var option in options)
             {
-                if (Enum.TryParse(option.Key, out OptionType optionType))
+                if (Enum.TryParse(option.Key, out ItemOptionType optionType))
                 {
                     switch (optionType)
                     {
-                        case OptionType.Avoid:
+                        case ItemOptionType.Avoid:
                             EquipAvoidance += int.Parse(option.Value);
                             break;
-                        case OptionType.Accuracy:
+                        case ItemOptionType.Accuracy:
                             EquipAccuracy += int.Parse(option.Value);
                             break;
-                        case OptionType.CiriticalChance:
+                        case ItemOptionType.CriticalChance:
                             EquipCriticalChance += int.Parse(option.Value);
                             break;
-                        case OptionType.CriticalDamage:
+                        case ItemOptionType.CriticalDamage:
                             EquipCriticalDamage += int.Parse(option.Value);
                             break;
-                        case OptionType.AttackSpeed:
+                        case ItemOptionType.AttackSpeed:
                             EquipAttackSpeed += int.Parse(option.Value);
                             break;
-                        case OptionType.Speed:
+                        case ItemOptionType.Speed:
                             EquipSpeed += int.Parse(option.Value);
                             break;
-                        case OptionType.InvokeSpeed:
+                        case ItemOptionType.InvokeSpeed:
                             EquipInvokeSpeed += int.Parse(option.Value);
                             break;
-                        case OptionType.CoolTime:
+                        case ItemOptionType.CoolTime:
                             EquipCoolTime += int.Parse(option.Value);
                             break;
-                        case OptionType.Hp:
+                        case ItemOptionType.Hp:
                             EquipHp += int.Parse(option.Value);
                             break;
-                        case OptionType.Up:
+                        case ItemOptionType.Up:
                             EquipUp += int.Parse(option.Value);
                             break;
-                        case OptionType.UpRegen:
+                        case ItemOptionType.UpRegen:
                             EquipUpRegen += int.Parse(option.Value);
                             break;
                     }

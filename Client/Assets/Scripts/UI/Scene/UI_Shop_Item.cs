@@ -110,7 +110,7 @@ public class UI_Shop_Item : UI_Base, IPointerEnterHandler, IPointerExitHandler
     }
 
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public override void OnPointerEnter(PointerEventData eventData)
     {
         if (_isDescription)
             return;
@@ -120,14 +120,14 @@ public class UI_Shop_Item : UI_Base, IPointerEnterHandler, IPointerExitHandler
         _isDescription = true;
         _itemDescription = Managers.UI.ShowPopupUI<UI_ItemDescription>();
         _itemDescription.SetItem(item);
-        _itemDescription.OnPointerEnter(eventData);
+        _itemDescription.OpenUI(eventData);
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public override void OnPointerExit(PointerEventData eventData)
     {
         if (!_isDescription)
             return;
         _isDescription = false;
-        _itemDescription.OnPointerExit(eventData);
+        _itemDescription.CloseUI(eventData);
     }
 }

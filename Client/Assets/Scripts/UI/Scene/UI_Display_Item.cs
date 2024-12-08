@@ -28,7 +28,7 @@ public class UI_Display_Item : UI_ItemIcon
             _icon.gameObject.SetActive(false);
             return;
         }
-        _item = item;
+        Item = item;
         //아이템 정보 저장 : 슬롯에 세팅 시 
 
         ItemDbId = item.ItemDbId;

@@ -1,6 +1,7 @@
 using Data;
 using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -56,13 +57,13 @@ public class UI_ItemDescription : UI_Popup
         _itemPanelRectTransform = _itemPopup.GetComponent<RectTransform>();
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public void OpenUI(PointerEventData eventData)
     {
         UpdatePopupPosition(eventData);
         _itemPopup.SetActive(true);
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public void CloseUI(PointerEventData eventData)
     {
         ClosePopupUI();
     }
@@ -111,65 +112,12 @@ public class UI_ItemDescription : UI_Popup
                     continue;
                 }
             }
-            string key = ConvertSpecialOptions(option.Key);
+            string key = Content.ConvertSpecialOptions(option.Key);
             AddStat($"{key}: {option.Value}");
         }
         // StatPanel과 ItemPanel의 크기 조정
         LayoutRebuilder.ForceRebuildLayoutImmediate(_statPanelRectTransform);
         LayoutRebuilder.ForceRebuildLayoutImmediate(_itemPanelRectTransform);
-    }
-    public string ConvertSpecialOptions(string option)
-    {
-        switch(option) {
-            case "CriticalChance":
-                option = "치명타 확률";
-                break;
-            case "CriticalDamage":
-                option = "치명타 피해";
-                break;
-            case "AttackSpeed":
-                option = "공격 속도";
-                break;
-            case "Speed":
-                option = "이동 속도";
-                break;
-            case "Hp":
-                option = "체력";
-                break;
-            case "Avoid":
-                option = "회피율";
-                break;
-            case "Accuracy":
-                option = "명중률";
-                break;
-            case "HpRegen":
-                option = "체력 회복";
-                break;
-            case "Heal":
-                option = "회복량";
-                break;
-            case "Up":
-                option = "미지력";
-                break;
-            case "UpRegen":
-                option = "미지력 회복";
-                break;
-            case "Skill":
-                option = "특수기술";
-                break;
-            case "SkillDamage":
-                option = "특수기술 피해";
-                break;
-            case "SkillUP":
-                option = "특수기술 미지력 소모량";
-                break;
-            case "SkillDescription":
-                option = "특수기술 설명";
-                break;
-            default:
-                break;
-        }
-        return option;
     }
     private void SetConsumableItem(Item.Consumable item)
     {

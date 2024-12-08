@@ -117,7 +117,9 @@ public class Item
             item.Slot = itemInfo.Slot;
             item.Equipped = itemInfo.Equipped;
             item.Price = itemInfo.Price;
-            item.Options = itemInfo.Options;            
+            item.Rank = itemInfo.Rank;
+            item.Grade = itemInfo.Grade;
+            item.Options = itemInfo.Options;    
         }
         
 

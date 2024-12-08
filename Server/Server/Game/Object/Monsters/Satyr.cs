@@ -50,7 +50,7 @@ namespace Server.Game
             LookAt(dir);
             {
                 SkillData skillData = null;
-                DataManager.SkillDict.TryGetValue(1, out skillData);
+                DataManager.SkillDict.TryGetValue(24, out skillData);
                 if (Skill.HandleSkillCool(skillData) == false)
                 {
                     State = CreatureState.Moving;

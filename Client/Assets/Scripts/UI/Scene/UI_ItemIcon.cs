@@ -13,7 +13,7 @@ public class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitHandler
     [SerializeField]
     protected UI_ItemDescription _itemDescription = null;
     protected bool _isDescription = false;
-    protected Item _item;
+    public Item Item;
     private bool _init = false;
     public UI_GameWindow GameWindow { get; set; }
     public int ItemDbId { get; protected set; }
@@ -33,7 +33,7 @@ public class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitHandler
     {
         if(!_init)
             Init();
-        _item = item;
+        Item = item;
         Data.ItemData itemData = null;
         Managers.Data.ItemDict.TryGetValue(item.TemplateId, out itemData);
 
@@ -48,7 +48,7 @@ public class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitHandler
 
         _isDescription = true;
         _itemDescription = Managers.UI.ShowPopupUI<UI_ItemDescription>();
-        _itemDescription.SetItem(_item);
+        _itemDescription.SetItem(Item);
         _itemDescription.OnPointerEnter(eventData);
     }
 

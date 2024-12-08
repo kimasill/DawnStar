@@ -35,7 +35,7 @@ public class UI_Inventory_Item : UI_ItemIcon
                 return;
             if(itemData.itemType == ItemType.Consumable)
             {
-                GameWindow.QuickSlot.RegisterItem(_item as Item.Consumable);
+                GameWindow.QuickSlot.RegisterItem(Item as Item.Consumable);
             }
             else
             {
@@ -51,7 +51,7 @@ public class UI_Inventory_Item : UI_ItemIcon
             UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;      
             if(gameScene.EnhanceUI.enabled == false)
                 return;
-            gameScene.EnhanceUI.SetItem(_item);
+            gameScene.EnhanceUI.SetItem(Item);
         }, Define.UIEvent.RightClick);
     }
 
@@ -69,7 +69,7 @@ public class UI_Inventory_Item : UI_ItemIcon
             _frame.gameObject.SetActive(false);
             return;
         }
-        _item = item;
+        Item = item;
         //아이템 정보 저장 : 슬롯에 세팅 시 
         ItemDbId = item.ItemDbId;
         TemplateId = item.TemplateId;

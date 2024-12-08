@@ -40,6 +40,8 @@ public class UI_Inventory : UI_Base
         _contentSizeY = ScrollRect.content.sizeDelta.y;
 
         RefreshUI();
+        BindEvent(gameObject, OnPointerEnter, Define.UIEvent.MouseOver);
+        BindEvent(gameObject, OnPointerExit, Define.UIEvent.MouseOut);
 
         GridLayoutGroup gridLayoutGroup = grid.GetComponent<GridLayoutGroup>();
         if (gridLayoutGroup != null)
@@ -92,7 +94,7 @@ public class UI_Inventory : UI_Base
             contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, gridRect.rect.height);
         }
     }
-    public void InvenScroll(float scrollDelta)
+    public override void OnScroll(float scrollDelta)
     {
         if (ScrollRect != null)
         {

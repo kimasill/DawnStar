@@ -71,6 +71,9 @@ public class UI_Map : UI_Base
         Bind<TMP_Text>(typeof(Texts));
         _mapRectTransform = Get<Image>((int)Images.MapImage).rectTransform;
 
+        BindEvent(gameObject, OnPointerEnter, Define.UIEvent.MouseOver);
+        BindEvent(gameObject, OnPointerExit, Define.UIEvent.MouseOut);
+
         if (_mapRectTransform == null)
         {
             Debug.LogError("Map RectTransform is not assigned.");
@@ -97,7 +100,7 @@ public class UI_Map : UI_Base
         }            
     }
 
-    public void ZoomMap(float delta)
+    public override void OnScroll(float delta)
     {
         if (_scrollRect == null || _scrollRect.content == null)
             return;
@@ -203,7 +206,7 @@ public class UI_Map : UI_Base
     {
         // Scrollbar 값에 따라 맵 확대/축소
         float zoomFactor = Mathf.Lerp(0.0f, 1.0f, value); // 0.5배에서 2배까지 확대/축소
-        ZoomMap(zoomFactor);
+        OnScroll(zoomFactor);
     }
 
     public void OnDrag(PointerEventData eventData)

@@ -9,14 +9,17 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static Item;
 using static UnityEditor.Progress;
 
 public class UI_Enhance : UI_Base
 {
+    public UI_ItemProduction ItemProduction;
     public GameObject _enhanceItemPanel;
+    public Transform _enhanceItemInfoPanel;
     public Button enhanceButton;        
     private Item _selectedItem;
-    private UI_Enhance_Item _enhanceItem;
+    private UI_Enhance_Item _enhanceItem;    
     private Image _enhanceCostPanel;
     private List<UI_Display_Item> Items = new List<UI_Display_Item>();
     enum Texts
@@ -26,21 +29,23 @@ public class UI_Enhance : UI_Base
         EnhanceResultNoti_Text,
         Enhance_Item_Rank,
     }
-
     enum Buttons
     {
         EnhanceButton,
         EnhanceExitButton,
+        ItemProductionButton,
     }
-
     enum Images
     {
         Enhance_Item_Icon,
         EnhanceCostPanel,
         EnhanceResultNoti,
+        ItemProductionPanel,
+        Enhance_ItemInfoPanel
     }
 
     bool _isInit = false;
+    public bool IsProduction = false;
     public override void Init()
     {
         if (_isInit)
@@ -53,9 +58,15 @@ public class UI_Enhance : UI_Base
 
         BindEvent(GetButton((int)Buttons.EnhanceButton).gameObject, (PointerEventData data) => { OnClickEnhanceButton(); });
         BindEvent(GetButton((int)Buttons.EnhanceExitButton).gameObject, (PointerEventData data) => { OnClickExitButton(); });
+        BindEvent(GetButton((int)Buttons.ItemProductionButton).gameObject, (PointerEventData data) => { OnClickProductionUI(); });
+        BindEvent(gameObject, OnPointerEnter, Define.UIEvent.MouseOver);
+        BindEvent(gameObject, OnPointerExit, Define.UIEvent.MouseOut);
         GetImage((int)Images.EnhanceResultNoti).gameObject.SetActive(false);
+        ItemProduction = GetImage((int)Images.ItemProductionPanel).GetComponent<UI_ItemProduction>();
+        ItemProduction.gameObject.SetActive(false);
         _enhanceCostPanel = GetImage((int)Images.EnhanceCostPanel);
         _enhanceItem = _enhanceItemPanel.GetOrAddComponent<UI_Enhance_Item>();
+        _enhanceItemInfoPanel = GetImage((int)Images.Enhance_ItemInfoPanel).transform;
 
         RefreshUI();
     }
@@ -84,11 +95,18 @@ public class UI_Enhance : UI_Base
                 enhanceData = data.Value;
             }
         }
-        foreach (var cost in enhanceData.costData)
+        List<CostData> costData = enhanceData.costData;
+        SetDisplayItem(costData, _enhanceCostPanel.gameObject.transform);
+
+        DisplayEnhancedStats();
+    }
+    public void SetDisplayItem(List<CostData> costData, Transform transform)
+    {
+        foreach (var cost in costData)
         {
             if (Managers.Data.ItemDict.TryGetValue(cost.templateId, out Data.ItemData itemData))
             {
-                UI_Display_Item itemIcon = Managers.Resource.Instantiate("UI/Scene/UI_Display_Item", _enhanceCostPanel.gameObject.transform).GetComponent<UI_Display_Item>();
+                UI_Display_Item itemIcon = Managers.Resource.Instantiate("UI/Scene/UI_Display_Item", transform).GetComponent<UI_Display_Item>();
                 Items.Add(itemIcon);
                 ItemInfo itemInfo = new ItemInfo()
                 {
@@ -104,8 +122,60 @@ public class UI_Enhance : UI_Base
             }
         }
     }
+    private void DisplayEnhancedStats()
+    {
+        foreach (Transform child in _enhanceItemInfoPanel)
+        {
+            Destroy(child.gameObject);
+        }
+        if (_selectedItem == null)
+            return;
+        ItemData itemData = null;
+        Managers.Data.ItemDict.TryGetValue(_selectedItem.TemplateId, out itemData);
+        
+        if (itemData == null)
+            return;
+
+        if(itemData.itemType == ItemType.Weapon)
+        {
+            Weapon weapon = _selectedItem as Weapon;
+            WeaponData weaponData = itemData as WeaponData;
+            AddStat($"공격력 + {weapon.Damage - weaponData.damage}");
+        }
+        else if (itemData.itemType == ItemType.Armor)
+        {
+            Armor armor = _selectedItem as Armor;
+            ArmorData armorData = itemData as ArmorData;
+            AddStat($"방어력 + {armor.Defense - armorData.defense}");
+        }
+
+        foreach (var option in itemData.options)
+        {
+            string baseKey = Content.ConvertSpecialOptions(option.Key);
+            int baseValue = int.Parse(option.Value);
+            int enhanceValue = 0;
+            if (_selectedItem.Options.ContainsKey(option.Key))
+            {
+                enhanceValue = int.Parse(_selectedItem.Options[option.Key]);
+            }
+
+            AddStat($"{baseKey} + {enhanceValue - baseValue}");
+        }
+    }
+    private void AddStat(string statText)
+    {
+        GameObject statObject = Managers.Resource.Instantiate("UI/Popup/UI_Item_Stat", _enhanceItemInfoPanel.transform);
+        UI_Item_Stat stat = statObject.GetOrAddComponent<UI_Item_Stat>();
+        stat.Name.text = statText;
+    }
     public void SetItem(Item item)
     {
+        if(item.Equipped == true)
+        {
+            UI_GameScene uI_GameScene = Managers.UI.SceneUI as UI_GameScene;
+            uI_GameScene.NotificationUI.ShowBasicNoti("장착중인 아이템은 강화할 수 없습니다.");
+            return;
+        }
         _selectedItem = item;
         ItemData itemData = null;
         Managers.Data.ItemDict.TryGetValue(item.TemplateId, out itemData);
@@ -176,6 +246,28 @@ public class UI_Enhance : UI_Base
     private void OnClickExitButton()
     {
         CloseUI();
+    }
+
+    private void OnClickProductionUI()
+    {
+        if (IsProduction == false)
+        {
+            OpenProducitonUI();
+        }
+        else if (IsProduction == true)
+        {
+            CloseProductionUI();
+        }
+    }
+    public void OpenProducitonUI()
+    {
+        gameObject.SetActive(true);
+        IsProduction = true;
+    }
+    public void CloseProductionUI()
+    {
+        gameObject.SetActive(false);
+        IsProduction = false;
     }
     public void OpenUI(string title, string description)
     {

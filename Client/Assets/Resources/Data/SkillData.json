@@ -408,7 +408,7 @@
       "coolTime": "20",
       "skillType": "SkillMove",
       "skillLogicType": "Invocation",
-      "range" :  "5",
+      "range": "5",
       "terms": [
         "0.5"
       ],
@@ -451,6 +451,23 @@
       "prefab": "Magic/Icing",
       "unchartedPoint": "20",
       "description": "좁은 범위를 순간적으로 동결시킨다.",
+      "fix": "true"
+    },
+    {
+      "id": "24",
+      "name": "내려찍기",
+      "coolTime": "1",
+      "damage": "30",
+      "skillType": "SkillAttack",
+      "skillLogicType": "BasicAttack",
+      "shape": {
+        "shapeType": "ShapeCircle",
+        "range": "2.0"
+      },
+      "isObject": "false",
+      "prefab": "Effect/DustFx",
+      "unchartedPoint": "10",
+      "description": "주변적에게 강력한 피해를 준다.",
       "fix": "true"
     }
   ]
