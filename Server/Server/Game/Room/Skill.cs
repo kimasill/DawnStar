@@ -153,10 +153,10 @@ namespace Server.Game
         {   
             switch (data.skillLogicType)
             {
-                case SkillLogicType.Basicattack:
+                case SkillLogicType.BasicAttack:
                     BasicAttakAsync(data, range);
                     return;
-                case SkillLogicType.Knockback:
+                case SkillLogicType.KnockBack:
                     KnockBack(data);
                     return;
                 case SkillLogicType.Combat:
@@ -181,7 +181,7 @@ namespace Server.Game
         {
             switch (data.skillLogicType) 
             {
-                case SkillLogicType.Magicball:
+                case SkillLogicType.MagicBall:
                     await Task.Delay((int)(1000*Owner.TotalInvokeSpeed));
                     MagicBall(data);
                     
@@ -194,7 +194,7 @@ namespace Server.Game
             List<Vector2Int> skillPos = null;
             switch (data.skillLogicType)
             {
-                case SkillLogicType.Spotattack:
+                case SkillLogicType.SpotAttack:
                     if (data.spot.maxCount - data.spot.minCount > 0)
                     {
                         skillPos = SkillLogic.GetRandomSpots(Owner, data, Owner.Room);
@@ -217,6 +217,9 @@ namespace Server.Game
             {
                 case SkillLogicType.Block:
                     BlockAsync(skillData);
+                    break;
+                case SkillLogicType.RealTimeByEnemyNumber:
+                    RealTimeByEnemyNum(skillData);
                     break;
                 default:                    
                     ApplyBuff(skillData);
@@ -695,6 +698,56 @@ namespace Server.Game
                     Owner.Room.Broadcast(Owner.CellPos, effectPacket);
                     target.OnDamaged(Owner, data.damage + Owner.TotalAttack);
                 }
+            }
+        }
+        private async void RealTimeByEnemyNum(SkillData data, GameObject target = null)
+        {
+            if(target == null)
+                return;
+            // data의 시간 동안 반복한다. 1. 적 찾기 2. target에게 버프/디버프 적용
+            long tick = 0;
+            int enemyNum = 0;
+
+            if(data.debuff != null)
+            {
+                tick = Environment.TickCount64 + (long)(data.debuff.duration * 1000);
+            }
+            else if (data.buff != null)
+            {
+                tick = Environment.TickCount64 + (long)(data.buff.duration * 1000);
+            }
+
+            while (true)
+            {
+                List<Vector2Int> enemies = SkillLogic.GetAllTargetsInRange(Owner.CellPos, data.range);
+                if(enemyNum < enemies.Count)
+                {
+                    enemyNum = enemies.Count - enemyNum;
+                    if (data.debuff != null && enemyNum> 0)
+                    {
+                        target.ApplyDebuff(data.debuff, enemyNum);
+                    }
+                    else if (data.buff != null && enemyNum> 0)
+                    {
+                        target.ApplyBuff(data.buff, enemyNum);
+                    }
+                }
+                else if (enemyNum > enemies.Count)
+                {
+                    enemyNum = enemyNum - enemies.Count;
+                    if (data.debuff != null && enemyNum > 0)
+                    {
+                        target.RemoveDebuff(data.debuff, enemyNum);
+                    }
+                    else if (data.buff != null && enemyNum > 0)
+                    {
+                        target.RemoveBuff(data.buff, enemyNum);
+                    }
+                }
+                await Task.Delay(1000);
+
+                if (Environment.TickCount64 > tick)
+                    break;
             }
         }
         #endregion

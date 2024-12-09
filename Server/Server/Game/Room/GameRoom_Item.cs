@@ -227,6 +227,24 @@ namespace Server.Game
                     };
                     DbTransaction.SaveRemovedItemDB(player, itemDb, this);
                 }
+                if (option.Key == "Skill")
+                {
+                    int skillId = int.Parse(option.Value);
+                    SkillData skillData = null;
+                    DataManager.SkillDict.TryGetValue(skillId, out skillData);
+                    if (skillData == null)
+                        return;
+
+                    if (player.Skill.HandleSkillCool(skillData) == false)
+                        return;
+
+                    S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
+                    skillPacket.ObjectId = player.Id;
+                    skillPacket.Info.SkillId = skillId;
+                    Broadcast(player.CellPos, skillPacket);
+
+                    player.Skill.StartSkill(player, skillData, target: player);
+                }
             }
         }
 

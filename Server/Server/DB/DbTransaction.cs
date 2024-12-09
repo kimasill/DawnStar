@@ -197,14 +197,7 @@ namespace Server.DB
             int? slot = player.Inven.GetSlot(itemData.id, count);            
             if (slot == null)
                 return;
-            if(itemData.itemType == ItemType.Consumable)
-            {
-                if((itemData as ConsumableData).consumableType == ConsumableType.Potion && player.Inven.GetItemCount(itemData.id) + count > player.MaxPotion)
-                {
-                    //포션 최대 개수 초과 로직
-                    return;
-                }
-            }
+
             ItemDb itemDb = new ItemDb()
             {
                 TemplateId = itemData.id,

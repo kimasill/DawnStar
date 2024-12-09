@@ -110,10 +110,10 @@ enum SkillType{
 }
 
 enum SkillLogicType{
-	BASICATTACK = 0;
-	MAGICBALL = 1;
-	SPOTATTACK = 2;
-	KNOCKBACK = 3;
+	BASIC_ATTACK = 0;
+	MAGIC_BALL = 1;
+	SPOT_ATTACK = 2;
+	KNOCK_BACK = 3;
 	COMBAT = 4;
 	PULL = 5;
 	BLOCK = 6;
@@ -121,6 +121,7 @@ enum SkillLogicType{
 	KINETIC = 8;
 	INVOCATION = 9;
 	SUMMON = 10;
+	REAL_TIME_BY_ENEMY_NUMBER = 11;
 }
 
 enum AdmitType{
