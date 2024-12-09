@@ -112,15 +112,26 @@ public class EquipmentController : MonoBehaviour
             else if (armor.ArmorType == ArmorType.Boots)
             {
                 Boots = armor;
-                _pantList[0].sprite = sprite[0];
-                //_pantList[0].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
-                _pantList[1].sprite = sprite[1];
-                //_pantList[1].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
+                Sprite[] bootsSprite = Managers.Resource.LoadAll<Sprite>(itemData.prefabPath);
+                foreach (var t in bootsSprite)
+                {
+                    if (t.name == "Left")
+                    {
+                        _pantList[0].sprite = t;
+                        //_armorList[1].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
+                    }
+                    else if (t.name == "Right")
+                    {
+                        _pantList[1].sprite = t;
+                        //_armorList[2].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
+                    }
+                }
             }
             else if (armor.ArmorType == ArmorType.Back)
             {
                 Back = armor;
-                _backList[0].sprite = sprite[0];
+                Sprite backSprite = Managers.Resource.Load<Sprite>(itemData.prefabPath);
+                _backList[0].sprite = backSprite;
                 //_backList[0].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
             }
         }

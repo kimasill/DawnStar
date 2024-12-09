@@ -118,6 +118,19 @@
         "CriticalChance": "20",
         "Skill": "7"
       }
+    },
+    {
+      "id": 10,
+      "name": "USC 방패",
+      "weaponType": "Shield",
+      "damage": 10,
+      "price": 1000,
+      "iconPath": "Textures/Item/Weapons/Shield_USC",
+      "description": "USC의 방패. 마수를 상대하는데 특화되어 있다.",
+      "options": {
+        "Defense": "20",
+        "Avoid": "20"
+      }
     }
   ],
   "armors": [
@@ -158,9 +171,48 @@
       "armorType": "Armor",
       "defense": "60",
       "price": "7800",
-      "iconPath": "Textures/Item/Armors/Armor/Armor_Erdoa_Icon",
+      "iconPath": "Textures/Item/Armors/Armor/Icon/Armor_Erdoa_Icon",
       "prefabPath": "Textures/Item/Armors/Armor/Armor_Erdoa",
       "description": "에르도아 왕국의 중갑. 강력한 방어력을 자랑한다."
+    },
+    {
+      "id": 104,
+      "name": "USC 전투헬멧",
+      "armorType": "Helmet",
+      "defense": 30,
+      "price": 5000,
+      "iconPath": "Textures/Item/Armors/Helmet/Helmet_USC",
+      "description": "USC의 전투헬멧. 마수를 상대하는데 특화되어 있다."
+    },
+    {
+      "id": 105,
+      "name": "USC 전투갑옷",
+      "armorType": "Armor",
+      "defense": 80,
+      "price": 10000,
+      "iconPath": "Textures/Item/Armors/Armor/Icon/Armor_USC_Icon",
+      "prefabPath": "Textures/Item/Armors/Armor/Armor_USC",
+      "description": "USC의 전투갑옷. 마수를 상대하는데 특화되어 있다."
+    },
+    {
+      "id": 106,
+      "name": "USC 전투화",
+      "armorType": "Boots",
+      "defense": 20,
+      "price": 3000,
+      "iconPath": "Textures/Item/Armors/Boots/Icon/Boots_USC",
+      "prefabPath": "Textures/Item/Armors/Boots/Boots_USC",
+      "description": "USC의 전투화. 마수를 상대하는데 특화되어 있다."
+    },
+    {
+      "id": 107,
+      "name": "USC 망토",
+      "armorType": "Cape",
+      "defense": 10,
+      "price": 2000,
+      "iconPath": "Textures/Item/Armors/Cape/Icon/Cape_USC_Icon",
+      "prefabPath": "Textures/Item/Armors/Cape/Cape_USC",
+      "description": "USC의 망토. USC를 상징하는 마크가 그려져있으며, 위압감을 풍긴다."
     }
   ],
   "jewelry": [
@@ -175,7 +227,8 @@
         "Up": "10",
         "UpRegen": "5",
         "Skill": "12"
-      }
+      },
+      "grade": "Elite"
     },
     {
       "id": "201",
@@ -188,7 +241,22 @@
         "Up": "15",
         "UpRegen": "10",
         "Skill": "18"
-      }
+      },
+      "grade": "Epic"
+    },
+    {
+      "id": 202,
+      "name": "죽은 기운의 원흉",
+      "jewelryType": "Earing",
+      "price": 17800,
+      "iconPath": "Textures/Item/Jewelry/Icon/Earing_SourceOfDead",
+      "description": "죽은자의 영혼을 불러들이는 귀걸이. 납골당 일대를 장악한 기운의 원인이었다.",
+      "options": {
+        "Up": "20",
+        "UpRegen": "15",
+        "Skill": "18"
+      },
+      "grade": "Uncharted"
     }
   ],
   "consumables": [
@@ -196,12 +264,36 @@
       "id": "300",
       "name": "치유포션",
       "consumableType": "Potion",
-      "maxCount": "5",
+      "maxCount": "9999",
       "price": "20",
       "iconPath": "Textures/Item/Consumables/Potion_Health",
       "description": "체력을 회복한다.",
       "options": {
         "Heal": "50"
+      }
+    },
+    {
+      "id": "301",
+      "name": "예기의 오일",
+      "consumableType": "Potion",
+      "maxCount": 9999,
+      "price": 500,
+      "iconPath": "Textures/Item/Consumables/Potion_Sharpent",
+      "description": "사용 시 일정 시간 무기의 예기를 증가 시킨다.",
+      "options": {
+        "Skill": "25"
+      }
+    },
+    {
+      "id": "302",
+      "name": "대 괴수용 강화제",
+      "consumableType": "Potion",
+      "maxCount": 9999,
+      "price": 1200,
+      "iconPath": "Textures/Item/Consumables/Potion_Power",
+      "description": "마수를 상대하기위해 만들어진 강력한 포션. 일정 시간 주변 마수의 숫자에 따라 사용자의 방어력이 증가한다",
+      "options": {
+        "Skill": "27"
       }
     }
   ],

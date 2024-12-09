@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Server.Game
 {
@@ -240,71 +242,80 @@ namespace Server.Game
 
             ApplyDebuff(skillData.debuff);
         }
-        public void ApplyBuff(BuffInfo buff)
+        public void ApplyBuff(BuffInfo buff, int count = 1)
         {
             if (buff == null)
                 return;
-
-            ApplyEffect(buff.name, buff.value, true);
-            Buffs.Add(buff);
-            Console.WriteLine($"Buff {buff.name} applied with value {buff.value}");
+            for(int i = 0; i < count; i++)
+            {
+                ApplyEffect(buff.name, buff.value, true);
+                Buffs.Add(buff);
+                Console.WriteLine($"Buff {buff.name} applied with value {buff.value}");
+            }
         }
-        public void RemoveBuff(BuffInfo buff)
+        public void RemoveBuff(BuffInfo buff, int count = 1)
         {
             if (buff == null)
                 return;
-
-            ApplyEffect(buff.name, buff.value, false);
-            Buffs.Remove(buff);
-            Console.WriteLine($"Buff {buff.name} removed");
+            for(int i = 0; i < Buffs.Count; i++)
+            {
+                ApplyEffect(buff.name, buff.value, false);
+                Buffs.Remove(buff);
+                Console.WriteLine($"Buff {buff.name} removed");
+            }
         }
-        public void ApplyDebuff(DebuffInfo debuff)
+        public void ApplyDebuff(DebuffInfo debuff, int count = 1)
         {
             if (debuff == null)
                 return;
 
-            ApplyEffect(debuff.name, debuff.value, true);
-            Debuffs.Add(debuff);
-            Console.WriteLine($"Debuff {debuff.name} applied with value {debuff.value}");
+            for (int i = 0; i < count; i++)
+            {
+                ApplyEffect(debuff.name, debuff.value, true);
+                Debuffs.Add(debuff);
+                Console.WriteLine($"Debuff {debuff.name} applied with value {debuff.value}");
+            }
         }
-        public void RemoveDebuff(DebuffInfo debuff)
+        public void RemoveDebuff(DebuffInfo debuff, int count = 1)
         {
             if (debuff == null)
                 return;
 
-            ApplyEffect(debuff.name, debuff.value, false);
-            Debuffs.Remove(debuff);
-            Console.WriteLine($"Debuff {debuff.name} removed");
+            for (int i = 0; i < count; i++)
+            {
+                ApplyEffect(debuff.name, debuff.value, false);
+                Debuffs.Remove(debuff);
+                Console.WriteLine($"Debuff {debuff.name} removed");
+            }
         }
         private void ApplyEffect(string name, float value, bool isApplying)
         {
             int multiplier = isApplying ? 1 : -1;
-
             switch (name)
             {
                 case "공격력":
-                    AdditionalAttack += (int)(TotalAttack * value) * multiplier;
+                    AdditionalAttack += (int)(Stat.Attack * value) * multiplier;
                     break;
                 case "방어력":
-                    AdditionalDefense += (int)(TotalDefense * value) * multiplier;
+                    AdditionalDefense += (int)(Stat.Defense * value) * multiplier;
                     break;
                 case "이동속도":
-                    AdditionalSpeed += (int)(TotalSpeed * value) * multiplier;
+                    AdditionalSpeed += (int)(Stat.Speed * value) * multiplier;
                     break;
                 case "공격속도":
-                    AdditionalAttackSpeed += TotalAttackSpeed * value * multiplier;
+                    AdditionalAttackSpeed += Stat.AttackSpeed * value * multiplier;
                     break;
                 case "치명타 확률":
-                    AdditionalCriticalChance += (int)(TotalCriticalChance * value) * multiplier;
+                    AdditionalCriticalChance += (int)(Stat.CriticalChance * value) * multiplier;
                     break;
                 case "치명타 피해":
-                    AdditionalCriticalDamage += (int)(TotalCriticalDamage * value) * multiplier;
+                    AdditionalCriticalDamage += (int)(Stat.CriticalDamage * value) * multiplier;
                     break;
                 case "회피율":
-                    AdditionalAvoidance += (int)(TotalAvoidance * value) * multiplier;
+                    AdditionalAvoidance += (int)(Stat.Avoid * value) * multiplier;
                     break;
                 case "명중률":
-                    AdditionalAccuracy += (int)(TotalAccuracy * value) * multiplier;
+                    AdditionalAccuracy += (int)(Stat.Accuracy * value) * multiplier;
                     break;
                 case "생명력":
                     AdditionalHp += (int)(Stat.MaxHp * value) * multiplier;

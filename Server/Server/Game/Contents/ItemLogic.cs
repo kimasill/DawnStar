@@ -59,7 +59,7 @@ namespace Server.Game
                 foreach(KeyValuePair<string, string> option in item.Options)
                 {
                     string value = option.Value;
-                    if (option.Key == ItemOptionType.CiriticalChance.ToString())
+                    if (option.Key == ItemOptionType.CriticalChance.ToString())
                     {
                         value = (float.Parse(option.Value) * (enhanceData.value * 2)).ToString();
                     }

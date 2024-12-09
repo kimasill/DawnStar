@@ -460,41 +460,41 @@ namespace Server.Game
                     continue;
                 foreach (var option in options)
                 {
-                    if (Enum.TryParse(option.Key, out OptionType optionType))
+                    if (Enum.TryParse(option.Key, out ItemOptionType optionType))
                     {
                         switch (optionType)
                         {
-                            case OptionType.Avoid:
+                            case ItemOptionType.Avoid:
                                 EquipAvoidance += int.Parse(option.Value);
                                 break;
-                            case OptionType.Accuracy:
+                            case ItemOptionType.Accuracy:
                                 EquipAccuracy += int.Parse(option.Value);
                                 break;
-                            case OptionType.CiriticalChance:
+                            case ItemOptionType.CriticalChance:
                                 EquipCriticalChance += int.Parse(option.Value);
                                 break;
-                            case OptionType.CriticalDamage:
+                            case ItemOptionType.CriticalDamage:
                                 EquipCriticalDamage += int.Parse(option.Value);
                                 break;
-                            case OptionType.AttackSpeed:
+                            case ItemOptionType.AttackSpeed:
                                 EquipAttackSpeed += int.Parse(option.Value);
                                 break;
-                            case OptionType.Speed:
+                            case ItemOptionType.Speed:
                                 EquipSpeed += int.Parse(option.Value);
                                 break;
-                            case OptionType.InvokeSpeed:
+                            case ItemOptionType.InvokeSpeed:
                                 EquipInvokeSpeed += int.Parse(option.Value);
                                 break;
-                            case OptionType.CoolTime:
+                            case ItemOptionType.CoolTime:
                                 EquipCoolTime += int.Parse(option.Value);
                                 break;
-                            case OptionType.Hp:
+                            case ItemOptionType.Hp:
                                 EquipHp += int.Parse(option.Value);
                                 break;
-                            case OptionType.Up:
+                            case ItemOptionType.Up:
                                 EquipUp += int.Parse(option.Value);
                                 break;
-                            case OptionType.UpRegen:
+                            case ItemOptionType.UpRegen:
                                 EquipUpRegen += int.Parse(option.Value);
                                 break;
                         }

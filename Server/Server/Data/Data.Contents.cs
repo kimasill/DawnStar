@@ -139,6 +139,7 @@ namespace Server.Data
         public string description;
         public Dictionary<string, string> options = new Dictionary<string, string>();
         public List<CostData> pieces;
+        public Grade grade;
     }
 
     public class WeaponData : ItemData
