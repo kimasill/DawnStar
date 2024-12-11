@@ -346,10 +346,6 @@ namespace Server.Game
                 OwnerDbId = player.PlayerDbId,
                 Slot = player.Inven.GetEmptySlot().Value
             };
-            // 완성된 아이템 생성
-            Item newItem = Item.MakeItem(newItemDb);
-            if (newItem == null)
-                return;
 
             DbTransaction.SaveItemDB(player, newItemDb, this);
         }

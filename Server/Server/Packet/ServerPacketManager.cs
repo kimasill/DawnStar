@@ -69,7 +69,11 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CRequestStat, MakePacket<C_RequestStat>);
 		_handler.Add((ushort)MsgId.CRequestStat, PacketHandler.C_RequestStatHandler);		
 		_onRecv.Add((ushort)MsgId.CEnhance, MakePacket<C_Enhance>);
-		_handler.Add((ushort)MsgId.CEnhance, PacketHandler.C_EnhanceHandler);
+		_handler.Add((ushort)MsgId.CEnhance, PacketHandler.C_EnhanceHandler);		
+		_onRecv.Add((ushort)MsgId.CMakeItem, MakePacket<C_MakeItem>);
+		_handler.Add((ushort)MsgId.CMakeItem, PacketHandler.C_MakeItemHandler);		
+		_onRecv.Add((ushort)MsgId.CSortItem, MakePacket<C_SortItem>);
+		_handler.Add((ushort)MsgId.CSortItem, PacketHandler.C_SortItemHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

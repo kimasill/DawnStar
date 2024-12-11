@@ -370,6 +370,8 @@ class PacketHandler
         //아이템 획득시 자동 갱신
         gameSceneUI.InvenUI.RefreshUI();
         gameSceneUI.StatUI.RefreshUI();
+        gameSceneUI.EnhanceUI.RefreshUI();
+        gameSceneUI.EnhanceUI.ItemProduction.RefreshUI();
 
         if (Managers.Object.MyPlayer != null)
         {

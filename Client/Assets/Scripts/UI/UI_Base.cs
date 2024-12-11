@@ -141,7 +141,6 @@ public abstract class UI_Base : MonoBehaviour
     {
         if (IsMouseover)
         {
-            // 스크롤 처리 로직
         }
     }
 }

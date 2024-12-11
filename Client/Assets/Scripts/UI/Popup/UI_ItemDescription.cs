@@ -72,12 +72,16 @@ public class UI_ItemDescription : UI_Popup
     {
         ItemData itemData = null;
         Managers.Data.ItemDict.TryGetValue(item.TemplateId, out itemData);
-        if (itemData != null)
+
+        if (itemData == null)
         {
-            GetImage((int)Images.ItemPopup_Image).sprite = Managers.Resource.Load<Sprite>(itemData.iconPath);
-            GetTextMeshPro((int)Texts.ItemPopup_Name).text = itemData.name;
-            GetTextMeshPro((int)Texts.ItemDescriptionText).text = itemData.description;
+            Debug.Log("ItemData is null");
+            return;
         }
+
+        GetImage((int)Images.ItemPopup_Image).sprite = Managers.Resource.Load<Sprite>(itemData.iconPath);
+        GetTextMeshPro((int)Texts.ItemPopup_Name).text = itemData.name;
+        GetTextMeshPro((int)Texts.ItemDescriptionText).text = itemData.description;
 
         switch (item.ItemType)
         {

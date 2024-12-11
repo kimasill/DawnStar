@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Game;
 using Server.Game.Job;
+using Server.Migrations;
 using Server.Utils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -309,6 +311,74 @@ namespace Server.DB
                                 }
                             });
                         }
+                    }
+                }
+            });
+        }
+        public static void SaveRemoveItemStateDb(Player player, ItemDb itemDb, GameRoom room)
+        {
+            if (player == null || itemDb == null || room == null)
+                return;
+
+            Instance.Push(() =>
+            {
+                using (AppDbContext db = new AppDbContext())
+                {
+                    try
+                    {
+                        ItemDb tItemDb = db.Items
+                            .FirstOrDefault(i => i.ItemDbId == itemDb.ItemDbId && i.OwnerDbId == player.PlayerDbId);
+                        if (tItemDb != null)
+                        {
+                            db.Entry(tItemDb).State = EntityState.Deleted;
+                            bool success = db.SaveChangesEx(); // 저장할 때 예외 처리를 해준다.
+                            if (success)
+                            {
+                                room.Push(() =>
+                                {
+                                    player.Inven.Remove(itemDb.ItemDbId);
+                                });
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // 예외 처리 로직 추가
+                        Console.WriteLine($"Error removing item: {ex.Message}");
+                    }
+                }
+            });
+        }
+        public static void SaveItemSlotAndCount(Player player, List<ItemDb> itemDb, GameRoom room)
+        {
+            if (player == null || itemDb == null || room == null)
+                return;
+
+            Instance.Push(() =>
+            {
+                using (AppDbContext db = new AppDbContext())
+                {
+                    foreach(var item in itemDb)
+                    {
+                        db.Entry(item).State = EntityState.Unchanged;
+                        db.Entry(item).Property(nameof(item.Count)).IsModified = true;
+                        db.Entry(item).Property(nameof(item.Slot)).IsModified = true;
+                    }
+                    bool success = db.SaveChangesEx();
+
+                    if (success)
+                    {
+                        room.Push(() =>
+                        {
+                            S_ItemList itemList = new S_ItemList();
+                            foreach (Item item in player.Inven.Items.Values)
+                            {                                
+                                ItemInfo info = new ItemInfo();
+                                info.MergeFrom(item.Info);
+                                itemList.Items.Add(info);                                
+                            }
+                            player.Session.Send(itemList);
+                        });
                     }
                 }
             });

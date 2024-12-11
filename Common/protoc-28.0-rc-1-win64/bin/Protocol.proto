@@ -67,6 +67,8 @@ enum MsgId {
   S_BOSS_KILL = 59;
   C_ENHANCE = 60;
   S_ENHANCE = 61;
+  C_MAKE_ITEM = 62;
+  C_SORT_ITEM = 63;
 }
 enum CreatureState{
   IDLE = 0;
@@ -505,6 +507,8 @@ message C_RemoveItem{
 message S_RemoveItem{
 	repeated ItemInfo items = 1;
 }
+
+message C_SortItem{}
 
 message S_ChangeStat{
 	StatInfo statInfo = 1;

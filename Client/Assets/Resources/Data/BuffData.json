@@ -1,0 +1,44 @@
+{
+  "buffs": [
+    {
+      "id": 1,
+      "name": "공격력",
+      "icon": "Textures/Images/Icons/Buff/Buff_Attack"
+    },
+    {
+      "id": 2,
+      "name": "방어력",
+      "icon": "Textures/Images/Icons/Buff/Buff_Defense"
+    },
+    {
+      "id": 3,
+      "name": "체력",
+      "icon": "Textures/Images/Icons/Buff/Buff_Health"
+    },
+    {
+      "id": 4,
+      "name": "치명타 확률",
+      "icon": "Textures/Images/Icons/Buff/Buff_CriticalChance"
+    },
+    {
+      "id": 5,
+      "name": "치명타 피해",
+      "icon": "Textures/Images/Icons/Buff/Buff_CriticalDamage"
+    },
+    {
+      "id": 6,
+      "name": "이동 속도",
+      "icon": "Textures/Images/Icons/Buff/Buff_Speed"
+    },
+    {
+       "id": 7,
+      "name": "공격 속도",
+      "icon": "Textures/Images/Icons/Buff/Buff_AttackSpeed"
+    },
+    {
+      "id": 8,
+      "name": "경험치",
+      "icon": "Textures/Images/Icons/Buff/Buff_Exp"
+    }
+  ]
+} 

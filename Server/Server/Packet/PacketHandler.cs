@@ -359,4 +359,19 @@ class PacketHandler
 
         room.HandleMakeItem(clientSession.MyPlayer, makeItemPacket);
     }
+
+    public static void C_SortItemHandler(PacketSession session, IMessage packet)
+    {
+        C_SortItem sortItemPacket = packet as C_SortItem;
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession == null || clientSession.MyPlayer == null)
+            return;
+
+        GameRoom room = clientSession.MyPlayer.Room;
+        if (room == null)
+            return;
+
+        clientSession.MyPlayer.Inven.SortInven(clientSession.MyPlayer);
+    }
 }

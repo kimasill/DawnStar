@@ -255,6 +255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e322d34ed5c2664f9d04b1caba073df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsMouseover: 0
   _itemNotiPanel: {fileID: 1836473982587176983}
   _expNotiPanel: {fileID: 1627144664318505466}
   _levelNotiPanel: {fileID: 2145419297469964243}
@@ -852,6 +853,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BasicNotiPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 6981421481636026994, guid: fa3697897389c3b4abf0caa2a72fc207,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

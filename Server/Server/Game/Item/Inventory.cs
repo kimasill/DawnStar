@@ -146,7 +146,6 @@ namespace Server.Game
                 return item.Count;
             return null;
         }
-
         public int? GetEmptySlot()
         {
             for (int slot = 0; slot<100; slot++)
@@ -157,7 +156,6 @@ namespace Server.Game
             }
             return null;
         }
-
         public int GetInvenProperty(int templateId)
         {
             int total = 0;
@@ -199,6 +197,95 @@ namespace Server.Game
             else if(remainingCount < 0)
             {
                 DbTransaction.SaveRemovedItemDB(player, itemDb, player.Room);
+            }
+        }
+        public void SortInven(Player player)
+        {
+            ConsolidateItems(player);
+            SortItemSlots();
+            
+            List<ItemDb> items = new List<ItemDb>();
+            foreach (var item in Items.Values)
+            {
+                ItemDb itemDb = new ItemDb()
+                {
+                    ItemDbId = item.ItemDbId,
+                    TemplateId = item.TemplateId,
+                    Count = item.Count,
+                    Slot = item.Slot
+                };
+                items.Add(itemDb);
+            }
+            DbTransaction.SaveItemSlotAndCount(player, items, player.Room);
+        }
+            
+        private void SortItemSlots()
+        {
+            // 아이템을 TemplateId 기준으로 정렬
+            var sortedItems = Items.Values.OrderBy(item => item.TemplateId).ToList();
+
+            // 정렬된 아이템을 새로운 슬롯에 배치
+            Items.Clear();
+            int slot = 0;
+            foreach (var item in sortedItems)
+            {
+                item.Slot = slot++;
+                Items.Add(item.ItemDbId, item);
+            }
+        }
+        private void ConsolidateItems(Player player)
+        {
+            var groupedItems = Items.Values
+                .Where(item => item.Stackable)
+                .GroupBy(item => item.TemplateId)
+                .ToList();
+
+            foreach (var group in groupedItems)
+            {
+                var items = group.ToList();
+                if (items.Count <= 1)
+                    continue;
+
+                var firstItem = items[0];
+                for (int i = 1; i < items.Count; i++)
+                {
+                    var currentItem = items[i];
+                    int maxCount = GetMaxCount(currentItem);
+
+                    if (firstItem.Count < maxCount)
+                    {
+                        int transferAmount = Math.Min(currentItem.Count, maxCount - firstItem.Count);
+                        firstItem.Count += transferAmount;
+                        currentItem.Count -= transferAmount;
+
+                        if (currentItem.Count <= 0)
+                        {
+                            ItemDb itemDb = new ItemDb()
+                            {
+                                ItemDbId = currentItem.ItemDbId,
+                                TemplateId = currentItem.TemplateId,
+                                Count = currentItem.Count,
+                                Slot = currentItem.Slot
+                            };
+                            DbTransaction.SaveRemoveItemStateDb(player, itemDb, player.Room);
+                        }
+                    }
+                }
+            }
+        }
+
+        private int GetMaxCount(Item item)
+        {
+            switch (item.ItemType)
+            {
+                case ItemType.Goods:
+                    return (DataManager.ItemDict[item.TemplateId] as GoodsData)?.maxCount ?? int.MaxValue;
+                case ItemType.Material:
+                    return (DataManager.ItemDict[item.TemplateId] as MaterialData)?.maxCount ?? int.MaxValue;
+                case ItemType.Consumable:
+                    return (DataManager.ItemDict[item.TemplateId] as ConsumableData)?.maxCount ?? int.MaxValue;
+                default:
+                    return int.MaxValue;
             }
         }
     }

@@ -10,6 +10,7 @@ using UnityEngine.UI;
 //이미지 찾고 교체
 public class UI_Display_Item : UI_ItemIcon
 {
+
     [SerializeField]
     TMP_Text _itemCount = null;
 
@@ -35,8 +36,15 @@ public class UI_Display_Item : UI_ItemIcon
         TemplateId = item.TemplateId;
         Count = item.Count;
 
-        int invenItemCount = Managers.Inventory.GetItemById(TemplateId).Count;
-        _itemCount.text = $"{invenItemCount}/{Count}";
+        if(_itemCount != null)
+        {
+            Item invenItem = Managers.Inventory.GetItemById(TemplateId);
+            int invenItemCount = 0;
+            if (invenItem != null)
+                invenItemCount = invenItem.Count;
+
+            _itemCount.text = $"{invenItemCount}/{Count}";
+        }
 
         Data.ItemData itemData = null;
         Managers.Data.ItemDict.TryGetValue(TemplateId, out itemData);

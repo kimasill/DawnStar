@@ -37,10 +37,9 @@ public class UI_Enhance : UI_Base
     }
     enum Images
     {
-        Enhance_Item_Icon,
         EnhanceCostPanel,
         EnhanceResultNoti,
-        ItemProductionPanel,
+        UI_ItemProduction,
         Enhance_ItemInfoPanel
     }
 
@@ -59,10 +58,21 @@ public class UI_Enhance : UI_Base
         BindEvent(GetButton((int)Buttons.EnhanceButton).gameObject, (PointerEventData data) => { OnClickEnhanceButton(); });
         BindEvent(GetButton((int)Buttons.EnhanceExitButton).gameObject, (PointerEventData data) => { OnClickExitButton(); });
         BindEvent(GetButton((int)Buttons.ItemProductionButton).gameObject, (PointerEventData data) => { OnClickProductionUI(); });
+        BindEvent(_enhanceItemPanel, (PointerEventData data) => 
+        { 
+            if (_selectedItem != null)
+            {
+                SetItem(null);
+                RefreshUI();
+            }
+                
+        });
+
         BindEvent(gameObject, OnPointerEnter, Define.UIEvent.MouseOver);
         BindEvent(gameObject, OnPointerExit, Define.UIEvent.MouseOut);
+
         GetImage((int)Images.EnhanceResultNoti).gameObject.SetActive(false);
-        ItemProduction = GetImage((int)Images.ItemProductionPanel).GetComponent<UI_ItemProduction>();
+        ItemProduction = GetImage((int)Images.UI_ItemProduction).GetComponent<UI_ItemProduction>();
         ItemProduction.gameObject.SetActive(false);
         _enhanceCostPanel = GetImage((int)Images.EnhanceCostPanel);
         _enhanceItem = _enhanceItemPanel.GetOrAddComponent<UI_Enhance_Item>();
@@ -84,13 +94,14 @@ public class UI_Enhance : UI_Base
         Items.Clear();
         if(_selectedItem == null)
         {
+            _enhanceItem.SetItem(null);
             return;
         }
         Dictionary<int, EnhanceData> enhanceDataDict = Managers.Data.EnhanceDict;
         EnhanceData enhanceData = null;
         foreach (KeyValuePair<int, EnhanceData> data in enhanceDataDict)
         {
-            if (data.Value.itemType == _selectedItem.ItemType && data.Value.rank == _selectedItem.Rank)
+            if (data.Value.itemType == _selectedItem.ItemType && data.Value.rank == _selectedItem.Rank+1)
             {
                 enhanceData = data.Value;
             }
@@ -170,12 +181,22 @@ public class UI_Enhance : UI_Base
     }
     public void SetItem(Item item)
     {
-        if(item.Equipped == true)
+        if(item != null)
         {
-            UI_GameScene uI_GameScene = Managers.UI.SceneUI as UI_GameScene;
-            uI_GameScene.NotificationUI.ShowBasicNoti("장착중인 아이템은 강화할 수 없습니다.");
-            return;
+            if (item.Equipped == true)
+            {
+                UI_GameScene uI_GameScene = Managers.UI.SceneUI as UI_GameScene;
+                uI_GameScene.NotificationUI.ShowBasicNoti("장착중인 아이템은 강화할 수 없습니다.");
+                return;
+            }
+            else if (item.ItemType != ItemType.Weapon && item.ItemType != ItemType.Armor && item.ItemType != ItemType.Jewelry)
+            {
+                UI_GameScene uI_GameScene = Managers.UI.SceneUI as UI_GameScene;
+                uI_GameScene.NotificationUI.ShowBasicNoti("장비 아이템만 강화할 수 있습니다.");
+                return;
+            }
         }
+
         _selectedItem = item;
         ItemData itemData = null;
         Managers.Data.ItemDict.TryGetValue(item.TemplateId, out itemData);
@@ -184,7 +205,7 @@ public class UI_Enhance : UI_Base
         if (itemData != null)
         {
             GetTextMeshPro((int)Texts.Enhance_Item_Name).text = itemData.name;
-            GetTextMeshPro((int)Texts.Enhance_Item_Rank).text = item.Grade.ToString();
+            GetTextMeshPro((int)Texts.Enhance_Item_Rank).text = item.Rank.ToString();
         }
         RefreshUI();
     }
@@ -261,18 +282,18 @@ public class UI_Enhance : UI_Base
     }
     public void OpenProducitonUI()
     {
-        gameObject.SetActive(true);
+        ItemProduction.gameObject.SetActive(true);
         IsProduction = true;
     }
     public void CloseProductionUI()
     {
-        gameObject.SetActive(false);
+        ItemProduction.gameObject.SetActive(false);
         IsProduction = false;
     }
     public void OpenUI(string title, string description)
     {
         gameObject.SetActive(true);
-        GetText((int)Texts.EnhanceShopTitle_Text).text = title;
+        GetTextMeshPro((int)Texts.EnhanceShopTitle_Text).text = title;
     }
     public void CloseUI()
     {

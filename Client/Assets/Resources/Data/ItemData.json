@@ -6,7 +6,8 @@
       "weaponType": "Sword",
       "damage": "10",
       "price": "50",
-      "iconPath": "Textures/Item/Weapons/Bastard",
+      "iconPath": "Textures/Item/Weapons/Icon/Bastard_Icon",
+      "prefabPath" : "Textures/Item/Weapons/Bastard",      
       "range": "1",
       "attackSpeed": "0.9",
       "description": "기본적인 검."
@@ -28,7 +29,8 @@
       "weaponType": "Sword",
       "damage": "12",
       "price": "70",
-      "iconPath": "Textures/Item/Weapons/GreatSword",
+      "iconPath": "Textures/Item/Weapons/Icon/GreatSword_Icon",
+      "prefabPath": "Textures/Item/Weapons/GreatSword",
       "range": "3",
       "attackSpeed": "0.7",
       "description": "케일라드가 사용한 검. 무겁지만 사거리가 길다."
@@ -207,7 +209,7 @@
     {
       "id": 107,
       "name": "USC 망토",
-      "armorType": "Cape",
+      "armorType": "Back",
       "defense": 10,
       "price": 2000,
       "iconPath": "Textures/Item/Armors/Cape/Icon/Cape_USC_Icon",
