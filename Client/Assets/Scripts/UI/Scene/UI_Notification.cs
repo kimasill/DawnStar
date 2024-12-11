@@ -124,7 +124,7 @@ public class UI_Notification : UI_Base
         yield return new WaitForSeconds(2f); // 알림이 표시되는 시간
         yield return StartCoroutine(HideNoti(_questNoti.gameObject)); // 알림을 숨기는 시간
     }
-    public IEnumerator ShowBasicNoti(string script)
+    public void ShowBasicNoti(string script)
     {
         // 기존 코루틴이 실행 중이면 중지
         if (_basicNotiCoroutine != null)
@@ -136,7 +136,6 @@ public class UI_Notification : UI_Base
         notiText.text = $"{script}";
 
         _basicNotiCoroutine = StartCoroutine(ShowAndHideBasicNoti(notiText));
-        yield return _basicNotiCoroutine;
     }
     private void CreateNewExpNoti(string exp)
     {

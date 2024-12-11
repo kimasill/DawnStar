@@ -62,7 +62,14 @@ public class EquipmentController : MonoBehaviour
     {
         ItemData itemData = null;
         Managers.Data.ItemDict.TryGetValue(item.TemplateId, out itemData);
-        Sprite[] sprite = Managers.Resource.LoadAll<Sprite>(itemData.iconPath);
+
+        Sprite[] sprite = null;
+
+        if (itemData.prefabPath == null)
+        {
+            sprite = Managers.Resource.LoadAll<Sprite>(itemData.iconPath);
+        }
+        else sprite = Managers.Resource.LoadAll<Sprite>(itemData.prefabPath);
 
         if (item is Weapon weapon)
         {

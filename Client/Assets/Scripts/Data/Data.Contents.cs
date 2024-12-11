@@ -119,6 +119,55 @@ namespace Data
         }
     }
     #endregion
+    #region Buff
+    [Serializable]
+    public class BuffData
+    {
+        public int id;
+        public string name;
+        public string icon;
+    }
+
+    [Serializable]
+    public class BuffLoader : ILoader<int, BuffData>
+    {
+        public List<BuffData> buffs = new List<BuffData>();
+
+        public Dictionary<int, BuffData> MakeDict()
+        {
+            Dictionary<int, BuffData> dict = new Dictionary<int, BuffData>();
+            foreach (BuffData buff in buffs)
+                dict.Add(buff.id, buff);
+            return dict;
+        }
+    }
+
+    #endregion
+    #region Debuff
+
+    [Serializable]
+    public class DebuffData
+    {
+        public int id;
+        public string name;
+        public string icon;
+    }
+
+    [Serializable]
+
+    public class DebuffLoader : ILoader<int, DebuffData>
+    {
+        public List<DebuffData> debuffs = new List<DebuffData>();
+
+        public Dictionary<int, DebuffData> MakeDict()
+        {
+            Dictionary<int, DebuffData> dict = new Dictionary<int, DebuffData>();
+            foreach (DebuffData debuff in debuffs)
+                dict.Add(debuff.id, debuff);
+            return dict;
+        }
+    }
+    #endregion
     #region Item
     [Serializable]
     public class ItemData

@@ -1,7 +1,9 @@
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UI_Inventory : UI_Base
@@ -10,6 +12,12 @@ public class UI_Inventory : UI_Base
 
     [SerializeField]
     public GameObject grid = null;
+
+    enum Images
+    {
+        InventorySortingButton
+    }
+
     public ScrollRect ScrollRect { get; private set; }
     UI_GameScene _gameScene = null;
     float _contentSizeY = 0;
@@ -20,7 +28,7 @@ public class UI_Inventory : UI_Base
             return;
         _isInit = true;
         Items.Clear();
-
+        Bind<Image>(typeof(Images));
         ScrollRect = GetComponentInChildren<ScrollRect>();
         foreach (Transform child in grid.transform)
         {
@@ -42,7 +50,7 @@ public class UI_Inventory : UI_Base
         RefreshUI();
         BindEvent(gameObject, OnPointerEnter, Define.UIEvent.MouseOver);
         BindEvent(gameObject, OnPointerExit, Define.UIEvent.MouseOut);
-
+        GetImage((int)Images.InventorySortingButton).gameObject.BindEvent(OnClickSortingButton);
         GridLayoutGroup gridLayoutGroup = grid.GetComponent<GridLayoutGroup>();
         if (gridLayoutGroup != null)
         {
@@ -115,5 +123,11 @@ public class UI_Inventory : UI_Base
         {
             ScrollRect.verticalNormalizedPosition = 0.0f;
         }
+    }
+
+    private void OnClickSortingButton(PointerEventData evt)
+    {
+        C_SortItem sortItem = new C_SortItem();
+        Managers.Network.Send(sortItem);
     }
 }

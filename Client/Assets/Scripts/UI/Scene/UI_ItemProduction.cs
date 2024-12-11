@@ -15,13 +15,13 @@ public class UI_ItemProduction : UI_Base
     bool _isInit = false;
     public ScrollRect ScrollRect { get; private set; }
     public List<UI_Display_Item> Items { get; set; } = new List<UI_Display_Item>();
+    public List<UI_Display_Item> CostItems { get; set; } = new List<UI_Display_Item>();
     private UI_Enhance _ui_Enhance;
     private Item _selectedItem;
     
     enum Images
     {
         ItemProduction_CostPanel,
-        ItemProduction_ExitButton,
     }
     enum Buttons
     {
@@ -37,8 +37,8 @@ public class UI_ItemProduction : UI_Base
 
         ScrollRect = GetComponentInChildren<ScrollRect>();
         Bind<Image>(typeof(Images));
+        Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.ItemProduction_Button).gameObject.BindEvent(OnClickProductionButton);
-        BindEvent(GetImage((int)Images.ItemProduction_ExitButton).gameObject, (PointerEventData data) => { OnClickExit(); });
         BindEvent(gameObject, OnPointerEnter, Define.UIEvent.MouseOver);
         BindEvent(gameObject, OnPointerExit, Define.UIEvent.MouseOut);
         foreach (Transform child in ScrollRect.content.transform)
@@ -54,8 +54,7 @@ public class UI_ItemProduction : UI_Base
         {
             ItemInfo itemInfo = new ItemInfo() 
             {
-                TemplateId = itemData.id,
-                
+                TemplateId = itemData.id,   
             };
             itemInfo.Options.Add(itemData.options);
             Item item = Item.MakeItem(itemInfo);
@@ -79,14 +78,10 @@ public class UI_ItemProduction : UI_Base
             Init();
             return;
         }
-
+        ClearCostItems();
         if (_selectedItem == null)
         {
             return;
-        }
-        foreach (var item in Items) 
-        {
-            Destroy(item.gameObject);
         }
         Managers.Data.ItemDict.TryGetValue(_selectedItem.TemplateId, out ItemData itemData);
         List<CostData> costData = itemData.pieces.Select(x => new CostData()
@@ -95,15 +90,16 @@ public class UI_ItemProduction : UI_Base
             count = x.count
         }).ToList();
         SetDisplayItem(costData, GetImage((int)Images.ItemProduction_CostPanel).gameObject.transform);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(ScrollRect.content);
     }
     public void SetDisplayItem(List<CostData> costData, Transform transform)
-    {
+    {        
         foreach (var cost in costData)
         {
             if (Managers.Data.ItemDict.TryGetValue(cost.templateId, out Data.ItemData itemData))
             {
                 UI_Display_Item itemIcon = Managers.Resource.Instantiate("UI/Scene/UI_Display_Item", transform).GetComponent<UI_Display_Item>();
-                Items.Add(itemIcon);
+                CostItems.Add(itemIcon);
                 ItemInfo itemInfo = new ItemInfo()
                 {
                     ItemDbId = 0,
@@ -146,8 +142,12 @@ public class UI_ItemProduction : UI_Base
         };
         Managers.Network.Send(production);
     }
-    public void OnClickExit()
+    private void ClearCostItems()
     {
-        _ui_Enhance.CloseProductionUI();
+        foreach (UI_Display_Item item in CostItems)
+        {
+            Destroy(item.gameObject);
+            CostItems.Clear();
+        }
     }
 }

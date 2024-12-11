@@ -7,11 +7,11 @@
       "costData": [
         {
           "templateId": 1159,
-          "cost": 1
+          "count": 1
         },
         {
           "templateId": 10001,
-          "cost": 2000
+          "count": 2000
         }
       ],
       "value": 12,
@@ -24,11 +24,11 @@
       "costData": [
         {
           "templateId": 1159,
-          "cost": 1
+          "count": 1
         },
         {
           "templateId": 10001,
-          "cost": 3500
+          "count": 3500
         }
       ],
       "value": 25,
@@ -41,11 +41,11 @@
       "costData": [
         {
           "templateId": 1159,
-          "cost": 2
+          "count": 2
         },
         {
           "templateId": 10001,
-          "cost": 5200
+          "count": 5200
         }
       ],
       "value": 41,
@@ -58,11 +58,11 @@
       "costData": [
         {
           "templateId": 1159,
-          "cost": 3
+          "count": 3
         },
         {
           "templateId": 10001,
-          "cost": 7600
+          "count": 7600
         }
       ],
       "value": 63,
@@ -75,11 +75,11 @@
       "costData": [
         {
           "templateId": 1159,
-          "cost": 5
+          "count": 5
         },
         {
           "templateId": 10001,
-          "cost": 11900
+          "count": 11900
         }
       ],
       "value": 90,
@@ -92,11 +92,11 @@
       "costData": [
         {
           "templateId": 1160,
-          "cost": 1
+          "count": 1
         },
         {
           "templateId": 10001,
-          "cost": 1500
+          "count": 1500
         }
       ],
       "value": 12,
@@ -109,11 +109,11 @@
       "costData": [
         {
           "templateId": 1160,
-          "cost": 1
+          "count": 1
         },
         {
           "templateId": 10001,
-          "cost": 2200
+          "count": 2200
         }
       ],
       "value": 25,
@@ -126,11 +126,11 @@
       "costData": [
         {
           "templateId": 1160,
-          "cost": 2
+          "count": 2
         },
         {
           "templateId": 10001,
-          "cost": 3200
+          "count": 3200
         }
       ],
       "value": 41,
@@ -143,11 +143,11 @@
       "costData": [
         {
           "templateId": 1160,
-          "cost": 3
+          "count": 3
         },
         {
           "templateId": 10001,
-          "cost": 4800
+          "count": 4800
         }
       ],
       "value": 63,
@@ -160,11 +160,11 @@
       "costData": [
         {
           "templateId": 1160,
-          "cost": 4
+          "count": 4
         },
         {
           "templateId": 10001,
-          "cost": 7500
+          "count": 7500
         }
       ],
       "value": 90,
@@ -177,11 +177,11 @@
       "costData": [
         {
           "templateId": 1160,
-          "cost": 5
+          "count": 5
         },
         {
           "templateId": 10001,
-          "cost": 11200
+          "count": 11200
         }
       ],
       "value": 120,
@@ -194,11 +194,11 @@
       "costData": [
         {
           "templateId": 1160,
-          "cost": 6
+          "count": 6
         },
         {
           "templateId": 10001,
-          "cost": 16800
+          "count": 16800
         }
       ],
       "value": 155,
@@ -211,11 +211,11 @@
       "costData": [
         {
           "templateId": 1160,
-          "cost": 7
+          "count": 7
         },
         {
           "templateId": 10001,
-          "cost": 25200
+          "count": 25200
         }
       ],
       "value": 195,
@@ -228,11 +228,11 @@
       "costData": [
         {
           "templateId": 1160,
-          "cost": 9
+          "count": 9
         },
         {
           "templateId": 10001,
-          "cost": 37800
+          "count": 37800
         }
       ],
       "value": 240,
@@ -245,11 +245,11 @@
       "costData": [
         {
           "templateId": 1160,
-          "cost": 11
+          "count": 11
         },
         {
           "templateId": 10001,
-          "cost": 56700
+          "count": 56700
         }
       ],
       "value": 290,
@@ -262,11 +262,11 @@
       "costData": [
         {
           "templateId": 1161,
-          "cost": 1
+          "count": 1
         },
         {
           "templateId": 10001,
-          "cost": 1000
+          "count": 1000
         }
       ],
       "value": 10,
@@ -279,11 +279,11 @@
       "costData": [
         {
           "templateId": 1161,
-          "cost": 1
+          "count": 1
         },
         {
           "templateId": 10001,
-          "cost": 1500
+          "count": 1500
         }
       ],
       "value": 20,
@@ -296,11 +296,11 @@
       "costData": [
         {
           "templateId": 1161,
-          "cost": 2
+          "count": 2
         },
         {
           "templateId": 10001,
-          "cost": 2200
+          "count": 2200
         }
       ],
       "value": 35,
@@ -313,11 +313,11 @@
       "costData": [
         {
           "templateId": 1161,
-          "cost": 3
+          "count": 3
         },
         {
           "templateId": 10001,
-          "cost": 3300
+          "count": 3300
         }
       ],
       "value": 55,
@@ -330,11 +330,11 @@
       "costData": [
         {
           "templateId": 1161,
-          "cost": 4
+          "count": 4
         },
         {
           "templateId": 10001,
-          "cost": 5000
+          "count": 5000
         }
       ],
       "value": 80,
@@ -347,11 +347,11 @@
       "costData": [
         {
           "templateId": 1161,
-          "cost": 5
+          "count": 5
         },
         {
           "templateId": 10001,
-          "cost": 7500
+          "count": 7500
         }
       ],
       "value": 110,
@@ -364,11 +364,11 @@
       "costData": [
         {
           "templateId": 1161,
-          "cost": 7
+          "count": 7
         },
         {
           "templateId": 10001,
-          "cost": 11200
+          "count": 11200
         }
       ],
       "value": 145,
@@ -381,11 +381,11 @@
       "costData": [
         {
           "templateId": 1161,
-          "cost": 9
+          "count": 9
         },
         {
           "templateId": 10001,
-          "cost": 16800
+          "count": 16800
         }
       ],
       "value": 185,
@@ -398,11 +398,11 @@
       "costData": [
         {
           "templateId": 1161,
-          "cost": 11
+          "count": 11
         },
         {
           "templateId": 10001,
-          "cost": 25200
+          "count": 25200
         }
       ],
       "value": 230,
@@ -415,11 +415,11 @@
       "costData": [
         {
           "templateId": 1161,
-          "cost": 13
+          "count": 13
         },
         {
           "templateId": 10001,
-          "cost": 37800
+          "count": 37800
         }
       ],
       "value": 280,

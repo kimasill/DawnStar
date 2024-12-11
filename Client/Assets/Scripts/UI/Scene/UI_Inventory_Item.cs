@@ -102,7 +102,7 @@ public class UI_Inventory_Item : UI_ItemIcon
         _isDescription = true;    
         _itemDescription = Managers.UI.ShowPopupUI<UI_ItemDescription>();
         _itemDescription.SetItem(item);
-        _itemDescription.OnPointerEnter(eventData);
+        _itemDescription.OpenUI(eventData);
     }
 
     public override void OnPointerExit(PointerEventData eventData)
@@ -110,6 +110,6 @@ public class UI_Inventory_Item : UI_ItemIcon
         if (!_isDescription)
             return;
         _isDescription = false;
-        _itemDescription.OnPointerExit(eventData);
+        _itemDescription.CloseUI(eventData);
     }
 }

@@ -24,6 +24,8 @@ public class DataManager
     public Dictionary<int, Data.RealizationData> RealizationDict { get; private set; } = new Dictionary<int, Data.RealizationData>();
     public Dictionary<int, Data.InteractionData> InteractionDict { get; private set; } = new Dictionary<int, Data.InteractionData>();
     public Dictionary<int, Data.EnhanceData> EnhanceDict { get; private set; } = new Dictionary<int, Data.EnhanceData>();
+    public Dictionary<int, Data.BuffData> BuffDict { get; private set; } = new Dictionary<int, Data.BuffData>();
+    public Dictionary<int , Data.DebuffData> DebuffDict { get; private set; } = new Dictionary<int, Data.DebuffData>();
 
     public void Init()
     {
@@ -39,6 +41,9 @@ public class DataManager
         ShopDict = LoadJson<Data.ShopLoader, int, Data.ShopData>("ShopData").MakeDict();
         RealizationDict = LoadJson<Data.RealizationLoader, int, Data.RealizationData>("RealizationData").MakeDict();
         InteractionDict = LoadJson<Data.InteractionLoader, int, Data.InteractionData>("InteractionData").MakeDict();
+        EnhanceDict = LoadJson<Data.EnhanceLoader, int, Data.EnhanceData>("EnhanceData").MakeDict();
+        BuffDict = LoadJson<Data.BuffLoader, int, Data.BuffData>("BuffData").MakeDict();
+        DebuffDict = LoadJson<Data.DebuffLoader, int, Data.DebuffData>("DebuffData").MakeDict();
     }
 
     Loader LoadJson<Loader, Key, Value>(string path) where Loader : ILoader<Key, Value>

@@ -55,7 +55,7 @@
         {
           "id": "40001",
           "name": "USC장비재련소",
-          "type": "UI_Enchant",
+          "type": "UI_Smith",
           "script": [
             "그 무장상태로는 이 앞으로 갈 수 없네."
           ]
