@@ -43,8 +43,11 @@ public class UI_Enhance : UI_Base
         Enhance_ItemInfoPanel
     }
 
+
     bool _isInit = false;
     public bool IsProduction = false;
+    public Canvas uiCanvas;
+
     public override void Init()
     {
         if (_isInit)
@@ -72,6 +75,7 @@ public class UI_Enhance : UI_Base
         BindEvent(gameObject, OnPointerExit, Define.UIEvent.MouseOut);
 
         GetImage((int)Images.EnhanceResultNoti).gameObject.SetActive(false);
+        
         ItemProduction = GetImage((int)Images.UI_ItemProduction).GetComponent<UI_ItemProduction>();
         ItemProduction.gameObject.SetActive(false);
         _enhanceCostPanel = GetImage((int)Images.EnhanceCostPanel);
@@ -231,16 +235,7 @@ public class UI_Enhance : UI_Base
         StartCoroutine(CoEnhance(enhance.Success, enhance.ItemInfo));
     }
     private IEnumerator CoEnhance(bool success, ItemInfo itemInfo)
-    {
-        GameObject effect = Managers.Resource.Instantiate("Effect/EnhanceEffect", transform);
-        Animator anim = effect.GetComponent<Animator>();
-        anim.Play("START");
-
-        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f);
-
-        Managers.Resource.Destroy(effect);
-        anim.StopPlayback(); // Stop the animation playback
-
+    {    
         GetImage((int)Images.EnhanceResultNoti).gameObject.SetActive(true);
         FadeInAll(GetImage((int)Images.EnhanceResultNoti).gameObject, 0.5f);
         if (success)
@@ -258,10 +253,9 @@ public class UI_Enhance : UI_Base
         if (success)
         {
             Item item = Item.MakeItem(itemInfo);
-            SetItem(item);
-
             //강화 성공시 아이템 정보 갱신
-            Managers.Inventory.UpdateItemValue(item);
+            Managers.Inventory.AddOrUpdate(item);
+            SetItem(item);
 
             UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
             gameSceneUI.InvenUI.RefreshUI();

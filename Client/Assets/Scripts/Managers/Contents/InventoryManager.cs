@@ -16,6 +16,17 @@ public class InventoryManager : MonoBehaviour
             pItem.Count += item.Count;
         else Items.Add(item.ItemDbId, item);        
     }
+    public void AddOrUpdate(Item item)
+    {
+        if (Items.ContainsKey(item.ItemDbId))
+        {
+            Items[item.ItemDbId] = item;
+        }
+        else
+        {
+            Items.Add(item.ItemDbId, item);
+        }
+    }
 
     public void Remove(int itemId)
     {
@@ -52,11 +63,6 @@ public class InventoryManager : MonoBehaviour
         return null;
     }
 
-    public void UpdateItemValue(Item item)
-    {
-        Items.TryGetValue(item.ItemDbId, out Item pItem);
-        pItem = item;
-    }
 
     public Item Find(Func<Item, bool> condition)
     {

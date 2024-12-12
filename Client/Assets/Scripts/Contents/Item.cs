@@ -161,7 +161,7 @@ public class Item
                 Managers.Data.EnhanceDict.TryGetValue(itemInfo.Rank, out enhanceData);
                 if (enhanceData == null)
                     return;
-                Damage = (int)(data.damage + data.damage * 0.5 + (data.damage * enhanceData.value));
+                Damage = (int)(data.damage + (data.damage * 0.5)*itemInfo.Rank + (data.damage * enhanceData.value));
             }
         }
     }
@@ -199,7 +199,7 @@ public class Item
                 Managers.Data.EnhanceDict.TryGetValue(itemInfo.Rank, out enhanceData);
                 if (enhanceData == null)
                     return;
-                Defense = (int)(data.defense + data.defense * 0.5 + (data.defense * enhanceData.value));
+                Defense = (int)(data.defense + (data.defense * 0.5)*itemInfo.Rank + (data.defense * enhanceData.value));
             }
         }
     }
