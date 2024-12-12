@@ -52,6 +52,12 @@ public class InventoryManager : MonoBehaviour
         return null;
     }
 
+    public void UpdateItemValue(Item item)
+    {
+        Items.TryGetValue(item.ItemDbId, out Item pItem);
+        pItem = item;
+    }
+
     public Item Find(Func<Item, bool> condition)
     {
         foreach (var item in Items.Values)

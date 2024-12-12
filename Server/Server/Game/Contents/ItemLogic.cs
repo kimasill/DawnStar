@@ -48,12 +48,12 @@ namespace Server.Game
                 if (item.ItemType == ItemType.Weapon)
                 {
                     WeaponData weaponData = (WeaponData)itemData;
-                    itemDb.Damage = (int)(weaponData.damage * enhanceData.value);
+                    itemDb.Damage = (int)(weaponData.damage + weaponData.damage*0.5 + (weaponData.damage* enhanceData.value));
                 }
                 else if(item.ItemType == ItemType.Armor)
                 {
                     ArmorData armorData = (ArmorData)itemData;
-                    itemDb.Defense = (int)(armorData.defense * enhanceData.value);
+                    itemDb.Defense = (int)(armorData.defense + armorData.defense * 0.5 + (armorData.defense * enhanceData.value));
                 }
 
                 foreach(KeyValuePair<string, string> option in item.Options)
@@ -90,7 +90,7 @@ namespace Server.Game
                     itemDb.Options.Add(option.Key, value);
                 }
 
-
+                itemDb.ItemDbId = item.ItemDbId;
                 itemDb.TemplateId = item.TemplateId;
                 itemDb.Count = item.Count;
                 itemDb.Slot = item.Slot;

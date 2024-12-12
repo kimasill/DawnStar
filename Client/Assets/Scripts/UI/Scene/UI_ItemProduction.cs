@@ -147,7 +147,7 @@ public class UI_ItemProduction : UI_Base
         foreach (UI_Display_Item item in CostItems)
         {
             Destroy(item.gameObject);
-            CostItems.Clear();
         }
+        CostItems.Clear();
     }
 }

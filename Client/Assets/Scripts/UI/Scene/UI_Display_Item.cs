@@ -14,6 +14,7 @@ public class UI_Display_Item : UI_ItemIcon
     [SerializeField]
     TMP_Text _itemCount = null;
 
+    public bool Condition = false;
     public override void Init()
     {
         gameObject.BindEvent(OnPointerEnter, Define.UIEvent.MouseOver);
@@ -44,6 +45,8 @@ public class UI_Display_Item : UI_ItemIcon
                 invenItemCount = invenItem.Count;
 
             _itemCount.text = $"{invenItemCount}/{Count}";
+            if(invenItemCount>=Count)
+                Condition = true;
         }
 
         Data.ItemData itemData = null;

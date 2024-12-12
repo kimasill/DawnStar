@@ -347,6 +347,7 @@ class PacketHandler
             Managers.Inventory.RefreshEquipment(equipment);
 
             UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+            gameSceneUI.InvenUI.RefreshUI();
             gameSceneUI.GameWindow.SkillSlot.RefreshUI();
         }
     }
@@ -626,6 +627,13 @@ class PacketHandler
     {
         S_Enhance enhancePacket = packet as S_Enhance;
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        //메모리에 아이템 정보 저장
+        
+
+        if (Managers.Object.MyPlayer != null)
+        {
+            Managers.Object.MyPlayer.RefreshAdditionalStat();
+        }
         gameSceneUI.EnhanceUI.EnhanceResult(enhancePacket);
     }
 }

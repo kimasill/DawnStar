@@ -51,7 +51,10 @@ namespace Server.Game
         public ItemType ItemType { get; private set; }
         public bool Stackable { get; protected set; }
 
-        public int Rank { get; protected set; }
+        public int Rank { 
+            get { return Info.Rank; }
+            set { Info.Rank = value; }
+        }
         public Grade Grade { get; protected set; }
 
 
@@ -72,10 +75,10 @@ namespace Server.Game
             switch (itemData.itemType)
             {
                 case ItemType.Weapon:
-                    item = new Weapon(itemDb.TemplateId);
+                    item = new Weapon(itemDb);
                     break;
                 case ItemType.Armor:
-                    item = new Armor(itemDb.TemplateId);
+                    item = new Armor(itemDb);
                     break;
                 case ItemType.Jewelry:
                     item = new Jewelry(itemDb.TemplateId);
@@ -97,6 +100,7 @@ namespace Server.Game
                 item.Count = itemDb.Count;     
                 item.Slot = itemDb.Slot;
                 item.Equipped = itemDb.Equipped;
+                item.Rank = itemDb.Enhance;
                 MapField<string, string> options = new MapField<string, string>();
                 if (itemDb.Options.Count > 0)
                 {
@@ -116,15 +120,15 @@ namespace Server.Game
             public int Damage { get; private set; }
             public int Range { get; private set; }            
             public float AttackSpeed { get; private set; }
-            public Weapon(int templateId) : base(ItemType.Weapon)
+            public Weapon(ItemDb itemDb) : base(ItemType.Weapon)
             {
-                Init(templateId);
+                Init(itemDb);
             }
 
-            void Init(int templateId)
+            void Init(ItemDb itemDb)
             {
                 ItemData itemData = null;
-                DataManager.ItemDict.TryGetValue(templateId, out itemData);
+                DataManager.ItemDict.TryGetValue(itemDb.TemplateId, out itemData);
                 if (itemData.itemType != ItemType.Weapon)
                 {
                     return;
@@ -140,6 +144,11 @@ namespace Server.Game
                     AttackSpeed = data.attackSpeed;
                     Stackable = false;
                 }
+
+                if (itemDb.Enhance > 0)
+                {
+                    Damage = itemDb.Damage;
+                }
             }
         }
 
@@ -147,15 +156,15 @@ namespace Server.Game
         {
             public ArmorType ArmorType { get; private set; }
             public int Defense { get; private set; }
-            public Armor(int templateId) : base(ItemType.Armor)
+            public Armor(ItemDb itemDb) : base(ItemType.Armor)
             {
-                Init(templateId);
+                Init(itemDb);
             }
 
-            void Init(int templateId)
+            void Init(ItemDb itemDb)
             {
                 ItemData itemData = null;
-                DataManager.ItemDict.TryGetValue(templateId, out itemData);
+                DataManager.ItemDict.TryGetValue(itemDb.TemplateId, out itemData);
                 if (itemData.itemType != ItemType.Armor)
                 {
                     return;
@@ -168,6 +177,11 @@ namespace Server.Game
                     ArmorType = data.armorType;
                     Defense = data.defense;
                     Stackable = false;
+                }
+
+                if (itemDb.Enhance > 0)
+                {
+                    Defense = itemDb.Defense;
                 }
             }
         }
