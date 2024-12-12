@@ -262,27 +262,29 @@ namespace Server.Game
             if (itemData == null)
                 return;
             
-            EnhanceData enhanceData = DataManager.EnhanceDict.Select(x => x.Value).Where(x => x.rank == item.Rank && x.itemType == item.ItemType).FirstOrDefault();
-            List<Item> costItems = new List<Item>();
+            EnhanceData enhanceData = DataManager.EnhanceDict.Select(x => x.Value).Where(x => x.rank == item.Rank+1 && x.itemType == item.ItemType).FirstOrDefault();
+            List<ItemDb> costItems = new List<ItemDb>();
             foreach (CostData cost in enhanceData.costData)
             {
                 Item costItem = player.Inven.FindByTemplateId(cost.templateId);
                 if (costItem.Count < cost.count || costItem == null)
+                {
                     return;
-
-                costItems.Add(costItem);
-            }
-
-            foreach (Item costItem in costItems)
-            {                
+                }
                 ItemDb itemDb = new ItemDb()
                 {
+                    ItemDbId = costItem.ItemDbId,
                     TemplateId = costItem.TemplateId,
-                    Count = costItem.Count,
+                    Count = cost.count,
                     OwnerDbId = player.PlayerDbId,
                     Slot = costItem.Slot
                 };
-                DbTransaction.SaveRemovedItemDB(player, itemDb, this);
+                costItems.Add(itemDb);
+            }
+
+            foreach (ItemDb costItem in costItems)
+            {                
+                DbTransaction.SaveRemovedItemDB(player, costItem, this);
             }
 
             //강화실행

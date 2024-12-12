@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 
 public class Item
@@ -91,10 +92,10 @@ public class Item
         switch (itemData.itemType)
         {
             case ItemType.Weapon:
-                item = new Weapon(itemInfo.TemplateId);
+                item = new Weapon(itemInfo.TemplateId, itemInfo);
                 break;
             case ItemType.Armor:
-                item = new Armor(itemInfo.TemplateId);
+                item = new Armor(itemInfo.TemplateId, itemInfo);
                 break;
             case ItemType.Jewelry:
                 item = new Jewelry(itemInfo.TemplateId);
@@ -121,8 +122,6 @@ public class Item
             item.Grade = itemInfo.Grade;
             item.Options = itemInfo.Options;    
         }
-        
-
         return item;
     }
     public class Weapon : Item
@@ -131,12 +130,12 @@ public class Item
         public int Damage { get; private set; }
         public int Range { get; private set; }      
         public float AttackSpeed { get; private set; }
-        public Weapon(int templateId) : base(ItemType.Weapon)
+        public Weapon(int templateId, ItemInfo itemInfo) : base(ItemType.Weapon)
         {
-            Init(templateId);
+            Init(templateId, itemInfo);
         }
 
-        void Init(int templateId)
+        void Init(int templateId, ItemInfo itemInfo)
         {
             ItemData itemData = null;
             Managers.Data.ItemDict.TryGetValue(templateId, out itemData);
@@ -155,6 +154,15 @@ public class Item
                 AttackSpeed = data.attackSpeed;
                 Stackable = false;
             }
+
+            if(itemInfo.Rank > 0)
+            {
+                EnhanceData enhanceData = null;
+                Managers.Data.EnhanceDict.TryGetValue(itemInfo.Rank, out enhanceData);
+                if (enhanceData == null)
+                    return;
+                Damage = (int)(data.damage + data.damage * 0.5 + (data.damage * enhanceData.value));
+            }
         }
     }
 
@@ -162,12 +170,12 @@ public class Item
     {
         public ArmorType ArmorType { get; private set; }
         public int Defense { get; private set; }
-        public Armor(int templateId) : base(ItemType.Armor)
+        public Armor(int templateId, ItemInfo itemInfo) : base(ItemType.Armor)
         {
-            Init(templateId);
+            Init(templateId, itemInfo);
         }
 
-        void Init(int templateId)
+        void Init(int templateId, ItemInfo itemInfo)
         {
             ItemData itemData = null;
             Managers.Data.ItemDict.TryGetValue(templateId, out itemData);
@@ -183,6 +191,15 @@ public class Item
                 ArmorType = data.armorType;
                 Defense = data.defense;
                 Stackable = false;
+            }
+
+            if (itemInfo.Rank > 0)
+            {
+                EnhanceData enhanceData = null;
+                Managers.Data.EnhanceDict.TryGetValue(itemInfo.Rank, out enhanceData);
+                if (enhanceData == null)
+                    return;
+                Defense = (int)(data.defense + data.defense * 0.5 + (data.defense * enhanceData.value));
             }
         }
     }

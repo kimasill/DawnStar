@@ -183,29 +183,33 @@ public class UI_Enhance : UI_Base
     {
         if(item != null)
         {
+            UI_GameScene uI_GameScene = Managers.UI.SceneUI as UI_GameScene;
             if (item.Equipped == true)
             {
-                UI_GameScene uI_GameScene = Managers.UI.SceneUI as UI_GameScene;
                 uI_GameScene.NotificationUI.ShowBasicNoti("장착중인 아이템은 강화할 수 없습니다.");
                 return;
             }
             else if (item.ItemType != ItemType.Weapon && item.ItemType != ItemType.Armor && item.ItemType != ItemType.Jewelry)
-            {
-                UI_GameScene uI_GameScene = Managers.UI.SceneUI as UI_GameScene;
+            {                
                 uI_GameScene.NotificationUI.ShowBasicNoti("장비 아이템만 강화할 수 있습니다.");
                 return;
             }
         }
 
         _selectedItem = item;
-        ItemData itemData = null;
-        Managers.Data.ItemDict.TryGetValue(item.TemplateId, out itemData);
-
         _enhanceItem.SetItem(item);
-        if (itemData != null)
+        if (item == null)
         {
+            GetTextMeshPro((int)Texts.Enhance_Item_Name).text = "이름";
+            GetTextMeshPro((int)Texts.Enhance_Item_Rank).text = "단계";
+            return;
+        }
+        else
+        {
+            ItemData itemData = null;
+            Managers.Data.ItemDict.TryGetValue(item.TemplateId, out itemData);
             GetTextMeshPro((int)Texts.Enhance_Item_Name).text = itemData.name;
-            GetTextMeshPro((int)Texts.Enhance_Item_Rank).text = item.Rank.ToString();
+            GetTextMeshPro((int)Texts.Enhance_Item_Rank).text = $"+{item.Rank.ToString()}" ;
         }
         RefreshUI();
     }
@@ -228,7 +232,7 @@ public class UI_Enhance : UI_Base
     }
     private IEnumerator CoEnhance(bool success, ItemInfo itemInfo)
     {
-        GameObject effect = Managers.Resource.Instantiate("UI/Scene/EnhanceEffect", transform);
+        GameObject effect = Managers.Resource.Instantiate("Effect/EnhanceEffect", transform);
         Animator anim = effect.GetComponent<Animator>();
         anim.Play("START");
 
@@ -251,17 +255,32 @@ public class UI_Enhance : UI_Base
         FadeOutAll(GetImage((int)Images.EnhanceResultNoti).gameObject, 0.5f);
         GetImage((int)Images.EnhanceResultNoti).gameObject.SetActive(false);
 
-
         if (success)
         {
             Item item = Item.MakeItem(itemInfo);
             SetItem(item);
+
+            //강화 성공시 아이템 정보 갱신
+            Managers.Inventory.UpdateItemValue(item);
+
+            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+            gameSceneUI.InvenUI.RefreshUI();
+            gameSceneUI.StatUI.RefreshUI();
         }
-        RefreshUI();
+        else if (success == false)
+        {
+            SetItem(_selectedItem);
+        }
     }
     private void OnClickEnhanceButton()
     {
-        EnhanceItem(_selectedItem);
+        if (Items.All(x => x.Condition == true))
+            EnhanceItem(_selectedItem);
+        else
+        {
+            UI_GameScene uI_GameScene = Managers.UI.SceneUI as UI_GameScene;
+            uI_GameScene.NotificationUI.ShowBasicNoti("강화조건이 충족되지 않았습니다.");
+        }
     }
 
     private void OnClickExitButton()

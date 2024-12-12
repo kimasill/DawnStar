@@ -58,7 +58,7 @@ public class UI_Inventory : UI_Base
             RectTransform scrollRectTransform = ScrollRect.GetComponent<RectTransform>();
             int constCount = (int)(scrollRectTransform.rect.width / (gridLayoutGroup.cellSize.x + gridLayoutGroup.spacing.x));
             int rowCount = Mathf.CeilToInt((float)Items.Count / constCount);
-            float height = rowCount * (gridLayoutGroup.cellSize.y + gridLayoutGroup.spacing.y) - gridLayoutGroup.spacing.y;
+            float height = rowCount * (gridLayoutGroup.cellSize.y + gridLayoutGroup.spacing.y) - gridLayoutGroup.spacing.y + gridLayoutGroup.padding.top;
             
             contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, height);
         }
@@ -70,11 +70,15 @@ public class UI_Inventory : UI_Base
             Init();
             return;
         }
-            
-        if(Items.Count == 0)
+        if (Items.Count == 0)
         {
             return;
         }
+        foreach (UI_Inventory_Item item in Items)
+        {
+            item.SetItem(null);
+        }
+
         List<Item> items = Managers.Inventory.Items.Values.ToList();
         items.Sort((left, right) => { return left.Slot - right.Slot; });
 
@@ -84,13 +88,7 @@ public class UI_Inventory : UI_Base
                 continue;
             Items[item.Slot].SetItem(item);
         }
-        foreach (UI_Inventory_Item item in Items)
-        {
-            if (Managers.Inventory.Get(item.ItemDbId) == null)
-            {
-                item.SetItem(null);
-            }
-        }
+        
         UpdateContentSize();
     }
     private void UpdateContentSize()
