@@ -1528,6 +1528,7 @@ MonoBehaviour:
   _enhanceItemInfoPanel: {fileID: 5977903986284971417}
   enhanceButton: {fileID: 3205450630051532160}
   IsProduction: 0
+  uiCanvas: {fileID: 0}
 --- !u!1 &4241622650179091680
 GameObject:
   m_ObjectHideFlags: 0

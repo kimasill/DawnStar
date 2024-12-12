@@ -182,7 +182,7 @@ public class BaseController : MonoBehaviour
         if (_sprite == null)
             return;
 
-        _sprite.sortingOrder = -CellPos.y * 10;
+        _sprite.sortingOrder += -CellPos.y * 10;
     }
     protected virtual void UpdateAnimation()
     {

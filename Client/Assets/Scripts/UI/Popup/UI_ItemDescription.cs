@@ -162,6 +162,13 @@ public class UI_ItemDescription : UI_Popup
         localPoint.x += _itemPanelRectTransform.rect.width / 2 + 25;
         localPoint.y -= _itemPanelRectTransform.rect.height / 2;
 
+        RectTransform parentRect = _itemPopup.transform.parent as RectTransform;
+        Vector2 minPosition = parentRect.rect.min - _itemPanelRectTransform.rect.min;
+        Vector2 maxPosition = parentRect.rect.max - _itemPanelRectTransform.rect.max;
+
+        localPoint.x = Mathf.Clamp(localPoint.x, minPosition.x, maxPosition.x);
+        localPoint.y = Mathf.Clamp(localPoint.y, minPosition.y, maxPosition.y);
+
         _itemPopup.GetComponent<RectTransform>().localPosition = localPoint;
     }
 }

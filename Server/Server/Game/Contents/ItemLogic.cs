@@ -45,15 +45,18 @@ namespace Server.Game
                 ItemDb itemDb = new ItemDb();
                 ItemData itemData = null;
                 DataManager.ItemDict.TryGetValue(item.TemplateId, out itemData);
+
+                item.Rank += 1;
+
                 if (item.ItemType == ItemType.Weapon)
                 {
                     WeaponData weaponData = (WeaponData)itemData;
-                    itemDb.Damage = (int)(weaponData.damage + weaponData.damage*0.5 + (weaponData.damage* enhanceData.value));
+                    itemDb.Damage = (int)(weaponData.damage + (weaponData.damage*0.5)*item.Rank + (weaponData.damage* enhanceData.value));
                 }
                 else if(item.ItemType == ItemType.Armor)
                 {
                     ArmorData armorData = (ArmorData)itemData;
-                    itemDb.Defense = (int)(armorData.defense + armorData.defense * 0.5 + (armorData.defense * enhanceData.value));
+                    itemDb.Defense = (int)(armorData.defense + (armorData.defense * 0.5)*item.Rank + (armorData.defense * enhanceData.value));
                 }
 
                 foreach(KeyValuePair<string, string> option in item.Options)
@@ -95,7 +98,7 @@ namespace Server.Game
                 itemDb.Count = item.Count;
                 itemDb.Slot = item.Slot;
                 itemDb.Equipped = item.Equipped;
-                itemDb.Enhance = item.Rank + 1;
+                itemDb.Enhance = item.Rank;
                 //itemDb.Grade = item.Grade,
                 itemDb.OwnerDbId = player.PlayerDbId;
                 
