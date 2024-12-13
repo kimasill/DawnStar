@@ -102,7 +102,12 @@ namespace Server.Game
                 damage = (int)(damage * (1 - (defenseFactor / (defenseFactor + 100))));
             }
 
-            if (damage > 0)
+            if (victim.TotalDamageReduce > 0)
+            {
+                damage = (int)(damage * victim.TotalDamageReduce);
+            }
+
+            if (damage >= 0)
             {
                 damagePacket.Damage = damage;
                 damagePacket.ObjectId = id;

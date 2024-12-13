@@ -39,6 +39,16 @@
       "id": 8,
       "name": "경험치",
       "icon": "Textures/Images/Icons/Buff/Buff_Exp"
+    },
+    {
+      "id": 9,
+      "name": "거래",
+      "icon": "Textures/Images/Icons/Buff/Buff_Business"
+    },
+    {
+      "id": 10,
+      "name": "데미지 감소",
+      "icon": "Textures/Images/Icons/Buff/Buff_DamageReduce"
     }
   ]
 } 

@@ -62,6 +62,7 @@ namespace Data
         public string prefab;
         public List<string> prefabs;
         public string icon;
+        public float effectDuration;
         public bool isObject;
         public bool fix;
     }
@@ -181,6 +182,7 @@ namespace Data
         public string description;
         public Dictionary<string, string> options = new Dictionary<string, string>();
         public List<CostData> pieces;
+        public Grade grade;
     }
 
     public class WeaponData : ItemData

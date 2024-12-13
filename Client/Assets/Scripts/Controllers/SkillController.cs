@@ -51,8 +51,14 @@ public class SkillController : MonoBehaviour
             UpdateUserSkillFlag();
         }
         AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
-        yield return new WaitForSeconds(stateInfo.length / _animator.speed); // SkillData에서 지속 시간 가져오기
-
+        if (SkillData.effectDuration>0)
+        {
+            yield return new WaitForSeconds(SkillData.effectDuration * 1000);
+        }
+        else
+        {
+            yield return new WaitForSeconds(stateInfo.length / _animator.speed);
+        }
         if (User.State != CreatureState.Idle)
         {
             UpdateUserSkillFlag();
