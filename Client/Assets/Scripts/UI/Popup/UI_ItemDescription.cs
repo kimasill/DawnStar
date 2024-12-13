@@ -26,9 +26,11 @@ public class UI_ItemDescription : UI_Popup
 
     private RectTransform _statPanelRectTransform;
     private RectTransform _itemPanelRectTransform;
+    private RectTransform _itemDescriptionRectTransform;
     enum Images
     {
-        ItemPopup_Image
+        ItemPopup_Image,
+        ItemDescriptionImage
     }
 
     enum Texts
@@ -57,6 +59,7 @@ public class UI_ItemDescription : UI_Popup
         _skillPanel.gameObject.SetActive(false);
         _statPanelRectTransform = _grid.gameObject.transform as RectTransform;
         _itemPanelRectTransform = _itemPopup.GetComponent<RectTransform>();
+        _itemDescriptionRectTransform = GetImage((int)Images.ItemDescriptionImage).gameObject.transform as RectTransform;
     }
 
     public void OpenUI(PointerEventData eventData)
@@ -170,8 +173,9 @@ public class UI_ItemDescription : UI_Popup
         RectTransform parentRect = _itemPopup.transform.parent as RectTransform;
         Vector2 minPosition = parentRect.rect.min - _itemPanelRectTransform.rect.min;
         Vector2 maxPosition = parentRect.rect.max - _itemPanelRectTransform.rect.max;
+    
 
-        localPoint.x = Mathf.Clamp(localPoint.x, minPosition.x, maxPosition.x);
+        localPoint.x = Mathf.Clamp(localPoint.x, minPosition.x, maxPosition.x - _itemDescriptionRectTransform.rect.width);
         localPoint.y = Mathf.Clamp(localPoint.y, minPosition.y, maxPosition.y);
 
         _itemPopup.GetComponent<RectTransform>().localPosition = localPoint;

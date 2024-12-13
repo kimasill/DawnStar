@@ -268,14 +268,19 @@
       "skillType": "SkillBuff",
       "skillLogicType": "Block",
       "buff": {
-        "id": "3",
-        "name": "방어력",
+        "id": "10",
+        "name": "데미지 감소",
         "duration": "2",
         "value": "0.9",
         "isPercent": "false"
       },
       "unchartedPoint": "20",
-      "description": "일정시간동안 받는 피해량을 감소시킨다."
+      "description": "일정시간동안 받는 피해량을 감소시킨다.",
+      "prefab": "Effect/Shield",
+      "effectDuration": 2.0,
+      "icon": "Textures/Images/Icons/Skill/Shield",
+      "isObject": "false",
+      "fix": "true"
     },
     {
       "id": "17",

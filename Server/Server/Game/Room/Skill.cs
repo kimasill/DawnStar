@@ -499,7 +499,6 @@ namespace Server.Game
         }
         private async void BlockAsync(SkillData data) 
         {
-            await Task.Delay(100);
             float prevReduce = Owner.TotalDamageReduce;
             Owner.TotalDamageReduce = data.buff.value;
             await Task.Delay(data.buff.duration*1000);

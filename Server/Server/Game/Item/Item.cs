@@ -105,7 +105,8 @@ namespace Server.Game
                 item.Slot = itemDb.Slot;
                 item.Equipped = itemDb.Equipped;
                 item.Rank = itemDb.Enhance;
-                item.Grade = (Grade)Enum.Parse(typeof(Grade), itemDb.Grade);
+                if(itemDb.Grade != null)
+                    item.Grade = (Grade)Enum.Parse(typeof(Grade), itemDb.Grade);
                 MapField<string, string> options = new MapField<string, string>();
                 if (itemDb.Options.Count > 0)
                 {
