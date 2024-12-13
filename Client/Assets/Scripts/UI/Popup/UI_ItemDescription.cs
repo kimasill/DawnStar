@@ -37,7 +37,8 @@ public class UI_ItemDescription : UI_Popup
         ItemDescriptionText,
         ItemSkillName,
         ItemSkillDescription,
-        ItemPopup_Add
+        ItemPopup_Add,
+        ItemPopup_Grade
     }
 
     public override void Init()
@@ -81,7 +82,11 @@ public class UI_ItemDescription : UI_Popup
         }
 
         GetImage((int)Images.ItemPopup_Image).sprite = Managers.Resource.Load<Sprite>(itemData.iconPath);
+        string grade = Content.ConvertGrade(item.Grade);
+        GetTextMeshPro((int)Texts.ItemPopup_Grade).text = grade;
+        GetTextMeshPro((int)Texts.ItemPopup_Grade).color = Content.GetGradeColor(item.Grade);
         GetTextMeshPro((int)Texts.ItemPopup_Name).text = itemData.name;
+        GetTextMeshPro((int)Texts.ItemPopup_Name).color = Content.GetGradeColor(item.Grade);
         GetTextMeshPro((int)Texts.ItemDescriptionText).text = itemData.description;
         GetTextMeshPro((int)Texts.ItemPopup_Add).text = item.Rank == 0 ? "" : $"(+{item.Rank.ToString()})";
         switch (item.ItemType)

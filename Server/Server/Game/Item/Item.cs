@@ -55,7 +55,11 @@ namespace Server.Game
             get { return Info.Rank; }
             set { Info.Rank = value; }
         }
-        public Grade Grade { get; protected set; }
+        public Grade Grade
+        {
+            get { return Info.Grade; }
+            set { Info.Grade = value; }
+        }
 
 
         public Item(ItemType itemType)
@@ -101,6 +105,7 @@ namespace Server.Game
                 item.Slot = itemDb.Slot;
                 item.Equipped = itemDb.Equipped;
                 item.Rank = itemDb.Enhance;
+                item.Grade = (Grade)Enum.Parse(typeof(Grade), itemDb.Grade);
                 MapField<string, string> options = new MapField<string, string>();
                 if (itemDb.Options.Count > 0)
                 {

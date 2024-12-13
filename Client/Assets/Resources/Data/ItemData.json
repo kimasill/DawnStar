@@ -10,7 +10,8 @@
       "prefabPath" : "Textures/Item/Weapons/Bastard",      
       "range": "1",
       "attackSpeed": "0.9",
-      "description": "기본적인 검."
+      "description": "기본적인 검.",
+      "grade": "Normal"
     },
     {
       "id": "2",
@@ -21,7 +22,8 @@
       "iconPath": "Textures/Item/Weapons/ShortSword",
       "range": "1",
       "attackSpeed": "1.4",
-      "description": "짧지만 가벼운 검"
+      "description": "짧지만 가벼운 검",
+      "grade": "Normal"
     },
     {
       "id": "3",
@@ -33,7 +35,8 @@
       "prefabPath": "Textures/Item/Weapons/GreatSword",
       "range": "3",
       "attackSpeed": "0.7",
-      "description": "케일라드가 사용한 검. 무겁지만 사거리가 길다."
+      "description": "케일라드가 사용한 검. 무겁지만 사거리가 길다.",
+      "grade": "Normal"
     },
     {
       "id": "4",
@@ -44,7 +47,8 @@
       "iconPath": "Textures/Item/Weapons/Scimitar",
       "range": "2",
       "attackSpeed": "0.8",
-      "description": "긴 칼날을 가진 곡검. 범위가 넓고 절삭력이 강하다."
+      "description": "긴 칼날을 가진 곡검. 범위가 넓고 절삭력이 강하다.",
+      "grade": "Normal"
     },
     {
       "id": "5",
@@ -59,7 +63,8 @@
       "options": {
         "CriticalChance": "10",
         "Skill": "3"
-      }
+      },
+      "grade": "Rare"
     },
     {
       "id": "6",
@@ -74,7 +79,8 @@
       "options": {
         "CriticalChance": "5",
         "Skill": "4"
-      }
+      },
+      "grade": "Rare"
     },
     {
       "id": "7",
@@ -89,7 +95,8 @@
       "options": {
         "CriticalChance": "10",
         "Skill": "5"
-      }
+      },
+      "grade": "Elite"
     },
     {
       "id": "8",
@@ -104,7 +111,8 @@
       "options": {
         "CriticalChance": "15",
         "Skill": "6"
-      }
+      },
+      "grade": "Epic"
     },
     {
       "id": "9",
@@ -119,7 +127,8 @@
       "options": {
         "CriticalChance": "20",
         "Skill": "7"
-      }
+      },
+      "grade": "Uncharted"
     },
     {
       "id": 10,
@@ -132,7 +141,8 @@
       "options": {
         "Defense": "20",
         "Avoid": "20"
-      }
+      },
+      "grade": "Normal"
     }
   ],
   "armors": [
@@ -143,7 +153,8 @@
       "defense": "15",
       "price": "200",
       "iconPath": "Textures/Item/armor",
-      "description": "뼈로 만든 갑옷. 가볍고 방어력이 높다."
+      "description": "뼈로 만든 갑옷. 가볍고 방어력이 높다.",
+      "grade": "Normal"
     },
     {
       "id": "101",
@@ -152,7 +163,8 @@
       "defense": "5",
       "price": "50",
       "iconPath": "Textures/Item/helmets",
-      "description": "뼈로 만든 투구. 가볍고 방어력이 높다."
+      "description": "뼈로 만든 투구. 가볍고 방어력이 높다.",
+      "grade": "Normal"
     },
     {
       "id": "102",
@@ -165,7 +177,8 @@
       "options": {
         "Avoid": "10",
         "Skill": "16"
-      }
+      },
+      "grade": "Elite"
     },
     {
       "id": "103",
@@ -175,7 +188,8 @@
       "price": "7800",
       "iconPath": "Textures/Item/Armors/Armor/Icon/Armor_Erdoa_Icon",
       "prefabPath": "Textures/Item/Armors/Armor/Armor_Erdoa",
-      "description": "에르도아 왕국의 중갑. 강력한 방어력을 자랑한다."
+      "description": "에르도아 왕국의 중갑. 강력한 방어력을 자랑한다.",
+      "grade": "Rare"
     },
     {
       "id": 104,
@@ -184,7 +198,8 @@
       "defense": 30,
       "price": 5000,
       "iconPath": "Textures/Item/Armors/Helmet/Helmet_USC",
-      "description": "USC의 전투헬멧. 마수를 상대하는데 특화되어 있다."
+      "description": "USC의 전투헬멧. 마수를 상대하는데 특화되어 있다.",
+      "grade": "Normal"
     },
     {
       "id": 105,
@@ -194,7 +209,8 @@
       "price": 10000,
       "iconPath": "Textures/Item/Armors/Armor/Icon/Armor_USC_Icon",
       "prefabPath": "Textures/Item/Armors/Armor/Armor_USC",
-      "description": "USC의 전투갑옷. 마수를 상대하는데 특화되어 있다."
+      "description": "USC의 전투갑옷. 마수를 상대하는데 특화되어 있다.",
+      "grade": "Normal"
     },
     {
       "id": 106,
@@ -202,9 +218,10 @@
       "armorType": "Boots",
       "defense": 20,
       "price": 3000,
-      "iconPath": "Textures/Item/Armors/Boots/Icon/Boots_USC",
+      "iconPath": "Textures/Item/Armors/Boots/Icon/Boots_USC_Icon",
       "prefabPath": "Textures/Item/Armors/Boots/Boots_USC",
-      "description": "USC의 전투화. 마수를 상대하는데 특화되어 있다."
+      "description": "USC의 전투화. 마수를 상대하는데 특화되어 있다.",
+      "grade": "Normal"
     },
     {
       "id": 107,
@@ -212,9 +229,10 @@
       "armorType": "Back",
       "defense": 10,
       "price": 2000,
-      "iconPath": "Textures/Item/Armors/Cape/Icon/Cape_USC_Icon",
-      "prefabPath": "Textures/Item/Armors/Cape/Cape_USC",
-      "description": "USC의 망토. USC를 상징하는 마크가 그려져있으며, 위압감을 풍긴다."
+      "iconPath": "Textures/Item/Armors/Back/Icon/Cape_USC_Icon",
+      "prefabPath": "Textures/Item/Armors/Back/Cape_USC",
+      "description": "USC의 망토. USC를 상징하는 마크가 그려져있으며, 위압감을 풍긴다.",
+      "grade": "Normal"
     }
   ],
   "jewelry": [

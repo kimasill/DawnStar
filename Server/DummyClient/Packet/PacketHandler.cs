@@ -226,4 +226,9 @@ class PacketHandler
     {
         S_BossKill bossKill = packet as S_BossKill;
     }
+
+    public static void S_EnhanceHandler(PacketSession session, IMessage packet)
+    {
+        S_Enhance enhance = packet as S_Enhance;
+    }
 }

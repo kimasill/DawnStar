@@ -124,6 +124,9 @@ namespace Server.Migrations
                     b.Property<bool>("Equipped")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Grade")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("OptionsJson")
                         .HasColumnType("nvarchar(max)");
 
