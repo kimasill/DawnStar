@@ -66,6 +66,7 @@
       "id": "5",
       "name": "USCCampShop",
       "npcType": "Shop",
+      "shopId": "3",
       "scripts": [
         {
           "id": "50001",

@@ -195,7 +195,7 @@ class PacketHandler
             return;
         GameRoom room = player.Room;
         if (room == null)
-            return;
+            return;        
         room.Push(room.HandleRequestShop, player, requestShopPacket.ShopId);
     }
 

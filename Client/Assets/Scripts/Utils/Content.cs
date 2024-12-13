@@ -1,4 +1,5 @@
 using Google.Protobuf.Protocol;
+using UnityEngine;
 public static class Content
 {
     public static string ConvertSpecialOptions(string option)
@@ -36,5 +37,41 @@ public static class Content
             }
         }
         return option;
+    }
+    public static string ConvertGrade(Grade grade)
+    {
+        switch (grade)
+        {
+            case Grade.Normal:
+                return "노말";
+            case Grade.Rare:
+                return "레어";
+            case Grade.Elite:
+                return "유니크";
+            case Grade.Epic:
+                return "레전드";
+            case Grade.Uncharted:
+                return "미지";
+            default:
+                return "노말";
+        }
+    }
+    public static Color GetGradeColor(Grade grade)
+    {
+        switch (grade)
+        {
+            case Grade.Normal:
+                return Color.white;
+            case Grade.Rare:
+                return new Color(90, 107, 255);
+            case Grade.Elite:
+                return new Color(200, 255, 45);
+            case Grade.Epic:
+                return new Color(0, 255, 200);
+            case Grade.Uncharted:
+                return new Color(255, 0, 173);
+            default:
+                return Color.white;
+        }
     }
 }
