@@ -426,7 +426,7 @@
       "id": "13",
       "name": "오크워리어",
       "type": "Orc",
-      "grade": "Normal",
+      "grade": "Superior",
       "stat": {
         "level": "12",
         "maxHp": "500",
@@ -449,6 +449,24 @@
           "itemId": "1102",
           "minCount": "1",
           "maxCount": "5"
+        },
+        {
+          "probability": "30",
+          "itemId": "1127",
+          "minCount": "1",
+          "maxCount": "2"
+        },
+        {
+          "probability": "15",
+          "itemId": "1127",
+          "minCount": "2",
+          "maxCount": "4"
+        },
+        {
+          "probability": "5",
+          "itemId": "1126",
+          "minCount": "1",
+          "maxCount": "1"
         },
         {
           "probability": "50",
@@ -484,6 +502,36 @@
           "itemId": "10001",
           "minCount": "100",
           "maxCount": "200"
+        },
+        {
+          "probability": "30",
+          "itemId": "1127",
+          "minCount": "2",
+          "maxCount": "4"
+        },
+        {
+          "probability": "20",
+          "itemId": "1127",
+          "minCount": "3",
+          "maxCount": "7"
+        },
+        {
+          "probability": "15",
+          "itemId": "1126",
+          "minCount": "1",
+          "maxCount": "2"
+        },
+        {
+          "probability": "10",
+          "itemId": "1126",
+          "minCount": "2",
+          "maxCount": "4"
+        },
+        {
+          "probability": 5,
+          "itemId": 1125,
+          "minCount": 1,
+          "maxCount": 1
         },
         {
           "probability": "30",
@@ -533,7 +581,7 @@
       "id": "16",
       "name": "사티로스워리어",
       "type": "Satyr",
-      "grade": "Normal",
+      "grade": "Superior",
       "stat": {
         "level": "16",
         "maxHp": "820",
@@ -549,6 +597,24 @@
           "itemId": "1153",
           "minCount": "3",
           "maxCount": "5"
+        },
+        {
+          "probability": "30",
+          "itemId": "1127",
+          "minCount": "1",
+          "maxCount": "3"
+        },
+        {
+          "probability": "15",
+          "itemId": "1127",
+          "minCount": "2",
+          "maxCount": "5"
+        },
+        {
+          "probability": "10",
+          "itemId": "1126",
+          "minCount": "1",
+          "maxCount": "1"
         },
         {
           "probability": "40",
@@ -608,6 +674,36 @@
           "itemId": "1115",
           "minCount": "3",
           "maxCount": "6"
+        },
+        {
+          "probability": "30",
+          "itemId": "1127",
+          "minCount": "3",
+          "maxCount": "5"
+        },
+        {
+          "probability": "20",
+          "itemId": "1127",
+          "minCount": "4",
+          "maxCount": "11"
+        },
+        {
+          "probability": "15",
+          "itemId": "1126",
+          "minCount": "2",
+          "maxCount": "4"
+        },
+        {
+          "probability": "10",
+          "itemId": "1126",
+          "minCount": "3",
+          "maxCount": "7"
+        },
+        {
+          "probability": 10,
+          "itemId": 1125,
+          "minCount": 1,
+          "maxCount": 1
         },
         {
           "probability": "80",
@@ -792,7 +888,7 @@
       "id": "22",
       "name": "스켈레톤 마법사",
       "type": "SkeletonMage",
-      "grade": "Normal",
+      "grade": "Superior",
       "stat": {
         "level": "18",
         "maxHp": "1300",
@@ -806,6 +902,24 @@
         {
           "probability": "30",
           "itemId": "1118",
+          "minCount": "1",
+          "maxCount": "2"
+        },
+        {
+          "probability": "30",
+          "itemId": "1127",
+          "minCount": "2",
+          "maxCount": "4"
+        },
+        {
+          "probability": "15",
+          "itemId": "1127",
+          "minCount": "3",
+          "maxCount": "7"
+        },
+        {
+          "probability": "10",
+          "itemId": "1126",
           "minCount": "1",
           "maxCount": "2"
         },
@@ -857,6 +971,36 @@
           "maxCount": "1"
         },
         {
+          "probability": "30",
+          "itemId": "1127",
+          "minCount": "3",
+          "maxCount": "5"
+        },
+        {
+          "probability": "20",
+          "itemId": "1127",
+          "minCount": "4",
+          "maxCount": "11"
+        },
+        {
+          "probability": "15",
+          "itemId": "1126",
+          "minCount": "2",
+          "maxCount": "4"
+        },
+        {
+          "probability": "10",
+          "itemId": "1126",
+          "minCount": "3",
+          "maxCount": "7"
+        },
+        {
+          "probability": 10,
+          "itemId": 1125,
+          "minCount": 1,
+          "maxCount": 1
+        },
+        {
           "probability": "100",
           "itemId": "10001",
           "minCount": "100",
@@ -870,6 +1014,157 @@
         }
       ],
       "rewardBoxId": "4"
+    },
+    {
+      "id": 24,
+      "name": "무덤 거미",
+      "type": "Normal",
+      "grade": "Normal",
+      "stat": {
+        "level": 16,
+        "maxHp": 900,
+        "attack": 80,
+        "speed": 3.1,
+        "totalExp": 1200,
+        "attackSpeed": 1.1,
+        "invokeSpeed": 0.7
+      },
+      "rewards": [
+        {
+          "probability": 30,
+          "itemId": 1162,
+          "minCount": 4,
+          "maxCount": 10
+        },
+        {
+          "probability": 20,
+          "itemId": 1162,
+          "minCount": 2,
+          "maxCount": 5
+        },
+        {
+          "probability": 25,
+          "itemId": 1121,
+          "minCount": 2,
+          "maxCount": 5
+        },
+        {
+          "probability": 15,
+          "itemId": 1121,
+          "minCount": 4,
+          "maxCount": 10
+        },
+        {
+          "probability": 40,
+          "itemId": 10001,
+          "minCount": 50,
+          "maxCount": 100
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "name": "맹독 거미",
+      "type": "Normal",
+      "grade": "Normal",
+      "stat": {
+        "level": 18,
+        "maxHp": 1100,
+        "attack": 90,
+        "speed": 3.1,
+        "totalExp": 1400,
+        "attackSpeed": 1.1,
+        "invokeSpeed": 0.7
+      },
+      "rewards": [
+        {
+          "probability": 30,
+          "itemId": 1163,
+          "minCount": 4,
+          "maxCount": 10
+        },
+        {
+          "probability": 20,
+          "itemId": 1163,
+          "minCount": 2,
+          "maxCount": 5
+        },
+        {
+          "probability": 25,
+          "itemId": 1122,
+          "minCount": 2,
+          "maxCount": 5
+        },
+        {
+          "probability": 15,
+          "itemId": 1122,
+          "minCount": 4,
+          "maxCount": 10
+        },
+        {
+          "probability": 40,
+          "itemId": 10001,
+          "minCount": 50,
+          "maxCount": 100
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "name": "까마귀",
+      "type": "Flying",
+      "grade": "Animal",
+      "stat": {
+        "level": 17,
+        "maxHp": 1800,
+        "attack": 0,
+        "speed": 3.5,
+        "totalExp": 1300
+      },
+      "rewards": [
+        {
+          "probability": 60,
+          "itemId": 1164,
+          "minCount": 5,
+          "maxCount": 7
+        },
+        {
+          "probability": 30,
+          "itemId": 1164,
+          "minCount": 3,
+          "maxCount": 4
+        },
+        {
+          "probability": 50,
+          "itemId": 1124,
+          "minCount": 5,
+          "maxCount": 16
+        },
+        {
+          "probability": 15,
+          "itemId": 1119,
+          "minCount": 4,
+          "maxCount": 10
+        },
+        {
+          "probability": 80,
+          "itemId": 10001,
+          "minCount": 200,
+          "maxCount": 500
+        },
+        {
+          "probability": 30,
+          "itemId": 10001,
+          "minCount": 300,
+          "maxCount": 700
+        },
+        {
+          "probability": 10,
+          "itemId": 10001,
+          "minCount": 400,
+          "maxCount": 900
+        }
+      ]
     }
   ]
 } 
