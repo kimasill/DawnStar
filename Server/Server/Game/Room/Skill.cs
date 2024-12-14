@@ -259,11 +259,6 @@ namespace Server.Game
                 // Buff 시작 시 로직
                 Console.WriteLine($"Buff {data.buff.name} applied with value {data.buff.value}");
                 Owner.ApplyBuff(data.buff);
-
-                // Buff 종료 시 로직
-                await Task.Delay(data.buff.duration * 1000);
-                Owner.RemoveBuff(data.buff);
-                Console.WriteLine($"Buff {data.buff.name} ended");
             }
             else if (data.buffList != null)
             {
@@ -272,11 +267,6 @@ namespace Server.Game
                     // Buff 시작 시 로직
                     Console.WriteLine($"Buff {buff.name} applied with value {buff.value}");
                     Owner.ApplyBuff(buff);
-
-                    // Buff 종료 시 로직
-                    await Task.Delay(buff.duration * 1000);
-                    Owner.RemoveBuff(buff);
-                    Console.WriteLine($"Buff {buff.name} ended");
                 }
             }
         }
@@ -289,11 +279,6 @@ namespace Server.Game
                 // Debuff 시작 시 로직
                 Console.WriteLine($"Debuff {data.debuff.name} applied with value {data.debuff.value}");
                 Owner.ApplyDebuff(data.debuff);
-
-                // Debuff 종료 시 로직
-                await Task.Delay(data.debuff.duration * 1000);
-                Owner.RemoveDebuff(data.debuff);
-                Console.WriteLine($"Debuff {data.debuff.name} ended");
             }
             else if (data.debuffList != null)
             {
@@ -302,11 +287,6 @@ namespace Server.Game
                     // Debuff 시작 시 로직
                     Console.WriteLine($"Debuff {debuff.name} applied with value {debuff.value}");
                     Owner.ApplyDebuff(debuff);
-
-                    // Debuff 종료 시 로직
-                    await Task.Delay(debuff.duration * 1000);
-                    Owner.RemoveDebuff(debuff);
-                    Console.WriteLine($"Debuff {debuff.name} ended");
                 }
             }
         }
@@ -715,32 +695,35 @@ namespace Server.Game
             {
                 tick = Environment.TickCount64 + (long)(data.buff.duration * 1000);
             }
-
+            int buff = -1;
+            int debuff = -1;
             while (true)
             {
                 List<Vector2Int> enemies = SkillLogic.GetAllTargetsInRange(Owner.CellPos, data.range);
-                if(enemyNum < enemies.Count)
+                if (enemyNum < enemies.Count)
                 {
                     enemyNum = enemies.Count - enemyNum;
                     if (data.debuff != null && enemyNum> 0)
                     {
                         target.ApplyDebuff(data.debuff, enemyNum);
+                        debuff = target.Debuffs.Last().Key;
                     }
                     else if (data.buff != null && enemyNum> 0)
                     {
                         target.ApplyBuff(data.buff, enemyNum);
+                        buff = target.Buffs.Last().Key;
                     }
                 }
                 else if (enemyNum > enemies.Count)
                 {
                     enemyNum = enemyNum - enemies.Count;
-                    if (data.debuff != null && enemyNum > 0)
+                    if (debuff >= 0 && enemyNum > 0)
                     {
-                        target.RemoveDebuff(data.debuff, enemyNum);
+                        target.RemoveDebuff(debuff, enemyNum);
                     }
-                    else if (data.buff != null && enemyNum > 0)
+                    if (buff >= 0 && enemyNum > 0)
                     {
-                        target.RemoveBuff(data.buff, enemyNum);
+                        target.RemoveBuff(buff, enemyNum);
                     }
                 }
                 await Task.Delay(1000);

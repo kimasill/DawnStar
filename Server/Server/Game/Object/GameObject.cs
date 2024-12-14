@@ -32,8 +32,8 @@ namespace Server.Game
         public PositionInfo PosInfo { get; private set;} = new PositionInfo();
         public StatInfo Stat { get; private set; } = new StatInfo();
         public MapInfo MapInfo { get; set; } = new MapInfo();
-        public List<BuffInfo> Buffs { get; set; } = new List<BuffInfo>();
-        public List<DebuffInfo> Debuffs { get; set; } = new List<DebuffInfo>();
+        public Dictionary<int, float> Buffs { get; set; } = new Dictionary<int, float>();
+        public Dictionary<int, float> Debuffs { get; set; } = new Dictionary<int, float>();
         public virtual int Level
         {
             get { return Stat.Level; }
@@ -228,40 +228,58 @@ namespace Server.Game
             changePacket.Hp = Stat.Hp;
             Room.Broadcast(CellPos, changePacket);
         }
-        public virtual void OnBuffed(SkillData skillData)
-        {
-            if (Room == null)
-                return;
-
-            ApplyBuff(skillData.buff);
-        }
-        public virtual void OnDebuffed(SkillData skillData)
-        {
-            if (Room == null)
-                return;
-
-            ApplyDebuff(skillData.debuff);
-        }
         public void ApplyBuff(BuffInfo buff, int count = 1)
         {
             if (buff == null)
                 return;
             for(int i = 0; i < count; i++)
             {
-                ApplyEffect(buff.name, buff.value, true);
-                Buffs.Add(buff);
-                Console.WriteLine($"Buff {buff.name} applied with value {buff.value}");
+                float afterValue = ApplyEffect(buff.id, buff.value, true);
+                if (!Buffs.ContainsKey(buff.id))
+                {
+                    Buffs[buff.id] = 0;
+                }
+                Buffs[buff.id] += afterValue;
+
+                float tValue = 0;
+                Buffs.TryGetValue(buff.id, out tValue);
+
+                S_Buff buffPacket = new S_Buff() 
+                {
+                    ObjectId = Id,
+                    BuffId = buff.id,
+                    Value = tValue
+                };
+                Room.Broadcast(CellPos, buffPacket);
+                Console.WriteLine($"Buff {buff.name} applied with value {afterValue}");
+                Room.PushAfter(buff.duration * 1000, () =>
+                {
+                    RemoveBuff(buff.id, afterValue, count);
+                });
             }
         }
-        public void RemoveBuff(BuffInfo buff, int count = 1)
+        public void RemoveBuff(int buffId, float value,  int count = 1)
         {
-            if (buff == null)
+            if (Buffs.ContainsKey(buffId) == false)
                 return;
-            for(int i = 0; i < Buffs.Count; i++)
+
+            for (int i = 0; i < count; i++)
             {
-                ApplyEffect(buff.name, buff.value, false);
-                Buffs.Remove(buff);
-                Console.WriteLine($"Buff {buff.name} removed");
+                float tValue = 0;
+                Buffs.TryGetValue(buffId, out tValue);
+                tValue -= value;
+                ApplyEffect(buffId, value, false);
+
+                if(tValue <= 0)
+                    Buffs.Remove(buffId);
+
+                S_Buff buffPacket = new S_Buff()
+                {
+                    ObjectId = Id,
+                    BuffId = buffId,
+                    Value = tValue
+                };
+                Console.WriteLine($"Buff {buffId} removed");
             }
         }
         public void ApplyDebuff(DebuffInfo debuff, int count = 1)
@@ -271,60 +289,109 @@ namespace Server.Game
 
             for (int i = 0; i < count; i++)
             {
-                ApplyEffect(debuff.name, debuff.value, true);
-                Debuffs.Add(debuff);
+                float value = ApplyEffect(debuff.id, debuff.value, true);
+                if (!Debuffs.ContainsKey(debuff.id))
+                {
+                    Debuffs[debuff.id] = 0;
+                }
+                Debuffs[debuff.id] += value;
+
+                float tValue = 0;
+                Debuffs.TryGetValue(debuff.id, out tValue);
+
+                S_Buff buffPacket = new S_Buff()
+                {
+                    ObjectId = Id,
+                    DebuffId = debuff.id,
+                    Value = tValue
+                };
                 Console.WriteLine($"Debuff {debuff.name} applied with value {debuff.value}");
+                Room.PushAfter(debuff.duration * 1000, () =>
+                {
+                    RemoveDebuff(debuff.id, value, count);
+                });
             }
         }
-        public void RemoveDebuff(DebuffInfo debuff, int count = 1)
+        public void RemoveDebuff(int debuffId, float value, int count = 1)
         {
-            if (debuff == null)
+            if (Debuffs.ContainsKey(debuffId) ==false)
                 return;
 
             for (int i = 0; i < count; i++)
             {
-                ApplyEffect(debuff.name, debuff.value, false);
-                Debuffs.Remove(debuff);
-                Console.WriteLine($"Debuff {debuff.name} removed");
+                float tValue = 0;
+                Debuffs.TryGetValue(debuffId, out tValue);
+                ApplyEffect(debuffId, value, false);
+
+                if (tValue <= 0)
+                    Debuffs.Remove(debuffId);
+
+                S_Buff buffPacket = new S_Buff()
+                {
+                    ObjectId = Id,
+                    DebuffId = debuffId,
+                    Value = tValue
+                };
+                Console.WriteLine($"Debuff {debuffId} removed");
             }
         }
-        private void ApplyEffect(string name, float value, bool isApplying)
+        private float ApplyEffect(int buffId, float value, bool isApplying)
         {
+            BuffData buff = null;
+            DataManager.BuffDict.TryGetValue(buffId, out buff);
+            if (buff == null)
+                return 0;
+
             int multiplier = isApplying ? 1 : -1;
-            switch (name)
+            float applyValue = 0;
+            switch (buff.name)
             {
                 case "공격력":
-                    AdditionalAttack += (int)(Stat.Attack * value) * multiplier;
+                    applyValue = isApplying ? TotalAttack * value * multiplier : value * multiplier;
+                    AdditionalAttack += (int)applyValue;
                     break;
                 case "방어력":
-                    AdditionalDefense += (int)(Stat.Defense * value) * multiplier;
+                    applyValue = isApplying ? TotalDefense * value * multiplier : value * multiplier;
+                    AdditionalDefense += (int)applyValue;
                     break;
-                case "이동속도":
-                    AdditionalSpeed += (int)(Stat.Speed * value) * multiplier;
-                    break;
-                case "공격속도":
-                    AdditionalAttackSpeed += Stat.AttackSpeed * value * multiplier;
+                case "공격 속도":
+                    applyValue = value * multiplier * 100;
+                    AdditionalAttackSpeed += applyValue;
                     break;
                 case "치명타 확률":
-                    AdditionalCriticalChance += (int)(Stat.CriticalChance * value) * multiplier;
+                    applyValue = value * multiplier * 100;
+                    AdditionalCriticalChance += (int)applyValue;
                     break;
                 case "치명타 피해":
-                    AdditionalCriticalDamage += (int)(Stat.CriticalDamage * value) * multiplier;
+                    applyValue = value * multiplier * 100;
+                    AdditionalCriticalDamage += (int)applyValue;
                     break;
-                case "회피율":
-                    AdditionalAvoidance += (int)(Stat.Avoid * value) * multiplier;
+                case "회피":
+                    applyValue = value * multiplier * 100;
+                    AdditionalAvoidance += (int)applyValue;
                     break;
-                case "명중률":
-                    AdditionalAccuracy += (int)(Stat.Accuracy * value) * multiplier;
+                case "명중":
+                    applyValue = value * multiplier * 100;
+                    AdditionalAccuracy += (int)applyValue;
                     break;
-                case "생명력":
-                    AdditionalHp += (int)(Stat.MaxHp * value) * multiplier;
+                case "이동 속도":
+                    applyValue = isApplying ? TotalSpeed * value * multiplier : value * multiplier;
+                    AdditionalSpeed += applyValue;
                     break;
+                case "체력":
+                    applyValue = isApplying ? MaxHp * value * multiplier : value * multiplier;
+                    AdditionalHp += (int)applyValue;
+                    break;                
                 case "회복":
                     if (isApplying)
-                        OnHealed((int)(Stat.MaxHp * value), this);
+                        OnHealed((int)value, this);
+                    break;
+                case "데미지 감소":
+                    applyValue = isApplying ? TotalDamageReduce * value * multiplier : value * multiplier;
+                    TotalDamageReduce += applyValue;
                     break;
             }
+            return applyValue;
         }
         public virtual void Ondead(GameObject attacker)
         {

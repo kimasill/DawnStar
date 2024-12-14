@@ -107,7 +107,7 @@ namespace Server.Game
             set
             {
                 _additionalAttack = value;
-                SendAdditionalStat(new StatInfo() { Attack = _additionalAttack });
+                SendAdditionalStat();
             }
         }
 
@@ -117,7 +117,7 @@ namespace Server.Game
             set
             {
                 _additionalDefense = value;
-                SendAdditionalStat(new StatInfo() { Defense = _additionalDefense });
+                SendAdditionalStat();
             }
         }
 
@@ -127,7 +127,7 @@ namespace Server.Game
             set
             {
                 _additionalInvokeSpeed = value;
-                SendAdditionalStat(new StatInfo() { InvokeSpeed = _additionalInvokeSpeed });
+                SendAdditionalStat();
             }
         }
 
@@ -137,7 +137,7 @@ namespace Server.Game
             set
             {
                 _additionalCoolTime = value;
-                SendAdditionalStat(new StatInfo() { CoolTime = _additionalCoolTime });
+                SendAdditionalStat();
             }
         }
 
@@ -147,7 +147,7 @@ namespace Server.Game
             set
             {
                 _additionalCriticalChance = value;
-                SendAdditionalStat(new StatInfo() { CriticalChance = _additionalCriticalChance });
+                SendAdditionalStat();
             }
         }
 
@@ -157,7 +157,7 @@ namespace Server.Game
             set
             {
                 _additionalCriticalDamage = value;
-                SendAdditionalStat(new StatInfo() { CriticalDamage = _additionalCriticalDamage });
+                SendAdditionalStat();
             }
         }
 
@@ -167,7 +167,7 @@ namespace Server.Game
             set
             {
                 _additionalAvoidance = value;
-                SendAdditionalStat(new StatInfo() { Avoid = _additionalAvoidance });
+                SendAdditionalStat();
             }
         }
 
@@ -177,7 +177,7 @@ namespace Server.Game
             set
             {
                 _additionalAccuracy = value;
-                SendAdditionalStat(new StatInfo() { Accuracy = _additionalAccuracy });
+                SendAdditionalStat();
             }
         }
 
@@ -187,7 +187,7 @@ namespace Server.Game
             set
             {
                 _additionalAttackSpeed = value;
-                SendAdditionalStat(new StatInfo() { AttackSpeed = _additionalAttackSpeed });
+                SendAdditionalStat();
             }
         }
 
@@ -197,7 +197,7 @@ namespace Server.Game
             set
             {
                 _additionalSpeed = value;
-                SendAdditionalStat(new StatInfo() { Speed = _additionalSpeed });
+                SendAdditionalStat();
             }
         }
 
@@ -207,7 +207,7 @@ namespace Server.Game
             set
             {
                 _additionalHp = value;
-                SendAdditionalStat(new StatInfo() { Hp = _additionalHp });
+                SendAdditionalStat();
             }
         }
 
@@ -217,7 +217,7 @@ namespace Server.Game
             set
             {
                 _additionalUp = value;
-                SendAdditionalStat(new StatInfo() { Up = _additionalUp });
+                SendAdditionalStat();
             }
         }
         public int WeaponRange { get; private set; }
@@ -279,16 +279,11 @@ namespace Server.Game
             S_Respawn respawnPacket = new S_Respawn();            
             Session.Send(respawnPacket);
         }
-        public void SendAdditionalStat(StatInfo stat = null)
+        public void SendAdditionalStat()
         {
-            S_ChangeAdditionalStat additionalStat = new S_ChangeAdditionalStat();
-            if (stat != null)
+            S_ChangeAdditionalStat additionalStat = new S_ChangeAdditionalStat()
             {
-                additionalStat.StatInfo.MergeFrom(stat);
-            }
-            else
-            {
-                StatInfo statInfo = new StatInfo() 
+                StatInfo = new StatInfo()
                 {
                     Attack = AdditionalAttack,
                     Defense = AdditionalDefense,
@@ -302,9 +297,8 @@ namespace Server.Game
                     CoolTime = AdditionalCoolTime,
                     Hp = AdditionalHp,
                     Up = AdditionalUp,
-                };
-                additionalStat.StatInfo = statInfo;
-            }
+                }
+            };
             Session.Send(additionalStat);
         }
 

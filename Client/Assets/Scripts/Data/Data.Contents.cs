@@ -201,7 +201,7 @@ namespace Data
 
     public class JewelryData : ItemData
     {
-        public JewelryType jewelType;
+        public JewelryType jewelryType;
     }
 
     public class ConsumableData : ItemData

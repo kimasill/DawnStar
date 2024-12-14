@@ -263,15 +263,15 @@ public class UI_Stat : UI_Base
                         Get<Image>((int)Images.Slot_Earing).sprite = icon;
                         break;
                     case JewelryType.Ring:
-                        if (GetImage((int)Images.Slot_Ring).enabled == false)
+                        if (Get<Image>((int)Images.Slot_Ring).enabled == false)
                         {
-                            GetImage((int)Images.Slot_Ring).enabled = true;
-                            GetImage((int)Images.Slot_Ring).sprite = icon;
+                            Get<Image>((int)Images.Slot_Ring).enabled = true;
+                            Get<Image>((int)Images.Slot_Ring).sprite = icon;
                         }
                         else
                         {
-                            GetImage((int)Images.Slot_Ring2).enabled = true;
-                            GetImage((int)Images.Slot_Ring2).sprite = icon;
+                            Get<Image>((int)Images.Slot_Ring2).enabled = true;
+                            Get<Image>((int)Images.Slot_Ring2).sprite = icon;
                         }
                         break;
                     case JewelryType.Necklace:

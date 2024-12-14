@@ -212,7 +212,7 @@ namespace Server.Game
                 {
                     TemplateId = data.id;
                     Count = 1;
-                    JewelryType = data.jewelType;
+                    JewelryType = data.jewelryType;
                     Stackable = false;
                 }
             }

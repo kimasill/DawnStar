@@ -11,12 +11,14 @@ public class UI_GameWindow : UI_Base
     public UI_StoryPanel StoryPanel { get; set; }
     public UI_QuickSlot QuickSlot { get; set; }
     public UI_SkillSlot SkillSlot { get; set; }
+    public UI_BuffPanel BuffPanel { get; set; }
     public override void Init()
     {
         StateUI = GetComponentInChildren<UI_StateBar>();
         StoryPanel = GetComponentInChildren<UI_StoryPanel>();
         QuickSlot = GetComponentInChildren<UI_QuickSlot>();
         SkillSlot = GetComponentInChildren<UI_SkillSlot>();
+        BuffPanel = GetComponentInChildren<UI_BuffPanel>();
         StoryPanel.gameObject.SetActive(false);
     }
     public void ShowScript(List<string> strings)

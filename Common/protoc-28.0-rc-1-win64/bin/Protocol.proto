@@ -69,6 +69,7 @@ enum MsgId {
   S_ENHANCE = 61;
   C_MAKE_ITEM = 62;
   C_SORT_ITEM = 63;
+  S_BUFF = 64;  
 }
 enum CreatureState{
   IDLE = 0;
@@ -591,6 +592,12 @@ message S_Interaction{
 }
 message S_BossKill{
 	int32 templateId = 1;
+}
+message S_Buff{
+	int32 buffId = 2;	
+	int32 debuffId = 3;
+	int32 objectId = 4;
+	float value = 5;
 }
 
 message LobbyPlayerInfo{
