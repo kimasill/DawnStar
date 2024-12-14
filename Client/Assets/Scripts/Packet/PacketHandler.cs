@@ -118,6 +118,29 @@ class PacketHandler
         }        
         cc.UseSkill(skillPacket);
     }
+    public static void S_BuffHandler(PacketSession session, IMessage packet) {
+        S_Buff buffPacket = packet as S_Buff;
+        GameObject go = Managers.Object.FindById(buffPacket.ObjectId);
+        if (go == null)
+        {
+            return;
+        }
+        if (buffPacket.ObjectId != Managers.Object.MyPlayer.Id)
+        {
+            return;
+        }
+
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        if(buffPacket.BuffId > 0)
+        {
+            gameSceneUI.GameWindow.BuffPanel.AddBuff(buffPacket.BuffId, buffPacket.Value);
+        }
+        else if(buffPacket.DebuffId>0)
+        {
+            
+            gameSceneUI.GameWindow.BuffPanel.AddDebuff(buffPacket.BuffId, buffPacket.Value);
+        }
+    }
 
     public static void S_EffectHandler(PacketSession session, IMessage packet)
     {
@@ -418,7 +441,10 @@ class PacketHandler
         gameSceneUI.InvenUI.RefreshUI();
         if (Managers.Object.MyPlayer != null)
         { 
-            Managers.Object.MyPlayer.Equipment.EquipItem(item);
+            if(item.ItemType == ItemType.Weapon || item.ItemType == ItemType.Armor)
+            {
+                Managers.Object.MyPlayer.Equipment.EquipItem(item);
+            }
             Managers.Object.MyPlayer.RefreshAdditionalStat();
             gameSceneUI.StatUI.RefreshUI();
             gameSceneUI.GameWindow.SkillSlot.RefreshUI();
