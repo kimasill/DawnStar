@@ -926,6 +926,33 @@
           "count": 1
         }
       ]
+    },
+    {
+      "id": "1162",
+      "name": "진한 솜",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "250",
+      "iconPath": "Textures/Item/Materials/Drop/Cotton_Brown",
+      "description": "진한 솜"
+    },
+    {
+      "id": "1163",
+      "name": "은은한 솜",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "270",
+      "iconPath": "Textures/Item/Materials/Drop/Cotton_Pink",
+      "description": "은은한 솜"
+    },
+    {
+      "id": "1164",
+      "name": "흑야의 깃털",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "370",
+      "iconPath": "Textures/Item/Materials/Drop/Feather_Black",
+      "description": "흑야의 깃털"
     }
   ],
   "goods": [
