@@ -69,6 +69,22 @@
       "id": "11",
       "name": "NormalDoor",
       "multi": "true"
+    },
+    {
+      "id": 12,
+      "name": "CathedralCursedDoor",
+      "multi": true,
+      "triggers": [
+        1002
+      ],
+      "script": [
+        "저주받은 문. 무언가 필요할것 같다."
+      ]
+    },
+    {
+      "id": 13,
+      "name": "CathedralRewardRoomDoor",
+      "multi": true
     }
   ],
   "triggers": [
@@ -83,15 +99,43 @@
         "10"
       ],
       "cameraMove": "true"
+    },
+    {
+      "id": 1002,
+      "name": "CathedralCursedTrigger",
+      "multi": "true",
+      "script": [
+        "저주받은 문을 열기 위한 장치."
+      ],
+      "targetInteraction": [
+        "12"
+      ],
+      "cameraMove": "true"
     }
   ],
   "itemtables": [
     {
       "id": "2001",
       "name": "Prison_RewardTable",
-      "multi": "true",
+      "multi": true,
       "itemIds": [
         "103"
+      ]
+    },
+    {
+      "id": "2002",
+      "name": "Cathedral_RewardTable",
+      "multi": true,
+      "itemIds": [
+        1141
+      ]
+    },
+    {
+      "id": "2003",
+      "name": "Cathedral_RewardTable2",
+      "multi": true,
+      "itemIds": [
+        1165
       ]
     }
   ],

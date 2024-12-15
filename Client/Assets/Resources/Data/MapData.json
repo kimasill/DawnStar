@@ -147,6 +147,14 @@
           "name": "오래된 감옥 출구",
           "posX": "-173",
           "posY": "-46"
+        },
+        {
+          "id": "504",
+          "name": "성당",
+          "mapId": "7",
+          "destination": "701",
+          "posX": "-173",
+          "posY": "-46"
         }
       ],
       "spawns": [
@@ -349,6 +357,29 @@
           "10002"
         ]
       }
+    },
+    {
+      "id": "007",
+      "name": "Cathedral",
+      "type": "dungeon",
+      "portals": [
+        {
+          "id": 701,
+          "name": "성당 입구",
+          "mapId": 5,
+          "destination": 504,
+          "posX": -12,
+          "posY": -5
+        },
+        {
+          "id": 702,
+          "name": "성당 출구",
+          "mapId": 5,
+          "destination": 504,
+          "posX": -12,
+          "posY": -5
+        }
+      ]
     }
   ]
 }

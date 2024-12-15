@@ -127,6 +127,11 @@ enum SkillLogicType{
 	REAL_TIME_BY_ENEMY_NUMBER = 11;
 }
 
+enum DebuffType{
+	DEBUFF_TYPE_STAT = 0;
+	DEBUFF_TYPE_DOT = 1;
+}
+
 enum AdmitType{
 	ADMIT_TYPE_NONE = 0;
 	ADMIT_TYPE_MATCHING = 1;
