@@ -102,6 +102,7 @@ namespace Server.Data
         public int duration;
         public float value;
         public bool isPercent;
+        public bool isTarget;
     }
 
     public class DebuffInfo
@@ -111,6 +112,7 @@ namespace Server.Data
         public int duration;
         public float value;
         public bool isPercent;
+        public bool isTarget;
     }
 
 
@@ -161,6 +163,7 @@ namespace Server.Data
     {
         public int id;
         public string name;
+        public DebuffType debuffType;
         public string icon;
     }
 

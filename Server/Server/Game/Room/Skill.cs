@@ -88,10 +88,10 @@ namespace Server.Game
                         HandleSpotSkill(data, target);
                         break;
                     case SkillType.SkillBuff:
-                        HandleBuffSkill(data);
+                        HandleBuffSkill(data, Owner);
                         break;
                     case SkillType.SkillDebuff:
-                        HandleDebuffSkill(data);
+                        HandleDebuffSkill(data, target);
                         break;
                     case SkillType.SkillMove:
                         HandleMoveSkill(data);
@@ -149,32 +149,34 @@ namespace Server.Game
             return coolDown;
         }
         #region LogicDivide
-        public void HandleAttackSkill(SkillData data, int range, GameObject target)
+        public async void HandleAttackSkill(SkillData data, int range, GameObject target)
         {   
             switch (data.skillLogicType)
             {
                 case SkillLogicType.BasicAttack:
                     BasicAttakAsync(data, range);
-                    return;
+                    break;
                 case SkillLogicType.KnockBack:
                     KnockBack(data);
-                    return;
+                    break;
                 case SkillLogicType.Combat:
                     CombatAsync(data);
-                    return;
+                    break;
                 case SkillLogicType.Pull:
                     Pull(data, range);
-                    return;
+                    break;
                 case SkillLogicType.Summon:
                     SummonAttack(data, range, target);
-                    return;
+                    break;
                 case SkillLogicType.Kinetic:
                     KineticAttack(data , target);
-                    return;
+                    break;
                 case SkillLogicType.Invocation:
                     InvokeSkill(data, target);
-                    return;
-                default: return;
+                    break;
+                default: 
+                    BasicAttakAsync(data, range);
+                    break;
             }
         }
         public async void HandleProjectileSkill(SkillData data)
@@ -211,7 +213,7 @@ namespace Server.Game
                     break;
             }
         }
-        public void HandleBuffSkill(SkillData skillData)
+        public void HandleBuffSkill(SkillData skillData, GameObject target)
         {
             switch (skillData.skillLogicType)
             {
@@ -222,7 +224,7 @@ namespace Server.Game
                     RealTimeByEnemyNum(skillData);
                     break;
                 default:                    
-                    ApplyBuff(skillData);
+                    ApplyBuff(skillData, target);
                     break;
             }
         }
@@ -234,7 +236,27 @@ namespace Server.Game
                     DOT(skillData, target);
                     break;
                 default:
-                    ApplyDeBuff(skillData);
+                    break;
+            }
+
+            DebuffData debuff = null;
+            DataManager.DebuffDict.TryGetValue(skillData.debuff.id, out debuff);
+            if (debuff == null)
+                return;
+
+            DebuffType debuffType = 0;
+            if (debuff.debuffType != 0)
+                debuffType = debuff.debuffType;
+            else debuffType = DebuffType.Stat;
+
+            switch (debuff.debuffType)
+            {
+                case DebuffType.Dot:
+                    DOT(skillData, target);
+                    ApplyDeBuff(skillData, target);
+                    break;
+                case DebuffType.Stat:
+                    ApplyDeBuff(skillData, target);
                     break;
             }
         }
@@ -250,7 +272,7 @@ namespace Server.Game
                     break;
             }
         }
-        private async void ApplyBuff(SkillData data)
+        private async void ApplyBuff(SkillData data, GameObject target)
         {
             await Task.Delay((int)(1000 * data.term));
             // Buff 적용 로직
@@ -258,7 +280,7 @@ namespace Server.Game
             {
                 // Buff 시작 시 로직
                 Console.WriteLine($"Buff {data.buff.name} applied with value {data.buff.value}");
-                Owner.ApplyBuff(data.buff);
+                target.ApplyBuff(data.buff);
             }
             else if (data.buffList != null)
             {
@@ -266,19 +288,19 @@ namespace Server.Game
                 {
                     // Buff 시작 시 로직
                     Console.WriteLine($"Buff {buff.name} applied with value {buff.value}");
-                    Owner.ApplyBuff(buff);
+                    target.ApplyBuff(buff);
                 }
             }
         }
 
-        private async void ApplyDeBuff(SkillData data)
-        {
+        private async void ApplyDeBuff(SkillData data, GameObject target)
+        {            
             await Task.Delay((int)(1000 * data.term));
             if (data.debuff != null)
             {
                 // Debuff 시작 시 로직
                 Console.WriteLine($"Debuff {data.debuff.name} applied with value {data.debuff.value}");
-                Owner.ApplyDebuff(data.debuff);
+                target.ApplyDebuff(data.debuff);
             }
             else if (data.debuffList != null)
             {
@@ -286,7 +308,39 @@ namespace Server.Game
                 {
                     // Debuff 시작 시 로직
                     Console.WriteLine($"Debuff {debuff.name} applied with value {debuff.value}");
-                    Owner.ApplyDebuff(debuff);
+                    target.ApplyDebuff(debuff);
+                }
+            }
+        }
+        private void ApplyAfterEffect(SkillData skill, GameObject target)
+        {
+            if(skill == null)
+                return;
+            if(skill.debuff != null)
+            {
+                GameObject applyTarget = skill.debuff.isTarget ? target : Owner;
+                HandleDebuffSkill(skill, applyTarget);
+            }
+            else if(skill.debuffList != null)
+            {
+                foreach (var debuff in skill.debuffList)
+                {
+                    GameObject applyTarget = debuff.isTarget ? target : Owner;
+                    HandleDebuffSkill(skill, applyTarget);
+                }
+            }
+
+            if (skill.buff != null)
+            {
+                GameObject applyTarget = skill.buff.isTarget ? target : Owner;
+                HandleBuffSkill(skill, applyTarget);
+            }
+            else if (skill.buffList != null)
+            {
+                foreach (var buff in skill.buffList)
+                {
+                    GameObject applyTarget = buff.isTarget ? target : Owner;
+                    HandleBuffSkill(skill, applyTarget);
                 }
             }
         }
@@ -302,11 +356,8 @@ namespace Server.Game
 
             for (int i = 0; i < totalTicks; i++)
             {
-                if (target == null)
-                    break;
-                target.OnDamaged(Owner, (int)(Owner.TotalAttack*data.debuff.value));
-
                 await Task.Delay(tickInterval);
+                target.OnDamaged(Owner, (int)(Owner.TotalAttack * data.debuff.value));
             }
 
             Console.WriteLine($"Debuff {data.debuff.name} ended");
@@ -369,7 +420,11 @@ namespace Server.Game
                         if(target != _target)
                             continue;
                     }
-                    CalculateDistance(target, () => { target.OnDamaged(Owner, Owner.TotalAttack + data.damage);}, range);
+                    CalculateDistance(target, () => 
+                    { 
+                        target.OnDamaged(Owner, Owner.TotalAttack + data.damage);
+                        ApplyAfterEffect(data, target);
+                    }, range);
                 }
             }
         }

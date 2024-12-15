@@ -282,14 +282,20 @@ namespace Server.Game
                 Console.WriteLine($"Buff {buffId} removed");
             }
         }
-        public void ApplyDebuff(DebuffInfo debuff, int count = 1)
+        public void ApplyDebuff(DebuffInfo debuff, int count = 1, GameObject suspect = null)
         {
             if (debuff == null)
                 return;
 
             for (int i = 0; i < count; i++)
             {
-                float value = ApplyEffect(debuff.id, debuff.value, true);
+                float value = 0;
+                if (suspect != null)
+                {
+                    value = suspect.TotalAttack * debuff.value;
+                }
+                else value = ApplyEffect(debuff.id, debuff.value, true);
+
                 if (!Debuffs.ContainsKey(debuff.id))
                 {
                     Debuffs[debuff.id] = 0;

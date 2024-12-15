@@ -49,6 +49,12 @@
       "id": 10,
       "name": "기절",
       "icon": "Textures/Images/Icons/Buff/Debuff_BlackOut"
+    },
+    {
+      "id": 11,
+      "name": "출혈",
+      "type": "Dot",
+      "icon": "Textures/Images/Icons/Buff/Debuff_Bleed"
     }
   ]
 } 

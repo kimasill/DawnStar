@@ -953,6 +953,15 @@
       "price": "370",
       "iconPath": "Textures/Item/Materials/Drop/Feather_Black",
       "description": "흑야의 깃털"
+    },
+    {
+      "id": "1165",
+      "name": "미래의 책",
+      "maxCount": "9999",
+      "materialType": "Consumable",
+      "price": "10000",
+      "iconPath": "Textures/Item/Consumables/Book_Stat",
+      "description": "미래의 책. 사용 시 스탯 포인트를 얻을 수 있다."
     }
   ],
   "goods": [

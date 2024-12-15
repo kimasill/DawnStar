@@ -1165,6 +1165,64 @@
           "maxCount": 900
         }
       ]
+    },
+    {
+      "id": 27,
+      "name": "그림자 박쥐",
+      "type": "Flying",
+      "grade": "Normal",
+      "stat": {
+        "level": 19,
+        "maxHp": 950,
+        "attack": 40,
+        "invokeSpeed": 0.7,
+        "attackSpeed": 0.37,
+        "speed": 2.8,
+        "totalExp": 1100
+      },
+      "rewards": [
+        {
+          "probability": 70,
+          "itemId": 10001,
+          "minCount": 20,
+          "maxCount": 50
+        },
+        {
+          "probability": 50,
+          "itemId": 10001,
+          "minCount": 30,
+          "maxCount": 70
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "name": "흡혈 박쥐",
+      "type": "Flying",
+      "grade": "Normal",
+      "stat": {
+        "level": 20,
+        "maxHp": 1200,
+        "attack": 50,
+        "speed": 3.0,
+        "invokeSpeed": 0.7,
+        "attackSpeed": 0.37,
+        "totalExp": 1200
+      },
+      "rewards": [
+        {
+          "probability": 70,
+          "itemId": 10001,
+          "minCount": 20,
+          "maxCount": 50
+        },
+        {
+          "probability": 50,
+          "itemId": 10001,
+          "minCount": 30,
+          "maxCount": 70
+        }
+      ]
     }
   ]
 } 
