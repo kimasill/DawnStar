@@ -346,6 +346,10 @@ namespace Server.Game
         {
             int multiplier = isApplying ? 1 : -1;
             float applyValue = 0;
+            if(buff == "부패")
+            {
+                buff = "방어력";
+            }
             switch (buff)
             {
                 case "공격력":

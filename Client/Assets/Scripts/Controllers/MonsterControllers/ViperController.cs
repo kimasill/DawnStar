@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ZombieController : MonsterController
+public class ViperController : MonsterController
 {
     protected override void Init()
     {

@@ -693,6 +693,7 @@ namespace Server.Game
             summon.Owner = Owner;
             summon.Target = _target;
             summon.Owner.Room = Owner.Room;
+            summon.DespawnAnim = data.afterEffect;
             summon.Data = data;
             summon.Range = range;
             summon.PosInfo.State = CreatureState.Moving;            
@@ -774,11 +775,11 @@ namespace Server.Game
                     enemyNum = enemyNum - enemies.Count;
                     if (debuff >= 0 && enemyNum > 0)
                     {
-                        target.RemoveDebuff(debuff, enemyNum);
+                        target.RemoveDebuff(data.debuff, enemyNum);
                     }
                     if (buff >= 0 && enemyNum > 0)
                     {
-                        target.RemoveBuff(buff, enemyNum);
+                        target.RemoveBuff(data.buff, enemyNum);
                     }
                 }
                 await Task.Delay(1000);

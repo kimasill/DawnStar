@@ -809,7 +809,7 @@
       "name": "질긴가죽",
       "maxCount": "9999",
       "materialType": "Drop",
-      "price": "30",
+      "price": "105",
       "iconPath": "Textures/Item/Materials/Drop/Leather_A",
       "description": "동물의 질긴가죽."
     },
@@ -980,6 +980,15 @@
       "price": 250,
       "iconPath": "Textures/Item/Materials/Drop/Fiber",
       "description": "피부가 사라지고 남은 근섬유"
+    },
+    {
+      "id": 1168,
+      "name": "뱀 가죽",
+      "maxCount": 9999,
+      "materialType": "Drop",
+      "price": 265,
+      "iconPath": "Textures/Item/Materials/Drop/Leather_Snake",
+      "description": "독사의 가죽"
     }
   ],
   "goods": [

@@ -247,6 +247,7 @@ namespace Server.Game
                 if (_magics.Remove(objectId, out magic) == false)
                     return;
                 cellPos = magic.CellPos;
+                despawnAnim = magic.DespawnAnim;
                 Map.ApplyLeave(magic);
                 magic.Room = null;
             }

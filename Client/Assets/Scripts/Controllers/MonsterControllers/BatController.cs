@@ -62,7 +62,7 @@ public class BatController : MonsterController
     }
     private IEnumerator PlayMoveToAttackAnimation()
     {
-        Animator.Play("FLYTOINS");
+        Animator.Play("MOVETOINSTANCE");
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed);
 
         Animator.Play("INSTANCE");

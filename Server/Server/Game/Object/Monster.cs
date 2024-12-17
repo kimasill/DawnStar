@@ -27,6 +27,7 @@ namespace Server.Game
         public bool IsFlying = false;
         public int _patrolRange = 10;
         private const int PushTime = 200;
+        int _skillId = 1;
         Random _rand = new Random();
         public Monster(MonsterData monsterData)
         {
@@ -43,6 +44,8 @@ namespace Server.Game
             Stat.Hp = monsterData.stat.MaxHp;
             State = CreatureState.Idle;
             Skill = new Skill(this);
+            if(monsterData.skill != 0)
+                _skillId = monsterData.skill;            
 
             if (MonsterType == MonsterType.Flying)
             {
@@ -283,7 +286,7 @@ namespace Server.Game
                 }
                 LookAt(dir);
                 SkillData skillData = null;
-                DataManager.SkillDict.TryGetValue(1, out skillData);
+                DataManager.SkillDict.TryGetValue(_skillId, out skillData);
                 if (skillData == null)
                     return;
 

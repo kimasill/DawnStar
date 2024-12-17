@@ -24,8 +24,6 @@ namespace Server.Game
         {
             base.Update();
         }
-
-        long _coolTick = 0;
         protected override void UpdateSkill()
         {
             if (_coolTick == 0)

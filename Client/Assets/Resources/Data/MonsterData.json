@@ -818,7 +818,7 @@
           "maxCount": "2"
         },
         {
-          "probability": "20",
+          "probability": 12,
           "itemId": "1147",
           "minCount": "1",
           "maxCount": "1"
@@ -865,7 +865,7 @@
           "maxCount": "4"
         },
         {
-          "probability": "20",
+          "probability": 13,
           "itemId": "1147",
           "minCount": "1",
           "maxCount": "1"
@@ -924,7 +924,7 @@
           "maxCount": "2"
         },
         {
-          "probability": "20",
+          "probability": 15,
           "itemId": "1147",
           "minCount": "1",
           "maxCount": "1"
@@ -959,7 +959,7 @@
       },
       "rewards": [
         {
-          "probability": "30",
+          "probability": "100",
           "itemId": "1147",
           "minCount": "3",
           "maxCount": "6"
@@ -1021,7 +1021,7 @@
       "type": "Normal",
       "grade": "Normal",
       "stat": {
-        "level": 19,
+        "level": 24,
         "maxHp": 900,
         "attack": 80,
         "speed": 3.1,
@@ -1068,7 +1068,7 @@
       "type": "Normal",
       "grade": "Normal",
       "stat": {
-        "level": 20,
+        "level": 25,
         "maxHp": 1100,
         "attack": 90,
         "speed": 3.1,
@@ -1169,10 +1169,10 @@
     {
       "id": 27,
       "name": "그림자 박쥐",
-      "type": "Flying",
+      "type": "Bat",
       "grade": "Normal",
       "stat": {
-        "level": 24,
+        "level": 26,
         "maxHp": 950,
         "attack": 40,
         "invokeSpeed": 0.7,
@@ -1200,7 +1200,7 @@
           "maxCount": 2
         },
         {
-          "probability": 20,
+          "probability": 9,
           "itemId": 1147,
           "minCount": 1,
           "maxCount": 2
@@ -1222,10 +1222,10 @@
     {
       "id": 28,
       "name": "흡혈 박쥐",
-      "type": "Flying",
+      "type": "Bat",
       "grade": "Normal",
       "stat": {
-        "level": 26,
+        "level": 27,
         "maxHp": 1200,
         "attack": 50,
         "speed": 3.0,
@@ -1253,7 +1253,7 @@
           "maxCount": 2
         },
         {
-          "probability": 20,
+          "probability": 9,
           "itemId": 1147,
           "minCount": 1,
           "maxCount": 2
@@ -1306,10 +1306,135 @@
           "maxCount": 3
         },
         {
-          "probability": 20,
+          "probability": 10,
           "itemId": 1147,
           "minCount": 1,
           "maxCount": 4
+        },
+        {
+          "probability": 70,
+          "itemId": 10001,
+          "minCount": 100,
+          "maxCount": 150
+        },
+        {
+          "probability": 50,
+          "itemId": 10001,
+          "minCount": 30,
+          "maxCount": 130
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "name": "변종 하이에나",
+      "type": "MutantRat",
+      "grade": "Elite",
+      "stat": {
+        "level": 33,
+        "maxHp": 2500,
+        "attack": 70,
+        "speed": 2.3,
+        "invokeSpeed": 0.5,
+        "attackSpeed": 0.4,
+        "totalExp": 3200
+      },
+      "rewards": [
+        {
+          "probability": 50,
+          "itemId": 1153,
+          "minCount": 3,
+          "maxCount": 8
+        },
+        {
+          "probability": 30,
+          "itemId": 1153,
+          "minCount": 2,
+          "maxCount": 5
+        },
+        {
+          "probability": 5,
+          "itemId": 1148,
+          "minCount": 1,
+          "maxCount": 1
+        },
+        {
+          "probability": 20,
+          "itemId": 1117,
+          "minCount": 1,
+          "maxCount": 2
+        },
+        {
+          "probability": 20,
+          "itemId": 1126,
+          "minCount": 2,
+          "maxCount": 4
+        },
+        {
+          "probability": 10,
+          "itemId": 1126,
+          "minCount": 1,
+          "maxCount": 3
+        },
+        {
+          "probability" : 15,
+          "itemId": 1147,
+          "minCount": 1,
+          "maxCount": 5
+        },
+        {
+          "probability": 70,
+          "itemId": 10001,
+          "minCount": 150,
+          "maxCount": 350
+        },
+        {
+          "probability": 50,
+          "itemId": 10001,
+          "minCount": 100,
+          "maxCount": 250
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "name": "독사",
+      "type": "Normal",
+      "grade": "Normal",
+      "stat": {
+        "level": 31,
+        "maxHp": 1950,
+        "attack": 80,
+        "speed": 2.7,
+        "invokeSpeed": 0.4,
+        "attackSpeed": 0.45,
+        "totalExp": 2500
+      },
+      "skill": 32,
+      "rewards": [
+        {
+          "probability": 50,
+          "itemId": 1168,
+          "minCount": 1,
+          "maxCount": 3
+        },
+        {
+          "probability": 30,
+          "itemId": 1168,
+          "minCount": 1,
+          "maxCount": 2
+        },
+        {
+          "probability": 8,
+          "itemId": 1117,
+          "minCount": 1,
+          "maxCount": 3
+        },
+        {
+          "probability": 10,
+          "itemId": 1147,
+          "minCount": 1,
+          "maxCount": 3
         },
         {
           "probability": 70,

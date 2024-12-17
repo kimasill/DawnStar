@@ -55,6 +55,11 @@
       "name": "출혈",
       "type": "Dot",
       "icon": "Textures/Images/Icons/Buff/Debuff_Bleed"
+    },
+    {
+      "id": 12,
+      "name": "부패",
+      "icon": "Textures/Images/Icons/Buff/Debuff_Corruption"
     }
   ]
 } 
