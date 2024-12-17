@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ZombieController : MonsterController
+public class MutantRatController : MonsterController
 {
     protected override void Init()
     {
@@ -26,7 +26,14 @@ public class ZombieController : MonsterController
                     _sprite.flipX = false;
                     break;
             }
-            StartPsychicsCoroutine(PlayBasicAttack());
+            if(SkillId == 1)
+            {
+                StartPsychicsCoroutine(PlayBasicAttack());
+            }
+            else if(SkillId == 31)
+            {
+                StartPsychicsCoroutine(PlaySkillAttack());
+            }
         }
         else
         {
@@ -39,6 +46,14 @@ public class ZombieController : MonsterController
         Animator.Play("ATTACK");
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed);
 
+
+        Animator.Play("IDLE");
+    }
+
+    private IEnumerator PlaySkillAttack()
+    {
+        Animator.Play("SKILL");
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed);
 
         Animator.Play("IDLE");
     }

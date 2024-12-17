@@ -268,8 +268,11 @@ public class BaseController : MonoBehaviour
         yield return new WaitForSeconds(delay);
         gameObject.SetActive(false);
     }
-
-    public virtual IEnumerator DespawnAnim()
+    public void PlayDespawnAnimation()
+    {
+        StartCoroutine(DespawnAnim());
+    }
+    protected virtual IEnumerator DespawnAnim()
     {
         yield return null;
     }

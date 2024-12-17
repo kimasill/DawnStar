@@ -163,14 +163,13 @@ public class ObjectManager
             yield break;
         }
 
-        BaseController cc = go.GetComponent<BaseController>();
-        if (cc == null)
+        BaseController bc = go.GetComponent<BaseController>();
+        if (bc == null)
         {
             Debug.LogError($"BaseController not found on GameObject with id {id}.");
             yield break;
         }
-
-        yield return cc.DespawnAnim();
+        bc.PlayDespawnAnimation();
         Remove(id);
     }
 

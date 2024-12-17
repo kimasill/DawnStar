@@ -594,6 +594,74 @@
       },
       "isObject": false,
       "unchartedPoint": 10
+    },
+    {
+      "id": 30,
+      "name": "부패의 손아귀",
+      "coolTime": 2,
+      "damage": 20,
+      "skillType": "SkillAttack",
+      "skillLogicType": "BasicAttack",
+      "shape": {
+        "shapeType": "ShapeLine",
+        "range": 1
+      },
+      "debuff": {
+        "id": 12,
+        "name": "부패",
+        "duration": 5,
+        "value": 0.25,
+        "isPercent": false,
+        "isTarget": true
+      },
+      "isObject": false,
+      "unchartedPoint": 10
+    },
+    {
+      "id": 31,
+      "name": "맹독 분출",
+      "coolTime": 10,
+      "damage": 40,
+      "range": 5,
+      "count": "10",
+      "term": "0.5",
+      "terms": [
+        "0.5"
+      ],
+      "skillType": "SkillAttack",
+      "skillLogicType": "Summon",
+      "shape": {
+        "shapeType": "ShapeCircle",
+        "range": "2.0"
+      },
+      "unchartedPoint": "20",
+      "description": "바닥에서 맹독을 분출시킨다.",
+      "prefab": "Magic/PoisonCloud",
+      "icon": "Textures/Images/Icons/Skill/PoisonCloud",
+      "isObject": "true",
+      "afterEffect": true
+    },
+    {
+      "id": 32,
+      "name": "독니",
+      "coolTime": 2,
+      "damage": 20,
+      "skillType": "SkillAttack",
+      "skillLogicType": "BasicAttack",
+      "shape": {
+        "shapeType": "ShapeLine",
+        "range": 1
+      },
+      "debuff": {
+        "id": 8,
+        "name": "독",
+        "duration": 5,
+        "value": 0.1,
+        "isPercent": false,
+        "isTarget": true
+      },
+      "isObject": false,
+      "unchartedPoint": 10
     }
   ]
-} 
+}

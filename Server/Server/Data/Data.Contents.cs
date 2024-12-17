@@ -70,6 +70,7 @@ namespace Server.Data
         public string prefab;
         public List<string> prefabs;
         public string icon;
+        public bool afterEffect;
     }
     public class ShapeInfo
     {
@@ -296,6 +297,7 @@ namespace Server.Data
         public MonsterType type;
         public MonsterGrade grade;        
         public StatInfo stat;
+        public int skill;
         public List<ItemRewardData> rewards;
         public int rewardBoxId;
     }

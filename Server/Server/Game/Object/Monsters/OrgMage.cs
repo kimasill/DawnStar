@@ -24,7 +24,6 @@ namespace Server.Game
         {
             base.Update();
         }
-        long _coolTick = 0;
         Random _rand = new Random();
         protected override void UpdateSkill()
         {
@@ -96,10 +95,10 @@ namespace Server.Game
         }
         protected override void UpdateMoving()
         {
-            if (_nextMoveTick > Environment.TickCount64)
+            if (_moveTick > Environment.TickCount64)
                 return;
             int moveTick = (int)(1000 / Speed);
-            _nextMoveTick = Environment.TickCount64 + moveTick;
+            _moveTick = Environment.TickCount64 + moveTick;
 
             if (_target == null || _target.Room != Room)
             {
