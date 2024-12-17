@@ -22,7 +22,6 @@ namespace Server.Game
             Initialize(data);
             SkillRange = _skillRange;
         }
-        long _coolTick = 0;
         protected override void UpdateSkill()
         {
             if (_coolTick > Environment.TickCount64)

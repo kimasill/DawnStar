@@ -13,7 +13,7 @@ class PrisonScene : BaseScene
     protected override void Init()
     {
         base.Init();
-        SceneType = Define.Scene.EastEnd;
+        SceneType = Define.Scene.Prison;
         Managers.Map.LoadMap(6); // DawnTownDead 맵 로드
         Screen.SetResolution(640, 480, false);
         Camera.main.orthographicSize = ZoomLevel;
@@ -57,24 +57,10 @@ class PrisonScene : BaseScene
         {
             _cameraController = Camera.main.GetComponent<CameraController>();
         }
-        //if ()
-        //{
-        //    Managers.Object.MyPlayer.gameObject.SetActive(false);
-        //    Vector2Int cameraPos = Managers.Map.GetCameraPosition(1);
-        //    _cameraController.SetTarget(null);
-        //    _cameraController.MoveToPosition(new Vector3(cameraPos.x, cameraPos.y, -10));
-        //    // 3초 후에 카메라를 원래 위치로 되돌리고 타겟을 플레이어로 설정
-        //    StartCoroutine(_cameraController.ResetCameraAndTarget(3.0f));
-        //    Managers.Quest.ShowQuestScript(9, 1);
-        //}
     }
 
     public override void CheckOnSceneLoadedQuest()
     {
-        //if (Managers.Quest.IsQuestInProgress(7))
-        //{
-        //    Managers.Quest.EndQuest(7);
-        //}
     }
 
     public override void StartBattleQuest(Quest quest)

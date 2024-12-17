@@ -962,6 +962,24 @@
       "price": "10000",
       "iconPath": "Textures/Item/Consumables/Book_Stat",
       "description": "미래의 책. 사용 시 스탯 포인트를 얻을 수 있다."
+    },
+    {
+      "id": 1166,
+      "name": "박쥐 날개",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "220",
+      "iconPath": "Textures/Item/Materials/Drop/Bat_Wing",
+      "description": "박쥐 날개"
+    },
+    {
+      "id": 1167,
+      "name": "근섬유",
+      "maxCount": 9999,
+      "materialType": "Drop",
+      "price": 250,
+      "iconPath": "Textures/Item/Materials/Drop/Fiber",
+      "description": "피부가 사라지고 남은 근섬유"
     }
   ],
   "goods": [

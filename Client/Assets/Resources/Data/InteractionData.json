@@ -85,6 +85,11 @@
       "id": 13,
       "name": "CathedralRewardRoomDoor",
       "multi": true
+    },
+    {
+      "id": 14,
+      "name": "CathedralEntrance",
+      "multi": true
     }
   ],
   "triggers": [

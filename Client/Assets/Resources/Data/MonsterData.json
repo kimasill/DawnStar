@@ -690,14 +690,14 @@
         {
           "probability": "15",
           "itemId": "1126",
-          "minCount": "2",
-          "maxCount": "4"
+          "minCount": "3",
+          "maxCount": "7"
         },
         {
           "probability": "10",
           "itemId": "1126",
-          "minCount": "3",
-          "maxCount": "7"
+          "minCount": "2",
+          "maxCount": "4"
         },
         {
           "probability": 10,
@@ -890,7 +890,7 @@
       "type": "SkeletonMage",
       "grade": "Superior",
       "stat": {
-        "level": "18",
+        "level": "23",
         "maxHp": "1300",
         "attack": "90",
         "speed": "1.8",
@@ -949,7 +949,7 @@
       "type": "PrisonKeeper",
       "grade": "Boss",
       "stat": {
-        "level": "18",
+        "level": "28",
         "maxHp": "3120",
         "attack": "110",
         "speed": "1.8",
@@ -1021,7 +1021,7 @@
       "type": "Normal",
       "grade": "Normal",
       "stat": {
-        "level": 16,
+        "level": 19,
         "maxHp": 900,
         "attack": 80,
         "speed": 3.1,
@@ -1068,7 +1068,7 @@
       "type": "Normal",
       "grade": "Normal",
       "stat": {
-        "level": 18,
+        "level": 20,
         "maxHp": 1100,
         "attack": 90,
         "speed": 3.1,
@@ -1115,7 +1115,7 @@
       "type": "Flying",
       "grade": "Animal",
       "stat": {
-        "level": 17,
+        "level": 25,
         "maxHp": 1800,
         "attack": 0,
         "speed": 3.5,
@@ -1172,7 +1172,7 @@
       "type": "Flying",
       "grade": "Normal",
       "stat": {
-        "level": 19,
+        "level": 24,
         "maxHp": 950,
         "attack": 40,
         "invokeSpeed": 0.7,
@@ -1182,10 +1182,87 @@
       },
       "rewards": [
         {
+          "probability": 15,
+          "itemId": 1133,
+          "minCount": 1,
+          "maxCount": 2
+        },
+        {
+          "probability": 1,
+          "itemId": 1141,
+          "minCount": 1,
+          "maxCount": 1
+        },
+        {
+          "probability": 50,
+          "itemId": 1166,
+          "minCount": 1,
+          "maxCount": 2
+        },
+        {
+          "probability": 20,
+          "itemId": 1147,
+          "minCount": 1,
+          "maxCount": 2
+        },
+        {
           "probability": 70,
           "itemId": 10001,
+          "minCount": 30,
+          "maxCount": 70
+        },
+        {
+          "probability": 50,
+          "itemId": 10001,
           "minCount": 20,
-          "maxCount": 50
+          "maxCount": 59
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "name": "흡혈 박쥐",
+      "type": "Flying",
+      "grade": "Normal",
+      "stat": {
+        "level": 26,
+        "maxHp": 1200,
+        "attack": 50,
+        "speed": 3.0,
+        "invokeSpeed": 0.7,
+        "attackSpeed": 0.37,
+        "totalExp": 1200
+      },
+      "rewards": [
+        {
+          "probability": 15,
+          "itemId": 1133,
+          "minCount": 1,
+          "maxCount": 3
+        },
+        {
+          "probability": 1,
+          "itemId": 1141,
+          "minCount": 1,
+          "maxCount": 1
+        },
+        {
+          "probability": 50,
+          "itemId": 1166,
+          "minCount": 1,
+          "maxCount": 2
+        },
+        {
+          "probability": 20,
+          "itemId": 1147,
+          "minCount": 1,
+          "maxCount": 2
+        },
+        {
+          "probability": 70,
+          "itemId": 10001,
+          "minCount": 60,
+          "maxCount": 90
         },
         {
           "probability": 50,
@@ -1196,31 +1273,55 @@
       ]
     },
     {
-      "id": 28,
-      "name": "흡혈 박쥐",
-      "type": "Flying",
+      "id": 29,
+      "name": "신도",
+      "type": "Normal",
       "grade": "Normal",
       "stat": {
-        "level": 20,
-        "maxHp": 1200,
-        "attack": 50,
-        "speed": 3.0,
-        "invokeSpeed": 0.7,
-        "attackSpeed": 0.37,
-        "totalExp": 1200
+        "level": 29,
+        "maxHp": 2250,
+        "attack": 60,
+        "speed": 1.8,
+        "invokeSpeed": 0.8,
+        "attackSpeed": 0.32,
+        "totalExp": 2000
       },
       "rewards": [
         {
+          "probability": 50,
+          "itemId": 1167,
+          "minCount": 1,
+          "maxCount": 5
+        },
+        {
+          "probability": 30,
+          "itemId": 1167,
+          "minCount": 1,
+          "maxCount": 3
+        },
+        {
+          "probability": 8,
+          "itemId": 1118,
+          "minCount": 1,
+          "maxCount": 3
+        },
+        {
+          "probability": 20,
+          "itemId": 1147,
+          "minCount": 1,
+          "maxCount": 4
+        },
+        {
           "probability": 70,
           "itemId": 10001,
-          "minCount": 20,
-          "maxCount": 50
+          "minCount": 100,
+          "maxCount": 150
         },
         {
           "probability": 50,
           "itemId": 10001,
           "minCount": 30,
-          "maxCount": 70
+          "maxCount": 130
         }
       ]
     }

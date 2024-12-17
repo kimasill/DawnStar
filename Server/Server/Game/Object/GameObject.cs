@@ -234,7 +234,8 @@ namespace Server.Game
                 return;
             for(int i = 0; i < count; i++)
             {
-                float afterValue = ApplyEffect(buff.id, buff.value, true);
+                float afterValue = 0;
+                afterValue = ApplyEffect(buff.name, buff.value, true);
                 if (!Buffs.ContainsKey(buff.id))
                 {
                     Buffs[buff.id] = 0;
@@ -254,32 +255,32 @@ namespace Server.Game
                 Console.WriteLine($"Buff {buff.name} applied with value {afterValue}");
                 Room.PushAfter(buff.duration * 1000, () =>
                 {
-                    RemoveBuff(buff.id, afterValue, count);
+                    RemoveBuff(buff, afterValue, count);
                 });
             }
         }
-        public void RemoveBuff(int buffId, float value,  int count = 1)
+        public void RemoveBuff(BuffInfo buff, float value,  int count = 1)
         {
-            if (Buffs.ContainsKey(buffId) == false)
+            if (Buffs.ContainsKey(buff.id) == false)
                 return;
 
             for (int i = 0; i < count; i++)
             {
                 float tValue = 0;
-                Buffs.TryGetValue(buffId, out tValue);
+                Buffs.TryGetValue(buff.id, out tValue);
                 tValue -= value;
-                ApplyEffect(buffId, value, false);
+                ApplyEffect(buff.name, value, false);
 
                 if(tValue <= 0)
-                    Buffs.Remove(buffId);
+                    Buffs.Remove(buff.id);
 
                 S_Buff buffPacket = new S_Buff()
                 {
                     ObjectId = Id,
-                    BuffId = buffId,
+                    BuffId = buff.id,
                     Value = tValue
                 };
-                Console.WriteLine($"Buff {buffId} removed");
+                Console.WriteLine($"Buff {buff.id} removed");
             }
         }
         public void ApplyDebuff(DebuffInfo debuff, int count = 1, GameObject suspect = null)
@@ -294,7 +295,7 @@ namespace Server.Game
                 {
                     value = suspect.TotalAttack * debuff.value;
                 }
-                else value = ApplyEffect(debuff.id, debuff.value, true);
+                else value = ApplyEffect(debuff.name, debuff.value, true);
 
                 if (!Debuffs.ContainsKey(debuff.id))
                 {
@@ -314,43 +315,38 @@ namespace Server.Game
                 Console.WriteLine($"Debuff {debuff.name} applied with value {debuff.value}");
                 Room.PushAfter(debuff.duration * 1000, () =>
                 {
-                    RemoveDebuff(debuff.id, value, count);
+                    RemoveDebuff(debuff, value, count);
                 });
             }
         }
-        public void RemoveDebuff(int debuffId, float value, int count = 1)
+        public void RemoveDebuff(DebuffInfo debuff, float value, int count = 1)
         {
-            if (Debuffs.ContainsKey(debuffId) ==false)
+            if (Debuffs.ContainsKey(debuff.id) ==false)
                 return;
 
             for (int i = 0; i < count; i++)
             {
                 float tValue = 0;
-                Debuffs.TryGetValue(debuffId, out tValue);
-                ApplyEffect(debuffId, value, false);
+                Debuffs.TryGetValue(debuff.id, out tValue);
+                ApplyEffect(debuff.name, value, false);
 
                 if (tValue <= 0)
-                    Debuffs.Remove(debuffId);
+                    Debuffs.Remove(debuff.id);
 
                 S_Buff buffPacket = new S_Buff()
                 {
                     ObjectId = Id,
-                    DebuffId = debuffId,
+                    DebuffId = debuff.id,
                     Value = tValue
                 };
-                Console.WriteLine($"Debuff {debuffId} removed");
+                Console.WriteLine($"Debuff {debuff.id} removed");
             }
         }
-        private float ApplyEffect(int buffId, float value, bool isApplying)
+        private float ApplyEffect(string buff, float value, bool isApplying)
         {
-            BuffData buff = null;
-            DataManager.BuffDict.TryGetValue(buffId, out buff);
-            if (buff == null)
-                return 0;
-
             int multiplier = isApplying ? 1 : -1;
             float applyValue = 0;
-            switch (buff.name)
+            switch (buff)
             {
                 case "공격력":
                     applyValue = isApplying ? TotalAttack * value * multiplier : value * multiplier;
