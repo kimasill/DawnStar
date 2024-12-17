@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-class PrisonScene : BaseScene
+class CryptScene : BaseScene
 {
     protected UI_GameScene _sceneUi;
     protected UI_Description _description;
@@ -13,8 +13,8 @@ class PrisonScene : BaseScene
     protected override void Init()
     {
         base.Init();
-        SceneType = Define.Scene.Prison;
-        Managers.Map.LoadMap(6); // DawnTownDead ¸Ê ·Îµå
+        SceneType = Define.Scene.Crypt;
+        Managers.Map.LoadMap(7); // DawnTownDead ¸Ê ·Îµå
         Screen.SetResolution(640, 480, false);
         Camera.main.orthographicSize = ZoomLevel;
         _sceneUi = Managers.UI.ShowSceneUI<UI_GameScene>();

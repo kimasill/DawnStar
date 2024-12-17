@@ -26,8 +26,6 @@ namespace Server.Game
                 _hasShield = true;
         }
 
-
-        long _coolTick = 0;
         protected override void UpdateSkill()
         {
             if (_coolTick > Environment.TickCount64)

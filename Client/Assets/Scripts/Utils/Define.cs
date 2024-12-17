@@ -14,6 +14,8 @@ public class Define
         DawnTownHome,
         DawnTownDead,
         EastEnd,
+        Prison,
+        Crypt,
         Game,
     }
 

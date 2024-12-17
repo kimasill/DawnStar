@@ -555,7 +555,37 @@
         "range": 1
       },
       "debuff": {
-        "id": 3,
+        "id": 11,
+        "name": "출혈",
+        "duration": 5,
+        "value": 0.1,
+        "isPercent": false,
+        "isTarget": true
+      },
+      "isObject": false,
+      "unchartedPoint": 10
+    },
+    {
+      "id": 29,
+      "name": "흡혈",
+      "coolTime": 2,
+      "damage": 20,
+      "skillType": "SkillAttack",
+      "skillLogicType": "BasicAttack",
+      "shape": {
+        "shapeType": "ShapeLine",
+        "range": 1
+      },
+      "buff": {
+        "id": 4,
+        "name": "회복",
+        "duration": 5,
+        "value": 0.1,
+        "isPercent": false,
+        "isTarget": false
+      },
+      "debuff": {
+        "id": 11,
         "name": "출혈",
         "duration": 5,
         "value": 0.1,

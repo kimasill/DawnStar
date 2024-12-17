@@ -149,7 +149,7 @@ namespace Server.Game
             return coolDown;
         }
         #region LogicDivide
-        public async void HandleAttackSkill(SkillData data, int range, GameObject target)
+        public void HandleAttackSkill(SkillData data, int range, GameObject target)
         {   
             switch (data.skillLogicType)
             {

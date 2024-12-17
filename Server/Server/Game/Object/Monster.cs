@@ -122,7 +122,8 @@ namespace Server.Game
         protected int _searchRange = 10;
         protected int _chaseRange = 20;
         protected long _nextSearchTick = 0;
-        protected long _nextMoveTick = 0;
+        protected long _moveTick = 0;
+        protected long _coolTick = 0;
         protected long _nextWaitTick = 0;        
         protected int SkillRange = 1;
         protected virtual void UpdateIdle()
@@ -143,10 +144,10 @@ namespace Server.Game
         }
         protected virtual void UpdateMoving()
         {
-            if (_nextMoveTick > Environment.TickCount64)
+            if (_moveTick > Environment.TickCount64)
                 return;
             int moveTick = (int)(1000 / TotalSpeed);
-            _nextMoveTick = Environment.TickCount64 + moveTick;
+            _moveTick = Environment.TickCount64 + moveTick;
             
             if (MonsterGrade == MonsterGrade.Animal)
             {                
@@ -258,7 +259,6 @@ namespace Server.Game
             Room.Broadcast(CellPos, movePacket);
         }
 
-        long _coolTick = 0;
         protected virtual void UpdateSkill() 
         {
             if (_coolTick == 0)
