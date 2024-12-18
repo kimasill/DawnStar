@@ -403,7 +403,7 @@
       "name": "힐",
       "coolTime": "10",
       "damage": "50",
-      "value" : "0.2",
+      "value": "0.2",
       "skillType": "SkillBuff",
       "prefab": "Effect/Heal",
       "icon": "Textures/Images/Icons/Skill/Heal",
@@ -500,7 +500,7 @@
       "icon": "Textures/Images/Icons/Skill/AttackBuff",
       "unchartedPoint": 0,
       "description": "일정시간동안 공격력이 증가한다.",
-      "fix" :  true
+      "fix": true
 
     },
     {
@@ -662,6 +662,77 @@
       },
       "isObject": false,
       "unchartedPoint": 10
+    },
+    {
+      "id": 33,
+      "name": "마나 빔",
+      "coolTime": 30,
+      "damage": 50,
+      "range": 10,
+      "duration": 7,
+      "tickInterval": 0.1,
+      "skillType": "SkillAttack",
+      "skillLogicType": "Invocation",
+      "shape": {
+        "shapeType": "ShapeLine",
+        "range": 1
+      },
+      "prefab": "Magic/ManaBeam",
+      "isObject": false,
+      "unchartedPoint": 10,
+      "description": "정면의 적에게 마나 빔을 발사한다."
+    },
+    {
+      "id": 34,
+      "name": "회전 방호",
+      "coolTime": 15,
+      "skillType": "SkillAttack",
+      "skillLogicType": "KnockBack",
+      "shape": {
+        "shapeType": "ShapeCircle",
+        "range": 2
+      },
+      "debuff": {
+        "id": 13,
+        "name": "기절",
+        "duration": 1,
+        "value": 0,
+        "isPercent": false,
+        "isTarget": true
+      },
+      "isObject": false,
+      "unchartedPoint": 10
+    },
+    {
+      "id": 35,
+      "name": "맹독 구체 발산",
+      "coolTime": "30",
+      "damage": "30",
+      "skillType": "SkillProjectile",
+      "skillLogicType": "MagicBall",
+      "terms": [
+        "0.3"
+      ],
+      "projectile": {
+        "speed": "5.0",
+        "range": "10",
+        "prefab": "Magic/PoisonExplosion",
+        "isHoming": "true"
+      },
+      "shape": {
+        "shapeType": "ShapeCircle",
+        "range": "1.0"
+      },
+      "debuff": {
+        "id": "8",
+        "name": "독",
+        "duration": "5",
+        "value": "0.1",
+        "isPercent": "false"
+      },
+      "isObject": "true",
+      "unchartedPoint": "20",
+      "description": "닿는순간 폭발하여 독성피해를 준다."
     }
   ]
 }

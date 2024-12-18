@@ -132,5 +132,19 @@ namespace Server.Game
 
             return tiles;
         }
+        public static List<Vector2Int> GetTargetsInLaser(Vector2Int start, float angle, int range)
+        {
+            List<Vector2Int> tiles = new List<Vector2Int>();
+
+            for (int i = 0; i <= range; i++)
+            {
+                int x = (int)(i * Math.Cos(angle * Math.PI / 180));
+                int y = (int)(i * Math.Sin(angle * Math.PI / 180));
+                Vector2Int tile = start + new Vector2Int(x, y);
+                tiles.Add(tile);
+            }
+
+            return tiles;
+        }
     }
 }
