@@ -174,6 +174,9 @@ namespace Server.Game
                 case SkillLogicType.Invocation:
                     InvokeSkill(data, target);
                     break;
+                case SkillLogicType.LoopInvocation:
+                    LoopInvocation_Rotate(data, target);
+                    break;
                 default: 
                     BasicAttakAsync(data, range);
                     break;
@@ -428,22 +431,48 @@ namespace Server.Game
                 }
             }
         }
-        public void KnockBack(SkillData data)
+        public async void KnockBack(SkillData data)
         {
-            //데미지 판정
-            _target.OnDamaged(Owner, data.damage + Owner.TotalAttack);
+            await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
 
-            // 적을 2칸 밀어냄
-            Vector2Int direction = (_target.CellPos - Owner.CellPos).normalized;
-            Vector2Int destPos = new Vector2Int(_target.CellPos.x + direction.x * 2, _target.CellPos.y + direction.y * 2);
-
-            if (Owner.Room.Map.ApplyMove(_target, destPos, collision: false))
+            Vector2Int destPos = new Vector2Int();
+            List < Vector2Int > targetPos = new List<Vector2Int>();
+            if (data.shape.shapeType == ShapeType.ShapeLine)
             {
-                _target.CellPos = destPos;
-                S_ChangePosition changePosition = new S_ChangePosition();
-                changePosition.ObjectId = _target.Id;
-                changePosition.Position = _target.PosInfo;
-                Owner.Room.Broadcast(_target.CellPos, changePosition);
+                targetPos = SkillLogic.GetTargetsInLine(Owner.CellPos, Owner.Info.Position.MoveDir, data.range);
+                
+            }
+            else if(data.shape.shapeType == ShapeType.ShapeCircle)
+            {
+                targetPos = SkillLogic.GetAllTargetsInRange(Owner.CellPos, data.range);
+            }
+            //데미지 판정
+            foreach (Vector2Int pos in targetPos)
+            {
+                GameObject target = Owner.Room.Map.Find(pos);
+                if (target != null)
+                {
+                    if (target == Owner)
+                    {
+                        continue;
+                    }
+                    CalculateDistance(target, () =>
+                    {
+                        target.OnDamaged(Owner, Owner.TotalAttack + data.damage);
+                        ApplyAfterEffect(data, target);
+                    }, data.range);
+                }
+                Vector2Int direction = (_target.CellPos - Owner.CellPos).normalized;
+                destPos = new Vector2Int(_target.CellPos.x + direction.x * 2, _target.CellPos.y + direction.y * 2);
+
+                if (Owner.Room.Map.ApplyMove(_target, destPos, collision: false))
+                {
+                    _target.CellPos = destPos;
+                    S_ChangePosition changePosition = new S_ChangePosition();
+                    changePosition.ObjectId = _target.Id;
+                    changePosition.Position = _target.PosInfo;
+                    Owner.Room.Broadcast(_target.CellPos, changePosition);
+                }
             }
         }
         public async void CombatAsync(SkillData data)
@@ -585,6 +614,39 @@ namespace Server.Game
                         newTarget.OnDamaged(Owner, Owner.TotalAttack + data.damage);
                     }
                 }
+            }
+        }
+        private async void LoopInvocation_Rotate(SkillData data, GameObject target)
+        {
+            float angle = 0;
+            float angleIncrement = 360f / (data.duration/data.tickInterval);
+            while (data.duration > 0)
+
+            {
+                List<Vector2Int> skillPos = new List<Vector2Int>();
+
+                if (data.shape.shapeType == ShapeType.ShapeLine)
+                {
+                    skillPos = SkillLogic.GetTargetsInLaser(Owner.CellPos, angle, data.range);
+                }
+                else
+                {
+                    // 다른 shapeType에 대한 로직 추가
+                }
+
+                foreach (Vector2Int pos in skillPos)
+                {
+                    // pos에 있는 타겟에게 데미지를 주는 로직 추가
+                    GameObject targetInPos = Owner.Room.Map.Find(pos);
+                    if (targetInPos != null)
+                    {
+                         targetInPos.OnDamaged(Owner, Owner.TotalAttack + data.damage);
+                    }
+                }
+
+                angle += angleIncrement;
+                data.duration -= data.tickInterval;
+                await Task.Delay((int)(data.tickInterval * 1000));
             }
         }
         private void MoveSkill(SkillData data, GameObject target = null)

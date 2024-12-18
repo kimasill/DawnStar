@@ -125,6 +125,7 @@ enum SkillLogicType{
 	INVOCATION = 9;
 	SUMMON = 10;
 	REAL_TIME_BY_ENEMY_NUMBER = 11;
+	LOOP_INVOCATION = 12;
 }
 
 enum DebuffType{

@@ -1449,6 +1449,78 @@
           "maxCount": 130
         }
       ]
+    },
+    {
+      "id": 32,
+      "name": "주시자",
+      "type": "Beholder",
+      "grade": "Boss",
+      "stat": {
+        "level": 35,
+        "maxHp": 7000,
+        "attack": 100,
+        "speed": 2.5,
+        "invokeSpeed": 0.5,
+        "attackSpeed": 0.5,
+        "totalExp": 33000
+      },
+      "rewards": [
+        {
+          "probability": "100",
+          "itemId": "1147",
+          "minCount": "3",
+          "maxCount": "6"
+        },
+        {
+          "probability": "100",
+          "itemId": "1156",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "30",
+          "itemId": "1127",
+          "minCount": "3",
+          "maxCount": "5"
+        },
+        {
+          "probability": "20",
+          "itemId": "1127",
+          "minCount": "4",
+          "maxCount": "11"
+        },
+        {
+          "probability": "15",
+          "itemId": "1126",
+          "minCount": "2",
+          "maxCount": "4"
+        },
+        {
+          "probability": "10",
+          "itemId": "1126",
+          "minCount": "3",
+          "maxCount": "7"
+        },
+        {
+          "probability": 10,
+          "itemId": 1125,
+          "minCount": 1,
+          "maxCount": 1
+        },
+        {
+          "probability": "100",
+          "itemId": "10001",
+          "minCount": "100",
+          "maxCount": "400"
+        },
+        {
+          "probability": "100",
+          "itemId": "10001",
+          "minCount": "200",
+          "maxCount": "500"
+        }
+      ],
+      "rewardBoxId": "5"
     }
   ]
 } 

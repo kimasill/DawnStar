@@ -55,6 +55,8 @@ namespace Server.Data
         public float value;
         public List<float> terms;
         public List<float> values;
+        public float duration;
+        public float tickInterval;
         public int range;
         public SkillType skillType;
         public SkillLogicType skillLogicType;
