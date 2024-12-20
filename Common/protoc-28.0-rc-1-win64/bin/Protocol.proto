@@ -127,6 +127,7 @@ enum SkillLogicType{
 	REAL_TIME_BY_ENEMY_NUMBER = 11;
 	LOOP_INVOCATION = 12;
 	EXCHANGE = 13;
+	MARK = 14;
 }
 
 enum DebuffType{
@@ -389,6 +390,7 @@ message S_SkillCool{
 message S_Effect{
 	int32 objectId = 1;
     string prefab = 2;
+	int32 skillId = 3;
 }
 
 message S_ChangeHp {

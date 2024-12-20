@@ -155,7 +155,11 @@ class PacketHandler
         {
             return;
         }
-         bc.UseEffect(effectPacket.Prefab);
+        if(effectPacket.SkillId != 0)
+        {
+            bc.ActivateSkillEffect(effectPacket.Prefab, effectPacket.SkillId);
+        }
+        else bc.UseEffect(effectPacket.Prefab);
     }
 
     public static void S_ChangeHpHandler(PacketSession session, IMessage packet)

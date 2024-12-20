@@ -169,6 +169,7 @@ namespace Server.Data
         public string name;
         public DebuffType debuffType;
         public string icon;
+        public string prefab;
     }
 
     [Serializable]

@@ -247,6 +247,9 @@ namespace Server.Game
                 case SkillLogicType.Dot:
                     DOT(skillData, target);
                     break;
+                case SkillLogicType.Mark:
+                    ApplyDeBuff(skillData, target);
+                    break;
                 default:
                     break;
             }
@@ -265,7 +268,7 @@ namespace Server.Game
             {
                 case DebuffType.Dot:
                     DOT(skillData, target);
-                    target.ApplyDebuff(skillData.debuff, suspect:Owner);                    
+                    target.ApplyDebuff(skillData.debuff, suspect:Owner);
                     break;
                 case DebuffType.Stat:
                     ApplyDeBuff(skillData, target);

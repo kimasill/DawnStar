@@ -8,43 +8,46 @@ public class EyeMissileController : BaseController
 
     protected override void Init()
     {
-        switch (Dir)
-        {
-            case MoveDir.Up:
-                transform.rotation = Quaternion.Euler(0, 0, 0);
-                break;
-            case MoveDir.Down:
-                transform.rotation = Quaternion.Euler(0, 0, -180);
-                break;
-            case MoveDir.Left:
-                transform.rotation = Quaternion.Euler(0, 0, 90);
-                break;
-            case MoveDir.Right:
-                transform.rotation = Quaternion.Euler(0, 0, -90);
-                break;
-        }
         base.Init();
-        Animator.Play("START", 0, 0);
-        Animator.speed = 0;
+        PlaySpawnAnimation();
         State = CreatureState.Moving;
+    }
+
+    private void PlaySpawnAnimation()
+    {
+        Animator.Play("SPAWN", 0, 0);
+        Animator.speed = 1;
+        StartCoroutine(WaitForSpawnAnimation());
+    }
+
+    private IEnumerator WaitForSpawnAnimation()
+    {
+        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
+        PlayLoopAnimation();
+    }
+
+    private void PlayLoopAnimation()
+    {
+        Animator.Play("LOOP", 0, 0);
     }
 
     protected override void UpdateAnimation()
     {
+        // 이동 중일 때 애니메이션 업데이트 로직을 추가할 수 있습니다.
     }
+
     protected override IEnumerator DespawnAnim()
     {
         if (Animator == null)
         {
             Animator = GetComponent<Animator>();
         }
-        yield return StartCoroutine(PlayAnimationAndDisappear());
+        yield return StartCoroutine(PlayImpactAnimationAndDisappear());
     }
 
-    private IEnumerator PlayAnimationAndDisappear()
+    private IEnumerator PlayImpactAnimationAndDisappear()
     {
-        Animator.speed = 1;
-        Animator.Play("START");
+        Animator.Play("IMPACT", 0, 0);
         yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
         gameObject.SetActive(false);
     }

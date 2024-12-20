@@ -764,9 +764,7 @@
       "id": 36,
       "name": "거래-공격력과 HP",
       "coolTime": 30,
-      "terms": [
-        "4"
-      ],
+      "term": 4,
       "skillType": "SkillBuff",
       "buff": {
         "id": 1,
@@ -788,6 +786,46 @@
       "unchartedPoint": 0,
       "description": "체력을 지불하여 일정시간동안 공격력이 증가한다.",
       "fix": true
+    },
+    {
+      "id": 37,
+      "name": "주시",
+      "coolTime": 10,
+      "skillType": "SkillDebuff",
+      "duration": 8,
+      "term": 1,
+      "debuffList": [
+        {
+          "id": 14,
+          "name": "주시",
+          "duration": 8,
+          "value": 1,
+          "isPercent": false,
+          "isTarget": true
+        },
+        {
+          "id": 13,
+          "name": "데미지 감소",
+          "duration": 8,
+          "value": -0.15,
+          "isPercent": false,
+          "isTarget": true
+        },
+        {
+          "id": 1,
+          "name": "공격력",
+          "duration": 8,
+          "value": -0.2,
+          "isPercent": false,
+          "isTarget": true
+        }
+      ],
+        "isObject": false,
+        "prefab":"Effect/Mark",
+        "icon":"Textures/Images/Icons/Skill/Mark",
+        "unchartedPoint": 10,
+        "description":"적을 지정하여 일정시간동안 추가피해를 준다.",
+        "fix": true
     }
   ]
 }

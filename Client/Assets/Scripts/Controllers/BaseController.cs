@@ -1,3 +1,4 @@
+using Data;
 using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
@@ -381,10 +382,26 @@ public class BaseController : MonoBehaviour
         Coroutine co = StartCoroutine(coroutine);
         _coEffects.Add(co);
     }
+    public virtual void ActivateSkillEffect(string prefab, int skillId)
+    {
+        SkillData skillData = null;
+        Managers.Data.SkillDict.TryGetValue(skillId, out skillData);
+        if (skillData == null)
+            return;
 
+        StartEffectCoroutine(CoUseSkillEffect(prefab, skillData.duration));
+    }
     public virtual void UseEffect(string prefab)
     {
         StartEffectCoroutine(CoUseEffect(prefab));
+    }
+    public virtual IEnumerator CoUseSkillEffect(string prefab, float duration)
+    {
+        GameObject effect = Managers.Resource.Instantiate(prefab, transform);
+        Animator animator = effect.GetComponent<Animator>();
+        animator.Play("START");
+        yield return new WaitForSeconds(duration * 1000);
+        Managers.Resource.Destroy(effect);
     }
     public virtual IEnumerator CoUseEffect(string prefab)
     {
