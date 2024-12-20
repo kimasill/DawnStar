@@ -387,7 +387,7 @@ namespace Server.Game
                 case "체력":
                     applyValue = isApplying ? MaxHp * value * multiplier : value * multiplier;
                     AdditionalHp += (int)applyValue;
-                    break;                
+                    break;
                 case "회복":
                     if (isApplying)
                         OnHealed((int)value, this);
@@ -396,8 +396,12 @@ namespace Server.Game
                     applyValue = isApplying ? TotalDamageReduce * value * multiplier : value * multiplier;
                     TotalDamageReduce += applyValue;
                     break;
+                default:
+                    applyValue = value;
+                    break;
             }
             return applyValue;
+
         }
         public virtual void Ondead(GameObject attacker)
         {

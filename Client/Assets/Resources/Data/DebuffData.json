@@ -60,6 +60,17 @@
       "id": 12,
       "name": "부패",
       "icon": "Textures/Images/Icons/Buff/Debuff_Corruption"
+    },
+    {
+      "id": 13,
+      "name": "데미지 감소",
+      "icon": "Textures/Images/Icons/Buff/Buff_DamageReduce"
+    },
+    {
+      "id": 14,
+      "name": "주시",
+      "icon": "Textures/Images/Icons/Buff/Debuff_Observe",
+      "prefab": "Prefabs/Effects/Debuffs/Debuff_Observe"
     }
   ]
 } 

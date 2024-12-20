@@ -1,10 +1,12 @@
-﻿using Server.Data;
+﻿using Google.Protobuf.Protocol;
+using Server.Data;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Server.Game
 {
@@ -49,6 +51,38 @@ namespace Server.Game
                 }
             }
         }
+        private async void ApplyMarkDebuff(SkillData skillData, GameObject target)
+        {
+            if (target == null)
+                return;
+
+            await Task.Delay((int)(1000 * skillData.term));
+            S_Effect effectPacket = new S_Effect();
+            effectPacket.ObjectId = target.Id;
+            effectPacket.SkillId = skillData.id;
+
+            DataManager.DebuffDict.TryGetValue(skillData.debuffList[0].id, out DebuffData debuffData);
+
+            if (debuffData == null)
+                return;
+
+            effectPacket.Prefab = debuffData.prefab;
+
+            Owner.Room.Broadcast(target.CellPos, effectPacket);    
+            
+
+            if (skillData.debuff != null)
+            {
+                target.ApplyDebuff(skillData.debuff);
+            }
+            else if (skillData.debuffList != null)
+            {
+                foreach (var debuff in skillData.debuffList)
+                {
+                    target.ApplyDebuff(debuff);
+                }
+            }
+        }
         private void ApplyAfterEffect(SkillData skill, GameObject target)
         {
             if (skill == null)
@@ -86,7 +120,7 @@ namespace Server.Game
             if (skill.buff == null || skill.debuff == null)
                 return;
             await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
-            await Task.Delay((int)(skill.terms[0] * 1000));
+            await Task.Delay((int)(skill.term * 1000));
             ApplyBuff(skill, Owner);
             ApplyDeBuff(skill, Owner);
         }
