@@ -15,7 +15,7 @@ public class EyeMissileController : BaseController
 
     private void PlaySpawnAnimation()
     {
-        Animator.Play("SPAWN", 0, 0);
+        Animator.Play("SPAWN");
         Animator.speed = 1;
         StartCoroutine(WaitForSpawnAnimation());
     }
@@ -28,7 +28,7 @@ public class EyeMissileController : BaseController
 
     private void PlayLoopAnimation()
     {
-        Animator.Play("LOOP", 0, 0);
+        Animator.Play("LOOP");
     }
 
     protected override void UpdateAnimation()
@@ -47,7 +47,7 @@ public class EyeMissileController : BaseController
 
     private IEnumerator PlayImpactAnimationAndDisappear()
     {
-        Animator.Play("IMPACT", 0, 0);
+        Animator.Play("IMPACT");
         yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
         gameObject.SetActive(false);
     }
