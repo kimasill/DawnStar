@@ -346,21 +346,24 @@ public class BaseController : MonoBehaviour
     // 스르륵 이동하는 것을 처리
     protected virtual void UpdateMoving()
     {
+
         Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
         Vector3 moveDir = destPos - transform.position;
+
+        // 움직임 보간
+        transform.position = Vector3.Lerp(transform.position, destPos, Speed * Time.deltaTime);
 
         // 도착 여부 체크
         float dist = moveDir.magnitude;
         if (dist < Speed * Time.deltaTime)
         {
             transform.position = destPos;
-            MoveToNextPos();
         }
         else
         {
-            transform.position += moveDir.normalized * Speed * Time.deltaTime;
             State = CreatureState.Moving;
         }
+
         UpdateSortingLayer();
     }
 

@@ -13,6 +13,7 @@ namespace Server.Game
         public GameObject Owner { get; set; }
         public GameObject Target { get; set; }
         public Action<GameObject> OnHit { get; set; }
+        public Vector2Int DestPos { get; set; }
         int _moveRange = 0;
         bool _isComplete = false;
 
@@ -52,7 +53,7 @@ namespace Server.Game
                     ExplosionDamage();
                 }
             }
-            else
+            else if (!Data.projectile.isHoming && !Data.projectile.isRandom)
             {
                 if (_moveRange >= Data.projectile.range)
                 {
@@ -83,6 +84,32 @@ namespace Server.Game
                     DespawnAnim = true;
                     Room.Push(Room.LeaveGame, Id);
                     _isComplete = true;
+                }
+            }
+            else if (Data.projectile.isRandom)
+            {
+                if (_moveRange >= Data.projectile.range)
+                {
+                    ExplosionDamage();
+                    return;
+                }
+                List<Vector2Int> path = Room.Map.FindPath(CellPos, DestPos);
+                if (path.Count < 2)
+                {
+                    ExplosionDamage();
+                    return;
+                }
+                if (Room.Map.ApplyMove(this, path[1], false))
+                {
+                    CellPos = path[1];
+                    S_Move movePacket = new S_Move();
+                    movePacket.ObjectId = Id;
+                    movePacket.Position = PosInfo;
+                    Room.Broadcast(CellPos, movePacket);
+                }
+                else
+                {
+                    ExplosionDamage();
                 }
             }
         }        

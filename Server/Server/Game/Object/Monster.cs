@@ -81,6 +81,18 @@ namespace Server.Game
                 case MonsterType.PrisonKeeper:
                     monster = new PrisonKeeper(monsterData);
                     break;
+                case MonsterType.Beholder:
+                    monster = new Beholder(monsterData);
+                    break;
+                case MonsterType.Bat:
+                    monster = new Bat(monsterData);
+                    break;
+                case MonsterType.Zombie:
+                    monster = new Zombie(monsterData);
+                    break;
+                case MonsterType.MutantRat:
+                    monster = new MutantRat(monsterData);
+                    break;
                 default:
                     monster = new Monster(monsterData);
                     break;

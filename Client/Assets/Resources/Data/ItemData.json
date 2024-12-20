@@ -94,7 +94,7 @@
       "description": "대괴수용으로 제작된 특수검.",
       "options": {
         "CriticalChance": "10",
-        "Skill": "5"
+        "Skill": "8"
       },
       "grade": "Elite"
     },
@@ -254,7 +254,7 @@
       "id": "201",
       "name": "사생결단의 반지",
       "jewelryType": "Ring",
-      "price": "2500",
+      "price": "12500",
       "iconPath": "Textures/Item/Jewelry/Life_or_death_Ring",
       "description": "간수의 반지. 반지와의 거래를 통해 강력한 힘을 사용할 수 있다.",
       "options": {
@@ -274,7 +274,21 @@
       "options": {
         "Up": "20",
         "UpRegen": "15",
-        "Skill": "18"
+        "Skill": "36"
+      },
+      "grade": "Epic"
+    },
+    {
+      "id": 203,
+      "name": "주시자의 눈",
+      "jewelryType": "Necklace",
+      "price": 25000,
+      "iconPath": "Textures/Item/Jewelry/Icon/Necklace_EyeOfProphet",
+      "description": "예언자의 눈. 미래를 예측하는 능력을 부여한다.",
+      "options": {
+        "Up": 25,
+        "UpRegen": 20,
+        "Skill": 45
       },
       "grade": "Uncharted"
     }
@@ -989,6 +1003,15 @@
       "price": 265,
       "iconPath": "Textures/Item/Materials/Drop/Leather_Snake",
       "description": "독사의 가죽"
+    },
+    {
+      "id": "1168",
+      "name": "연구실 열쇠",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "100",
+      "iconPath": "Textures/Item/Materials/Drop/Laboratory_Key",
+      "description": "알맞는 문이 있을것 같다."
     }
   ],
   "goods": [

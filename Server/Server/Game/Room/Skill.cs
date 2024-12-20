@@ -16,8 +16,7 @@ using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 
 namespace Server.Game
 {
-
-    public class Skill
+    public partial class Skill
     {
         List<GameObject> _targetList = new List<GameObject>();
         GameObject _target = null;
@@ -29,7 +28,7 @@ namespace Server.Game
             Owner = owner;
         }
         public void StartSkill(GameObject user, SkillData skillData, GameObject target = null, int addRange = 0)
-        {            
+        {
             if (user == null || skillData == null)
                 return;
             if (target != null)
@@ -50,7 +49,7 @@ namespace Server.Game
                 {
                     range = (int)MathF.Max(skillData.shape.range, (Owner as Player).WeaponRange);
                 }
-                else range = (Owner as Player).WeaponRange;                
+                else range = (Owner as Player).WeaponRange;
             }
             else
             {
@@ -58,9 +57,9 @@ namespace Server.Game
                 {
                     range = (int)skillData.shape.range;
                 }
-            } 
-                
-            if(addRange != 0)
+            }
+
+            if (addRange != 0)
             {
                 range += addRange;
             }
@@ -116,7 +115,7 @@ namespace Server.Game
                     }
                 }
             }
-            if(peek)
+            if (peek)
             {
                 return coolDown;
             }
@@ -150,7 +149,7 @@ namespace Server.Game
         }
         #region LogicDivide
         public void HandleAttackSkill(SkillData data, int range, GameObject target)
-        {   
+        {
             switch (data.skillLogicType)
             {
                 case SkillLogicType.BasicAttack:
@@ -169,7 +168,7 @@ namespace Server.Game
                     SummonAttack(data, range, target);
                     break;
                 case SkillLogicType.Kinetic:
-                    KineticAttack(data , target);
+                    KineticAttack(data, target);
                     break;
                 case SkillLogicType.Invocation:
                     InvokeSkill(data, target);
@@ -177,41 +176,48 @@ namespace Server.Game
                 case SkillLogicType.LoopInvocation:
                     LoopInvocation_Rotate(data, target);
                     break;
-                default: 
+                default:
                     BasicAttakAsync(data, range);
                     break;
             }
         }
         public async void HandleProjectileSkill(SkillData data)
         {
-            switch (data.skillLogicType) 
+            switch (data.skillLogicType)
             {
                 case SkillLogicType.MagicBall:
-                    await Task.Delay((int)(1000*Owner.TotalInvokeSpeed));
+                    await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
                     MagicBall(data);
-                    
+
                     return;
                 default: return;
-            }            
+            }
         }
-        public void HandleSpotSkill(SkillData data, GameObject target)
+        public void HandleSpotSkill(SkillData data, GameObject target = null)
         {
             List<Vector2Int> skillPos = null;
             switch (data.skillLogicType)
             {
                 case SkillLogicType.SpotAttack:
-                    if (data.spot.maxCount - data.spot.minCount > 0)
+                    if (data.spot.isHoming)
                     {
-                        skillPos = SkillLogic.GetRandomSpots(Owner, data, Owner.Room);
+                        skillPos = SkillLogic.GetAllTargetsInRange(Owner.CellPos, data.range);
                     }
-                    else if(data.spot.maxCount == 1)
+                    else
                     {
-                        skillPos = [target.CellPos];
+                        if (data.spot.maxCount - data.spot.minCount > 0)
+                        {
+                            skillPos = SkillLogic.GetRandomSpots(Owner, data, Owner.Room);
+                        }
+                        else if (data.spot.maxCount == 1)
+                        {
+                            skillPos = [target.CellPos];
+                        }
+                        if (skillPos.Count == 0)
+                        {
+                            return;
+                        }
                     }
-                    if (skillPos.Count == 0)
-                    {
-                        return;
-                    }                    
                     SpotAttack(data, skillPos);
                     break;
             }
@@ -226,14 +232,17 @@ namespace Server.Game
                 case SkillLogicType.RealTimeByEnemyNumber:
                     RealTimeByEnemyNum(skillData);
                     break;
-                default:                    
+                case SkillLogicType.Exchange:
+                    BuffExchange(skillData);
+                    break;
+                default:
                     ApplyBuff(skillData, target);
                     break;
             }
         }
         public void HandleDebuffSkill(SkillData skillData, GameObject target = null)
         {
-            switch(skillData.skillLogicType)
+            switch (skillData.skillLogicType)
             {
                 case SkillLogicType.Dot:
                     DOT(skillData, target);
@@ -256,7 +265,7 @@ namespace Server.Game
             {
                 case DebuffType.Dot:
                     DOT(skillData, target);
-                    ApplyDeBuff(skillData, target);
+                    target.ApplyDebuff(skillData.debuff, suspect:Owner);                    
                     break;
                 case DebuffType.Stat:
                     ApplyDeBuff(skillData, target);
@@ -275,418 +284,18 @@ namespace Server.Game
                     break;
             }
         }
-        private async void ApplyBuff(SkillData data, GameObject target)
-        {
-            await Task.Delay((int)(1000 * data.term));
-            // Buff 적용 로직
-            if (data.buff != null)
-            {
-                // Buff 시작 시 로직
-                Console.WriteLine($"Buff {data.buff.name} applied with value {data.buff.value}");
-                target.ApplyBuff(data.buff);
-            }
-            else if (data.buffList != null)
-            {
-                foreach (var buff in data.buffList)
-                {
-                    // Buff 시작 시 로직
-                    Console.WriteLine($"Buff {buff.name} applied with value {buff.value}");
-                    target.ApplyBuff(buff);
-                }
-            }
-        }
-
-        private async void ApplyDeBuff(SkillData data, GameObject target)
-        {            
-            await Task.Delay((int)(1000 * data.term));
-            if (data.debuff != null)
-            {
-                // Debuff 시작 시 로직
-                Console.WriteLine($"Debuff {data.debuff.name} applied with value {data.debuff.value}");
-                target.ApplyDebuff(data.debuff);
-            }
-            else if (data.debuffList != null)
-            {
-                foreach (var debuff in data.debuffList)
-                {
-                    // Debuff 시작 시 로직
-                    Console.WriteLine($"Debuff {debuff.name} applied with value {debuff.value}");
-                    target.ApplyDebuff(debuff);
-                }
-            }
-        }
-        private void ApplyAfterEffect(SkillData skill, GameObject target)
-        {
-            if(skill == null)
-                return;
-            if(skill.debuff != null)
-            {
-                GameObject applyTarget = skill.debuff.isTarget ? target : Owner;
-                HandleDebuffSkill(skill, applyTarget);
-            }
-            else if(skill.debuffList != null)
-            {
-                foreach (var debuff in skill.debuffList)
-                {
-                    GameObject applyTarget = debuff.isTarget ? target : Owner;
-                    HandleDebuffSkill(skill, applyTarget);
-                }
-            }
-
-            if (skill.buff != null)
-            {
-                GameObject applyTarget = skill.buff.isTarget ? target : Owner;
-                HandleBuffSkill(skill, applyTarget);
-            }
-            else if (skill.buffList != null)
-            {
-                foreach (var buff in skill.buffList)
-                {
-                    GameObject applyTarget = buff.isTarget ? target : Owner;
-                    HandleBuffSkill(skill, applyTarget);
-                }
-            }
-        }
         #endregion
-        #region SkillLogic
-        private async void DOT(SkillData data, GameObject target)
+        #region Calculate
+        private void CalculateDistance(GameObject target, Action action, int range)
         {
-            if (data.debuff == null || target == null)
-                return;
-
-            int tickInterval = 1000; // 1초 간격
-            int totalTicks = data.debuff.duration;
-
-            for (int i = 0; i < totalTicks; i++)
-            {
-                await Task.Delay(tickInterval);
-                target.OnDamaged(Owner, (int)(Owner.TotalAttack * data.debuff.value));
-            }
-
-            Console.WriteLine($"Debuff {data.debuff.name} ended");
-        }
-        public void MagicBall(SkillData data)
-        {
-            MagicBall magicBall = ObjectManager.Instance.Add<MagicBall>();
-            magicBall.Owner = Owner;
-            magicBall.Target = _target;
-            magicBall.Owner.Room = Owner.Room;
-            magicBall.Data = data;
-            magicBall.PosInfo.State = CreatureState.Moving;
-            magicBall.PosInfo.MoveDir = Owner.PosInfo.MoveDir;
-            magicBall.PosInfo.PosX = Owner.PosInfo.PosX;
-            magicBall.PosInfo.PosY = Owner.PosInfo.PosY;
-            magicBall.Speed = data.projectile.speed;
-            magicBall.DespawnAnim = true;
-            magicBall.TemplateId = data.id;
-            if (data.debuff != null)
-            {
-                magicBall.OnHit = (target) => { HandleDebuffSkill(data, target); };
-            }
-            Owner.Room.Push(Owner.Room.EnterGame, magicBall, false);
-        }
-        public async void BasicAttakAsync(SkillData data, int range)
-        {
-            List<Vector2Int> skillPos = new List<Vector2Int>();
-            if(Owner.TotalInvokeSpeed > 0)
-                await Task.Delay((int)(Owner.TotalInvokeSpeed*1000));
-            if (data.shape.shapeType == ShapeType.ShapeBent)
-            {
-                Vector2Int center = Owner.GetFrontCellPos();   
-                skillPos.AddRange(SkillLogic.GetBentAttackTiles(center, Owner.Info.Position.LookDir, range));
-            }
-            else if(data.shape.shapeType == ShapeType.ShapeRect)
-            {
-                Vector2Int center = Owner.GetFrontCellPos();
-                skillPos.AddRange(SkillLogic.GetRectAttackTiles(center, Owner.Info.Position.MoveDir, range));
-            }
-            else if(data.shape.shapeType == ShapeType.ShapeCircle)
-            {
-                Vector2Int center = Owner.GetFrontCellPos();
-                skillPos.AddRange(SkillLogic.GetAllTargetsInRange(center, range));
-            }
-            else if (data.shape.shapeType == ShapeType.ShapeLine)
-            {
-                skillPos.AddRange(SkillLogic.GetTargetsInLine(Owner.CellPos, Owner.Info.Position.MoveDir, range));
-            }
-            foreach (Vector2Int pos in skillPos)
-            {
-                GameObject target = Owner.Room.Map.Find(pos);
-                if (target != null)
-                {
-                    if (target == Owner)
-                    {
-                        continue;
-                    }
-                    if(_target !=null)
-                    {
-                        if(target != _target)
-                            continue;
-                    }
-                    CalculateDistance(target, () => 
-                    { 
-                        target.OnDamaged(Owner, Owner.TotalAttack + data.damage);
-                        ApplyAfterEffect(data, target);
-                    }, range);
-                }
-            }
-        }
-        public async void KnockBack(SkillData data)
-        {
-            await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
-
-            Vector2Int destPos = new Vector2Int();
-            List < Vector2Int > targetPos = new List<Vector2Int>();
-            if (data.shape.shapeType == ShapeType.ShapeLine)
-            {
-                targetPos = SkillLogic.GetTargetsInLine(Owner.CellPos, Owner.Info.Position.MoveDir, data.range);
-                
-            }
-            else if(data.shape.shapeType == ShapeType.ShapeCircle)
-            {
-                targetPos = SkillLogic.GetAllTargetsInRange(Owner.CellPos, data.range);
-            }
-            //데미지 판정
-            foreach (Vector2Int pos in targetPos)
-            {
-                GameObject target = Owner.Room.Map.Find(pos);
-                if (target != null)
-                {
-                    if (target == Owner)
-                    {
-                        continue;
-                    }
-                    CalculateDistance(target, () =>
-                    {
-                        target.OnDamaged(Owner, Owner.TotalAttack + data.damage);
-                        ApplyAfterEffect(data, target);
-                    }, data.range);
-                }
-                Vector2Int direction = (_target.CellPos - Owner.CellPos).normalized;
-                destPos = new Vector2Int(_target.CellPos.x + direction.x * 2, _target.CellPos.y + direction.y * 2);
-
-                if (Owner.Room.Map.ApplyMove(_target, destPos, collision: false))
-                {
-                    _target.CellPos = destPos;
-                    S_ChangePosition changePosition = new S_ChangePosition();
-                    changePosition.ObjectId = _target.Id;
-                    changePosition.Position = _target.PosInfo;
-                    Owner.Room.Broadcast(_target.CellPos, changePosition);
-                }
-            }
-        }
-        public async void CombatAsync(SkillData data)
-        {
-            for(int i = 0; i< data.count; i++)
-            {
-                if(data.terms!=null && data.terms.Count > 0)
-                {
-                    if(i >= 1)
-                    {
-                        await Task.Delay((int)((data.terms[i] - data.terms[i-1])/Owner.TotalAttackSpeed * 1000));
-                    }
-                    else if(i == 0)
-                    {
-                        await Task.Delay((int)(data.terms[i]/Owner.TotalAttackSpeed * 1000));
-                    }                    
-                }
-                else if(data.term != 0)
-                {
-                    await Task.Delay((int)(data.term / Owner.TotalAttackSpeed * 1000));
-                }
-                List<Vector2Int> targets = SkillLogic.GetTargetsInLine(Owner.CellPos, Owner.Info.Position.MoveDir, (int)data.shape.range);
-                foreach(var pos in targets)
-                {                    
-                    GameObject target = Owner.Room.Map.Find(pos);
-                    if (target != null)
-                    {
-                        if (target == Owner)
-                        {
-                            continue;
-                        }
-                        target.OnDamaged(Owner, Owner.TotalAttack + data.damage);
-                    }
-                }
-            }
-        }
-        public void Pull(SkillData data, int range)
-        {
-            List<Vector2Int> tiles = SkillLogic.GetAllTargetsInRange(Owner.CellPos, range);
-            foreach (Vector2Int tile in tiles)
-            {
-                if((tile - Owner.CellPos).cellDistanceFromZero > range)
-                {
-                    continue;
-                }
-                GameObject target = Owner.Room.Map.Find(tile);
-                if (target != null)
-                {
-                    if (target == Owner)
-                        continue;
-
-                    Vector2Int direction = (Owner.CellPos - target.CellPos).normalized;
-                    Vector2Int newPos = target.CellPos + direction;
-
-                    if (Owner.Room.Map.ApplyMove(target, newPos))
-                    {
-                        target.CellPos = newPos;
-                        S_ChangePosition movePacket = new S_ChangePosition();
-                        movePacket.ObjectId = target.Id;
-                        movePacket.Position = target.PosInfo;
-                        Owner.Room.Broadcast(target.CellPos, movePacket);
-                    }
-                }
-            }
-        }
-        private async void SpotAttack(SkillData data, List<Vector2Int> skillPos)
-        {
-            await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
-            foreach (Vector2Int pos in skillPos)
-            {
-                if (Owner == null || Owner.Room ==null)
-                    return;
-                SpotAttack spot = ObjectManager.Instance.Add<SpotAttack>();
-                spot.Owner = Owner;
-                spot.Owner.Room = Owner.Room;
-                spot.Data = data;
-                spot.PosInfo.PosX = pos.x;
-                spot.PosInfo.PosY = pos.y;
-                spot.PosInfo.MoveDir = MoveDir.Down;
-                spot.PosInfo.State = CreatureState.Moving;
-                spot.Delay = data.spot.delay;
-                spot.TemplateId = data.id;
-                Owner.Room.Push(Owner.Room.EnterGame, spot, false);
-
-                if(data.term != 0)
-                    await Task.Delay((int)(data.term * 1000));
-            }
-        }
-        private async void BlockAsync(SkillData data) 
-        {
-            float prevReduce = Owner.TotalDamageReduce;
-            Owner.TotalDamageReduce = data.buff.value;
-            await Task.Delay(data.buff.duration*1000);
-            Owner.TotalDamageReduce = prevReduce;
-        }
-        private async void InvokeSkill(SkillData data, GameObject target)
-        {
-            List<Vector2Int> skillPos = new List<Vector2Int>();
-            switch (data.shape.shapeType) 
-            {
-                case ShapeType.ShapeLine:
-                    skillPos = SkillLogic.GetTargetsInLine(Owner.CellPos, Owner.Info.Position.MoveDir, data.range);
-                    break;
-                case ShapeType.ShapeRect:
-                    break;
-                case ShapeType.ShapeBent:
-                    break;
-                case ShapeType.ShapeCircle:
-                    break;
-            }
-            // invokespeed 이후에 스킬 동작
-            await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
-            for (int i = 0; i < data.count; i++)
-            {
-                if (data.terms != null && data.terms.Count > 0)
-                {
-                    if (i >= 1)
-                    {
-                        await Task.Delay((int)((data.terms[i] - data.terms[i - 1]) * 1000));
-                    }
-                    else if (i == 0)
-                    {
-                        await Task.Delay((int)(data.terms[i]* 1000));
-                    }
-                }
-                else if (data.term != 0)
-                {
-                    await Task.Delay((int)(data.term* 1000));
-                }
-                foreach (Vector2Int pos in skillPos)
-                {
-                    GameObject newTarget = Owner.Room.Map.Find(pos);
-                    if (newTarget != null)
-                    {
-                        if (newTarget == Owner)
-                        {
-                            continue;
-                        }
-                        newTarget.OnDamaged(Owner, Owner.TotalAttack + data.damage);
-                    }
-                }
-            }
-        }
-        private async void LoopInvocation_Rotate(SkillData data, GameObject target)
-        {
-            float angle = 0;
-            float angleIncrement = 360f / (data.duration/data.tickInterval);
-            while (data.duration > 0)
-
-            {
-                List<Vector2Int> skillPos = new List<Vector2Int>();
-
-                if (data.shape.shapeType == ShapeType.ShapeLine)
-                {
-                    skillPos = SkillLogic.GetTargetsInLaser(Owner.CellPos, angle, data.range);
-                }
-                else
-                {
-                    // 다른 shapeType에 대한 로직 추가
-                }
-
-                foreach (Vector2Int pos in skillPos)
-                {
-                    // pos에 있는 타겟에게 데미지를 주는 로직 추가
-                    GameObject targetInPos = Owner.Room.Map.Find(pos);
-                    if (targetInPos != null)
-                    {
-                         targetInPos.OnDamaged(Owner, Owner.TotalAttack + data.damage);
-                    }
-                }
-
-                angle += angleIncrement;
-                data.duration -= data.tickInterval;
-                await Task.Delay((int)(data.tickInterval * 1000));
-            }
-        }
-        private void MoveSkill(SkillData data, GameObject target = null)
-        {
-            if (data.shape == null)
-                return;
-            
-            Vector2Int dir = GetDir(data.shape.direction);
-            Vector2Int destPos = new Vector2Int();
             if (target != null)
             {
-                if (data.shape.shapeType == ShapeType.ShapeLine)
-                {
-                    destPos = target.CellPos - dir;
-                }
-            }
-            else
-            {
-                if (data.shape.shapeType == ShapeType.ShapeLine)
-                {
-                    destPos = Owner.CellPos + new Vector2Int(dir.x * data.range, dir.y * data.range);
+                float distance = (Owner.CellPos - target.CellPos).magnitude;
 
-                    if (!Owner.Room.Map.CanGo(destPos))
-                    {
-                        Vector2Int currentPos = Owner.CellPos;
-                        while (!Owner.Room.Map.CanGo(currentPos))
-                        {
-                            currentPos -= dir;
-                        }
-                        destPos = currentPos;
-                    }
+                if (distance <= range)
+                {
+                    action();
                 }
-            }
-            if (Owner.Room.Map.ApplyMove(Owner, destPos))
-            {
-                Owner.CellPos = destPos;
-                S_ChangePosition movePacket = new S_ChangePosition();
-                movePacket.ObjectId = Owner.Id;
-                movePacket.Position = Owner.PosInfo;
-                Owner.Room.Broadcast(Owner.CellPos, movePacket);
             }
         }
         private Vector2Int GetDir(DirectionType type)
@@ -748,122 +357,7 @@ namespace Server.Game
             }
             return dir;
         }
-        private async void SummonAttack(SkillData data, int range, GameObject target = null)
-        {
-            await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
-            SummonAttackObj summon = ObjectManager.Instance.Add<SummonAttackObj>();
-            summon.Owner = Owner;
-            summon.Target = _target;
-            summon.Owner.Room = Owner.Room;
-            summon.DespawnAnim = data.afterEffect;
-            summon.Data = data;
-            summon.Range = range;
-            summon.PosInfo.State = CreatureState.Moving;            
-            summon.TemplateId = data.id;
-            if (target != null)
-            {
-                summon.PosInfo.MoveDir = target.PosInfo.MoveDir;
-                summon.PosInfo.PosX = target.PosInfo.PosX;
-                summon.PosInfo.PosY = target.PosInfo.PosY;
-            }
-            else
-            {
-                summon.PosInfo.MoveDir = Owner.PosInfo.MoveDir;
-                summon.PosInfo.PosX = Owner.PosInfo.PosX;
-                summon.PosInfo.PosY = Owner.PosInfo.PosY;
-            }            
-            if (data.debuff != null)
-            {
-                summon.OnHit = (target) => { HandleDebuffSkill(data, target); };
-            }
-
-            Owner.Room.Push(Owner.Room.EnterGame, summon, false);            
-        }
-        private async void KineticAttack(SkillData data,  GameObject target = null)
-        {
-            for(int i = 0; i < data.count; i++)
-            {
-                await Task.Delay((int)(1000 * data.terms[i]));
-                MoveSkill(data, target);
-
-                int dist = (Owner.CellPos - target.CellPos).cellDistanceFromZero;
-                if (target != null && dist < data.range)
-                {
-                    S_Effect effectPacket = new S_Effect();
-                    effectPacket.ObjectId = target.Id;
-                    effectPacket.Prefab = $"{data.prefabs[i*2 + 1]}";                    
-                    Owner.Room.Broadcast(Owner.CellPos, effectPacket);
-                    target.OnDamaged(Owner, data.damage + Owner.TotalAttack);
-                }
-            }
-        }
-        private async void RealTimeByEnemyNum(SkillData data, GameObject target = null)
-        {
-            if(target == null)
-                return;
-            // data의 시간 동안 반복한다. 1. 적 찾기 2. target에게 버프/디버프 적용
-            long tick = 0;
-            int enemyNum = 0;
-
-            if(data.debuff != null)
-            {
-                tick = Environment.TickCount64 + (long)(data.debuff.duration * 1000);
-            }
-            else if (data.buff != null)
-            {
-                tick = Environment.TickCount64 + (long)(data.buff.duration * 1000);
-            }
-            int buff = -1;
-            int debuff = -1;
-            while (true)
-            {
-                List<Vector2Int> enemies = SkillLogic.GetAllTargetsInRange(Owner.CellPos, data.range);
-                if (enemyNum < enemies.Count)
-                {
-                    enemyNum = enemies.Count - enemyNum;
-                    if (data.debuff != null && enemyNum> 0)
-                    {
-                        target.ApplyDebuff(data.debuff, enemyNum);
-                        debuff = target.Debuffs.Last().Key;
-                    }
-                    else if (data.buff != null && enemyNum> 0)
-                    {
-                        target.ApplyBuff(data.buff, enemyNum);
-                        buff = target.Buffs.Last().Key;
-                    }
-                }
-                else if (enemyNum > enemies.Count)
-                {
-                    enemyNum = enemyNum - enemies.Count;
-                    if (debuff >= 0 && enemyNum > 0)
-                    {
-                        target.RemoveDebuff(data.debuff, enemyNum);
-                    }
-                    if (buff >= 0 && enemyNum > 0)
-                    {
-                        target.RemoveBuff(data.buff, enemyNum);
-                    }
-                }
-                await Task.Delay(1000);
-
-                if (Environment.TickCount64 > tick)
-                    break;
-            }
-        }
         #endregion
-        #region Calculate
-        private void CalculateDistance(GameObject target, Action action, int range)
-        {
-            if (target != null)
-            {
-                float distance = (Owner.CellPos - target.CellPos).magnitude;
-
-                if (distance <= range)
-                {
-                    action();
-                }
-            }
-        }
-        #endregion
+    
     }
 }

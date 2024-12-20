@@ -146,5 +146,12 @@ namespace Server.Game
 
             return tiles;
         }
+        public static Vector2Int GetRandomPos(Vector2Int start, int range) {
+            Random rand = new Random();
+            double angle = rand.NextDouble() * Math.PI * 2;
+            int x = (int)Math.Round(range * Math.Cos(angle));
+            int y = (int)Math.Round(range * Math.Sin(angle));
+            return start + new Vector2Int(x, y);
+        }
     }
 }

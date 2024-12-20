@@ -9,7 +9,6 @@ namespace Server.Game
 {
     public partial class GameRoom : JobSerializer
     {
-        
         public void HandleMove(Player player, C_Move movePacket)
         {
             if (player == null)
