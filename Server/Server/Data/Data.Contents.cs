@@ -86,6 +86,7 @@ namespace Server.Data
         public float speed;
         public float range;
         public bool isHoming;
+        public bool isRandom;
         public string prefab;
     }
     public class SpotInfo

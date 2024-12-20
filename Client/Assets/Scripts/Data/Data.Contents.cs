@@ -62,6 +62,7 @@ namespace Data
         public string prefab;
         public List<string> prefabs;
         public string icon;
+        public float duration;
         public float effectDuration;
         public bool isObject;
         public bool fix;

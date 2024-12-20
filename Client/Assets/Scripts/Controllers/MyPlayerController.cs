@@ -336,7 +336,25 @@ public class MyPlayerController : PlayerController
         }
         CheckUpdatedFlag();
     }
+    protected override void UpdateMoving()
+    {
+        Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
+        Vector3 moveDir = destPos - transform.position;
 
+        // 도착 여부 체크
+        float dist = moveDir.magnitude;
+        if (dist < Speed * Time.deltaTime)
+        {
+            transform.position = destPos;
+            MoveToNextPos();
+        }
+        else
+        {
+            transform.position += moveDir.normalized * Speed * Time.deltaTime;
+            State = CreatureState.Moving;
+        }
+        UpdateSortingLayer();
+    }
     private void CheckIfPlayerAtPortal(Vector3Int playerCellPosition)
     {
         GameObject portalObj = Managers.Map.IsPlayerAtPortal(playerCellPosition);

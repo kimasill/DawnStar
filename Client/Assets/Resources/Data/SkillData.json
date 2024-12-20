@@ -100,17 +100,25 @@
     },
     {
       "id": "7",
-      "name": "데우스 엑스 마키나",
-      "coolTime": "40",
+      "name": "집행",
+      "coolTime": "20",
       "damage": "100",
-      "skillType": "SkillAttack",
-      "shape": {
-        "shapeType": "ShapeRect",
-        "range": "4.0"
+      "term": "0.1",
+      "range": "5",
+      "skillType": "SkillSpot",
+      "skillLogicType": "SpotAttack",
+      "spot": {
+        "speed": "5.0",
+        "delay": "1.2",
+        "minCount": "8",
+        "maxCount": "8",
+        "isHoming": "true"
       },
       "isObject": "true",
       "unchartedPoint": "50",
-      "description": "주변적들을 자동으로 지정해서 피해를준다. 적이 최대 지정수보다 적으면 그만큼 중복으로 피해를준다."
+      "prefab": "Magic/Execution",
+      "icon": "Textures/Images/Icons/Skill/Execution",
+      "description": "주변적들을 지정해서 집행한다."
     },
     {
       "id": "8",
@@ -161,6 +169,7 @@
       "damage": "30",
       "skillType": "SkillProjectile",
       "skillLogicType": "MagicBall",
+      "count": "1",
       "terms": [
         "0.3"
       ],
@@ -168,7 +177,8 @@
         "speed": "5.0",
         "range": "10",
         "prefab": "Magic/PoisonExplosion",
-        "isHoming": "true"
+        "isHoming": "true",
+        "isRandom": false
       },
       "shape": {
         "shapeType": "ShapeCircle",
@@ -198,7 +208,8 @@
         "speed": "7.0",
         "delay": "0.5",
         "minCount": "10",
-        "maxCount": "20"
+        "maxCount": "20",
+        "isHoming": "false"
       },
       "debuff": {
         "id": "8",
@@ -501,7 +512,6 @@
       "unchartedPoint": 0,
       "description": "일정시간동안 공격력이 증가한다.",
       "fix": true
-
     },
     {
       "id": 26,
@@ -669,10 +679,15 @@
       "coolTime": 30,
       "damage": 50,
       "range": 10,
-      "duration": 7,
+      "duration": 8,
       "tickInterval": 0.1,
+      "terms": [
+        "1.5",
+        "8",
+        "0.4"
+      ],
       "skillType": "SkillAttack",
-      "skillLogicType": "Invocation",
+      "skillLogicType": "LoopInvocation",
       "shape": {
         "shapeType": "ShapeLine",
         "range": 1
@@ -692,6 +707,11 @@
         "shapeType": "ShapeCircle",
         "range": 2
       },
+      "terms": [
+        "0.1",
+        "0.4",
+        "0.1"
+      ],
       "debuff": {
         "id": 13,
         "name": "기절",
@@ -710,14 +730,20 @@
       "damage": "30",
       "skillType": "SkillProjectile",
       "skillLogicType": "MagicBall",
+      "count": "30",
+      "duration": "6",
+      "term": "0.2",
       "terms": [
-        "0.3"
+        "0.3",
+        "6",
+        "0.1"
       ],
       "projectile": {
         "speed": "5.0",
         "range": "10",
         "prefab": "Magic/PoisonExplosion",
-        "isHoming": "true"
+        "isHoming": "true",
+        "isRandom": true
       },
       "shape": {
         "shapeType": "ShapeCircle",
@@ -733,6 +759,35 @@
       "isObject": "true",
       "unchartedPoint": "20",
       "description": "닿는순간 폭발하여 독성피해를 준다."
+    },
+    {
+      "id": 36,
+      "name": "거래-공격력과 HP",
+      "coolTime": 30,
+      "terms": [
+        "4"
+      ],
+      "skillType": "SkillBuff",
+      "buff": {
+        "id": 1,
+        "name": "공격력",
+        "duration": 20,
+        "value": 0.3,
+        "isPercent": false
+      },
+      "debuff": {
+        "id": 3,
+        "name": "체력",
+        "duration": 20,
+        "value": -0.3,
+        "isPercent": false
+      },
+      "isObject": "false",
+      "prefab": "Effect/Husk",
+      "icon": "Textures/Images/Icons/Skill/Husk",
+      "unchartedPoint": 0,
+      "description": "체력을 지불하여 일정시간동안 공격력이 증가한다.",
+      "fix": true
     }
   ]
 }

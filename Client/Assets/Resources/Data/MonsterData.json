@@ -1460,7 +1460,7 @@
         "maxHp": 7000,
         "attack": 100,
         "speed": 2.5,
-        "invokeSpeed": 0.5,
+        "invokeSpeed": 0.1,
         "attackSpeed": 0.5,
         "totalExp": 33000
       },
@@ -1473,36 +1473,24 @@
         },
         {
           "probability": "100",
-          "itemId": "1156",
+          "itemId": "1168",
           "minCount": "1",
           "maxCount": "1"
         },
         {
-          "probability": "30",
-          "itemId": "1127",
-          "minCount": "3",
-          "maxCount": "5"
-        },
-        {
-          "probability": "20",
-          "itemId": "1127",
-          "minCount": "4",
-          "maxCount": "11"
-        },
-        {
-          "probability": "15",
+          "probability": "100",
           "itemId": "1126",
           "minCount": "2",
           "maxCount": "4"
         },
         {
-          "probability": "10",
+          "probability": "100",
           "itemId": "1126",
           "minCount": "3",
           "maxCount": "7"
         },
         {
-          "probability": 10,
+          "probability": 50,
           "itemId": 1125,
           "minCount": 1,
           "maxCount": 1
@@ -1510,17 +1498,17 @@
         {
           "probability": "100",
           "itemId": "10001",
-          "minCount": "100",
-          "maxCount": "400"
+          "minCount": "200",
+          "maxCount": "800"
         },
         {
           "probability": "100",
           "itemId": "10001",
-          "minCount": "200",
-          "maxCount": "500"
+          "minCount": "400",
+          "maxCount": "1000"
         }
       ],
-      "rewardBoxId": "5"
+      "rewardBoxId": "7"
     }
   ]
 } 

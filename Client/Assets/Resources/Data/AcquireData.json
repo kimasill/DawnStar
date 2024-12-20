@@ -275,6 +275,74 @@
           "maxCount": "20"
         }
       ]
+    },
+    {
+      "id": "7",
+      "name": "보스상자(주시자)",
+      "type": "chest",
+      "grade": "epic",
+      "rewards": [
+        {
+          "probability": "100",
+          "itemId": "203",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "1114",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "1125",
+          "minCount": "3",
+          "maxCount": "3"
+        },
+        {
+          "probability": "100",
+          "itemId": "1135",
+          "minCount": "4",
+          "maxCount": "4"
+        },
+        {
+          "probability": "100",
+          "itemId": "1132",
+          "minCount": "6",
+          "maxCount": "6"
+        },
+        {
+          "probability": "100",
+          "itemId": "1141",
+          "minCount": "2",
+          "maxCount": "2"
+        },
+        {
+          "probability": "100",
+          "itemId": "1142",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "1144",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "10001",
+          "minCount": "1500",
+          "maxCount": "2000"
+        },
+        {
+          "probability": "100",
+          "itemId": "10002",
+          "minCount": "100",
+          "maxCount": "100"
+        }
+      ]
     }
   ]
 }
