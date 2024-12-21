@@ -90,6 +90,14 @@
       "id": 14,
       "name": "CathedralEntrance",
       "multi": true
+    },
+    {
+      "id": 15,
+      "name": "LaboratoryRewardDoor",
+      "multi": true,
+      "keyItems": [
+        "1167"
+      ]
     }
   ],
   "triggers": [
@@ -141,6 +149,14 @@
       "multi": true,
       "itemIds": [
         1165
+      ]
+    },
+    {
+      "id": "2004",
+      "name": "Laboratory_RewardTable",
+      "multi": true,
+      "itemIds": [
+        7
       ]
     }
   ],

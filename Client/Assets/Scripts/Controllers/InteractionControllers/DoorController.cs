@@ -15,8 +15,11 @@ public class DoorController : InteractionController
     protected override void Init()
     {
         base.Init();
-        Animator.Play("OPEN", 0, 0);
-        Animator.speed = 0;
+        if (Animator != null)
+        {
+            Animator.Play("OPEN", 0, 0);
+            Animator.speed = 0;
+        }
         if(_decorator != null)
         {
             _decorator.Play("OPEN", 0, 0);
@@ -43,38 +46,44 @@ public class DoorController : InteractionController
     }
     private IEnumerator CoOpenDoor()
     {
-        Animator.speed = 1;
-        if (CheckAnimationClip("CLOSE"))
+        if(Animator == null)
         {
-            Animator.Play("OPEN"); // OPEN 애니메이션 재생
-            if (_decorator != null)
-            {
-                _decorator.speed = 1;
-                _decorator.Play("OPEN");
-            }
-            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f); // 애니메이션 재생 시간 동안 대기
-             // 애니메이션 종료 대기
-            Animator.speed = 0;
-            Animator.Play("CLOSE", 0, 0); // CLOSE 애니메이션 첫 프레임으로 고정
-            if (_decorator != null)
-            {
-                _decorator.speed = 0;
-                _decorator.Play("CLOSE", 0, 0);
-            }
+            gameObject.SetActive(false);
         }
         else
         {
-            Animator.Play("OPEN");
-            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f); // 애니메이션 종료 대기
-            Animator.speed = 0;
-            Animator.Play("OPEN", 0, 0.95f); // CLOSE 애니메이션 마지막 프레임으로 고정
-            if (_decorator != null)
+            Animator.speed = 1;
+            if (CheckAnimationClip("CLOSE"))
             {
-                _decorator.speed = 0;
-                _decorator.Play("OPEN", 0, 0.95f);
+                Animator.Play("OPEN"); // OPEN 애니메이션 재생
+                if (_decorator != null)
+                {
+                    _decorator.speed = 1;
+                    _decorator.Play("OPEN");
+                }
+                yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f); // 애니메이션 재생 시간 동안 대기
+                                                                                                                   // 애니메이션 종료 대기
+                Animator.speed = 0;
+                Animator.Play("CLOSE", 0, 0); // CLOSE 애니메이션 첫 프레임으로 고정
+                if (_decorator != null)
+                {
+                    _decorator.speed = 0;
+                    _decorator.Play("CLOSE", 0, 0);
+                }
+            }
+            else
+            {
+                Animator.Play("OPEN");
+                yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f); // 애니메이션 종료 대기
+                Animator.speed = 0;
+                Animator.Play("OPEN", 0, 0.95f); // CLOSE 애니메이션 마지막 프레임으로 고정
+                if (_decorator != null)
+                {
+                    _decorator.speed = 0;
+                    _decorator.Play("OPEN", 0, 0.95f);
+                }
             }
         }
-
         if (CellPoses != null)
         {
             foreach (var cellPos in CellPoses)
@@ -86,39 +95,45 @@ public class DoorController : InteractionController
 
     private IEnumerator CoCloseDoor()
     {
-        Animator.speed = 1;
-        if (CheckAnimationClip("OPEN"))
+        if (Animator == null)
         {
-            Animator.Play("CLOSE"); // CLOSE 애니메이션 재생
-            if (_decorator != null)
-            {
-                _decorator.speed = 1;
-                _decorator.Play("CLOSE");
-            }
-            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f); // 애니메이션 재생 시간 동안 대기
-            // 애니메이션 종료 대기
-            Animator.speed = 0;
-            Animator.Play("OPEN", 0, 0); // OPEN 애니메이션 첫 프레임으로 고정
-            if (_decorator != null)
-            {
-                _decorator.speed = 0;
-                _decorator.Play("OPEN", 0, 0);
-            }
-
+            gameObject.SetActive(true);
         }
         else
         {
-            Animator.Play("CLOSE");
-            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f); // 애니메이션 종료 대기
-            Animator.speed = 0;
-            Animator.Play("CLOSE", 0, 0.95f); // CLOSE 애니메이션 마지막 프레임으로 고정
-            if (_decorator != null)
+            Animator.speed = 1;
+            if (CheckAnimationClip("OPEN"))
             {
-                _decorator.speed = 0;
-                _decorator.Play("CLOSE", 0, 0.95f);
+                Animator.Play("CLOSE"); // CLOSE 애니메이션 재생
+                if (_decorator != null)
+                {
+                    _decorator.speed = 1;
+                    _decorator.Play("CLOSE");
+                }
+                yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f); // 애니메이션 재생 시간 동안 대기
+                                                                                                                   // 애니메이션 종료 대기
+                Animator.speed = 0;
+                Animator.Play("OPEN", 0, 0); // OPEN 애니메이션 첫 프레임으로 고정
+                if (_decorator != null)
+                {
+                    _decorator.speed = 0;
+                    _decorator.Play("OPEN", 0, 0);
+                }
+
+            }
+            else
+            {
+                Animator.Play("CLOSE");
+                yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f); // 애니메이션 종료 대기
+                Animator.speed = 0;
+                Animator.Play("CLOSE", 0, 0.95f); // CLOSE 애니메이션 마지막 프레임으로 고정
+                if (_decorator != null)
+                {
+                    _decorator.speed = 0;
+                    _decorator.Play("CLOSE", 0, 0.95f);
+                }
             }
         }
-
         if (CellPoses != null)
         {
             foreach (var cellPos in CellPoses)
@@ -126,6 +141,7 @@ public class DoorController : InteractionController
                 Managers.Map.SetCollision(cellPos, true);
             }
         }
+
     }
     public void HandleOpenPacket()
     {
