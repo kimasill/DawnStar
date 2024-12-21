@@ -16,6 +16,7 @@ public class Define
         EastEnd,
         Prison,
         Crypt,
+        Laboratory,
         Game,
     }
 
