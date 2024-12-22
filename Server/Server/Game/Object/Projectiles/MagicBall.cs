@@ -12,7 +12,6 @@ namespace Server.Game
     {
         public GameObject Owner { get; set; }
         public GameObject Target { get; set; }
-        public Action<GameObject> OnHit { get; set; }
         public Vector2Int DestPos { get; set; }
         int _moveRange = 0;
         bool _isComplete = false;

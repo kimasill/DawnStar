@@ -128,6 +128,7 @@ enum SkillLogicType{
 	LOOP_INVOCATION = 12;
 	EXCHANGE = 13;
 	MARK = 14;
+	CURVE = 15;
 }
 
 enum DebuffType{

@@ -104,11 +104,12 @@ public class ObjectManager
                 return;
             _objects.Add(info.ObjectId, go);
 
-             BaseController bc = go.GetComponent<BaseController>();
-
+            BaseController bc = go.GetComponent<BaseController>();
+            bc.SkillData = skillData;
             bc.Id = info.ObjectId;
             bc.PosInfo = info.Position;
             bc.SyncPos();
+            bc.RefreshData();
         }
         else if(type == GameObjectType.Item)
         {

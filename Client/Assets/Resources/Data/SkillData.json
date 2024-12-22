@@ -229,6 +229,7 @@
       "name": "밀치기",
       "coolTime": "5",
       "damage": "10",
+      "range": "2",
       "skillType": "SkillAttack",
       "skillLogicType": "KnockBack",
       "shape": {
@@ -703,6 +704,7 @@
       "coolTime": 15,
       "skillType": "SkillAttack",
       "skillLogicType": "KnockBack",
+      "range": 2,
       "shape": {
         "shapeType": "ShapeCircle",
         "range": 2
@@ -820,12 +822,44 @@
           "isTarget": true
         }
       ],
-        "isObject": false,
-        "prefab":"Effect/Mark",
-        "icon":"Textures/Images/Icons/Skill/Mark",
-        "unchartedPoint": 10,
-        "description":"적을 지정하여 일정시간동안 추가피해를 준다.",
-        "fix": true
+      "isObject": false,
+      "prefab": "Effect/Mark",
+      "icon": "Textures/Images/Icons/Skill/Mark",
+      "unchartedPoint": 10,
+      "description": "적을 지정하여 일정시간동안 추가피해를 준다.",
+      "fix": true
+    },
+    {
+      "id": 38,
+      "name": "항아리 박격포",
+      "coolTime": 10,
+      "damage": 50,
+      "range": 10,
+      "count": 1,
+      "terms": [2.2],
+      "skillType": "SkillSpot",
+      "skillLogicType": "Curve",
+      "projectile": {
+        "speed": 2,
+        "range": 10,
+        "isHoming": false,
+        "isRandom": true
+      },
+      "spot": {
+        "speed": 2,
+        "range": 3,
+        "delay": 0.1,
+        "minCount": 1,
+        "maxCount": 1
+      },
+      "shape": {
+        "shapeType": "ShapeCircle",
+        "range": 1
+      },
+      "prefab": "Magic/PotCannon",
+      "isObject": true,
+      "unchartedPoint": 20,
+      "description": "항아리안에서 기운을 발사하여 폭발시킨다."
     }
   ]
 }

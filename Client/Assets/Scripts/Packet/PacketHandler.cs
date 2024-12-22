@@ -97,8 +97,7 @@ class PacketHandler
         {
             return;
         }
-
-        bc.PosInfo = movePacket.Position;
+        bc.HandleMovePos(movePacket.Position);
     }
 
     public static void S_SkillHandler(PacketSession session, IMessage packet)

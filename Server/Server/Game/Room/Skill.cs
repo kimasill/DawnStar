@@ -156,7 +156,7 @@ namespace Server.Game
                     BasicAttakAsync(data, range);
                     break;
                 case SkillLogicType.KnockBack:
-                    KnockBack(data);
+                    KnockBack(data, range);
                     break;
                 case SkillLogicType.Combat:
                     CombatAsync(data);
@@ -219,6 +219,9 @@ namespace Server.Game
                         }
                     }
                     SpotAttack(data, skillPos);
+                    break;
+                case SkillLogicType.Curve:
+                    ProjectileCurve(data);
                     break;
             }
         }

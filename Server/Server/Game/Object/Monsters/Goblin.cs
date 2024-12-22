@@ -36,7 +36,6 @@ namespace Server.Game
                 {
                     _target = null;
                     State = CreatureState.Moving;
-                    BroadcastMove();
                     return;
                 }
                 //스킬 사용 가능한지

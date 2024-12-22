@@ -70,6 +70,8 @@ public class BatController : MonsterController
 
         Animator.Play("ATTACK");
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed);
+
+        State = CreatureState.Idle;
     }
 
     private IEnumerator PlayAttackAnimation()
@@ -79,5 +81,7 @@ public class BatController : MonsterController
 
         Animator.Play("INSTANCE");
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed * 2);
+
+        State = CreatureState.Idle;
     }
 }

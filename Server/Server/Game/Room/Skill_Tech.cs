@@ -11,7 +11,7 @@ namespace Server.Game
 {
     public partial class Skill
     {
-        public async void KnockBack(SkillData data)
+        public async void KnockBack(SkillData data, int range)
         {
             await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
 
@@ -19,12 +19,12 @@ namespace Server.Game
             List<Vector2Int> targetPos = new List<Vector2Int>();
             if (data.shape.shapeType == ShapeType.ShapeLine)
             {
-                targetPos = SkillLogic.GetTargetsInLine(Owner.CellPos, Owner.Info.Position.MoveDir, data.range);
+                targetPos = SkillLogic.GetTargetsInLine(Owner.CellPos, Owner.Info.Position.MoveDir, range);
 
             }
             else if (data.shape.shapeType == ShapeType.ShapeCircle)
             {
-                targetPos = SkillLogic.GetAllTargetsInRange(Owner.CellPos, data.range);
+                targetPos = SkillLogic.GetAllTargetsInRange(Owner.CellPos, range);
             }
             //데미지 판정
             foreach (Vector2Int pos in targetPos)
@@ -43,7 +43,7 @@ namespace Server.Game
                     }, data.range);
                 }
                 Vector2Int direction = (_target.CellPos - Owner.CellPos).normalized;
-                destPos = new Vector2Int(_target.CellPos.x + direction.x * 2, _target.CellPos.y + direction.y * 2);
+                destPos = new Vector2Int(_target.CellPos.x + direction.x * data.range, _target.CellPos.y + direction.y * data.range);
 
                 if (Owner.Room.Map.ApplyMove(_target, destPos, collision: false))
                 {
