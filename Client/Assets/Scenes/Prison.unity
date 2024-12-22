@@ -297,6 +297,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   smoothSpeed: 0.125
   offset: {x: 0, y: 0, z: -10}
+  smoothTime: 0.075
+  minSmoothTime: 0.1
+  maxSmoothTime: 0.5
+  distanceThreshold: 5
 --- !u!1 &939512109
 GameObject:
   m_ObjectHideFlags: 0
@@ -341,6 +345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfe567c279d0ad346a04e5a6e8280688, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ZoomLevel: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

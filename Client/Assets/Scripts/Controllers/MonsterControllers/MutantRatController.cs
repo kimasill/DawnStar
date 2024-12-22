@@ -34,6 +34,7 @@ public class MutantRatController : MonsterController
             {
                 StartPsychicsCoroutine(PlaySkillAttack());
             }
+            SkillId = 0;
         }
         else
         {
@@ -46,8 +47,7 @@ public class MutantRatController : MonsterController
         Animator.Play("ATTACK");
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed);
 
-
-        Animator.Play("IDLE");
+        State = CreatureState.Idle;
     }
 
     private IEnumerator PlaySkillAttack()
@@ -55,6 +55,7 @@ public class MutantRatController : MonsterController
         Animator.Play("SKILL");
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed);
 
-        Animator.Play("IDLE");
+
+        State = CreatureState.Idle;
     }
 }

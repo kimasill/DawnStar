@@ -10,6 +10,8 @@ namespace Server.Game
     public class Magic : GameObject
     {
         public Data.SkillData Data { get; set; }
+
+        public Action<GameObject> OnHit { get; set; }
         public Magic()
         {
             ObjectType = GameObjectType.Magic;

@@ -11,6 +11,8 @@ namespace Server.Game
     public class Projectile : GameObject
     {
         public Data.SkillData Data { get; set; }
+
+        public Action<GameObject> OnHit { get; set; }
         public Projectile()
         {
             ObjectType = GameObjectType.Projectile;

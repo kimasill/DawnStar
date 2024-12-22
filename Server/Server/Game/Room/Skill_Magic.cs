@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
 using Server.Data;
+using Server.Game.Object.Projectiles;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,7 @@ namespace Server.Game
         }
         public async void MagicBall(SkillData data)
         {
+            await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
             for (int i = 0; i < data.count; i++)
             {
                 MagicBall magicBall = ObjectManager.Instance.Add<MagicBall>();
@@ -63,6 +65,40 @@ namespace Server.Game
                     magicBall.OnHit = (target) => { HandleDebuffSkill(data, target); };
                 }
                 Owner.Room.Push(Owner.Room.EnterGame, magicBall, false);
+                await Task.Delay((int)(data.term * 1000));
+            }
+        }
+        public async void ProjectileCurve(SkillData data)
+        {
+            await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
+            for (int i = 0; i < data.count; i++)
+            {
+                Howitzer howitzer = ObjectManager.Instance.Add<Howitzer>();
+                howitzer.Owner = Owner;
+                howitzer.Owner.Room = Owner.Room;
+                howitzer.Data = data;
+                howitzer.PosInfo.State = CreatureState.Moving;
+                howitzer.PosInfo.MoveDir = Owner.PosInfo.MoveDir;
+                howitzer.PosInfo.PosX = Owner.PosInfo.PosX;
+                howitzer.PosInfo.PosY = Owner.PosInfo.PosY;
+                howitzer.Speed = data.projectile.speed;
+                howitzer.DespawnAnim = true;
+                howitzer.TemplateId = data.id;
+
+                if (data.projectile.isRandom)
+                {
+                    howitzer.DestPos = SkillLogic.GetRandomPos(_target.CellPos, (int)data.spot.range);
+                }
+                else
+                {
+                    howitzer.DestPos = _target.CellPos;
+                }
+
+                if (data.debuff != null)
+                {
+                    howitzer.OnHit = (target) => { HandleDebuffSkill(data, target); };
+                }
+                Owner.Room.Push(Owner.Room.EnterGame, howitzer, false);
                 await Task.Delay((int)(data.term * 1000));
             }
         }

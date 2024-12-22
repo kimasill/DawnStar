@@ -50,6 +50,7 @@ public class BaseController : MonoBehaviour
     private long _stiffEndTick = 0;
     protected float _attackTime;
     PositionInfo _positionInfo = new PositionInfo();
+    public SkillData SkillData { get; set; }
     protected UI_GameScene GameScene { get; private set; }
     public PositionInfo PosInfo
     {
@@ -71,7 +72,14 @@ public class BaseController : MonoBehaviour
         Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
         transform.position = destPos;
     }
+    public virtual void HandleMovePos(PositionInfo position)
+    {
+        PosInfo = position;
+    }
 
+    public virtual void RefreshData()
+    {
+    }
 
     public virtual void UpdatePositionSmooth()
     {

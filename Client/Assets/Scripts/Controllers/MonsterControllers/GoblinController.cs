@@ -30,6 +30,7 @@ public class GoblinController : MonsterController
                 Animator.Play("ATTACK");
             else if (SkillId == 9)
                 Animator.Play("ATTACK_STRONG");
+            SkillId = 0;
         }
         else
         {
