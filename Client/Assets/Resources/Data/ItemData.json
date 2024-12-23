@@ -143,6 +143,21 @@
         "Avoid": "20"
       },
       "grade": "Normal"
+    },
+    {
+      "id": 11,
+      "name": "머랠",
+      "weaponType": "Shield",
+      "damage": 20,
+      "price": 9000,
+      "iconPath": "Textures/Item/Weapons/Shield_Morale",
+      "description": "성기사의 방패. 공격을 일부 상쇄한다.",
+      "options": {
+        "Defense": "40",
+        "Avoid": "10",
+        "Hp": "150"
+      },
+      "grade": "Elite"
     }
   ],
   "armors": [
@@ -233,6 +248,37 @@
       "prefabPath": "Textures/Item/Armors/Back/Cape_USC",
       "description": "USC의 망토. USC를 상징하는 마크가 그려져있으며, 위압감을 풍긴다.",
       "grade": "Normal"
+    },
+    {
+      "id": 108,
+      "name": "스카이워커",
+      "armorType": "Boots",
+      "defense": 25,
+      "price": 11000,
+      "iconPath": "Textures/Item/Armors/Boots/Icon/Boots_SkyWalker_Icon",
+      "prefabPath": "Textures/Item/Armors/Boots/Boots_SkyWalker",
+      "description": "뛰면서 나는 자.",
+      "options": {
+        "Avoid": "10",
+        "Speed": "0.2",
+        "CriticalChance": "8"
+      },
+      "grade": "Epic"
+    },
+    {
+      "id": 109,
+      "name": "쉬버링 가드",
+      "armorType": "Armor",
+      "defense": 135,
+      "price": 25000,
+      "iconPath": "Textures/Item/Armors/Armor/Icon/Armor_ShiveringGuard_Icon",
+      "prefabPath": "Textures/Item/Armors/Armor/Armor_ShiveringGuard",
+      "description": "전설적인 갑옷. 수세기간 세계반대편에 존재하다, 모종의 이유로 현세에 넘어온다.",
+      "options": {
+        "CriticalChance": "15",
+        "Hp": "380",
+        "HpRegen": "5"
+      }
     }
   ],
   "jewelry": [
@@ -1025,6 +1071,42 @@
       "price": "100",
       "iconPath": "Textures/Item/Materials/Drop/Laboratory_Key",
       "description": "알맞는 문이 있을것 같다."
+    },
+    {
+      "id": "1169",
+      "name": "갑옷 장식",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "377",
+      "iconPath": "Textures/Item/Materials/Drop/Breaker_Fur",
+      "description": "갑옷 장식"
+    },
+    {
+      "id": "1170",
+      "name": "처단자의 이빨",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "520",
+      "iconPath": "Textures/Item/Materials/Drop/Slayer_Tooth",
+      "description": "처단자의 이빨"
+    },
+    {
+      "id": "1171",
+      "name": "응축된 미지의 기운",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "5100",
+      "iconPath": "Textures/Item/Materials/Drop/Boss_Heart",
+      "description": "응축되어 미지구역 일대를 구성하던 기운."
+    },
+    {
+      "id": "1172",
+      "name": "미지의 이빨 조각",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "1150",
+      "iconPath": "Textures/Item/Materials/Drop/UnchartedTooth_Piece",
+      "description": "조각난 이빨"
     }
   ],
   "goods": [

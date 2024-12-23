@@ -286,11 +286,13 @@ public class BaseController : MonoBehaviour
         yield return null;
     }
 
-    protected virtual IEnumerator PlayAnimationClip(Animator animator, string clip)
+    protected virtual IEnumerator PlayAnimationClip(Animator animator, string clip, Action action = null)
     {
         Animator.Play(clip);
         float AnimationLength = Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed; // SKILL_PREP 애니메이션의 실제 재생 시간 계산
         yield return new WaitForSeconds(AnimationLength);
+        if(action != null)
+            action.Invoke();
     }
 
     void Start()

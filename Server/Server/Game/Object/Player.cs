@@ -458,6 +458,12 @@ namespace Server.Game
                     {
                         switch (optionType)
                         {
+                            case ItemOptionType.Damage:
+                                EquipDamage += int.Parse(option.Value);
+                                break;
+                            case ItemOptionType.Defense:
+                                EquipDefense += int.Parse(option.Value);
+                                break;
                             case ItemOptionType.Avoid:
                                 EquipAvoidance += int.Parse(option.Value);
                                 break;

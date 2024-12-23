@@ -343,6 +343,80 @@
           "maxCount": "100"
         }
       ]
+    },
+    {
+      "id": "8",
+      "name": "보스상자(이빨 숙주)",
+      "type": "chest",
+      "grade": "epic",
+      "rewards": [
+        {
+          "probability": "100",
+          "itemId": "9",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "1114",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "1125",
+          "minCount": "3",
+          "maxCount": "3"
+        },
+        {
+          "probability": "100",
+          "itemId": "1135",
+          "minCount": "4",
+          "maxCount": "4"
+        },
+        {
+          "probability": "100",
+          "itemId": "1132",
+          "minCount": "6",
+          "maxCount": "6"
+        },
+        {
+          "probability": "100",
+          "itemId": "1141",
+          "minCount": "2",
+          "maxCount": "2"
+        },
+        {
+          "probability": "100",
+          "itemId": "1142",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "1143",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "1144",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "10001",
+          "minCount": "3000",
+          "maxCount": "5000"
+        },
+        {
+          "probability": "100",
+          "itemId": "10002",
+          "minCount": "100",
+          "maxCount": "100"
+        }
+      ]
     }
   ]
 }
