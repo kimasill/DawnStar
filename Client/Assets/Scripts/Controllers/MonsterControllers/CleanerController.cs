@@ -1,0 +1,87 @@
+using Google.Protobuf.Protocol;
+using System.Collections;
+using UnityEngine;
+
+public class CleanerController : MonsterController
+{
+    bool _isRevealed = false;
+    private int _skillCount = 0;
+    private const int ComboThreshold = 2; // 2회당 한번씩 콤보 사용
+
+    protected override void Init()
+    {
+        base.Init();
+    }
+
+    protected override void UpdateAnimation()
+    {
+        if (Animator == null)
+        {
+            return;
+        }
+
+        if (State == CreatureState.Idle)
+        {
+            if (_isRevealed)
+            {
+                Animator.Play("IDLE");
+            }
+        }
+        else if (State == CreatureState.Skill)
+        {
+            switch (LookDir)
+            {
+                case LookDir.LookLeft:
+                    _sprite.flipX = true;
+                    break;
+                case LookDir.LookRight:
+                    _sprite.flipX = false;
+                    break;
+            }
+
+            if (SkillId == 1)
+            {
+                _skillCount++;
+                if (_skillCount % ComboThreshold == 0)
+                {
+                    StartPsychicsCoroutine(PlayComboAttack());
+                }
+                else
+                {
+                    StartPsychicsCoroutine(PlayAnimationClip(Animator, "ATTACK", () => State = CreatureState.Idle));
+                }
+            }
+            else if (SkillId == 28)
+            {
+                Animator.speed = 1;
+                StartPsychicsCoroutine(PlayAnimationClip(Animator, "COMBO"));
+                _skillCount = 0;
+
+            }
+            SkillId = 0;
+        }
+        else if (State == CreatureState.Moving)
+        {
+            switch (LookDir)
+            {
+                case LookDir.LookLeft:
+                    _sprite.flipX = true;
+                    break;
+                case LookDir.LookRight:
+                    _sprite.flipX = false;
+                    break;
+            }
+            Animator.Play("WALK");
+        }
+        else
+        {
+            base.UpdateAnimation();
+        }
+    }
+    private IEnumerator PlayComboAttack()
+    {
+        Animator.Play("ATTACK_COMBO");
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed);
+        Animator.speed = 0f;
+    }
+}

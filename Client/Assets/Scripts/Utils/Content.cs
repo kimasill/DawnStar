@@ -8,6 +8,10 @@ public static class Content
         {
             switch (optionType)
             {
+                case ItemOptionType.Attack:
+                    return "공격력";
+                case ItemOptionType.Defense:
+                    return "방어력";
                 case ItemOptionType.CriticalChance:
                     return "치명타 확률";
                 case ItemOptionType.CriticalDamage:
