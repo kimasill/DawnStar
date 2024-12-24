@@ -28,19 +28,13 @@ public class SatyrKingController : MonsterController
             }
             if (SkillId == 24)
             {
-                Animator.Play("ATTACK");
-                StartCoroutine(StartEffectCoroutine());
+                StartPsychicsCoroutine(AttackCoroutine());
             }
+            SkillId = 0;
         }
         else
         {
             base.UpdateAnimation();
         }
-    }
-    IEnumerator StartEffectCoroutine()
-    {
-        UseEffect("Effect/Pulling");
-        yield return new WaitForSeconds(0.4f);
-        UseEffect("Effect/Pulling");
     }
 }
