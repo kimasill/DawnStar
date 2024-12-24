@@ -252,7 +252,8 @@
       },
       "unchartedPoint": "20",
       "description": "주변적을 자신으로 끌어당긴다.",
-      "prefab": "Effect/Pulling"
+      "prefab": "Effect/Pulling",
+      "fix": "true"
     },
     {
       "id": "15",
