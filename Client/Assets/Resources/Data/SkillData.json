@@ -836,7 +836,7 @@
       "damage": 50,
       "range": 10,
       "count": 1,
-      "terms": [2.2],
+      "terms": [ 2.2 ],
       "skillType": "SkillSpot",
       "skillLogicType": "Curve",
       "projectile": {
@@ -860,6 +860,44 @@
       "isObject": true,
       "unchartedPoint": 20,
       "description": "항아리안에서 기운을 발사하여 폭발시킨다."
+    },
+    {
+      "id": 39,
+      "name": "발치",
+      "coolTime": "25",
+      "damage": "75",
+      "range": "12",
+      "duration": "8",
+      "term": "0.4",
+      "skillType": "SkillSpot",
+      "skillLogicType": "SpotAttack",
+      "spot": {
+        "speed": "7.0",
+        "delay": "0.1",
+        "minCount": "20",
+        "maxCount": "20",
+        "isHoming": "false"
+      },
+      "unchartedPoint": "20",
+      "description": "공중에서 땅으로 충격마법을 소환하여 피해를 준다.",
+      "prefab": "Magic/PoisonShock",
+      "icon": "Textures/Images/Icons/Skill/PoisonShock",
+      "isObject": "true"
+    },
+    {
+      "id": 40,
+      "name": "분노",
+      "coolTime": 60,
+      "skillType": "SkillBuff",
+      "buff": {
+        "id": 1,
+        "name": "공격력",
+        "duration": 20,
+        "value": 0.5,
+        "isPercent": false
+      },
+      "unchartedPoint": 100,
+      "description": "일정시간동안 공격력이 증가한다."
     }
   ]
 }

@@ -1637,8 +1637,9 @@
     {
       "id": 35,
       "name": "분쇄자",
-      "type": "Crusher",
+      "type": "Normal",
       "grade": "Normal",
+      "skill": 1,
       "stat": {
         "level": 35,
         "maxHp": 4100,
@@ -1702,7 +1703,7 @@
     {
       "id": 36,
       "name": "처단자",
-      "type": "Normal",
+      "type": "Slayer",
       "grade": "Superior",
       "stat": {
         "level": 37,

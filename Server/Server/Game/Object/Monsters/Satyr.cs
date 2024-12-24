@@ -20,7 +20,6 @@ namespace Server.Game
             Initialize(data);
         }
 
-        long _coolTick = 0;
         protected override void UpdateSkill()
         {
             if (_coolTick > Environment.TickCount64)
