@@ -22,6 +22,40 @@ public class MonsterController : CreatureController
     protected override void UpdateStiff()
     {
     }
+    protected override void UpdateAnimation()
+    {
+        if (Animator == null)
+        {
+            return;
+        }
+        if (State == CreatureState.Skill)
+        {
+            switch (LookDir)
+            {
+                case LookDir.LookLeft:
+                    _sprite.flipX = true;
+                    break;
+                case LookDir.LookRight:
+                    _sprite.flipX = false;
+                    break;
+            }
+            if (SkillId != 0)
+                StartPsychicsCoroutine(AttackCoroutine());
+
+            SkillId = 0;
+        }
+        else
+        {
+            base.UpdateAnimation();
+        }
+    }
+
+    public IEnumerator AttackCoroutine()
+    {
+        Animator.Play("ATTACK");
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length/Animator.speed);
+        State = CreatureState.Idle;
+    }
 
     public override void OnDamaged()
 	{

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ZombieController : MonsterController
+public class SlayerController : MonsterController
 {
     protected override void Init()
     {
@@ -17,6 +17,7 @@ public class ZombieController : MonsterController
         }
         if (State == CreatureState.Skill)
         {
+
             switch (LookDir)
             {
                 case LookDir.LookLeft:
@@ -26,7 +27,12 @@ public class ZombieController : MonsterController
                     _sprite.flipX = false;
                     break;
             }
-            StartPsychicsCoroutine(PlayBasicAttack());
+            if (SkillId == 1)
+                StartPsychicsCoroutine(PlayAttack());
+            else if (SkillId == 9)
+                StartPsychicsCoroutine(PlaySkill());
+
+            SkillId = 0;
         }
         else
         {
@@ -34,12 +40,18 @@ public class ZombieController : MonsterController
         }
     }
 
-    private IEnumerator PlayBasicAttack()
+    private IEnumerator PlayAttack()
     {
         Animator.Play("ATTACK");
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed);
 
 
         Animator.Play("IDLE");
+    }
+    private IEnumerator PlaySkill()
+    {
+        Animator.Play("SKILL");
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed);
+        State = CreatureState.Idle;
     }
 }
