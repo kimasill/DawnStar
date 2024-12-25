@@ -1107,6 +1107,15 @@
       "price": "1150",
       "iconPath": "Textures/Item/Materials/Drop/UnchartedTooth_Piece",
       "description": "조각난 이빨"
+    },
+    {
+      "id": "1173",
+      "name": "미지던전 1번 게이트 열쇠",
+      "maxCount": "9999",
+      "materialType": "Drop",
+      "price": "100",
+      "iconPath": "Textures/Item/Materials/Drop/Depth_Key",
+      "description": "알맞는 문이 있을것 같다."
     }
   ],
   "goods": [

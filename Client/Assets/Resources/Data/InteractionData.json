@@ -98,11 +98,31 @@
       "keyItems": [
         "1167"
       ]
+    },
+    {
+      "id": 16,
+      "name": "DepthMiddleGate",
+      "multi": true,
+      "keyItems": [
+        "1173"
+      ]
+    },
+    {
+      "id": 17,
+      "name": "DepthBossDoor",
+      "multi": true,
+      "triggers": [
+        1003,
+        1004
+      ],
+      "script": [
+        "강력한 기운이 뿜어져 나오는 대문. 봉인 장치를 해제해야 할것 같다."
+      ]
     }
   ],
   "triggers": [
     {
-      "id": "1001",
+      "id": 1001,
       "name": "PrisonBossRoomTrigger",
       "multi": "true",
       "script": [
@@ -122,6 +142,24 @@
       ],
       "targetInteraction": [
         "12"
+      ],
+      "cameraMove": "true"
+    },
+    {
+      "id": 1003,
+      "name": "DepthBossRoomTrigger",
+      "multi": "true",
+      "targetInteraction": [
+        17
+      ],
+      "cameraMove": "true"
+    },
+    {
+      "id": 1004,
+      "name": "DepthBossRoomTrigger2",
+      "multi": "true",
+      "targetInteraction": [
+        17
       ],
       "cameraMove": "true"
     }
