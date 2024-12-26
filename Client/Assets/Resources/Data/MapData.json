@@ -546,17 +546,17 @@
         {
           "id": "1",
           "monsterId": "33",
-          "count": "20"
+          "count": "50"
         },
         {
           "id": "2",
           "monsterId": "34",
-          "count": "10"
+          "count": "42"
         },
         {
           "id": "3",
           "monsterId": "35",
-          "count": "5"
+          "count": "25"
         },
         {
           "id": "4",
@@ -576,7 +576,7 @@
         },
         {
           "chestId": 24,
-          "templateId": "5"
+          "templateId": "1"
         },
         {
           "chestId": 25,
