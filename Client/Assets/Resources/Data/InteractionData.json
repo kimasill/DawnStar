@@ -196,6 +196,14 @@
       "itemIds": [
         7
       ]
+    },
+    {
+      "id": "2005",
+      "name": "Depth_RewardTable1",
+      "multi": true,
+      "itemIds": [
+        109
+      ]
     }
   ],
   "questSigns": [

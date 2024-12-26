@@ -278,8 +278,9 @@
         "CriticalChance": "15",
         "Hp": "380",
         "HpRegen": "5"
-      }
-    }
+      },
+      "grade": "Uncharted"
+    },    
   ],
   "jewelry": [
     {
@@ -387,6 +388,18 @@
       "description": "마수를 상대하기위해 만들어진 강력한 포션. 일정 시간 주변 마수의 숫자에 따라 사용자의 방어력이 증가한다",
       "options": {
         "Skill": "27"
+      }
+    },
+    {
+      "id": "303",
+      "name": "미지기운 포션",
+      "consumableType": "Potion",
+      "maxCount": 9999,
+      "price": 120,
+      "iconPath": "Textures/Item/Consumables/Potion_Mystery",
+      "description": "미지의 기운이 깃든 포션. 사용 시 일정 시간 미지의 기운을 흡수하여 방어력이 증가한다.",
+      "options": {
+        "Up": "10"
       }
     }
   ],
