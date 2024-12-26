@@ -186,7 +186,23 @@ class PacketHandler
         }
         cc.Hp = changePacket.Hp;
     }
+    public static void S_ChangeUpHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeUp changePacket = packet as S_ChangeUp;
 
+        GameObject go = Managers.Object.FindById(changePacket.ObjectId);
+        if (go == null)
+        {
+            return;
+        }
+
+        CreatureController cc = go.GetComponent<CreatureController>();
+        if (cc == null)
+        {
+            return;
+        }
+        cc.Up = changePacket.Up;
+    }
     public static void S_DamageHandler(PacketSession session, IMessage packet)
     {
         S_Damage damagePacket = packet as S_Damage;
