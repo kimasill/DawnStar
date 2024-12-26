@@ -45,11 +45,18 @@ namespace Server.Game
             int range = 0;
             if (user is Player)
             {
+                Player player = user as Player;
                 if (skillData.shape != null)
                 {
                     range = (int)MathF.Max(skillData.shape.range, (Owner as Player).WeaponRange);
                 }
-                else range = (Owner as Player).WeaponRange;
+                else range = player.WeaponRange;
+                int up = player.Stat.Up - skillData.unchartedPoint;
+                if(up < 0)
+                {
+                    return;
+                }
+                player.ChangeUp(up);
             }
             else
             {
@@ -64,6 +71,7 @@ namespace Server.Game
                 range += addRange;
             }
             _skillList.Add((skillData, target, range));
+
             Update();
         }
         public void Update() // Update 메서드 추가

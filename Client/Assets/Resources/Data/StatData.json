@@ -3,6 +3,7 @@
     {
       "level": 1,
       "maxHp": 200,
+      "maxUp": 100,
       "attack": 10,
       "defense": 0,
       "speed": 5.0,

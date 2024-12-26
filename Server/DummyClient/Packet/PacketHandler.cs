@@ -231,4 +231,9 @@ class PacketHandler
     {
         S_Enhance enhance = packet as S_Enhance;
     }
+
+    public static void S_BuffHandler(PacketSession session, IMessage packet)
+    {
+        S_Buff buff = packet as S_Buff;
+    }
 }

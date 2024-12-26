@@ -9,11 +9,13 @@ using Server.Migrations;
 using Server.Utils;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using static Server.Game.Item;
+using DbTransaction = Server.DB.DbTransaction;
 
 namespace Server.Game
 {
@@ -249,7 +251,22 @@ namespace Server.Game
             return base.OnDamaged(target, damage);
             //TODO : 피해를 입었을 때 처리 -> 플레이어 스탯에 따라 딜레이 시간 변경
         }
+        public override void ChangeHp(int hp)
+        {
+            if (Room == null)
+                return;
 
+            Stat.Hp = hp;
+            DbTransaction.HpNoti(this, hp, Room);
+        }
+        public void ChangeUp(int up)
+        {
+            if (Room == null)
+                return;
+
+            Stat.Up = up;
+            DbTransaction.UpNoti(this, up, Room);
+        }
         public override void Ondead(GameObject attacker)
         {
             if (Room == null)
