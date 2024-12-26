@@ -11,7 +11,8 @@ using static Define;
 public class CreatureController : BaseController
 {
 	HpBar _hpBar;
-	StatInfo _stat = new StatInfo();
+    UpBar _upBar;
+    StatInfo _stat = new StatInfo();
     protected List<Coroutine> _coSkills = new List<Coroutine>();
     protected Coroutine _coMovement;
     protected bool _rangedSkill = false;
@@ -78,7 +79,17 @@ public class CreatureController : BaseController
 		}
 	}
 
-	protected virtual void AddHpBar()
+    public int Up
+    {
+        get { return Stat.Up; }
+        set
+        {
+            base.Stat.Up = value;
+            UpdateUpBar();
+        }
+    }
+
+    protected virtual void AddHpBar()
 	{
 		GameObject go = Managers.Resource.Instantiate("UI/HpBar", transform);
 		go.transform.localPosition = new Vector3(0, 0.5f, 0);
@@ -110,9 +121,22 @@ public class CreatureController : BaseController
         }
         _hpBar.InitializeFrame(Stat.MaxHp);
         _hpBar.SetHpBar(ratio);		
-    }	
+    }
 
-	protected override void Init()
+    protected virtual void UpdateUpBar()
+    {
+        if (_upBar == null)
+            return;
+        float ratio = 0.0f;
+        if (Stat.MaxUp > 0)
+        {
+            ratio = ((float)Up / Stat.MaxUp);
+        }
+        _upBar.InitializeFrame(Stat.MaxUp);
+        _upBar.SetUpBar(ratio);
+    }
+
+    protected override void Init()
 	{
 		base.Init();
 		AddHpBar();

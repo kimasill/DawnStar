@@ -56,14 +56,21 @@ namespace Server.Game
             if (DataManager.SkillDict.TryGetValue(skillPacket.Info.SkillId, out skillData) == false)
                 return;
             bool isCool;
-            if(skillPacket.Info.SkillId == 1)
+
+            if (player.Stat.Up < skillData.unchartedPoint)
             {
-                isCool = player.Skill.HandleSkillCool(skillData, true);                
+                return;
+            }
+
+            if (skillPacket.Info.SkillId == 1)
+            {
+                isCool = player.Skill.HandleSkillCool(skillData, attackSpeed:true);                
             }
             else
             {
                 isCool = player.Skill.HandleSkillCool(skillData);
             }
+            
             if (!isCool)
             {
                 return;

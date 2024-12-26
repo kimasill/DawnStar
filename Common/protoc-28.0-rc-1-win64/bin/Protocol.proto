@@ -70,6 +70,7 @@ enum MsgId {
   C_MAKE_ITEM = 62;
   C_SORT_ITEM = 63;
   S_BUFF = 64;  
+  S_CHANGE_UP = 65;
 }
 enum CreatureState{
   IDLE = 0;
