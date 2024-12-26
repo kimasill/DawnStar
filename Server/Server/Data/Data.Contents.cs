@@ -14,6 +14,7 @@ namespace Server.Data
     {
         public int Level;
         public int MaxHp;
+        public int MaxUp;
         public int Attack;
         public int Defence;
         public int Accuracy;

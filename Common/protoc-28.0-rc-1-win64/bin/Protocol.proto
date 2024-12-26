@@ -401,6 +401,10 @@ message S_ChangeHp {
   int32 objectId = 1;
   int32 hp = 2;
 }
+message S_ChangeUp{
+	int32 objectId = 1;
+	int32 up = 2;
+}
 message S_Damage{
 	int32 objectId = 1;
 	int32 damage = 2;
@@ -666,6 +670,7 @@ message StatInfo{
   float coolTime =21;
   int32 up =22;
   repeated int32 realizations = 23;
+  int32 maxUp = 24;
 }
 
 message QuestInfo

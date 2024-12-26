@@ -47,7 +47,7 @@ namespace Server.DB
                 }
             });
         }
-        public static void HpNoti(Player player, int hp)
+        public static void HpNoti(Player player, int hp, GameRoom room)
         {
             if (player == null || hp == 0)
                 return;
@@ -65,9 +65,48 @@ namespace Server.DB
 
                 bool success = db.SaveChangesEx(); // 저장할 때 예외처리를 해준다.
                 if (success)
-                {                    
+                {
+                    room.Push(() =>
+                    {
+                        player.Hp = playerDb.Hp;
+                        S_ChangeHp changePacket = new S_ChangeHp();
+                        changePacket.ObjectId = player.PlayerDbId;
+                        changePacket.Hp = player.Hp;
+                        room.Broadcast(player.CellPos, changePacket);
+                    });
                 }
             }
+        }
+        public static void UpNoti(Player player, int up, GameRoom room)
+        {
+            if (player == null || up == 0)
+                return;
+
+            PlayerDb playerDb = new PlayerDb()
+            {
+                PlayerDbId = player.PlayerDbId,
+                Up = up
+            };
+
+            using (AppDbContext db = new AppDbContext())
+            {
+                db.Entry(playerDb).State = EntityState.Unchanged;
+                db.Entry(playerDb).Property(nameof(playerDb.Up)).IsModified = true;
+
+                bool success = db.SaveChangesEx(); // 저장할 때 예외처리를 해준다.
+                if (success)
+                {
+                    room.Push(() =>
+                    {
+                        player.Up = playerDb.Up;
+                        S_ChangeUp changePacket = new S_ChangeUp();
+                        changePacket.ObjectId = player.PlayerDbId;
+                        changePacket.Up = player.Up;
+                        room.Broadcast(player.CellPos, changePacket);
+                    });
+                }
+            }
+
         }
         public static void SavePlayerMap(Player player, MapDb mapDb)
         {

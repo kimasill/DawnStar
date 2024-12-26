@@ -3,11 +3,13 @@ using Server.Data;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.Game
 {
@@ -95,6 +97,15 @@ namespace Server.Game
         public int MaxHp
         {
             get { return Stat.MaxHp + AdditionalHp; }            
+        }
+        public int Up
+        {
+            get { return Stat.Up + AdditionalUp; }
+            set { Stat.Up = value; }
+        }
+        public int MaxUp
+        {
+            get { return Stat.MaxUp; }
         }
 
         public MoveDir Dir
@@ -194,14 +205,10 @@ namespace Server.Game
         {
             if (Room == null)
                 return 0;
-            damage = Room.CalculateDamage(attacker,Id,damage,this);            
-            Stat.Hp = Math.Max(Stat.Hp - damage, 0);
-            Stat.Hp -= damage;
-            S_ChangeHp changePacket = new S_ChangeHp();
-            changePacket.ObjectId = Id;
-            changePacket.Hp = Stat.Hp;
-            Console.WriteLine($"OnDamaged : {Id}, {damage}");
-            Room.Broadcast(CellPos, changePacket);
+            damage = Room.CalculateDamage(attacker,Id,damage,this);      
+            int hp = Math.Max(Stat.Hp - damage, 0);
+            ChangeHp(hp); 
+
             if (Stat.Hp <= 0)
             {
                 if(ObjectType == GameObjectType.Monster)
@@ -217,6 +224,17 @@ namespace Server.Game
             }
             return damage;
         }
+        public virtual void ChangeHp(int hp)
+        {
+            if (Room == null)
+                return;
+
+            Stat.Hp = hp;
+            S_ChangeHp changePacket = new S_ChangeHp();
+            changePacket.ObjectId = Id;
+            changePacket.Hp = Stat.Hp;
+            Room.Broadcast(CellPos, changePacket);
+        }        
         public virtual void OnHealed(int heal, GameObject healer)
         {
             if (Room == null)
