@@ -417,6 +417,106 @@
           "maxCount": "100"
         }
       ]
+    },
+    {
+      "id": "9",
+      "name": "골동품 상자",
+      "type": "chest",
+      "grade": "rare",
+      "rewards": [
+        {
+          "probability": "100",
+          "itemId": "10001",
+          "minCount": "500",
+          "maxCount": "1000"
+        },
+        {
+          "probability": "50",
+          "itemId": "1130",
+          "minCount": "3",
+          "maxCount": "7"
+        },
+        {
+          "probability": "40",
+          "itemId": "1133",
+          "minCount": "3",
+          "maxCount": "7"
+        },
+        {
+          "probability": "30",
+          "itemId": "1136",
+          "minCount": "3",
+          "maxCount": "7"
+        },
+        {
+          "probability": "100",
+          "itemId": "1140",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "108",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "10002",
+          "minCount": "20",
+          "maxCount": "20"
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "name": "정예상자(처단자)",
+      "type": "chest",
+      "grade": "elite",
+      "rewards": [
+        {
+          "probability": "100",
+          "itemId": "11",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "1116",
+          "minCount": "1",
+          "maxCount": "5"
+        },
+        {
+          "probability": "100",
+          "itemId": "1117",
+          "minCount": "1",
+          "maxCount": "5"
+        },
+        {
+          "probability": "100",
+          "itemId": "1141",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
+          "itemId": "1147",
+          "minCount": "5",
+          "maxCount": "10"
+        },
+        {
+          "probability": "100",
+          "itemId": "10001",
+          "minCount": "200",
+          "maxCount": "300"
+        },
+        {
+          "probability": "100",
+          "itemId": "10002",
+          "minCount": "50",
+          "maxCount": "50"
+        }
+      ]
     }
   ]
 }

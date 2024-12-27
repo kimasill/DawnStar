@@ -65,6 +65,32 @@ namespace Server.Game
             DbTransaction.RewardPlayer(player, itemData, count, this);
             DbTransaction.RemoveShopDb(player, shopDb, shopItemDb, this);
         }
+        public void HandleSellItem(Player player, C_SellItem sellPacket)
+        {
+            if (player == null)
+                return;
+
+            Item item = player.Inven.Get(sellPacket.ItemDbId);
+            if (item == null)
+                return;
+
+            ItemData itemData = null;
+            DataManager.ItemDict.TryGetValue(item.TemplateId, out itemData);
+            if (itemData == null)
+                return;
+
+            int price = itemData.price / 2;
+            player.Gold += price;
+
+            ItemDb itemDb = new ItemDb()
+            {
+                TemplateId = item.TemplateId,
+                Count = sellPacket.Count,
+                OwnerDbId = player.PlayerDbId,
+                Slot = item.Slot
+            };
+            DbTransaction.SaveRemovedItemDB(player, itemDb, this);
+        }
         public void HandleLootItem(Player player, C_LootItem item)
         {
             if (player == null || item == null)

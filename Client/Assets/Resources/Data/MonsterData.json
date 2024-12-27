@@ -1781,7 +1781,8 @@
           "minCount": 180,
           "maxCount": 930
         }
-      ]
+      ],
+      "rewardBoxId": "10"
     },
     {
       "id": 37,

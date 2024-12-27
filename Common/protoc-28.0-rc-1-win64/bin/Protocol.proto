@@ -71,6 +71,7 @@ enum MsgId {
   C_SORT_ITEM = 63;
   S_BUFF = 64;  
   S_CHANGE_UP = 65;
+  C_SELL_ITEM = 66;
 }
 enum CreatureState{
   IDLE = 0;
@@ -498,6 +499,11 @@ message S_BuyItem{
 	int32 count = 2;
 	int32 gold = 3;
 	int32 shopId = 4;
+}
+message C_SellItem{
+	int32 itemDbId = 1;
+	int32 slot = 2;
+	int32 count = 3;
 }
 message C_MakeItem{
 	int32 templateId = 1;
