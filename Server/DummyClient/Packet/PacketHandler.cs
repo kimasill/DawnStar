@@ -236,4 +236,9 @@ class PacketHandler
     {
         S_Buff buff = packet as S_Buff;
     }
+
+    public static void S_ChangeUpHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeUp changeUp = packet as S_ChangeUp;
+    }
 }

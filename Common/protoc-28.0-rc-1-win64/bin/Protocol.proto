@@ -665,13 +665,13 @@ message StatInfo{
   int32 maxPotion = 15;
   int32 potionPerformance = 16;
   int32 statPoint = 17;
-  int32 unchartedPoint = 18;
-  float unchartedPointRegen = 19;
-  float stiffTime = 20;
-  float coolTime =21;
-  int32 up =22;
-  repeated int32 realizations = 23;
-  int32 maxUp = 24;
+  float stiffTime = 18;
+  float coolTime =19;
+  int32 up =20;
+  repeated int32 realizations = 21;
+  int32 maxUp = 22;
+  int32 hpRegen = 23;
+  int32 upRegen = 24;
 }
 
 message QuestInfo

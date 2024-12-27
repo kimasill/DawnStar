@@ -87,6 +87,10 @@ namespace Server.Game
 
         protected int _additionalUp;
         public virtual int AdditionalUp { get; set; }
+        protected int _additionalHpRegen;
+        public virtual int AdditionalHpRegen { get; set; }
+        protected int _additionalUpRegen;
+        public virtual int AdditionalUpRegen { get; set; }
         public virtual float TotalStiffTime { get { return Stat.StiffTime; }}
         public int Hp
         {
@@ -101,13 +105,22 @@ namespace Server.Game
         public int Up
         {
             get { return Stat.Up + AdditionalUp; }
-            set { Stat.Up = value; }
+            set { Stat.Up = Math.Clamp(value, 0, MaxUp); }
         }
         public int MaxUp
         {
-            get { return Stat.MaxUp; }
+            get { return Stat.MaxUp + AdditionalUp; }
         }
-
+        public int HpRegen
+        {
+            get { return Stat.HpRegen + AdditionalHpRegen; }
+            set { Stat.HpRegen = value; }
+        }
+        public int UpRegen
+        {
+            get { return Stat.UpRegen + AdditionalUpRegen; }
+            set { Stat.UpRegen = value; }
+        }
         public MoveDir Dir
         {
             get { return PosInfo.MoveDir; }
@@ -152,7 +165,8 @@ namespace Server.Game
         #endregion
         public virtual void Update()
         {
-
+            UpdateHp();
+            UpdateUp();
         }
         public Vector2Int GetFrontCellPos()
         {
@@ -224,6 +238,22 @@ namespace Server.Game
             }
             return damage;
         }
+        public virtual void UpdateHp()
+        {
+            if(Room == null)
+                return;
+            int hp = Math.Min(Hp + HpRegen, MaxHp);
+            ChangeHp(hp);
+            Room.PushAfter(1000, () => UpdateHp());
+        }
+        public virtual void UpdateUp()
+        {
+            if (Room == null)
+                return;
+            int up = Math.Min(Up + UpRegen, MaxUp);
+            ChangeUp(up);
+            Room.PushAfter(1000, () => UpdateUp());
+        }
         public virtual void ChangeHp(int hp)
         {
             if (Room == null)
@@ -234,7 +264,18 @@ namespace Server.Game
             changePacket.ObjectId = Id;
             changePacket.Hp = Stat.Hp;
             Room.Broadcast(CellPos, changePacket);
-        }        
+        }
+        public virtual void ChangeUp(int up)
+        {
+            if (Room == null)
+                return;
+
+            Stat.Up = up;
+            S_ChangeUp changePacket = new S_ChangeUp();
+            changePacket.ObjectId = Id;
+            changePacket.Up = Stat.Up;
+            Room.Broadcast(CellPos, changePacket);
+        }
         public virtual void OnHealed(int heal, GameObject healer)
         {
             if (Room == null)

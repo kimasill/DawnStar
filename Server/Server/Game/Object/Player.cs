@@ -222,6 +222,27 @@ namespace Server.Game
                 SendAdditionalStat();
             }
         }
+
+        public override int AdditionalHpRegen
+        {
+            get { return _additionalHpRegen + EquipHpRegen; }
+            set
+            {
+                _additionalHpRegen = value;
+                SendAdditionalStat();
+            }
+        }
+
+        public override int AdditionalUpRegen
+        {
+            get { return _additionalUpRegen + EquipUpRegen; }
+            set
+            {
+                _additionalUpRegen = value;
+                SendAdditionalStat();
+            }
+        }
+
         public int WeaponRange { get; private set; }
         public int EquipDamage { get; private set; }
         public int EquipDefense { get; private set; }
@@ -235,7 +256,8 @@ namespace Server.Game
         public float EquipCoolTime { get; private set; }
         public int EquipHp { get; private set; }
         public int EquipUp { get; private set; }
-        public float EquipUpRegen { get; private set; }
+        public int EquipUpRegen { get; private set; }
+        public int EquipHpRegen { get; private set; }
         #endregion
 
         public Player()
@@ -259,7 +281,7 @@ namespace Server.Game
             Stat.Hp = hp;
             DbTransaction.HpNoti(this, hp, Room);
         }
-        public void ChangeUp(int up)
+        public override void ChangeUp(int up)
         {
             if (Room == null)
                 return;
@@ -314,6 +336,8 @@ namespace Server.Game
                     CoolTime = AdditionalCoolTime,
                     Hp = AdditionalHp,
                     Up = AdditionalUp,
+                    UpRegen = AdditionalUpRegen,
+                    HpRegen = AdditionalHpRegen
                 }
             };
             Session.Send(additionalStat);
@@ -459,6 +483,7 @@ namespace Server.Game
             EquipHp = 0;
             EquipUp = 0;
             EquipUpRegen = 0;
+            EquipHpRegen = 0;
 
 
             foreach (Item item in Inven.Items.Values)
@@ -513,6 +538,9 @@ namespace Server.Game
                                 break;
                             case ItemOptionType.UpRegen:
                                 EquipUpRegen += int.Parse(option.Value);
+                                break;
+                            case ItemOptionType.HpRegen:
+                                EquipHpRegen += int.Parse(option.Value);
                                 break;
                         }
                     }

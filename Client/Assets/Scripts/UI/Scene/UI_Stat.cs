@@ -25,6 +25,7 @@ public class UI_Stat : UI_Base
         AccuracyValueText,
         UPValueText,
         UPRegenValueText,
+        HPRegenValueText,
         MoveSpeedValueText,
         RageValueText,
         ReasonValueText,
@@ -293,8 +294,9 @@ public class UI_Stat : UI_Base
             Get<TMP_Text>((int)Texts.CriticalDamageValueText).text = $"{player.Stat.CriticalDamage} + ({player.AdditionalCriticalDamage})%";
             Get<TMP_Text>((int)Texts.AvoidValueText).text = $"{player.Stat.Avoid} + ({player.AdditionalAvoidance})%";
             Get<TMP_Text>((int)Texts.AccuracyValueText).text = $"{player.Stat.Accuracy} + ({player.AdditionalAccuracy})%";
-            Get<TMP_Text>((int)Texts.UPValueText).text = $"{player.Stat.UnchartedPoint} + ({player.AdditionalUp})";
-            Get<TMP_Text>((int)Texts.UPRegenValueText).text = $"{player.Stat.UnchartedPointRegen}/s";
+            Get<TMP_Text>((int)Texts.UPValueText).text = $"{player.Stat.Up} + ({player.AdditionalUp})";
+            Get<TMP_Text>((int)Texts.UPRegenValueText).text = $"{player.Stat.UpRegen}/s";
+            Get<TMP_Text>((int)Texts.HPRegenValueText).text = $"{player.Stat.HpRegen}/s";
             Get<TMP_Text>((int)Texts.MoveSpeedValueText).text = $"{player.Stat.Speed} + ({player.AdditionalSpeed})";
             Get<TMP_Text>((int)Texts.RageValueText).text = $"{player.Stat.Realizations[0]}";
             Get<TMP_Text>((int)Texts.ReasonValueText).text = $"{player.Stat.Realizations[1]}";
