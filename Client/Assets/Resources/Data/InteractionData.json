@@ -118,6 +118,11 @@
       "script": [
         "강력한 기운이 뿜어져 나오는 대문. 봉인 장치를 해제해야 할것 같다."
       ]
+    },
+    {
+      "id": 18,
+      "name": "DepthBridgeDoor",
+      "multi": true
     }
   ],
   "triggers": [

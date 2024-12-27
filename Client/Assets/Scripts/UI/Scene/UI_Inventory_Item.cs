@@ -1,6 +1,7 @@
 using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -49,9 +50,22 @@ public class UI_Inventory_Item : UI_ItemIcon
         gameObject.BindEvent((e) =>
         {
             UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;      
-            if(gameScene.EnhanceUI.enabled == false)
-                return;
-            gameScene.EnhanceUI.SetItem(Item);
+            if(gameScene.EnhanceUI.enabled)
+            {
+                gameScene.EnhanceUI.SetItem(Item);
+            }
+            else if (gameScene.ShopUI.enabled)
+            {
+                if(Input.GetKey(KeyCode.LeftShift))
+                {
+                    //Count UI 띄우기
+                }
+                else
+                {
+                    //아이템 판매
+                    SellItem(1);
+                }
+            }
         }, Define.UIEvent.RightClick);
     }
 
@@ -92,6 +106,17 @@ public class UI_Inventory_Item : UI_ItemIcon
         _frame.gameObject.SetActive(Equipped);
     }
 
+    public void SellItem(int count)
+    {
+        UnityEngine.Debug.Log("아이템 판매");
+
+        // 구매 패킷 넘겨주기
+        C_SellItem sellPacket = new C_SellItem();
+        sellPacket.ItemDbId = Item.ItemDbId;
+        sellPacket.Count = count;
+        sellPacket.Slot = Item.Slot;
+        Managers.Network.Send(sellPacket);
+    }
     public override void OnPointerEnter(PointerEventData eventData)
     {
         if (_isDescription)
