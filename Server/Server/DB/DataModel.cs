@@ -43,8 +43,8 @@ namespace Server.DB
         public int Accuracy { get; set; }
         public int CriticalChance { get; set; }
         public int CriticalDamage { get; set; }
-        public int UnchartedPoint { get; set; }
-        public int UnchartedPointRegen { get; set; }
+        public int UpRegen { get; set; }
+        public int HpRegen { get; set; }
         public int Exp { get; set; }
         public string RealizationsJson { get; set; }
 

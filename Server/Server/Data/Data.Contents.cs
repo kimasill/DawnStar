@@ -25,6 +25,8 @@ namespace Server.Data
         public float StiffTime;
         public int TotalExp;
         public int StatPoint;
+        public int HpRegen;
+        public int UpRegen;
     }
 
     [Serializable]

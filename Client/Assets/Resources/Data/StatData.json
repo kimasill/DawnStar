@@ -8,7 +8,9 @@
       "defense": 0,
       "speed": 5.0,
       "totalExp": 0,
-      "statPoint": 0
+      "statPoint": 0,
+      "hpRegen": 1,
+      "upRegen": 1
     },
     {
       "level": 2,

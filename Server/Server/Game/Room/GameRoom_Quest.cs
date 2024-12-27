@@ -252,12 +252,12 @@ namespace Server.Game
                     playerDb.PotionPerformance = player.Stat.PotionPerformance;
                     break;
                 case "미지의 기운":
-                    player.Stat.UnchartedPoint += (int)specialStatData.value;
-                    playerDb.UnchartedPoint = player.Stat.UnchartedPoint;
+                    player.Stat.Up += (int)specialStatData.value;
+                    playerDb.Up = player.Stat.Up;
                     break;
                 case "미지의 기운 회복":
-                    player.Stat.UnchartedPointRegen += (int)specialStatData.value;
-                    playerDb.UnchartedPointRegen = (int)player.Stat.UnchartedPointRegen;
+                    player.Stat.UpRegen += (int)specialStatData.value;
+                    playerDb.UpRegen = (int)player.Stat.UpRegen;
                     break;
             }
             return playerDb;

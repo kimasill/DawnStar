@@ -69,8 +69,11 @@ namespace Server
                             {
                                 Level = playerDb.Level,
                                 Hp = playerDb.Hp,
-                                Up = playerDb.UnchartedPoint,
+                                Up = playerDb.Up,
+                                HpRegen = playerDb.HpRegen,
+                                UpRegen = playerDb.UpRegen,
                                 MaxHp = playerDb.MaxHp,
+                                MaxUp = playerDb.MaxUp,
                                 Attack = playerDb.Attack,
                                 Defense = playerDb.Defense,
                                 Speed = playerDb.Speed,
@@ -377,13 +380,16 @@ namespace Server
                         StatData stat = null;
                         DataManager.StatDict.TryGetValue(1, out stat);
 
-                        // DB에 플레이어 만들어줘야 함
                         PlayerDb newPlayerDb = new PlayerDb()
                         {
                             PlayerName = createPacket.Name,
                             Level = stat.Level,
                             Hp = stat.MaxHp,
                             MaxHp = stat.MaxHp,
+                            Up = stat.MaxUp,
+                            MaxUp = stat.MaxUp,
+                            HpRegen = stat.HpRegen,
+                            UpRegen = stat.UpRegen,
                             Attack = stat.Attack,                        
                             Speed = stat.Speed,
                             Exp = 0,
@@ -405,6 +411,10 @@ namespace Server
                                 Level = stat.Level,
                                 Hp = stat.MaxHp,
                                 MaxHp = stat.MaxHp,
+                                Up = stat.MaxUp,
+                                MaxUp = stat.MaxUp,
+                                HpRegen = stat.HpRegen,
+                                UpRegen = stat.UpRegen,
                                 Attack = stat.Attack,
                                 Speed = stat.Speed,
                                 TotalExp = 0

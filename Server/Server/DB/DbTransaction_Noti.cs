@@ -106,7 +106,6 @@ namespace Server.DB
                     });
                 }
             }
-
         }
         public static void SavePlayerMap(Player player, MapDb mapDb)
         {
