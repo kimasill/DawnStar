@@ -80,7 +80,7 @@ namespace Server.Game
                 return;
 
             int price = itemData.price / 2;
-            player.Gold += price;
+            player.Gold += price* sellPacket.Count;
 
             ItemDb itemDb = new ItemDb()
             {

@@ -17,6 +17,7 @@ public class Define
         Prison,
         Crypt,
         Laboratory,
+        Depth,
         Game,
     }
 
