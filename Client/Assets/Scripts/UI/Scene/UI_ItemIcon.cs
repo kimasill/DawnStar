@@ -1,3 +1,5 @@
+using Google.Protobuf.Protocol;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -5,7 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitHandler
+public abstract class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField]
     protected Image _icon = null;
@@ -58,5 +60,49 @@ public class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitHandler
             return;
         _isDescription = false;
         _itemDescription.CloseUI(eventData);
+    }
+
+    public override void OnEndDrag(PointerEventData eventData)
+    {
+        GetComponent<CanvasGroup>().blocksRaycasts = true;
+        GameObject target = eventData.pointerEnter;
+        bool success = false;
+        if (target != null && target.GetComponent<UI_ItemIcon>() != null)
+        {
+            // 상호작용 로직
+            success = InteractWith(target.GetComponent<UI_ItemIcon>());
+        }
+
+        if (!success)
+        {
+            // 원위치
+            transform.position = _originalPosition;
+            transform.SetParent(_originalParent);
+        }
+    }
+
+    public virtual bool InteractWith(UI_ItemIcon target)
+    {
+        if (target == null) return false;
+
+        foreach (var targetInteract in Item.TargetInteract)
+        {
+            if (targetInteract.objectType == GameObjectType.Item)
+            {
+                if (Enum.TryParse(targetInteract.detail, out ItemType itemType))
+                {
+                    if (target.Item.ItemType == itemType)
+                    {
+                        Interact(target.Item);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public virtual void Interact(Item item) 
+    {
     }
 }

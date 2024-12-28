@@ -33,6 +33,8 @@ public class Define
         Click,
         RightClick,
         Drag,
+        BeginDrag,
+        EndDrag,
         MouseOver,
         MouseOut,
     }

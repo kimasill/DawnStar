@@ -413,6 +413,69 @@
       "options": {
         "Heal": "120"
       }
+    },
+    {
+      "id": "1139",
+      "name": "주문서(무기)",
+      "maxCount": "9999",
+      "consumableType": "Scroll",
+      "interaction": [
+        "Item_Weapon"
+      ],
+      "price": "1000",
+      "iconPath": "Textures/Item/Consumables/Scroll_Weapon",
+      "description": "무기에 랜덤으로 마법을 부여한다."
+    },
+    {
+      "id": "1140",
+      "name": "주문서(방어구)",
+      "maxCount": "9999",
+      "consumableType": "Scroll",
+      "interaction": [
+        "Item_Armor"
+      ],
+      "price": "1000",
+      "iconPath": "Textures/Item/Consumables/Scroll_Armory",
+      "description": "방어구에 랜덤으로 마법을 부여한다."
+    },
+    {
+      "id": "1141",
+      "name": "주문서(장신구)",
+      "maxCount": "9999",
+      "consumableType": "Scroll",
+      "interaction": [
+        "Item_Jewelry"
+      ],
+      "price": "1000",
+      "iconPath": "Textures/Item/Consumables/Scroll_Jewelry",
+      "description": "장신구에 랜덤으로 마법을 부여한다."
+    },
+    {
+      "id": "1142",
+      "name": "아케인스크롤",
+      "maxCount": "9999",
+      "consumableType": "Scroll",
+      "price": "7500",
+      "iconPath": "Textures/Item/Consumables/Scroll_Arcane",
+      "description": "랜덤으로 각인 하나를 얻는다."
+    },
+    {
+      "id": "1143",
+      "name": "마이티스크롤",
+      "maxCount": "9999",
+      "consumableType": "Scroll",
+      "price": "42000",
+      "iconPath": "Textures/Item/Consumables/Scroll_Mighty",
+      "description": "랜덤으로 긍정각인 하나를 얻는다."
+    },
+    {
+      "id": "1144",
+      "name": "미스틱스크롤",
+      "maxCount": "9999",
+      "consumableType": "Scroll",
+      "price": "7500",
+      "iconPath": "Textures/Item/Consumables/Scroll_Mystical",
+      "description": "각인 하나를 삭제한다."
     }
   ],
   "materials": [
@@ -883,60 +946,6 @@
       "price": "75",
       "iconPath": "Textures/Item/Materials/Drop/FishScales_Red",
       "description": "붉은개구리의 알"
-    },
-    {
-      "id": "1139",
-      "name": "주문서(무기)",
-      "maxCount": "9999",
-      "materialType": "Drop",
-      "price": "1000",
-      "iconPath": "Textures/Item/Consumables/Scroll_Weapon",
-      "description": "무기에 랜덤으로 마법을 부여한다."
-    },
-    {
-      "id": "1140",
-      "name": "주문서(방어구)",
-      "maxCount": "9999",
-      "materialType": "Drop",
-      "price": "1000",
-      "iconPath": "Textures/Item/Consumables/Scroll_Armory",
-      "description": "방어구에 랜덤으로 마법을 부여한다."
-    },
-    {
-      "id": "1141",
-      "name": "주문서(장신구)",
-      "maxCount": "9999",
-      "materialType": "Drop",
-      "price": "1000",
-      "iconPath": "Textures/Item/Consumables/Scroll_Jewelry",
-      "description": "장신구에 랜덤으로 마법을 부여한다."
-    },
-    {
-      "id": "1142",
-      "name": "아케인스크롤",
-      "maxCount": "9999",
-      "materialType": "Drop",
-      "price": "7500",
-      "iconPath": "Textures/Item/Consumables/Scroll_Arcane",
-      "description": "랜덤으로 각인 하나를 얻는다."
-    },
-    {
-      "id": "1143",
-      "name": "마이티스크롤",
-      "maxCount": "9999",
-      "materialType": "Drop",
-      "price": "42000",
-      "iconPath": "Textures/Item/Consumables/Scroll_Mighty",
-      "description": "랜덤으로 긍정각인 하나를 얻는다."
-    },
-    {
-      "id": "1144",
-      "name": "미스틱스크롤",
-      "maxCount": "9999",
-      "materialType": "Drop",
-      "price": "7500",
-      "iconPath": "Textures/Item/Consumables/Scroll_Mystical",
-      "description": "각인 하나를 삭제한다."
     },
     {
       "id": "1145",
