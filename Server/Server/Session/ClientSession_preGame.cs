@@ -79,6 +79,8 @@ namespace Server
                                 Speed = playerDb.Speed,
                                 TotalExp = playerDb.Exp,
                                 StatPoint = playerDb.StatPoint,
+                                PotionPerformance = playerDb.PotionPerformance,
+                                MaxPotion = playerDb.MaxPotion
                             }
                         };
                         if (playerDb.Realizations == null || playerDb.Realizations.Count == 0)
@@ -392,6 +394,8 @@ namespace Server
                             UpRegen = stat.UpRegen,
                             Attack = stat.Attack,                        
                             Speed = stat.Speed,
+                            PotionPerformance = 1,
+                            MaxPotion = 5,
                             Exp = 0,
                             AccountDbId = AccountDbId
                         };
@@ -417,6 +421,8 @@ namespace Server
                                 UpRegen = stat.UpRegen,
                                 Attack = stat.Attack,
                                 Speed = stat.Speed,
+                                PotionPerformance = 0,
+                                MaxPotion = 5,
                                 TotalExp = 0
                             }
                         };

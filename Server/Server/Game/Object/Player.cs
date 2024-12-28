@@ -69,25 +69,25 @@ namespace Server.Game
                 }
             }
         }
-        int _maxPotion = 3;
         public int MaxPotion
         {
-            get 
-            { 
-                if(Stat.MaxPotion >= _maxPotion)
-                {
-                    return Stat.MaxPotion;
-                }
-                else
-                {
-                    return _maxPotion;
-                }
-            }
+            get { return Stat.MaxPotion; }
             set
             {
-                if (value >= _maxPotion)
+                if (value >= 0)
                 {
                     Stat.MaxPotion = value;
+                }
+            }
+        }
+        public int PotionPerformance
+        {
+            get { return Stat.PotionPerformance; }
+            set
+            {
+                if (value >= 0)
+                {
+                    Stat.PotionPerformance = value;
                 }
             }
         }

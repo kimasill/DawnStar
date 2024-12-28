@@ -235,7 +235,7 @@ namespace Server.Game
             {
                 if (option.Key == "Heal")
                 {
-                    int healAmount = int.Parse(option.Value);
+                    int healAmount = int.Parse(option.Value) * player.PotionPerformance;
                     player.Hp = player.Stat.Hp + healAmount;
                     S_ChangeHp changeHpPacket = new S_ChangeHp()
                     {
