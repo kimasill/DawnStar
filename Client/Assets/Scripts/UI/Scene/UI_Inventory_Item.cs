@@ -58,11 +58,14 @@ public class UI_Inventory_Item : UI_ItemIcon
             {
                 if(Input.GetKey(KeyCode.LeftShift))
                 {
-                    //Count UI 띄우기
+                    UI_Quantity quantity = Managers.UI.ShowPopupUI<UI_Quantity>();
+                    quantity.Check = (int count) =>
+                    {
+                        SellItem(count);
+                    };
                 }
                 else
                 {
-                    //아이템 판매
                     SellItem(1);
                 }
             }

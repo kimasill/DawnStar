@@ -211,7 +211,18 @@ class PacketHandler
             return;
         room.Push(room.HandleBuyItem, player, buyItemPacket);
     }
-
+    public static void C_SellItemHandler(PacketSession session, IMessage packet)
+    {
+        C_SellItem sellItemPacket = packet as C_SellItem;
+        ClientSession clientSession = session as ClientSession;
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+        room.Push(room.HandleSellItem, player, sellItemPacket);
+    }
     public static void C_LootItemHandler(PacketSession session, IMessage packet)
     {
         C_LootItem rootItemPacket = packet as C_LootItem;
