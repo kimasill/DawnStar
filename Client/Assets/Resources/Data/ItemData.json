@@ -280,7 +280,7 @@
         "HpRegen": "5"
       },
       "grade": "Uncharted"
-    },    
+    } 
   ],
   "jewelry": [
     {
@@ -400,6 +400,18 @@
       "description": "미지의 기운이 깃든 포션. 사용 시 일정 시간 미지의 기운을 흡수하여 방어력이 증가한다.",
       "options": {
         "Up": "10"
+      }
+    },
+    {
+      "id": "304",
+      "name": "회복 포션(순수)",
+      "consumableType": "Potion",
+      "maxCount": 9999,
+      "price": 100,
+      "iconPath": "Textures/Item/Consumables/Potion_Health_Pure",
+      "description": "체력을 회복한다.",
+      "options": {
+        "Heal": "120"
       }
     }
   ],
