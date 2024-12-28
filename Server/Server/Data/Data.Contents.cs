@@ -199,6 +199,7 @@ namespace Server.Data
         public string name;
         public int price;
         public ItemType itemType;
+        public List<string> interaction;
         public string iconPath;
         public string description;
         public Dictionary<string, string> options = new Dictionary<string, string>();

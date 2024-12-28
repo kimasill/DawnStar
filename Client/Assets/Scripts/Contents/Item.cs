@@ -72,6 +72,8 @@ public class Item
             }
         }
     }
+    public List<TargetInteract> TargetInteract { get; private set; }
+        
     public ItemType ItemType { get; private set; }
     public bool Stackable { get; protected set; }
 
@@ -120,7 +122,14 @@ public class Item
             item.Price = itemInfo.Price;
             item.Rank = itemInfo.Rank;
             item.Grade = itemInfo.Grade;
-            item.Options = itemInfo.Options;    
+            item.Options = itemInfo.Options;
+            if (itemData.interaction != null) {
+                List<TargetInteract> targetInteracts = new List<TargetInteract>();
+                foreach (var interact in itemData.interaction)
+                {
+                    targetInteracts.Add(new TargetInteract(interact));
+                }
+            }        
         }
         return item;
     }
@@ -315,4 +324,18 @@ public class Item
             }
         }
     }
+}
+public struct TargetInteract
+{
+    public GameObjectType objectType;
+    public string detail;
+    public TargetInteract(string code)
+    {
+        string[] strings = code.Split('_');
+        GameObjectType type = (GameObjectType)Enum.Parse(typeof(GameObjectType), strings[0]);
+        objectType = type;
+        detail = strings[1];
+    }
+
+    public GameObjectType type  { get{ return objectType;} }     
 }

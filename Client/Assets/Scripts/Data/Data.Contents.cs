@@ -178,6 +178,7 @@ namespace Data
         public string name;
         public int price;
         public ItemType itemType;
+        public List<string> interaction;
         public string iconPath;
         public string prefabPath;
         public string description;

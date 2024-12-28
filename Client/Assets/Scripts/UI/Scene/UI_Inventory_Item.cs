@@ -120,6 +120,11 @@ public class UI_Inventory_Item : UI_ItemIcon
         sellPacket.Slot = Item.Slot;
         Managers.Network.Send(sellPacket);
     }
+
+    public override void Interact(Item item)
+    {
+        
+    }
     public override void OnPointerEnter(PointerEventData eventData)
     {
         if (_isDescription)
