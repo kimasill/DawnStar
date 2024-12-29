@@ -28,7 +28,7 @@ namespace Server.Data
         public static Dictionary<int, Data.EnhanceData> EnhanceDict { get; private set; } = new Dictionary<int, Data.EnhanceData>();
         public static Dictionary<int, Data.BuffData> BuffDict { get; private set; } = new Dictionary<int, Data.BuffData>();
         public static Dictionary<int, Data.DebuffData> DebuffDict { get; private set; } = new Dictionary<int, Data.DebuffData>();
-
+        public static Dictionary<ItemType, Data.EnchantData> EnchantDict { get; private set; } = new Dictionary<ItemType, EnchantData>();
 
 
         public static void LoadData()
@@ -46,6 +46,7 @@ namespace Server.Data
             EnhanceDict = LoadJson<Data.EnhanceLoader, int, Data.EnhanceData>("EnhanceData").MakeDict();
             BuffDict = LoadJson<Data.BuffLoader, int, Data.BuffData>("BuffData").MakeDict();
             DebuffDict = LoadJson<Data.DebuffLoader, int, Data.DebuffData>("DebuffData").MakeDict();
+            EnchantDict = LoadJson<Data.EnchantLoader, ItemType, Data.EnchantData>("EnchantData").MakeDict();
         }
 
         static Loader LoadJson<Loader, Key, Value>(string path) where Loader : ILoader<Key, Value>

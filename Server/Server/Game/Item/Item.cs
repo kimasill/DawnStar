@@ -61,6 +61,11 @@ namespace Server.Game
             set { Info.Grade = value; }
         }
 
+        public int Enchant
+        {
+            get { return Info.Enchant; }
+            set { Info.Enchant = value; }
+        }
 
         public Item(ItemType itemType)
         {
@@ -105,7 +110,8 @@ namespace Server.Game
                 item.Slot = itemDb.Slot;
                 item.Equipped = itemDb.Equipped;
                 item.Rank = itemDb.Enhance;
-                if(itemDb.Grade != null)
+                item.Enchant = itemDb.Enchant;
+                if (itemDb.Grade != null)
                     item.Grade = (Grade)Enum.Parse(typeof(Grade), itemDb.Grade);
                 MapField<string, string> options = new MapField<string, string>();
                 if (itemDb.Options.Count > 0)

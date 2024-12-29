@@ -89,11 +89,15 @@ public abstract class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitH
         {
             if (targetInteract.objectType == GameObjectType.Item)
             {
+                if(target is UI_Inventory_Item == false)
+                {
+                    return false;
+                }
                 if (Enum.TryParse(targetInteract.detail, out ItemType itemType))
                 {
                     if (target.Item.ItemType == itemType)
                     {
-                        Interact(target.Item);
+                        Interact(Item);
                         return true;
                     }
                 }

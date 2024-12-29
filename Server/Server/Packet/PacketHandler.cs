@@ -356,6 +356,20 @@ class PacketHandler
         room.HandleEnhanceItem(clientSession.MyPlayer, enhancePacket);
     }
 
+    public static void C_EnchantHandler(PacketSession session, IMessage packet)
+    {
+        C_Enchant enchantPacket = packet as C_Enchant;
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession == null || clientSession.MyPlayer == null)
+            return;
+
+        GameRoom room = clientSession.MyPlayer.Room;
+        if (room == null)
+            return;
+
+        room.HandleEnchantItem(clientSession.MyPlayer, enchantPacket);
+    }
     public static void C_MakeItemHandler(PacketSession session, IMessage packet)
     {
         C_MakeItem makeItemPacket = packet as C_MakeItem;

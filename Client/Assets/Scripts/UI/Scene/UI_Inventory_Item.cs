@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static Item;
 
 //이미지 찾고 교체
 public class UI_Inventory_Item : UI_ItemIcon
@@ -123,7 +124,21 @@ public class UI_Inventory_Item : UI_ItemIcon
 
     public override void Interact(Item item)
     {
-        
+        if(item.ItemType == ItemType.Consumable)
+        {
+            Consumable consumable = item as Consumable;
+            switch (consumable.ConsumableType) 
+            { 
+                case ConsumableType.Scroll:
+                    C_Enchant enchant = new C_Enchant()
+                    {
+                        TargetId = ItemDbId,
+                        MaterialId = item.ItemDbId
+                    };
+                    Managers.Network.Send(enchant);
+                    break;
+            }
+        }
     }
     public override void OnPointerEnter(PointerEventData eventData)
     {

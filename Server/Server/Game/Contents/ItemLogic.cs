@@ -106,5 +106,26 @@ namespace Server.Game
             }
             return null;
         }
+
+        public static Dictionary<string,string> Enchant(Player player, Item item, EnchantData enchantData)
+        {
+            if(item.Enchant >= 4){return null;}
+            if(item.ItemType != enchantData.itemType) { return null; }
+            Dictionary<string, string> options = new Dictionary<string, string>();
+            Random rand = new Random();
+            ItemDb itemDb = new ItemDb();
+            double probability = 0;
+            foreach (var optionData in enchantData.optionData)
+            {
+                probability += optionData.probability;
+                if (rand.NextDouble() <= probability)
+                {
+                    string optionValue = rand.Next(optionData.minValue, optionData.maxValue).ToString();
+                    options.Add(optionData.option.ToString(), optionValue);
+                    break;
+                }
+            }
+            return options;
+        }
     }
 }

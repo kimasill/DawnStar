@@ -75,6 +75,7 @@ namespace Server.DB
         public int Defense { get; set; }
         public int Enhance { get; set; }
         public string Grade { get; set; }
+        public int Enchant { get; set; }
         public string OptionsJson { get; set; }
 
         [NotMapped]

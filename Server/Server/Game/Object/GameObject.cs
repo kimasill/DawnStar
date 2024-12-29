@@ -91,6 +91,10 @@ namespace Server.Game
         public virtual int AdditionalHpRegen { get; set; }
         protected int _additionalUpRegen;
         public virtual int AdditionalUpRegen { get; set; }
+        protected int _additionalDamageMulti;
+        protected int _additionalDefenseMulti;
+        protected int _additionalHpMulti;
+        protected int _additionalUpMulti;
         public virtual float TotalStiffTime { get { return Stat.StiffTime; }}
         public int Hp
         {
