@@ -192,7 +192,7 @@ namespace Server.Game
             };
             if (remainingCount > 0)
             {
-                DbTransaction.SaveItemDB(player, itemDb, player.Room);
+                DbTransaction.SaveAddItemDB(player, itemDb, player.Room);
             }
             else if(remainingCount < 0)
             {

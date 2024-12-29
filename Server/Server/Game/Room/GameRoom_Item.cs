@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
 using Server.Data;
 using Server.DB;
 using Server.Game.Job;
@@ -6,6 +7,7 @@ using Server.Migrations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static Server.Game.Item;
 using DbTransaction = Server.DB.DbTransaction;
 
 namespace Server.Game
@@ -334,6 +336,63 @@ namespace Server.Game
             }
         }
 
+        public void HandleEnchantItem(Player player, C_Enchant enchantPacket)
+        {
+            if (player == null)
+                return;
+
+            Item targetItem = player.Inven.Get(enchantPacket.TargetId);
+            if (targetItem == null)
+                return;
+            Item materialItem = player.Inven.Get(enchantPacket.MaterialId);
+            if (materialItem == null)
+                return;
+
+
+            ItemData targetItemData = null;
+            DataManager.ItemDict.TryGetValue(targetItem.TemplateId, out targetItemData);
+            ItemData materialItemData = null;
+            DataManager.ItemDict.TryGetValue(materialItem.TemplateId, out materialItemData);
+            if (targetItemData == null)
+                return;
+            if (materialItemData == null || materialItemData.itemType != ItemType.Consumable)
+                return;
+
+            EnchantData enchantData = DataManager.EnchantDict[targetItem.ItemType];
+            if (enchantData == null)
+                return;
+
+            Dictionary<string, string> enchantedOptions = ItemLogic.Enchant(player, targetItem, enchantData);
+            if (enchantedOptions != null)
+            {
+                Dictionary<string, string> options = new Dictionary<string, string>();                
+                foreach (var option in targetItem.Options)
+                {
+                    options.Add(option.Key, option.Value);
+                }
+                options.Concat(enchantedOptions);
+
+                ItemDb itemDb = new ItemDb()
+                {
+                    ItemDbId = targetItem.ItemDbId,
+                    Enchant = targetItem.Enchant + 1,
+                    OwnerDbId = player.PlayerDbId,
+                    Options = options
+                };
+
+                DbTransaction.SaveEnchantItem(player, itemDb, this);
+
+                ItemDb materialItemDb = new ItemDb()
+                {
+                    ItemDbId = materialItem.ItemDbId,
+                    TemplateId = materialItem.TemplateId,
+                    Count = 1,
+                    OwnerDbId = player.PlayerDbId,
+                    Slot = materialItem.Slot
+                };
+                DbTransaction.SaveRemovedItemDB(player, materialItemDb, this);
+            }
+        }
         public void HandleMakeItem(Player player, C_MakeItem makeItemPacket)
         {
             if (player == null)
@@ -375,7 +434,7 @@ namespace Server.Game
                 Slot = player.Inven.GetEmptySlot().Value
             };
 
-            DbTransaction.SaveItemDB(player, newItemDb, this);
+            DbTransaction.SaveAddItemDB(player, newItemDb, this);
         }
     }
 }

@@ -1,0 +1,121 @@
+{
+  "enchants": [
+    {
+      "itemType": "Weapon",
+      "optionData": [
+        {
+          "option": "Damage",
+          "probability": 0.2,
+          "minValue": 1,
+          "maxValue": 15
+        },
+        {
+          "option": "CriticalChance",
+          "probability": 0.2,
+          "minValue": 1,
+          "maxValue": 5
+        },
+        {
+          "option": "CriticalDamage",
+          "probability": 0.2,
+          "minValue": 2,
+          "maxValue": 20
+        },
+        {
+          "option": "AttackSpeed",
+          "probability": 0.2,
+          "minValue": 0.1,
+          "maxValue": 0.5
+        },
+        {
+          "option": "Accuracy",
+          "probability": 0.2,
+          "minValue": 1,
+          "maxValue": 10
+        }
+      ]
+    },
+    {
+      "itemType": "Armor",
+      "optionData": [
+        {
+          "option": "Hp",
+          "probability": 0.2,
+          "minValue": 10,
+          "maxValue": 200
+        },
+        {
+          "option": "Defense",
+          "probability": 0.2,
+          "minValue": 1,
+          "maxValue": 20
+        },
+        {
+          "option": "Avoid",
+          "probability": 0.2,
+          "minValue": 1,
+          "maxValue": 10
+        },
+        {
+          "option": "HpRegen",
+          "probability": 0.2,
+          "minValue": 1,
+          "maxValue": 5
+        },
+        {
+          "option": "Speed",
+          "probability": 0.2,
+          "minValue": 0.1,
+          "maxValue": 0.5
+        }
+      ]
+    },
+    {
+      "itemType": "Jewelry",
+      "optionData": [
+        {
+          "option": "Up",
+          "probability": 0.2,
+          "minValue": 5,
+          "maxValue": 50
+        },
+        {
+          "option": "UpRegen",
+          "probability": 0.2,
+          "minValue": 1,
+          "maxValue": 5
+        },
+        {
+          "option": "Avoid",
+          "probability": 0.2,
+          "minValue": 1,
+          "maxValue": 10
+        },
+        {
+          "option": "Attack",
+          "probability": 0.1,
+          "minValue": 1,
+          "maxValue": 10
+        },
+        {
+          "option": "DefenseMulti",
+          "probability": 0.1,
+          "minValue": 1,
+          "maxValue": 10
+        },
+        {
+          "option": "HpMulti",
+          "probability": 0.1,
+          "minValue": 1,
+          "maxValue": 10
+        },
+        {
+          "option": "UpMulti",
+          "probability": 0.1,
+          "minValue": 1,
+          "maxValue": 10
+        }
+      ]
+    }
+  ]
+}

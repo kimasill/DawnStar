@@ -72,6 +72,8 @@ enum MsgId {
   S_BUFF = 64;  
   S_CHANGE_UP = 65;
   C_SELL_ITEM = 66;
+  C_ENCHANT = 67;
+  S_ENCHANT = 68;
 }
 enum CreatureState{
   IDLE = 0;
@@ -169,7 +171,6 @@ enum MonsterGrade{
 	MONSTER_GRADE_SUPERIOR = 2;
 	MONSTER_GRADE_ELITE = 3;
 	MONSTER_GRADE_BOSS = 4;
-	
 }
 
 enum Grade{
@@ -334,6 +335,9 @@ enum ItemOptionType{
 	ITEM_OPTION_TYPE_HEAL = 18;
 	ITEM_OPTION_TYPE_SKILL = 19;
 	ITEM_OPTION_TYPE_DAMAGE = 20;
+	ITEM_OPTION_TYPE_HP_MULTI = 21;
+	ITEM_OPTION_TYPE_UP_MULTI = 22;
+	ITEM_OPTION_TYPE_DEFENSE_MULTI = 23;
 }
 
 message S_EnterGame {
@@ -516,6 +520,16 @@ message C_Enhance{
 }
 
 message S_Enhance{
+	ItemInfo itemInfo = 1;
+	bool success = 2;
+}
+
+message C_Enchant{
+	int32 targetId = 1;
+	int32 materialId = 2;
+}
+
+message S_Enchant{
 	ItemInfo itemInfo = 1;
 	bool success = 2;
 }
@@ -714,6 +728,7 @@ message ItemInfo{
 	map<string, string> options = 7;
 	int32 rank = 8;
 	Grade grade = 9;
+	int32 enchant = 10;
 }
 
 message MapInfo{

@@ -626,4 +626,36 @@ namespace Server.Data
         }
     }
     #endregion
+
+    #region Enchant
+    [Serializable]
+    public class ItemOptionData
+    {
+        public int probability;
+        public ItemOptionType option;
+        public int minValue;
+        public int maxValue;
+    }
+    [Serializable]
+    public class EnchantData
+    {
+        public ItemType itemType;
+        public List<ItemOptionData> optionData;
+    }
+
+    public class EnchantLoader : ILoader<ItemType, EnchantData>
+    {
+        public List<EnchantData> enchants = new List<EnchantData>();
+
+        public Dictionary<ItemType, EnchantData> MakeDict()
+        {
+            Dictionary<ItemType, EnchantData> dict = new Dictionary<ItemType, EnchantData>();
+            foreach (EnchantData enchant in enchants)
+            {
+                dict.Add(enchant.itemType, enchant);
+            }
+            return dict;
+        }
+    }
 }
+#endregion

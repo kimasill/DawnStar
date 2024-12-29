@@ -105,24 +105,32 @@ namespace Server.Game
 
         public override int AdditionalAttack
         {
-            get { return _additionalAttack + EquipDamage; }
+            get 
+            { 
+                int baseStat = (int)((Stat.Attack + EquipDamage) * (AdditionalDamageMulti / 100));
+                return _additionalAttack + baseStat; 
+            }
             set
             {
                 _additionalAttack = value;
                 SendAdditionalStat();
             }
         }
-
+        float AdditionalDamageMulti { get{ return _additionalDamageMulti + EquipDamageMulti; }}
         public override int AdditionalDefense
         {
-            get { return _additionalDefense + EquipDefense; }
+            get 
+            {
+                int baseStat = (int)((Stat.Defense + EquipDefense) * (AdditionalDefenseMulti/100));
+                return _additionalDefense + baseStat;
+            }
             set
             {
                 _additionalDefense = value;
                 SendAdditionalStat();
             }
         }
-
+        float AdditionalDefenseMulti { get { return _additionalDefenseMulti + EquipDefenseMulti; } }
         public override float AdditionalInvokeSpeed
         {
             get { return _additionalInvokeSpeed + EquipInvokeSpeed; }
@@ -202,10 +210,10 @@ namespace Server.Game
                 SendAdditionalStat();
             }
         }
-
+        float AdditionalHpMulti { get { return _additionalHpMulti + EquipHpMulti; } }
         public override int AdditionalHp
         {
-            get { return _additionalHp + EquipHp; }
+            get { return _additionalHp + (int)(Stat.MaxHp * (AdditionalHpMulti / 100)); }
             set
             {
                 _additionalHp = value;
@@ -213,9 +221,10 @@ namespace Server.Game
             }
         }
 
+        float AdditionalUpMulti { get { return _additionalUpMulti + EquipUpMulti; } }
         public override int AdditionalUp
         {
-            get { return _additionalUp + EquipUp; }
+            get { return _additionalUp + (int)(Stat.MaxUp * (AdditionalUpMulti / 100)); }
             set
             {
                 _additionalUp = value;
@@ -245,7 +254,9 @@ namespace Server.Game
 
         public int WeaponRange { get; private set; }
         public int EquipDamage { get; private set; }
+        public int EquipDamageMulti { get; private set; }
         public int EquipDefense { get; private set; }
+        public int EquipDefenseMulti { get; private set; }
         public int EquipAvoidance { get; private set; }
         public int EquipAccuracy { get; private set; }
         public int EquipCriticalChance { get; private set; }
@@ -255,7 +266,9 @@ namespace Server.Game
         public float EquipInvokeSpeed { get; private set; }
         public float EquipCoolTime { get; private set; }
         public int EquipHp { get; private set; }
+        public int EquipHpMulti { get; private set; }
         public int EquipUp { get; private set; }
+        public int EquipUpMulti { get; private set; }
         public int EquipUpRegen { get; private set; }
         public int EquipHpRegen { get; private set; }
         #endregion
@@ -484,6 +497,10 @@ namespace Server.Game
             EquipUp = 0;
             EquipUpRegen = 0;
             EquipHpRegen = 0;
+            EquipDamageMulti = 0;
+            EquipDefenseMulti = 0;
+            EquipHpMulti = 0;
+            EquipUpMulti = 0;
 
 
             foreach (Item item in Inven.Items.Values)
@@ -503,8 +520,14 @@ namespace Server.Game
                             case ItemOptionType.Damage:
                                 EquipDamage += int.Parse(option.Value);
                                 break;
+                            case ItemOptionType.Attack:
+                                EquipDamageMulti += int.Parse(option.Value);
+                                break;
                             case ItemOptionType.Defense:
                                 EquipDefense += int.Parse(option.Value);
+                                break;
+                            case ItemOptionType.DefenseMulti:
+                                EquipDefenseMulti += int.Parse(option.Value);
                                 break;
                             case ItemOptionType.Avoid:
                                 EquipAvoidance += int.Parse(option.Value);
@@ -533,8 +556,14 @@ namespace Server.Game
                             case ItemOptionType.Hp:
                                 EquipHp += int.Parse(option.Value);
                                 break;
+                            case ItemOptionType.HpMulti:
+                                EquipHpMulti += int.Parse(option.Value);
+                                break;
                             case ItemOptionType.Up:
                                 EquipUp += int.Parse(option.Value);
+                                break;
+                            case ItemOptionType.UpMulti:
+                                EquipUpMulti += int.Parse(option.Value);
                                 break;
                             case ItemOptionType.UpRegen:
                                 EquipUpRegen += int.Parse(option.Value);

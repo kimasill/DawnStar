@@ -204,15 +204,49 @@ namespace Server.DB
             {
                 TemplateId = itemData.id,
                 Count = count,
-                Enhance = 0,                
+                Enhance = 0,
+                Enchant = 0,
                 OwnerDbId = player.PlayerDbId,
                 Slot = slot.Value,
                 Options = itemData.options
             };
-            SaveItemDB(player, itemDb, room);
+            SaveAddItemDB(player, itemDb, room);
         }
+        public static void SaveEnchantItem(Player player, ItemDb itemDb, GameRoom room)
+        {
+            if (itemDb == null)
+                return;
 
-        public static void SaveItemDB(Player player, ItemDb itemDb, GameRoom room)
+            using (AppDbContext db = new AppDbContext())
+            {
+                db.Entry(itemDb).State = EntityState.Unchanged;
+                db.Entry(itemDb).Property(nameof(itemDb.Enchant)).IsModified = true;
+                db.Entry(itemDb).Property(nameof(itemDb.Options)).IsModified = true;
+                bool success = db.SaveChangesEx();
+                if (success)
+                {
+                    room.Push(() =>
+                    {
+                        Item iItem = player.Inven.Find(i => i.ItemDbId == itemDb.ItemDbId);
+                        if (iItem != null)
+                        {
+                            iItem.Enchant = itemDb.Enchant;
+                            iItem.Options.Clear();
+                            foreach (var option in itemDb.Options)
+                            {
+                                iItem.Options.Add(option.Key, option.Value);
+                            }
+
+                            S_Enchant enchantPacket = new S_Enchant();
+                            enchantPacket.ItemInfo.MergeFrom(iItem.Info);
+                            enchantPacket.Success = true;
+                            player.Session.Send(enchantPacket);
+                        }
+                    });
+                }
+            }
+        }
+        public static void SaveAddItemDB(Player player, ItemDb itemDb, GameRoom room)
         {
             Instance.Push(() =>
             {
@@ -301,7 +335,6 @@ namespace Server.DB
                                     player.Inven.UpdateItem(iItem.ItemDbId, iItem.Count);
                                 }
                                 Item rItem = Item.MakeItem(tItemDb);
-                                //client noti
                                 {
                                     S_RemoveItem itemPacket = new S_RemoveItem();
                                     ItemInfo info = new ItemInfo();
@@ -406,10 +439,11 @@ namespace Server.DB
                         room.Push(() =>
                         {
                             Item newItem = Item.MakeItem(itemDb);
-                            player.Inven.Add(newItem);
-
-                            //client noti
+                            Item iItem = player.Inven.Find(i => i.ItemDbId == itemDb.ItemDbId);
+                            if (iItem != null)
                             {
+                                iItem = newItem;
+
                                 S_Enhance itemPacket = new S_Enhance();
                                 ItemInfo info = new ItemInfo();
                                 info.MergeFrom(newItem.Info);

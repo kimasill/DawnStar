@@ -681,4 +681,23 @@ class PacketHandler
         }
         gameSceneUI.EnhanceUI.EnhanceResult(enhancePacket);
     }
+    public static void S_EnchantHandler(PacketSession session, IMessage packet)
+    {
+        S_Enchant enchantPacket = packet as S_Enchant;
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        //메모리에 아이템 정보 저장
+        if (Managers.Object.MyPlayer != null)
+        {
+            if (enchantPacket.Success)
+            {
+                Item item = Item.MakeItem(enchantPacket.ItemInfo);
+                Managers.Inventory.AddOrUpdate(item);
+
+                gameSceneUI.InvenUI.RefreshUI();
+                gameSceneUI.StatUI.RefreshUI();
+            }
+
+            Managers.Object.MyPlayer.RefreshAdditionalStat();
+        }
+    }
 }
