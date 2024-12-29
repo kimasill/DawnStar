@@ -99,7 +99,7 @@ namespace Server.Game
                 itemDb.Slot = item.Slot;
                 itemDb.Equipped = item.Equipped;
                 itemDb.Enhance = item.Rank;
-                //itemDb.Grade = item.Grade,
+                itemDb.Grade = item.Grade.ToString();
                 itemDb.OwnerDbId = player.PlayerDbId;
                 
                 return itemDb;
@@ -120,7 +120,8 @@ namespace Server.Game
                 probability += optionData.probability;
                 if (rand.NextDouble() <= probability)
                 {
-                    string optionValue = rand.Next(optionData.minValue, optionData.maxValue).ToString();
+                    float gradeBonous = 1 + ((int)item.Grade / 2.0f);
+                    string optionValue = (rand.Next(optionData.minValue, optionData.maxValue) * gradeBonous).ToString();                     
                     options.Add(optionData.option.ToString(), optionValue);
                     break;
                 }
