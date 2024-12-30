@@ -93,8 +93,14 @@ namespace Server.Game
                 case MonsterType.MutantRat:
                     monster = new MutantRat(monsterData);
                     break;
+                case MonsterType.Cleaner:
+                    monster = new Cleaner(monsterData);
+                    break;
                 case MonsterType.Slayer:
                     monster = new Slayer(monsterData);
+                    break;
+                case MonsterType.ToothKing:
+                    monster = new ToothKing(monsterData);
                     break;
                 default:
                     monster = new Monster(monsterData);
