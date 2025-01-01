@@ -100,7 +100,7 @@ namespace Server.DB
                     {
                         player.Up = playerDb.Up;
                         S_ChangeUp changePacket = new S_ChangeUp();
-                        changePacket.ObjectId = player.PlayerDbId;
+                        changePacket.ObjectId = player.Id;
                         changePacket.Up = player.Up;
                         room.Broadcast(player.CellPos, changePacket);
                     });

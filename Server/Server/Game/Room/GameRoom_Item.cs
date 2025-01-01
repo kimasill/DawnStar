@@ -238,13 +238,7 @@ namespace Server.Game
                 if (option.Key == "Heal")
                 {
                     int healAmount = int.Parse(option.Value) * player.PotionPerformance;
-                    player.Hp = player.Stat.Hp + healAmount;
-                    S_ChangeHp changeHpPacket = new S_ChangeHp()
-                    {
-                        ObjectId = player.Id,
-                        Hp = player.Hp
-                    };
-                    Broadcast(player.CellPos, changeHpPacket);
+                    player.ChangeHp(player.Hp + healAmount);
                     player.Inven.Remove(item.ItemDbId, 1);
                     ItemDb itemDb = new ItemDb()
                     {
@@ -258,13 +252,7 @@ namespace Server.Game
                 if(option.Key == "UpRecovery")
                 {
                     int healAmount = int.Parse(option.Value) * player.PotionPerformance;
-                    player.Up = player.Stat.Up + healAmount;
-                    S_ChangeUp changeUpPacket = new S_ChangeUp()
-                    {
-                        ObjectId = player.Id,
-                        Up = player.Up
-                    };
-                    Broadcast(player.CellPos, changeUpPacket);
+                    player.ChangeUp(player.Up + healAmount);
                     player.Inven.Remove(item.ItemDbId, 1);
                     ItemDb itemDb = new ItemDb()
                     {

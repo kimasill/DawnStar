@@ -83,6 +83,10 @@ public class UI_Stat : UI_Base
         Bind<GameObject>(typeof(Objects));
         BindEvent(GetObject((int)Objects.InfoButton), (PointerEventData data) => { OnClickInfoButton();});
         BindEvent(GetObject((int)Objects.StatPointButton), (PointerEventData data) => { OnClickStatPointButton(); });
+        gameObject.BindEvent(OnBeginDrag, Define.UIEvent.BeginDrag);
+        gameObject.BindEvent(OnDrag, Define.UIEvent.Drag);
+        gameObject.BindEvent(OnEndDrag, Define.UIEvent.EndDrag);
+
         CardObjects.Add(GetImage((int)Images.Card_Rage).gameObject);
         CardObjects.Add(GetImage((int)Images.Card_Reason).gameObject);
         CardObjects.Add(GetImage((int)Images.Card_Uncharted).gameObject);

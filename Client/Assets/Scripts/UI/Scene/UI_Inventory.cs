@@ -50,6 +50,10 @@ public class UI_Inventory : UI_Base
         RefreshUI();
         BindEvent(gameObject, OnPointerEnter, Define.UIEvent.MouseOver);
         BindEvent(gameObject, OnPointerExit, Define.UIEvent.MouseOut);
+        gameObject.BindEvent(OnBeginDrag, Define.UIEvent.BeginDrag);
+        gameObject.BindEvent(OnDrag, Define.UIEvent.Drag);
+        gameObject.BindEvent(OnEndDrag, Define.UIEvent.EndDrag);
+
         GetImage((int)Images.InventorySortingButton).gameObject.BindEvent(OnClickSortingButton);
         GridLayoutGroup gridLayoutGroup = grid.GetComponent<GridLayoutGroup>();
         if (gridLayoutGroup != null)

@@ -36,6 +36,10 @@ public class UI_Shop : UI_Base
 
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.ShopExitButton).gameObject.BindEvent(OnClick);
+
+        gameObject.BindEvent(OnBeginDrag, Define.UIEvent.BeginDrag);
+        gameObject.BindEvent(OnDrag, Define.UIEvent.Drag);
+        gameObject.BindEvent(OnEndDrag, Define.UIEvent.EndDrag);
         //Managers.Shop.OnItemRemoved += RefreshUI;
         _isInit = true;
     }

@@ -290,16 +290,12 @@ namespace Server.Game
         {
             if (Room == null)
                 return;
-
-            Stat.Hp = hp;
             DbTransaction.HpNoti(this, hp, Room);
         }
         public override void ChangeUp(int up)
         {
             if (Room == null)
                 return;
-
-            Stat.Up = up;
             DbTransaction.UpNoti(this, up, Room);
         }
         public override void Ondead(GameObject attacker)
