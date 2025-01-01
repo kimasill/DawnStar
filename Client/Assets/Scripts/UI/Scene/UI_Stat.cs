@@ -31,7 +31,7 @@ public class UI_Stat : UI_Base
         ReasonValueText,
         UnchartedValueText,
         TruthValueText,
-        MaxPotionValueText,
+        PotionHealValueText,
         StatPointText,
         StatPointText_Warning,
         Card_DescriptionText,
@@ -302,7 +302,7 @@ public class UI_Stat : UI_Base
             Get<TMP_Text>((int)Texts.ReasonValueText).text = $"{player.Stat.Realizations[1]}";
             Get<TMP_Text>((int)Texts.UnchartedValueText).text = $"{player.Stat.Realizations[2]}";
             Get<TMP_Text>((int)Texts.TruthValueText).text = $"{player.Stat.Realizations[3]}";
-            Get<TMP_Text>((int)Texts.MaxPotionValueText).text = $"{player.Stat.MaxPotion}";
+            Get<TMP_Text>((int)Texts.PotionHealValueText).text = $"{player.Stat.PotionPerformance}";
             Get<TMP_Text>((int)Texts.StatPointText).text = $"{player.Stat.StatPoint}";
             Get<TMP_Text>((int)Texts.StatPointText_Warning).gameObject.SetActive(false);
 

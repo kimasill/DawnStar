@@ -168,7 +168,7 @@ namespace Server.Game.Room
             return true;
         }
 
-        public bool ApplyMove(GameObject gameObject, Vector2Int dest, bool checkObjects = true, bool collision = true, bool isSingle = false, bool collisionCheck = true)
+        public bool ApplyMove(GameObject gameObject, Vector2Int dest, bool checkObjects = true, bool collision = true, bool isSingle = false)
         {
 
             if (gameObject.Room == null)
@@ -177,7 +177,7 @@ namespace Server.Game.Room
                 return false;
 
             PositionInfo posInfo = gameObject.Info.Position;
-            if (CanGo(dest, checkObjects) == false && collisionCheck)
+            if (CanGo(dest, checkObjects) == false)
                 return false;
             if (collision)
             {
