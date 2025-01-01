@@ -71,6 +71,9 @@ public class UI_Inventory_Item : UI_ItemIcon
                 }
             }
         }, Define.UIEvent.RightClick);
+        gameObject.BindEvent(OnBeginDrag, Define.UIEvent.BeginDrag);
+        gameObject.BindEvent(OnDrag, Define.UIEvent.Drag);
+        gameObject.BindEvent(OnEndDrag, Define.UIEvent.EndDrag);
     }
 
     public override void SetItem(Item item)

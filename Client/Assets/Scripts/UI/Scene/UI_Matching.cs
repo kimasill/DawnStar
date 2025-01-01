@@ -52,6 +52,9 @@ public class UI_Matching : UI_Base
         GetImage((int)Images.MatchingButton).gameObject.BindEvent(OnClickMatchingButton, Define.UIEvent.Click);
         GetImage((int)Images.MatchingCancelButton).gameObject.BindEvent(OnClickMatchingCancelButton, Define.UIEvent.Click);
 
+        gameObject.BindEvent(OnBeginDrag, Define.UIEvent.BeginDrag);
+        gameObject.BindEvent(OnDrag, Define.UIEvent.Drag);
+        gameObject.BindEvent(OnEndDrag, Define.UIEvent.EndDrag);
         GetTextMeshPro((int)Texts.MatchingNoticeText).gameObject.SetActive(false);
         _init = true;
     }

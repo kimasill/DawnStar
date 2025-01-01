@@ -36,6 +36,10 @@ public class UI_Quest : UI_Base
         Bind<TMP_Text>(typeof(Texts));
         GetImage((int)Images.QuestExitButton).gameObject.BindEvent(OnClickExitButton);
         GetImage((int)Images.QuestTabFrame).gameObject.BindEvent(OnClickTabImage);
+
+        gameObject.BindEvent(OnBeginDrag, Define.UIEvent.BeginDrag);
+        gameObject.BindEvent(OnDrag, Define.UIEvent.Drag);
+        gameObject.BindEvent(OnEndDrag, Define.UIEvent.EndDrag);
         _init = true;
         RefreshUI();
     }
