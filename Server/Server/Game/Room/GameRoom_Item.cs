@@ -255,6 +255,25 @@ namespace Server.Game
                     };
                     DbTransaction.SaveRemovedItemDB(player, itemDb, this);
                 }
+                if(option.Key == "UpRecovery")
+                {
+                    int healAmount = int.Parse(option.Value) * player.PotionPerformance;
+                    player.Up = player.Stat.Up + healAmount;
+                    S_ChangeUp changeUpPacket = new S_ChangeUp()
+                    {
+                        ObjectId = player.Id,
+                        Up = player.Up
+                    };
+                    Broadcast(player.CellPos, changeUpPacket);
+                    player.Inven.Remove(item.ItemDbId, 1);
+                    ItemDb itemDb = new ItemDb()
+                    {
+                        TemplateId = item.TemplateId,
+                        Count = 1,
+                        OwnerDbId = player.PlayerDbId,
+                        Slot = item.Slot
+                    };
+                }
                 if (option.Key == "Skill")
                 {
                     int skillId = int.Parse(option.Value);

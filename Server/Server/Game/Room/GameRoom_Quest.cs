@@ -247,6 +247,10 @@ namespace Server.Game
                     player.Stat.MaxPotion += (int)specialStatData.value;    
                     playerDb.MaxPotion = player.Stat.MaxPotion;
                     break;
+                case "생명력 회복":
+                    player.Stat.HpRegen += (int)specialStatData.value;
+                    playerDb.HpRegen = player.Stat.HpRegen;
+                    break;
                 case "회복제 성능":
                     player.Stat.PotionPerformance += (int)specialStatData.value;
                     playerDb.PotionPerformance = player.Stat.PotionPerformance;

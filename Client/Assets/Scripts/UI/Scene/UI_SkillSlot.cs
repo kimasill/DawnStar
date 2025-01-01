@@ -49,14 +49,7 @@ public class UI_SkillSlot : UI_Base
         }
         for (int i = 0; i < SkillSlots.Count; i++)
         {
-            if (SkillSlots[i].SkillData == null)
-            {
-                SkillSlots[i].ClearSlot();
-            }
-            else
-            {
-                SkillSlots[i].gameObject.SetActive(true);
-            }
+            SkillSlots[i].ClearSlot();
         }
         if (Managers.Object.MyPlayer)
         {
@@ -140,32 +133,6 @@ public class UI_SkillSlot : UI_Base
                 else if (((Item.Jewelry)item).JewelryType == JewelryType.Necklace)
                 {
                     _necklaceSkill.SetSkill(skillData);
-                }
-            }
-        }
-        else
-        {
-            if (item is Item.Weapon)
-            {
-                _weaponSkill.ClearSlot();
-            }
-            else if (item is Item.Armor)
-            {
-                if (((Item.Armor)item).ArmorType == ArmorType.Helmet)
-                    _helmetSkill.ClearSlot();
-            }
-            else if (item is Item.Jewelry)
-            {
-                if (((Item.Jewelry)item).JewelryType == JewelryType.Ring)
-                {
-                    if (_ringSkill.SkillData != null)
-                        _ringSkill.ClearSlot();
-                    else
-                        _ringSkill2.ClearSlot();
-                }
-                else if (((Item.Jewelry)item).JewelryType == JewelryType.Necklace)
-                {
-                    _necklaceSkill.ClearSlot();
                 }
             }
         }

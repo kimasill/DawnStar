@@ -45,6 +45,7 @@ public class UI_SkillSlot_Icon : UI_Base
 
     public void ClearSlot()
     {
+        SkillData = null;
         _skillIcon.sprite = null;
         gameObject.SetActive(false);
     }

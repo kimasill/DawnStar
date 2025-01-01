@@ -121,7 +121,8 @@ namespace Server.Game
                 if (rand.NextDouble() <= probability)
                 {
                     float gradeBonous = 1 + ((int)item.Grade / 2.0f);
-                    string optionValue = (rand.Next(optionData.minValue, optionData.maxValue) * gradeBonous).ToString();                     
+                    float randomValue = (float)(rand.NextDouble() * (optionData.maxValue - optionData.minValue) + optionData.minValue);
+                    string optionValue = (randomValue * gradeBonous).ToString();                     
                     options.Add(optionData.option.ToString(), optionValue);
                     break;
                 }

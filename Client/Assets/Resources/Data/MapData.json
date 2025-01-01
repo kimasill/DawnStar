@@ -258,6 +258,36 @@
           "id": "17",
           "monsterId": "19",
           "count": "9"
+        },
+        {
+          "id": "18",
+          "monsterId": "20",
+          "count": "25"
+        },
+        {
+          "id": "19",
+          "monsterId": "21",
+          "count": "12"
+        },
+        {
+          "id": "20",
+          "monsterId": "24",
+          "count": "40"
+        },
+        {
+          "id": "21",
+          "monsterId": "25",
+          "count": "30"
+        },
+        {
+          "id": "22",
+          "monsterId": "26",
+          "count": "3"
+        },
+        {
+          "id": "23",
+          "monsterId": "31",
+          "count": "25"
         }
       ],
       "chests": [
