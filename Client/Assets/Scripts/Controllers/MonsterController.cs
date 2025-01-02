@@ -53,7 +53,8 @@ public class MonsterController : CreatureController
     public IEnumerator AttackCoroutine()
     {
         Animator.Play("ATTACK");
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length/Animator.speed);
+        yield return new WaitForEndOfFrame(); // 애니메이션 상태가 변경될 때까지 대기
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed);
         State = CreatureState.Idle;
     }
 
@@ -65,6 +66,4 @@ public class MonsterController : CreatureController
     {
         base.UseSkill(skill);
     }
-
-    
 }

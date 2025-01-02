@@ -172,11 +172,15 @@ namespace Server.Game
             UpdateHp();
             UpdateUp();
         }
+        public Vector2Int GetFrontCellPos(int distance)
+        {
+            return GetFrontCellPos(PosInfo.MoveDir, distance);
+        }
         public Vector2Int GetFrontCellPos()
         {
             return GetFrontCellPos(PosInfo.MoveDir);
         }
-        public Vector2Int GetFrontCellPos(MoveDir dir)
+        public Vector2Int GetFrontCellPos(MoveDir dir, int distance = 0)
         {
             Vector2Int cellPos = CellPos;
 
@@ -184,15 +188,19 @@ namespace Server.Game
             {
                 case MoveDir.Up:
                     cellPos += Vector2Int.up;
+                    cellPos += new Vector2Int(0, distance);
                     break;
                 case MoveDir.Down:
                     cellPos += Vector2Int.down;
+                    cellPos += new Vector2Int(0, -distance);
                     break;
                 case MoveDir.Left:
                     cellPos += Vector2Int.left;
+                    cellPos += new Vector2Int(-distance, 0);
                     break;
                 case MoveDir.Right:
                     cellPos += Vector2Int.right;
+                    cellPos += new Vector2Int(distance, 0);
                     break;
             }
             return cellPos;
@@ -227,7 +235,7 @@ namespace Server.Game
             int hp = Math.Max(Stat.Hp - damage, 0);
             ChangeHp(hp); 
 
-            if (Stat.Hp <= 0)
+            if (hp <= 0)
             {
                 if(ObjectType == GameObjectType.Monster)
                 {

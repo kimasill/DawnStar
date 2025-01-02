@@ -180,7 +180,7 @@ class PacketHandler
         {
             cc.OnDamaged();
         }
-        else if (cc.Hp < changePacket.Hp)
+        else if (cc.Hp + 50 < changePacket.Hp)
         {
             cc.OnHealed();
         }
@@ -330,6 +330,9 @@ class PacketHandler
             Managers.Object.MyPlayer.PosInfo = objectInfo.Position;
             Managers.Object.MyPlayer.State = CreatureState.Idle;
             Managers.Object.MyPlayer.Stat.MergeFrom(objectInfo.StatInfo);
+            Managers.Object.MyPlayer.RefreshAdditionalStat();
+            Managers.Object.MyPlayer.RefreshPoints();
+
             Managers.Map.SetChests(objectInfo.MapInfo.ChestIds.ToList());
             Managers.Map.SetInteractions(objectInfo.MapInfo.InteractionIds.ToList());
             Managers.Scene.CurrentScene.CheckOnSceneLoadedQuest();

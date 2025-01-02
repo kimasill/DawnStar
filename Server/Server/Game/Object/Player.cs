@@ -279,7 +279,10 @@ namespace Server.Game
             Vision = new VIsionCube(this);
             IsDead = false;
         }
-
+        public override void Update()
+        {
+            base.Update();
+        }
         public override int OnDamaged(GameObject target, int damage)
         {
             if (IsDead) { return 0; }

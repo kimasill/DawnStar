@@ -37,7 +37,15 @@ public class MyPlayerController : PlayerController
     
     protected override void UpdateHpBar()
     {
+        if (GameScene == null)
+            return;
         GameScene.GameWindow.UpdateHpUI();
+    }
+    protected override void UpdateUpBar()
+    {
+        if (GameScene == null)
+            return;
+        GameScene.GameWindow.UpdateUpUI();
     }
     public override StatInfo Stat
     {

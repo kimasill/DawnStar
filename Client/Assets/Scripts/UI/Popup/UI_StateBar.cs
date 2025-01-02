@@ -86,11 +86,13 @@ public class UI_StateBar : UI_Base
         {
             _myPlayer = Managers.Object.MyPlayer;
         }
-        //TODO: UpBar
-        //if (_myPlayer.Stat.MaxUp > 0)
-        //{
-        //    ratio = ((float)_myPlayer.Stat.Up / _myPlayer.Stat.MaxUp);
-        //}
+        float ratio = 0.0f;
+        if (_myPlayer.Stat.MaxUp > 0)
+        {
+            ratio = ((float)_myPlayer.Stat.Up / _myPlayer.Stat.MaxUp);
+        }
+        _upBar.InitializeFrame(_myPlayer.Stat.MaxUp);
+        _upBar.SetUpBar(ratio);
     }
     public void RefreshUI()
     {
