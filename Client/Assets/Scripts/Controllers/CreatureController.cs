@@ -135,7 +135,11 @@ public class CreatureController : BaseController
         _upBar.InitializeFrame(Stat.MaxUp);
         _upBar.SetUpBar(ratio);
     }
-
+    public virtual void RefreshPoints()
+    {
+        UpdateHpBar();
+        UpdateUpBar();
+    }
     protected override void Init()
 	{
 		base.Init();

@@ -160,6 +160,7 @@ GameObject:
   m_Component:
   - component: {fileID: 56624015100826411}
   - component: {fileID: 3141846728522880106}
+  - component: {fileID: 7676482695438364165}
   m_Layer: 5
   m_Name: UI_UpBar
   m_TagString: Untagged
@@ -196,3 +197,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8717437607826758602}
   m_CullTransparentMesh: 1
+--- !u!114 &7676482695438364165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8717437607826758602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4595cc89e8207243950e0e13fa5ff00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsMouseover: 0
+  _upBar: {fileID: 0}
+  _upGroup: {fileID: 56624015100826411}

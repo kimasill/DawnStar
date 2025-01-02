@@ -18,6 +18,7 @@ namespace Server.Game
         public Satyr(MonsterData data) : base(data)
         {
             Initialize(data);
+            SkillRange = _skillRange;
         }
 
         protected override void UpdateSkill()
@@ -61,7 +62,7 @@ namespace Server.Game
                 skillPacket.ObjectId = Id;
                 skillPacket.Info.SkillId = skillData.id;
                 Room.Broadcast(CellPos, skillPacket);
-                Skill.StartSkill(this, skillData, addRange:1);
+                Skill.StartSkill(this, skillData, addRange:1, distance:2);
             }
             if(MonsterGrade == MonsterGrade.Elite)
             {                

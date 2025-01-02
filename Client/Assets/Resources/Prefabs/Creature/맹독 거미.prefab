@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1877916434928944}
   - component: {fileID: 4239540548168018635}
   m_Layer: 0
-  m_Name: "\uB9F9\uB3C5\uAC70\uBBF8"
+  m_Name: "\uB9F9\uB3C5 \uAC70\uBBF8"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -72,8 +72,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -825368885
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -205150647, guid: 455d1ed85468e7d4a92646bf0fd233cf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

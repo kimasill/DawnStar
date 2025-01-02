@@ -11,7 +11,7 @@ namespace Server.Game
 {
     public partial class Skill
     {
-        public async void BasicAttakAsync(SkillData data, int range)
+        public async void BasicAttakAsync(SkillData data, int range, int distance)
         {
             List<Vector2Int> skillPos = new List<Vector2Int>();
             if (Owner.TotalInvokeSpeed > 0)

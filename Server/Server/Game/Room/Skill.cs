@@ -20,14 +20,14 @@ namespace Server.Game
     {
         List<GameObject> _targetList = new List<GameObject>();
         GameObject _target = null;
-        private List<(SkillData skillData, GameObject target, int range)> _skillList = new List<(SkillData, GameObject, int)>();
+        private List<(SkillData skillData, GameObject target, int range, int distance)> _skillList = new List<(SkillData, GameObject, int, int)>();
         Dictionary<int, long> _skillCooldowns = new Dictionary<int, long>();
         public GameObject Owner { get; set; }
         public Skill(GameObject owner)
         {
             Owner = owner;
         }
-        public void StartSkill(GameObject user, SkillData skillData, GameObject target = null, int addRange = 0)
+        public void StartSkill(GameObject user, SkillData skillData, GameObject target = null, int addRange = 0, int distance = 0)
         {
             if (user == null || skillData == null)
                 return;
@@ -70,7 +70,7 @@ namespace Server.Game
             {
                 range += addRange;
             }
-            _skillList.Add((skillData, target, range));
+            _skillList.Add((skillData, target, range, distance));
 
             Update();
         }
@@ -81,12 +81,13 @@ namespace Server.Game
                 var skill = _skillList[i];
                 SkillData data = skill.skillData;
                 int range = skill.range;
+                int distance = skill.distance;
                 GameObject target = skill.target;
 
                 switch (data.skillType)
                 {
                     case SkillType.SkillAttack:
-                        HandleAttackSkill(data, range, target);
+                        HandleAttackSkill(data, range, target, distance);
                         break;
                     case SkillType.SkillProjectile:
                         HandleProjectileSkill(data);
@@ -156,12 +157,12 @@ namespace Server.Game
             return coolDown;
         }
         #region LogicDivide
-        public void HandleAttackSkill(SkillData data, int range, GameObject target)
+        public void HandleAttackSkill(SkillData data, int range, GameObject target, int distance)
         {
             switch (data.skillLogicType)
             {
                 case SkillLogicType.BasicAttack:
-                    BasicAttakAsync(data, range);
+                    BasicAttakAsync(data, range, distance);
                     break;
                 case SkillLogicType.KnockBack:
                     KnockBack(data, range);
@@ -185,7 +186,7 @@ namespace Server.Game
                     LoopInvocation_Rotate(data, target);
                     break;
                 default:
-                    BasicAttakAsync(data, range);
+                    BasicAttakAsync(data, range, distance);
                     break;
             }
         }

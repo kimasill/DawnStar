@@ -70,7 +70,7 @@ namespace Server.DB
                     {
                         player.Hp = playerDb.Hp;
                         S_ChangeHp changePacket = new S_ChangeHp();
-                        changePacket.ObjectId = player.PlayerDbId;
+                        changePacket.ObjectId = player.Id;
                         changePacket.Hp = player.Hp;
                         room.Broadcast(player.CellPos, changePacket);
                     });

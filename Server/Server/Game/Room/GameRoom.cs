@@ -146,6 +146,7 @@ namespace Server.Game
                     Console.WriteLine("Error: player.Session is null");
                 }
                 player.Vision.Update();
+                player.Update();
             }
             else if (type == GameObjectType.Monster)
             {

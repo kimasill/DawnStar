@@ -553,7 +553,7 @@
         "attack": "60",
         "speed": "2.3",
         "totalExp": "260",
-        "attackSpeed": "0.32",
+        "attackSpeed": "0.27",
         "invokeSpeed": "1.0"
       },
       "rewards": [
@@ -588,7 +588,7 @@
         "attack": "78",
         "speed": "2.3",
         "totalExp": "400",
-        "attackSpeed": "0.32",
+        "attackSpeed": "0.27",
         "invokeSpeed": "1.0"
       },
       "rewards": [
@@ -653,7 +653,7 @@
         "attack": "115",
         "speed": "2.3",
         "totalExp": "1830",
-        "attackSpeed": "0.32",
+        "attackSpeed": "0.27",
         "invokeSpeed": "1.0"
       },
       "rewards": [

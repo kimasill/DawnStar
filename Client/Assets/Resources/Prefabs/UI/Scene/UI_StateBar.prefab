@@ -94,6 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99ef443031abd08429c9a4bdbba5e90e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsMouseover: 0
   Set: 0
 --- !u!1 &6218247572161267807
 GameObject:
@@ -411,7 +412,7 @@ PrefabInstance:
     - target: {fileID: 56624015100826411, guid: 9c213c92e13b7804bb03faf3aaed1704,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: -56.2361
+      value: -51.4807
       objectReference: {fileID: 0}
     - target: {fileID: 56624015100826411, guid: 9c213c92e13b7804bb03faf3aaed1704,
         type: 3}
@@ -456,7 +457,7 @@ PrefabInstance:
     - target: {fileID: 56624015100826411, guid: 9c213c92e13b7804bb03faf3aaed1704,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -8.1044
+      value: -10.482
       objectReference: {fileID: 0}
     - target: {fileID: 56624015100826411, guid: 9c213c92e13b7804bb03faf3aaed1704,
         type: 3}
@@ -496,12 +497,12 @@ PrefabInstance:
     - target: {fileID: 190845692317379226, guid: 9c213c92e13b7804bb03faf3aaed1704,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0.47433
+      value: 0.4743
       objectReference: {fileID: 0}
     - target: {fileID: 190845692317379226, guid: 9c213c92e13b7804bb03faf3aaed1704,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 1.6724
+      value: 5.6352
       objectReference: {fileID: 0}
     - target: {fileID: 190845692317379226, guid: 9c213c92e13b7804bb03faf3aaed1704,
         type: 3}
@@ -511,7 +512,7 @@ PrefabInstance:
     - target: {fileID: 190845692317379226, guid: 9c213c92e13b7804bb03faf3aaed1704,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.83619976
+      value: -1.2325
       objectReference: {fileID: 0}
     - target: {fileID: 6088077608893492953, guid: 9c213c92e13b7804bb03faf3aaed1704,
         type: 3}
@@ -593,7 +594,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI_UpBar
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7676482695438364165, guid: 9c213c92e13b7804bb03faf3aaed1704, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -632,6 +634,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4595cc89e8207243950e0e13fa5ff00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsMouseover: 0
   _upBar: {fileID: 4314895288374105036}
   _upGroup: {fileID: 4147455165846350461}
 --- !u!1001 &5672208033577180241
@@ -1073,7 +1076,7 @@ PrefabInstance:
     - target: {fileID: 6003173678511391237, guid: 24cb38012202b5d4bb3e0f121a06ba20,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0.95003
+      value: 2.3711
       objectReference: {fileID: 0}
     - target: {fileID: 6003173678511391237, guid: 24cb38012202b5d4bb3e0f121a06ba20,
         type: 3}
@@ -1083,7 +1086,7 @@ PrefabInstance:
     - target: {fileID: 6003173678511391237, guid: 24cb38012202b5d4bb3e0f121a06ba20,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.00061035156
+      value: -0.7099
       objectReference: {fileID: 0}
     - target: {fileID: 6003173678511391237, guid: 24cb38012202b5d4bb3e0f121a06ba20,
         type: 3}

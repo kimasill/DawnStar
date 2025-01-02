@@ -78,4 +78,15 @@ public class UI_GameWindow : UI_Base
             Debug.LogWarning("StateUI를 찾을 수 없습니다.");
         }
     }
+    public void UpdateUpUI()
+    {
+        if(StateUI != null)
+        {
+            StateUI.UpdateUpBar();
+        }
+        else
+        {
+            Debug.LogWarning("StateUI를 찾을 수 없습니다.");
+        }
+    }
 }
