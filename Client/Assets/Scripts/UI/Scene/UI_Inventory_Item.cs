@@ -163,4 +163,10 @@ public class UI_Inventory_Item : UI_ItemIcon
         _isDescription = false;
         _itemDescription.CloseUI(eventData);
     }
+    public override void OnEndDrag(PointerEventData eventData)
+    {
+        base.OnEndDrag(eventData);
+        UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;
+        gameScene.InvenUI.RefreshUI();
+    }
 }

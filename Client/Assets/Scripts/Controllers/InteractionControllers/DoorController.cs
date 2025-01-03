@@ -83,6 +83,7 @@ public class DoorController : InteractionController
                     _decorator.Play("OPEN", 0, 0.95f);
                 }
             }
+            _openAction.Invoke();
         }
         if (CellPoses != null)
         {
@@ -133,6 +134,7 @@ public class DoorController : InteractionController
                     _decorator.Play("CLOSE", 0, 0.95f);
                 }
             }
+            _closeAction.Invoke();
         }
         if (CellPoses != null)
         {

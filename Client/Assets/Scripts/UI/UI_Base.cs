@@ -4,10 +4,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Device;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static UnityEditor.Progress;
+using Screen = UnityEngine.Screen;
 
 public abstract class UI_Base : MonoBehaviour
 {
@@ -18,10 +21,13 @@ public abstract class UI_Base : MonoBehaviour
 	protected bool _isFading = false;
     protected Vector3 _originalPosition;
     protected Transform _originalParent;
+    protected int _originalSiblingIndex;
+    protected bool _isDragging = false;
+    protected bool _isDraggingOver = false;
     private void Awake()
 	{
 		Init();
-	}
+    }
 
 	protected void Bind<T>(Type type) where T : UnityEngine.Object
 	{
@@ -156,21 +162,42 @@ public abstract class UI_Base : MonoBehaviour
 
     public virtual void OnBeginDrag(PointerEventData eventData)
     {
+        gameObject.GetOrAddComponent<CanvasGroup>().blocksRaycasts = false;
         _originalPosition = transform.position;
+        _originalSiblingIndex = transform.GetSiblingIndex();
         _originalParent = transform.parent;
-        transform.SetParent(transform.root);
-        GetComponent<CanvasGroup>().blocksRaycasts = false;
+        UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;
+        transform.SetParent(gameScene.transform);
+        transform.SetAsLastSibling();
     }
 
     public virtual void OnDrag(PointerEventData eventData)
     {
-        transform.position = eventData.position;
+        Vector3 newPosition = eventData.position;
+
+        UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(gameScene.transform as RectTransform, eventData.position, eventData.pressEventCamera, out newPosition);
+        transform.position = newPosition;
+
+        // 화면 밖으로 나가지 않게 제한
+        Vector3[] canvasCorners = new Vector3[4];
+        (gameScene.transform as RectTransform).GetWorldCorners(canvasCorners);
+        Vector3[] itemCorners = new Vector3[4];
+        (transform as RectTransform).GetWorldCorners(itemCorners);
+
+        if (itemCorners[0].x < canvasCorners[0].x)
+            transform.position += Vector3.right * (canvasCorners[0].x - itemCorners[0].x);
+        if (itemCorners[2].x > canvasCorners[2].x)
+            transform.position += Vector3.left * (itemCorners[2].x - canvasCorners[2].x);
+        if (itemCorners[0].y < canvasCorners[0].y)
+            transform.position += Vector3.up * (canvasCorners[0].y - itemCorners[0].y);
+        if (itemCorners[2].y > canvasCorners[2].y)
+            transform.position += Vector3.down * (itemCorners[2].y - canvasCorners[2].y);
     }
 
     public virtual void OnEndDrag(PointerEventData eventData)
     {
-        GetComponent<CanvasGroup>().blocksRaycasts = true;
+        gameObject.GetOrAddComponent<CanvasGroup>().blocksRaycasts = true;        
         transform.SetParent(_originalParent);
-        transform.position = _originalPosition;
     }
 }
