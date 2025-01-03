@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class UI_GameScene : UI_Scene
 {
+    public Canvas Canvas { get; private set; }
     public UI_Stat StatUI { get; private set; }
     public UI_Inventory InvenUI { get; private set; }
     public UI_GameWindow GameWindow { get; private set; }
@@ -14,10 +15,11 @@ public class UI_GameScene : UI_Scene
     public UI_Notification NotificationUI { get; private set; }
     public UI_Matching MatchingUI { get; private set; }
     public UI_Enhance EnhanceUI { get; private set; }
-
+    
     public override void Init()
     {
         base.Init();
+        Canvas = GetComponent<Canvas>();
         GameWindow = GetComponentInChildren<UI_GameWindow>();         
         StatUI = GetComponentInChildren<UI_Stat>();
         InvenUI = GetComponentInChildren<UI_Inventory>();        

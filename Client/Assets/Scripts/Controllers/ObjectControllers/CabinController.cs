@@ -48,8 +48,9 @@ public class CabinController : BaseController
     private IEnumerator CoOpenTop()
     {
         Animator.speed = 1;
-        Animator.Play($"OPEN{TemplateId}"); // OPEN 애니메이션 재생
-        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f); // 애니메이션 종료 대기
+        Animator.Play($"OPEN{TemplateId}");
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
         Animator.speed = 0;
         Animator.Play($"CLOSE{TemplateId}", 0, 0);
     }
@@ -58,7 +59,8 @@ public class CabinController : BaseController
     {
         Animator.speed = 1;
         Animator.Play($"CLOSE{TemplateId}"); // OPEN 애니메이션 재생
-        yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f); // 애니메이션 종료 대기
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
         Animator.speed = 0;
         Animator.Play($"OPEN{TemplateId}", 0, 0); // CLOSE 애니메이션 첫 프레임으로 고정
     }

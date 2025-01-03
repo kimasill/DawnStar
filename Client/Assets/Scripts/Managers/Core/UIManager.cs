@@ -10,13 +10,17 @@ public class UIManager
     public UI_Scene SceneUI { get; private set; }
     private UI_Loading _loadingUI;
     private bool _isLoading = false;
+    public UI_Base DraggingItem { get; set; }
     public GameObject Root
     {
         get
         {
 			GameObject root = GameObject.Find("@UI_Root");
 			if (root == null)
-				root = new GameObject { name = "@UI_Root" };
+            {
+                root = new GameObject { name = "@UI_Root" };
+            }
+				
             return root;
 		}
     }

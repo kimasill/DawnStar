@@ -64,7 +64,7 @@ public abstract class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitH
 
     public override void OnEndDrag(PointerEventData eventData)
     {
-        GetComponent<CanvasGroup>().blocksRaycasts = true;
+        gameObject.GetOrAddComponent<CanvasGroup>().blocksRaycasts = true;
         GameObject target = eventData.pointerEnter;
         bool success = false;
         if (target != null && target.GetComponent<UI_ItemIcon>() != null)
@@ -78,6 +78,7 @@ public abstract class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitH
             // ¿øÀ§Ä¡
             transform.position = _originalPosition;
             transform.SetParent(_originalParent);
+            transform.SetSiblingIndex(_originalSiblingIndex);
         }
     }
 
