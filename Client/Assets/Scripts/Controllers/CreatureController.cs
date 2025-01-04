@@ -200,7 +200,6 @@ public class CreatureController : BaseController
     {
         _rangedSkill = false;
         SkillId = skill.Info.SkillId;
-        State = CreatureState.Skill;        
         SkillData skillData = null;
         Managers.Data.SkillDict.TryGetValue(SkillId, out skillData);
         if (skillData == null)
@@ -209,40 +208,39 @@ public class CreatureController : BaseController
         {
             UseSkillEffect(skillData, skill.Phase);
         }
+
+        State = CreatureState.Skill;                
     }
-    public async void UseSkillEffect(SkillData skillData, int phase = 0)
+    public void UseSkillEffect(SkillData skillData, int phase = 0)
     {
-        // 스킬 이펙트 생성 및 초기화
-        if(TotalInvokeDelay>0)
-        {
-            await Task.Delay((int)(1000 * TotalInvokeDelay));
-        }
         if (gameObject == null)
             return;
         GameObject skillObj = null;
-        if (skillData.prefabs!=null)
+        if (skillData.prefabs != null)
         {
             if (skillData.fix)
             {
-                UseEffect(skillData.prefabs[phase]);
+                int delay = (int)(TotalInvokeDelay);
+                StartEffectCoroutine(CoUseEffect(skillData.prefabs[phase], delay));                
                 return;
             }
             else
             {
                 skillObj = Managers.Resource.Instantiate($"{skillData.prefabs[phase]}", transform);
-            }           
+            }
         }
         else
         {
             if (skillData.fix)
             {
-                UseEffect(skillData.prefab);
+                int delay = (int)(TotalInvokeDelay);
+                StartEffectCoroutine(CoUseEffect(skillData.prefab, delay));
                 return;
             }
             else
             {
                 skillObj = Managers.Resource.Instantiate($"{skillData.prefab}", transform);
-            }   
+            }
         }
         SkillController skillController = skillObj.GetComponent<SkillController>();
         if (skillController == null)

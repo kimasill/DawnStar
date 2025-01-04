@@ -16,6 +16,14 @@ namespace Server.Game
             List<Vector2Int> skillPos = new List<Vector2Int>();
             if (Owner.TotalInvokeSpeed > 0)
                 await Task.Delay((int)(Owner.TotalInvokeSpeed * 1000));
+
+            if (distance > 0)
+            {
+                Vector2Int center = Owner.GetFrontCellPos();
+                Vector2Int direction = SkillLogic.GetOffsetByDirection(Owner.LookDir, distance);
+                center += direction;
+            }
+
             if (data.shape.shapeType == ShapeType.ShapeBent)
             {
                 Vector2Int center = Owner.GetFrontCellPos();

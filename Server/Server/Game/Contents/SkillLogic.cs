@@ -55,7 +55,7 @@ namespace Server.Game
 
             return tiles;
         }
-        private static Vector2Int GetOffsetByDirection(LookDir lookDir, int distance)
+        public static Vector2Int GetOffsetByDirection(LookDir lookDir, int distance)
         {
             switch (lookDir)
             {
@@ -67,7 +67,7 @@ namespace Server.Game
                     return new Vector2Int(0, 0);
             }
         }
-        private static Vector2Int GetOffsetByDirection(MoveDir moveDir, int distance)
+        public static Vector2Int GetOffsetByDirection(MoveDir moveDir, int distance)
         {
             switch (moveDir)
             {
