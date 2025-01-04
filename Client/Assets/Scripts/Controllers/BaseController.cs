@@ -413,13 +413,21 @@ public class BaseController : MonoBehaviour
         yield return new WaitForSeconds(duration * 1000);
         Managers.Resource.Destroy(effect);
     }
-    public virtual IEnumerator CoUseEffect(string prefab)
+    public virtual IEnumerator CoUseEffect(string prefab, int delay = 0)
     {
+        if (delay > 0)
+            yield return new WaitForSeconds(delay);
         GameObject effect = Managers.Resource.Instantiate(prefab, transform);
+
+        int dir = 1;
+        if (LookDir == LookDir.LookLeft)
+            dir = -1;
+
+        effect.transform.position = new Vector3(effect.transform.position.x * dir , effect.transform.position.y, 0);
         Animator animator = effect.GetComponent<Animator>();
         animator.Play("START");
-        yield return new WaitForSeconds(0.01f);
-        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length/animator.speed);
         Managers.Resource.Destroy(effect);
     }
     protected bool CheckAnimationClip(string inspectorName)
