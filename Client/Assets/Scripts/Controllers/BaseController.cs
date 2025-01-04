@@ -423,7 +423,7 @@ public class BaseController : MonoBehaviour
         if (LookDir == LookDir.LookLeft)
             dir = -1;
 
-        effect.transform.position = new Vector3(effect.transform.position.x * dir , effect.transform.position.y, 0);
+        effect.transform.localPosition = new Vector3(effect.transform.localPosition.x * dir , effect.transform.localPosition.y, 0);
         Animator animator = effect.GetComponent<Animator>();
         animator.Play("START");
         yield return new WaitForEndOfFrame();
