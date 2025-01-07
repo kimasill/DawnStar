@@ -438,7 +438,7 @@ public class MyPlayerController : PlayerController
         Dictionary<int, GameObject> npcs = currentScene.GetNPCs();
         foreach (var npc in npcs.Values)
         {
-            Vector3Int npcCellPos = Managers.Map.CurrentGrid.WorldToCell(npc.transform.position);
+            Vector3Int npcCellPos = Managers.Map.CurrentGrid.WorldToCell(npc.transform.position - new Vector3(0.5f, 0.5f));
             float distance = Vector3Int.Distance(CellPos, npcCellPos);
             if (distance <= 3.0f)
             {

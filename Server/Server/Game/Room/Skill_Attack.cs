@@ -14,6 +14,7 @@ namespace Server.Game
         public async void BasicAttakAsync(SkillData data, int range, int distance)
         {
             List<Vector2Int> skillPos = new List<Vector2Int>();
+            isExecuting = true;
             if (Owner.TotalInvokeSpeed > 0)
                 await Task.Delay((int)(Owner.TotalInvokeSpeed * 1000));
 
@@ -64,6 +65,7 @@ namespace Server.Game
                     }, range);
                 }
             }
+            isExecuting = false;
         }
         public async void CombatAsync(SkillData data)
         {

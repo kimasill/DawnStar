@@ -246,12 +246,14 @@
       "damage": "0",
       "skillType": "SkillAttack",
       "skillLogicType": "Pull",
+      "duration": "0.5",
       "shape": {
         "shapeType": "ShapeCircle",
         "range": "5.0"
       },
       "unchartedPoint": "20",
       "description": "주변적을 자신으로 끌어당긴다.",
+      "isObject" :  false,
       "prefab": "Effect/Pulling",
       "fix": "true"
     },

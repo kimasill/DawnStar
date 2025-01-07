@@ -40,7 +40,8 @@ public class UI_ItemDescription : UI_Popup
         ItemSkillName,
         ItemSkillDescription,
         ItemPopup_Add,
-        ItemPopup_Grade
+        ItemPopup_Grade,
+        PricePanel_Text,
     }
 
     public override void Init()
@@ -92,6 +93,7 @@ public class UI_ItemDescription : UI_Popup
         GetTextMeshPro((int)Texts.ItemPopup_Name).color = Content.GetGradeColor(item.Grade);
         GetTextMeshPro((int)Texts.ItemDescriptionText).text = itemData.description;
         GetTextMeshPro((int)Texts.ItemPopup_Add).text = item.Rank == 0 ? "" : $"(+{item.Rank.ToString()})";
+        GetTextMeshPro((int)Texts.PricePanel_Text).text = (itemData.price/2).ToString();
         switch (item.ItemType)
         {
             case ItemType.Consumable:
@@ -173,7 +175,7 @@ public class UI_ItemDescription : UI_Popup
         RectTransform parentRect = _itemPopup.transform.parent as RectTransform;
         Vector2 minPosition = parentRect.rect.min - _itemPanelRectTransform.rect.min;
         Vector2 maxPosition = parentRect.rect.max - _itemPanelRectTransform.rect.max;
-    
+
 
         localPoint.x = Mathf.Clamp(localPoint.x, minPosition.x, maxPosition.x - _itemDescriptionRectTransform.rect.width);
         localPoint.y = Mathf.Clamp(localPoint.y, minPosition.y, maxPosition.y);

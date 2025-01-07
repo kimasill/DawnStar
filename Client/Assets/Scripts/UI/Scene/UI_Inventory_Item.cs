@@ -47,19 +47,21 @@ public class UI_Inventory_Item : UI_ItemIcon
 
                 Managers.Network.Send(equipItemPacket);
             }
-        });
+        }, Define.UIEvent.RightClick);
         gameObject.BindEvent((e) =>
         {
             UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;      
-            if(gameScene.EnhanceUI.enabled)
+            if(gameScene.EnhanceUI.gameObject.activeSelf)
             {
                 gameScene.EnhanceUI.SetItem(Item);
             }
-            else if (gameScene.ShopUI.enabled)
+            else if (gameScene.ShopUI.gameObject.activeSelf)
             {
                 if(Input.GetKey(KeyCode.LeftShift))
                 {
+                    Managers.UI.CloseAllPopupUI();
                     UI_Quantity quantity = Managers.UI.ShowPopupUI<UI_Quantity>();
+                    quantity.OpenUI(e);
                     quantity.Check = (int count) =>
                     {
                         SellItem(count);
@@ -70,7 +72,7 @@ public class UI_Inventory_Item : UI_ItemIcon
                     SellItem(1);
                 }
             }
-        }, Define.UIEvent.RightClick);
+        });
         gameObject.BindEvent(OnBeginDrag, Define.UIEvent.BeginDrag);
         gameObject.BindEvent(OnDrag, Define.UIEvent.Drag);
         gameObject.BindEvent(OnEndDrag, Define.UIEvent.EndDrag);

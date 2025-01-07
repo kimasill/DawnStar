@@ -8,13 +8,18 @@ using static UnityEditor.Progress;
 
 public class UI_Quantity : UI_Popup
 {
-    [SerializeField] private InputField CountInputField;
+    private TMP_InputField _countInputField;
+    [SerializeField] private GameObject _quantityPanel;
     [SerializeField] private Button NumUpButton;
     [SerializeField] private Button NumDownButton;
     [SerializeField] private Button EnterButton;
     public Action<int> Check;
     private int _count = 1;
 
+    enum InputFields
+    {
+        CountInputField,
+    }
     enum Images
     {
         NumUpButton,
@@ -23,22 +28,26 @@ public class UI_Quantity : UI_Popup
         ExitButton,
     }
 
-    enum Texts
-    {
-        CountInputField,
-    }
-
     public override void Init()
     {
         Bind<Image>(typeof(Images));
-        Bind<TMP_Text>(typeof(Texts));
+        Bind<TMP_InputField>(typeof(InputFields));
 
-        GetImage((int)Images.NumUpButton).GetComponent<Button>().gameObject.BindEvent(OnNumUpButtonClicked);
-        GetImage((int)Images.NumDownButton).GetComponent<Button>().gameObject.BindEvent(OnNumDownButtonClicked);
-        GetImage((int)Images.EnterButton).GetComponent<Button>().gameObject.BindEvent(OnEnterButtonClicked);
-        GetImage((int)Images.ExitButton).GetComponent<Button>().gameObject.BindEvent(OnCloseButtonClick);
-        CountInputField = GetText((int)Texts.CountInputField).GetComponent<InputField>();
-        CountInputField.onEndEdit.AddListener(OnCountInputFieldChanged);
+        GetImage((int)Images.NumUpButton).gameObject.BindEvent(OnNumUpButtonClicked);
+        GetImage((int)Images.NumDownButton).gameObject.BindEvent(OnNumDownButtonClicked);
+        GetImage((int)Images.EnterButton).gameObject.BindEvent(OnEnterButtonClicked);
+        GetImage((int)Images.ExitButton).gameObject.BindEvent(OnCloseButtonClick);
+        _countInputField = Get<TMP_InputField>((int)InputFields.CountInputField);
+        _countInputField.onEndEdit.AddListener(OnCountInputFieldChanged);
+    }
+    public void OpenUI(PointerEventData eventData)
+    {
+        UpdatePopupPosition(_quantityPanel.transform, eventData);
+    }
+
+    public void CloseUI()
+    {
+        ClosePopupUI();
     }
 
     private void OnNumUpButtonClicked(PointerEventData evt)
@@ -75,11 +84,11 @@ public class UI_Quantity : UI_Popup
 
     private void UpdateCountInputField()
     {
-        CountInputField.text = _count.ToString();
+        _countInputField.text = _count.ToString();
     }
 
     private void OnCloseButtonClick(PointerEventData evt)
     {
-        ClosePopupUI();
+        CloseUI();
     }
 }

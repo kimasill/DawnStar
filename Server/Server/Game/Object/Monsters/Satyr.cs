@@ -65,14 +65,23 @@ namespace Server.Game
                 Skill.StartSkill(this, skillData, addRange:1, distance:2);
             }
             if(MonsterGrade == MonsterGrade.Elite)
-            {                
-                for (int i = 0; i < 2; i++)
-                {
-                    SkillData skillData = null;
-                    DataManager.SkillDict.TryGetValue(14, out skillData);
-                    Skill.StartSkill(this, skillData);
-                }                
+            {
+                SkillData skillData = null;
+                DataManager.SkillDict.TryGetValue(14, out skillData);
+
+                EffectSkill(this, skillData, 2, skillData.duration);
             }
+        }
+
+        
+
+        public override int OnDamaged(GameObject attacker, int damage)
+        {
+            if (IsDead)
+                return 0;
+            if(!Skill.isExecuting)
+                State = CreatureState.Stiff;
+            return base.OnDamaged(attacker, damage);
         }
     }
 }
