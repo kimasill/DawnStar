@@ -299,6 +299,23 @@ namespace Server.Game
             changePacket.Hp = Stat.Hp;
             Room.Broadcast(CellPos, changePacket);
         }
+        public async void EffectSkill(GameObject target, SkillData skill, int count, float delay)
+        {
+            if (target == null)
+                return;
+
+            for (int i = 0; i < count; i++)
+            {
+                S_Effect effectPacket = new S_Effect();
+                effectPacket.SkillId = skill.id;
+                effectPacket.ObjectId = target.Id;
+                effectPacket.Prefab = skill.prefab;
+                Room.Broadcast(target.CellPos, effectPacket);
+
+                await Task.Delay((int)(delay * 1000));
+            }
+        }
+
         public void ApplyBuff(BuffInfo buff, int count = 1)
         {
             if (buff == null)

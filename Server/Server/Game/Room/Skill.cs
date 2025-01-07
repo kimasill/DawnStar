@@ -22,6 +22,7 @@ namespace Server.Game
         GameObject _target = null;
         private List<(SkillData skillData, GameObject target, int range, int distance)> _skillList = new List<(SkillData, GameObject, int, int)>();
         Dictionary<int, long> _skillCooldowns = new Dictionary<int, long>();
+        public bool isExecuting = false;
         public GameObject Owner { get; set; }
         public Skill(GameObject owner)
         {

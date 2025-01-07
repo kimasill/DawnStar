@@ -427,7 +427,7 @@ public class BaseController : MonoBehaviour
         Animator animator = effect.GetComponent<Animator>();
         animator.Play("START");
         yield return new WaitForEndOfFrame();
-        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length/animator.speed);
+        yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f);
         Managers.Resource.Destroy(effect);
     }
     protected bool CheckAnimationClip(string inspectorName)

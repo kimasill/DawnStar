@@ -77,6 +77,22 @@
           ]
         }
       ]
+    },
+    {
+      "id": "6",
+      "name": "HideShop",
+      "npcType": "Shop",
+      "shopId": "4",
+      "scripts": [
+        {
+          "id": "60001",
+          "name": "깊은숲 상인",
+          "type": "UI_Shop",
+          "script": [
+            "귀한 물건들이네."
+          ]
+        }
+      ]
     }
   ]
 }
