@@ -412,8 +412,10 @@ namespace Server.Game
                 // 장비를 착용하려는데 이미 착용중인 아이템이 있다면
                 if (item.ItemType == ItemType.Weapon)
                 {
+                    WeaponType weaponType = ((Weapon)item).WeaponType;
                     unequipItem = Inven.Find(
-                        i => i.Equipped && i.ItemType == ItemType.Weapon);
+                        i => i.Equipped && i.ItemType == ItemType.Weapon
+                        && ((Weapon)i).WeaponType == weaponType);
                 }
                 else if (item.ItemType == ItemType.Armor)
                 {

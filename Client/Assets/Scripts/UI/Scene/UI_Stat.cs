@@ -38,51 +38,52 @@ public class UI_Stat : UI_Base
         BaseStatText,
         SpecialStatText,        
     }
-    enum Images
+    enum Equipments
     {
-        Slot_Helmet,
-        //Slot_Cloth,
-        Slot_Armor,
-        Slot_Weapon,
-        Slot_Shield,
-        Slot_Boots,
-        Slot_Back,
-        Slot_Earing,
-        Slot_Ring,
-        Slot_Ring2,
-        Slot_Necklace,
+        UI_Icon_Helmet,
+        UI_Icon_Armor,
+        UI_Icon_Back,
+        UI_Icon_Boots,
+        UI_Icon_Ring2,
+        UI_Icon_Weapon,
+        UI_Icon_Shield,
+        UI_Icon_Necklace,
+        UI_Icon_Earing,
+        UI_Icon_Ring,      
+    }
+
+    enum Images 
+    {
         Card_Uncharted,
-        Card_Rage,        
+        Card_Rage,
         Card_Reason,
         Card_Truth,
         Card_Panel,
         Card_DescriptionPanel,
         BaseStatPanel,
-        SpecialStatPanel,        
-    }
-
-    enum Objects
-    {
+        SpecialStatPanel,
         InfoButton,
         StatPointButton,
     }
+
     bool _init = false;
     bool _isCardPanelActive = false;
     bool _isBaseStatPanelActive = true;
     bool _isSpecialStatPanelActive = false;
     public List<GameObject> CardObjects = new List<GameObject>();
+    public List<UI_Stat_Item> SlotObjects = new List<UI_Stat_Item>();
     int _statPoint = 0;
     public override void Init()
     {
-        if(_init)
-            return;
+        if(_init) return;
         _init = true;
 
         Bind<TMP_Text>(typeof(Texts)); // Change TMPro to TextMeshProUGUI
+        Bind<GameObject>(typeof(Equipments));
         Bind<Image>(typeof(Images));
-        Bind<GameObject>(typeof(Objects));
-        BindEvent(GetObject((int)Objects.InfoButton), (PointerEventData data) => { OnClickInfoButton();});
-        BindEvent(GetObject((int)Objects.StatPointButton), (PointerEventData data) => { OnClickStatPointButton(); });
+        
+        BindEvent(GetObject((int)Images.InfoButton), (PointerEventData data) => { OnClickInfoButton();});
+        BindEvent(GetObject((int)Images.StatPointButton), (PointerEventData data) => { OnClickStatPointButton(); });
         gameObject.BindEvent(OnBeginDrag, Define.UIEvent.BeginDrag);
         gameObject.BindEvent(OnDrag, Define.UIEvent.Drag);
         gameObject.BindEvent(OnEndDrag, Define.UIEvent.EndDrag);
@@ -92,6 +93,11 @@ public class UI_Stat : UI_Base
         CardObjects.Add(GetImage((int)Images.Card_Uncharted).gameObject);
         CardObjects.Add(GetImage((int)Images.Card_Truth).gameObject);
         
+        foreach (int i in Enum.GetValues(typeof(Equipments)))
+        {
+            SlotObjects.Add(GetObject(i).GetComponent<UI_Stat_Item>());
+        }
+
         for (int i = 0; i < CardObjects.Count; i++)
         {
             int index = i+1;
@@ -222,6 +228,10 @@ public class UI_Stat : UI_Base
             return;
         }
         Get<TMP_Text>((int)Texts.StatPointText_Warning).gameObject.SetActive(false);
+        foreach(UI_Stat_Item slot in SlotObjects)
+        {
+            slot.SetItem(null);
+        }
         foreach (Item item in Managers.Inventory.Items.Values)
         {
             if (item.Equipped == false)
@@ -232,8 +242,16 @@ public class UI_Stat : UI_Base
 
             if (item.ItemType == ItemType.Weapon)
             {
-                Get<Image>((int)Images.Slot_Weapon).enabled = true;
-                Get<Image>((int)Images.Slot_Weapon).sprite = icon;
+                Weapon weapon = (Weapon)item;
+                switch(weapon.WeaponType)
+                {
+                    case WeaponType.Sword:
+                        SlotObjects[(int)Equipments.UI_Icon_Weapon].SetItem(item);
+                        break;
+                    case WeaponType.Shield:
+                        SlotObjects[(int)Equipments.UI_Icon_Shield].SetItem(item);
+                        break;
+                }
             }
             else if (item.ItemType == ItemType.Armor)
             {
@@ -241,20 +259,16 @@ public class UI_Stat : UI_Base
                 switch (armor.ArmorType)
                 {
                     case ArmorType.Helmet:
-                        Get<Image>((int)Images.Slot_Helmet).enabled = true;
-                        Get<Image>((int)Images.Slot_Helmet).sprite = icon;
+                        SlotObjects[(int)Equipments.UI_Icon_Helmet].SetItem(item);
                         break;
                     case ArmorType.Armor:
-                        Get<Image>((int)Images.Slot_Armor).enabled = true;
-                        Get<Image>((int)Images.Slot_Armor).sprite = icon;
+                        SlotObjects[(int)Equipments.UI_Icon_Armor].SetItem(item);
                         break;
                     case ArmorType.Boots:
-                        Get<Image>((int)Images.Slot_Boots).enabled = true;
-                        Get<Image>((int)Images.Slot_Boots).sprite = icon;
+                        SlotObjects[(int)Equipments.UI_Icon_Boots].SetItem(item);
                         break;
                     case ArmorType.Back:
-                        Get<Image>((int)Images.Slot_Back).enabled = true;
-                        Get<Image>((int)Images.Slot_Back).sprite = icon;
+                        SlotObjects[(int)Equipments.UI_Icon_Back].SetItem(item);
                         break;
                 }
             }
@@ -264,24 +278,20 @@ public class UI_Stat : UI_Base
                 switch (jewelry.JewelryType)
                 {
                     case JewelryType.Earring:
-                        Get<Image>((int)Images.Slot_Earing).enabled = true;
-                        Get<Image>((int)Images.Slot_Earing).sprite = icon;
+                        SlotObjects[(int)Equipments.UI_Icon_Earing].SetItem(item);
                         break;
                     case JewelryType.Ring:
-                        if (Get<Image>((int)Images.Slot_Ring).enabled == false)
+                        if (SlotObjects[(int)Equipments.UI_Icon_Ring].Equipped == false)
                         {
-                            Get<Image>((int)Images.Slot_Ring).enabled = true;
-                            Get<Image>((int)Images.Slot_Ring).sprite = icon;
+                            SlotObjects[(int)Equipments.UI_Icon_Ring].SetItem(item);
                         }
                         else
                         {
-                            Get<Image>((int)Images.Slot_Ring2).enabled = true;
-                            Get<Image>((int)Images.Slot_Ring2).sprite = icon;
+                            SlotObjects[(int)Equipments.UI_Icon_Ring2].SetItem(item);
                         }
                         break;
                     case JewelryType.Necklace:
-                        Get<Image>((int)Images.Slot_Necklace).enabled = true;
-                        Get<Image>((int)Images.Slot_Necklace).sprite = icon;
+                        SlotObjects[(int)Equipments.UI_Icon_Necklace].SetItem(item);
                         break;
                 }
             }
@@ -290,16 +300,16 @@ public class UI_Stat : UI_Base
             player.RefreshAdditionalStat();
 
             Get<TMP_Text>((int)Texts.NameText).text = player.name;
-            Get<TMP_Text>((int)Texts.AttackValueText).text = $"{player.Stat.Attack} + ({player.AdditionalAttack})";
-            Get<TMP_Text>((int)Texts.DefenseValueText).text = $"{player.Stat.Defense} + ({player.AdditionalDefense})";
-            Get<TMP_Text>((int)Texts.HPValueText).text = $"{player.Stat.MaxHp}  + ({player.AdditionalHp})";
+            Get<TMP_Text>((int)Texts.AttackValueText).text = $"{player.Stat.Attack + player.AdditionalAttack} + ({player.AdditionalAttack})";
+            Get<TMP_Text>((int)Texts.DefenseValueText).text = $"{player.Stat.Defense + player.AdditionalDefense} + ({player.AdditionalDefense})";
+            Get<TMP_Text>((int)Texts.HPValueText).text = $"{player.Stat.MaxHp + player.AdditionalHp}  + ({player.AdditionalHp})";
             Get<TMP_Text>((int)Texts.AttackSpeedValueText).text = $"{player.Stat.AttackSpeed} + ({player.AdditionalAttackSpeed})/s";
             Get<TMP_Text>((int)Texts.CriticalChanceValueText).text = $"{player.Stat.CriticalChance} + ({player.AdditionalCriticalChance})%";
             Get<TMP_Text>((int)Texts.CriticalDamageValueText).text = $"{player.Stat.CriticalDamage} + ({player.AdditionalCriticalDamage})%";
             Get<TMP_Text>((int)Texts.AvoidValueText).text = $"{player.Stat.Avoid} + ({player.AdditionalAvoidance})%";
             Get<TMP_Text>((int)Texts.AccuracyValueText).text = $"{player.Stat.Accuracy} + ({player.AdditionalAccuracy})%";
             Get<TMP_Text>((int)Texts.UPValueText).text = $"{player.Stat.Up} + ({player.AdditionalUp})";
-            Get<TMP_Text>((int)Texts.UPRegenValueText).text = $"{player.Stat.UpRegen}/s";
+            Get<TMP_Text>((int)Texts.UPRegenValueText).text = $"{player.Stat.UpRegen} /s";
             Get<TMP_Text>((int)Texts.HPRegenValueText).text = $"{player.Stat.HpRegen}/s";
             Get<TMP_Text>((int)Texts.MoveSpeedValueText).text = $"{player.Stat.Speed} + ({player.AdditionalSpeed})";
             Get<TMP_Text>((int)Texts.RageValueText).text = $"{player.Stat.Realizations[0]}";

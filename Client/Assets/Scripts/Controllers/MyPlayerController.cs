@@ -572,6 +572,7 @@ public class MyPlayerController : PlayerController
         EquipHp = 0;
         EquipUp = 0;
         EquipUpRegen = 0;
+        EquipHpRegen = 0;
         foreach (Item item in Managers.Inventory.Items.Values)
         {
             if (item.Equipped == false)

@@ -15,8 +15,8 @@ public abstract class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitH
     [SerializeField]
     protected UI_ItemDescription _itemDescription = null;
     protected bool _isDescription = false;
-    public Item Item;
-    private bool _init = false;
+    public Item Item = null;
+    protected bool _init = false;
     public UI_GameWindow GameWindow { get; set; }
     public int ItemDbId { get; protected set; }
     public int TemplateId { get; protected set; }
@@ -60,6 +60,19 @@ public abstract class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitH
             return;
         _isDescription = false;
         _itemDescription.CloseUI(eventData);
+    }
+    public override void OnBeginDrag(PointerEventData eventData)
+    {
+        if (Item == null)
+            return;
+
+        gameObject.GetOrAddComponent<CanvasGroup>().blocksRaycasts = false;
+        _originalPosition = transform.position;
+        _originalSiblingIndex = transform.GetSiblingIndex();
+        _originalParent = transform.parent;
+        UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;
+        transform.SetParent(gameScene.transform);
+        transform.SetAsLastSibling();
     }
 
     public override void OnEndDrag(PointerEventData eventData)
