@@ -56,6 +56,10 @@ public class CreatureController : BaseController
 
     protected int _additionalUp;
     public virtual int AdditionalUp { get; set; }
+    protected int _additionalUpRegen;
+    public virtual int AdditionalUpRegen { get; set; }
+    protected int _additionalHpRegen;
+    public virtual int AdditionalHpRegen { get; set; }
     protected float TotalInvokeDelay { get { return Stat.InvokeSpeed + AdditionalInvokeSpeed; } }
     protected int SkillId;
     protected string _animation;

@@ -524,6 +524,8 @@ class PacketHandler
         mc.AdditionalAvoidance = statPacket.StatInfo.Avoid;
         mc.AdditionalCoolTime = statPacket.StatInfo.CoolTime;
         mc.AdditionalInvokeSpeed = statPacket.StatInfo.InvokeSpeed;
+        mc.AdditionalUpRegen = statPacket.StatInfo.UpRegen;
+        mc.AdditionalHpRegen = statPacket.StatInfo.HpRegen;
 
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
         gameSceneUI.StatUI.RefreshUI();

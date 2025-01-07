@@ -38,6 +38,7 @@ public class UI_Shop_Item : UI_Base, IPointerEnterHandler, IPointerExitHandler
         ItemNameText
     }
 
+
     public override void Init()
     {
         Binding();
@@ -47,14 +48,20 @@ public class UI_Shop_Item : UI_Base, IPointerEnterHandler, IPointerExitHandler
     {
         _itemRoot.gameObject.BindEvent((e) =>
         {
-            UnityEngine.Debug.Log("아이템 구매");
-            
-            // 구매 패킷 넘겨주기
-            C_BuyItem buyItemPacket = new C_BuyItem();
-            buyItemPacket.TemplateId = TemplateId;            
-            buyItemPacket.Count = 1;
-            buyItemPacket.ShopId = ShopId;
-            Managers.Network.Send(buyItemPacket);
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                Managers.UI.CloseAllPopupUI();
+                UI_Quantity quantity = Managers.UI.ShowPopupUI<UI_Quantity>();
+                quantity.OpenUI(e);
+                quantity.Check = (int count) =>
+                {
+                    BuyItem(count);
+                };
+            }
+            else
+            {
+                BuyItem(1);
+            }
         });
 
         Bind<TMP_Text>(typeof(Texts));
@@ -109,6 +116,14 @@ public class UI_Shop_Item : UI_Base, IPointerEnterHandler, IPointerExitHandler
         GetTextMeshPro((int)Texts.ItemCount).text = item.Count.ToString();
     }
 
+    public void BuyItem(int count)
+    {
+        C_BuyItem buyItemPacket = new C_BuyItem();
+        buyItemPacket.TemplateId = TemplateId;
+        buyItemPacket.Count = count;
+        buyItemPacket.ShopId = ShopId;
+        Managers.Network.Send(buyItemPacket);
+    }
 
     public override void OnPointerEnter(PointerEventData eventData)
     {

@@ -38,6 +38,7 @@ public class PlayerController : CreatureController
     public int EquipHp { get; protected set; }
     public int EquipUp { get; protected set; }
     public float EquipUpRegen { get; protected set; }
+    public float EquipHpRegen { get; protected set; }
 
     protected override void Init()
 	{

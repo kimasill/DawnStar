@@ -108,7 +108,7 @@ namespace Server.Game
         }
         public int Up
         {
-            get { return Stat.Up + AdditionalUp; }
+            get { return Stat.Up; }
             set { Stat.Up = Math.Clamp(value, 0, MaxUp); }
         }
         public int MaxUp
@@ -271,7 +271,7 @@ namespace Server.Game
             if (Room == null)
                 return;
 
-            Stat.Hp = hp;
+            Hp = hp;
             S_ChangeHp changePacket = new S_ChangeHp();
             changePacket.ObjectId = Id;
             changePacket.Hp = Stat.Hp;
@@ -282,7 +282,7 @@ namespace Server.Game
             if (Room == null)
                 return;
 
-            Stat.Up = up;
+            Up = up;
             S_ChangeUp changePacket = new S_ChangeUp();
             changePacket.ObjectId = Id;
             changePacket.Up = Stat.Up;

@@ -161,7 +161,8 @@ public abstract class UI_Base : MonoBehaviour
     }
 
     public virtual void OnBeginDrag(PointerEventData eventData)
-    {
+    {       
+
         gameObject.GetOrAddComponent<CanvasGroup>().blocksRaycasts = false;
         _originalPosition = transform.position;
         _originalSiblingIndex = transform.GetSiblingIndex();
