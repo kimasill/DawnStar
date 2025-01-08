@@ -372,13 +372,18 @@ namespace Server.Game
             Dictionary<string, string> enchantedOptions = ItemLogic.Enchant(player, targetItem, enchantData);
             if (enchantedOptions != null)
             {
-                Dictionary<string, string> options = new Dictionary<string, string>();                
-                foreach (var option in targetItem.Options)
+                Dictionary<string, string> options = new Dictionary<string, string>(targetItem.Options);
+                foreach (var option in enchantedOptions)
                 {
-                    options.Add(option.Key, option.Value);
+                    string newKey = option.Key;
+                    int suffix = 1;
+                    while (options.ContainsKey(newKey))
+                    {
+                        newKey = $"{option.Key}_{suffix}";
+                        suffix++;
+                    }
+                    options.Add(newKey, option.Value);
                 }
-                options.Concat(enchantedOptions);
-
                 ItemDb itemDb = new ItemDb()
                 {
                     ItemDbId = targetItem.ItemDbId,
@@ -437,6 +442,7 @@ namespace Server.Game
             {
                 TemplateId = itemData.id,
                 Count = makeItemPacket.Count,
+                Grade = itemData.grade.ToString(),
                 OwnerDbId = player.PlayerDbId,
                 Slot = player.Inven.GetEmptySlot().Value
             };

@@ -129,6 +129,7 @@ public class Item
                 {
                     targetInteracts.Add(new TargetInteract(interact));
                 }
+                item.TargetInteract = targetInteracts;
             }        
         }
         return item;

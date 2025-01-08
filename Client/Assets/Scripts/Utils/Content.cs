@@ -4,7 +4,8 @@ public static class Content
 {
     public static string ConvertSpecialOptions(string option)
     {
-        if (System.Enum.TryParse(option, out ItemOptionType optionType))
+        string key = option.Split('_')[0];
+        if (System.Enum.TryParse(key, out ItemOptionType optionType))
         {
             switch (optionType)
             {
@@ -51,9 +52,9 @@ public static class Content
             case Grade.Rare:
                 return "레어";
             case Grade.Elite:
-                return "유니크";
+                return "엘리트";
             case Grade.Epic:
-                return "레전드";
+                return "에픽";
             case Grade.Uncharted:
                 return "미지";
             default:
@@ -67,15 +68,52 @@ public static class Content
             case Grade.Normal:
                 return Color.white;
             case Grade.Rare:
-                return new Color(90, 107, 255);
+                return new Color(90 / 255f, 107 / 255f, 255 / 255f);
             case Grade.Elite:
-                return new Color(200, 255, 45);
+                return new Color(200 / 255f, 255 / 255f, 45 / 255f);
             case Grade.Epic:
-                return new Color(0, 255, 200);
+                return new Color(0 / 255f, 255 / 255f, 200 / 255f);
             case Grade.Uncharted:
-                return new Color(255, 0, 173);
+                return new Color(255 / 255f, 0 / 255f, 173 / 255f);
             default:
                 return Color.white;
         }
+    }
+
+    public static Color GetEnhanceColor(int rank)
+    {
+        if (rank == 0)
+            return Color.white;
+
+        Color startColor;
+        Color endColor;
+        float t;
+
+        if (rank >= 1 && rank <= 5)
+        {
+            startColor = Color.white;
+            endColor = GetGradeColor(Grade.Rare);
+            t = (rank - 1) / 4f;
+        }
+        else if (rank >= 6 && rank <= 10)
+        {
+            startColor = GetGradeColor(Grade.Rare);
+            endColor = GetGradeColor(Grade.Elite);
+            t = (rank - 6) / 4f;
+        }
+        else if (rank >= 11 && rank <= 15)
+        {
+            startColor = GetGradeColor(Grade.Elite);
+            endColor = GetGradeColor(Grade.Epic);
+            t = (rank - 11) / 4f;
+        }
+        else // rank >= 16 && rank <= 20
+        {
+            startColor = GetGradeColor(Grade.Epic);
+            endColor = GetGradeColor(Grade.Uncharted);
+            t = (rank - 16) / 4f;
+        }
+
+        return Color.Lerp(startColor, endColor, t);
     }
 }

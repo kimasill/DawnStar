@@ -633,8 +633,8 @@ namespace Server.Data
     {
         public float probability;
         public ItemOptionType option;
-        public float minValue;
-        public float maxValue;
+        public int minValue;
+        public int maxValue;
     }
     [Serializable]
     public class EnchantData

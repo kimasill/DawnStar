@@ -18,9 +18,56 @@ namespace Server.Game
         public Satyr(MonsterData data) : base(data)
         {
             Initialize(data);
+            
+            if (MonsterGrade == MonsterGrade.Elite)
+            {
+                _skillRange = 5;
+            }
             SkillRange = _skillRange;
         }
+        protected override void UpdateMoving()
+        {
+            if (_moveTick > Environment.TickCount64)
+                return;
+            int moveTick = (int)(1000 / TotalSpeed);
+            _moveTick = Environment.TickCount64 + moveTick;
+            if (_target == null || _target.Room != Room)
+            {
+                _target = null;
+                State = CreatureState.Idle;
+                BroadcastMove();
+                return;
+            }
 
+            Vector2Int dir = _target.CellPos - CellPos;
+            int dist = dir.cellDistanceFromZero;
+            if (dist == 0 || dist > _chaseRange)
+            {
+                _target = null;
+                State = CreatureState.Idle;
+                BroadcastMove();
+                return;
+            }
+
+            List<Vector2Int> path = Room.Map.FindPath(CellPos, _target.CellPos);
+            if (path.Count < 2 || path.Count > _chaseRange)
+            {
+                _target = null;
+                State = CreatureState.Idle;
+                BroadcastMove();
+                return;
+            }
+
+            if (dist <= SkillRange)
+            {
+                _coolTick = 0;
+                State = CreatureState.Skill;
+                return;
+            }
+            UpdateDir(path[1]);
+            Room.Map.ApplyMove(this, path[1]);
+            BroadcastMove();
+        }
         protected override void UpdateSkill()
         {
             if (_coolTick > Environment.TickCount64)
@@ -39,7 +86,7 @@ namespace Server.Game
                 //스킬 사용 가능한지
             Vector2Int dir = _target.CellPos - CellPos;
             int dist = dir.cellDistanceFromZero;
-            bool canUseSkill = dist <= _skillRange && (dir.x == 0 || dir.y == 0);
+            bool canUseSkill = dist <= _skillRange;
             if (canUseSkill == false)
             {
                 State = CreatureState.Moving;
@@ -68,7 +115,7 @@ namespace Server.Game
             {
                 SkillData skillData = null;
                 DataManager.SkillDict.TryGetValue(14, out skillData);
-
+                Skill.StartSkill(this, skillData, _target);
                 EffectSkill(this, skillData, 2, skillData.duration);
             }
         }

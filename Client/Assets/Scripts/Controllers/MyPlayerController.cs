@@ -582,7 +582,8 @@ public class MyPlayerController : PlayerController
                 continue;
             foreach (var option in options)
             {
-                if (Enum.TryParse(option.Key, out ItemOptionType optionType))
+                string key = option.Key.Split('_')[0];
+                if (Enum.TryParse(key, out ItemOptionType optionType))
                 {
                     switch (optionType)
                     {

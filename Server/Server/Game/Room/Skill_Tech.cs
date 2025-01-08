@@ -76,7 +76,7 @@ namespace Server.Game
 
                     if (Owner.Room.Map.ApplyMove(target, newPos))
                     {
-                        target.CellPos = newPos;
+                        target.CellPos = newPos;                        
                         S_ChangePosition movePacket = new S_ChangePosition();
                         movePacket.ObjectId = target.Id;
                         movePacket.Position = target.PosInfo;

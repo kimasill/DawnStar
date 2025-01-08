@@ -80,24 +80,22 @@ public abstract class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitH
         gameObject.GetOrAddComponent<CanvasGroup>().blocksRaycasts = true;
         GameObject target = eventData.pointerEnter;
         bool success = false;
-        if (target != null && target.GetComponent<UI_ItemIcon>() != null)
+        UI_ItemIcon item = target.GetComponentInParent<UI_ItemIcon>();
+
+        if (target != null && item != null)
         {
             // 상호작용 로직
-            success = InteractWith(target.GetComponent<UI_ItemIcon>());
+            success = InteractWith(item);
         }
-
-        if (!success)
-        {
-            // 원위치
-            transform.position = _originalPosition;
-            transform.SetParent(_originalParent);
-            transform.SetSiblingIndex(_originalSiblingIndex);
-        }
+        // 원위치
+        transform.position = _originalPosition;
+        transform.SetParent(_originalParent);
+        transform.SetSiblingIndex(_originalSiblingIndex);
     }
 
     public virtual bool InteractWith(UI_ItemIcon target)
     {
-        if (target == null) return false;
+        if (target == null || Item == null || Item.TargetInteract == null) return false;
 
         foreach (var targetInteract in Item.TargetInteract)
         {
@@ -111,7 +109,7 @@ public abstract class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitH
                 {
                     if (target.Item.ItemType == itemType)
                     {
-                        Interact(Item);
+                        target.Interact(Item);
                         return true;
                     }
                 }

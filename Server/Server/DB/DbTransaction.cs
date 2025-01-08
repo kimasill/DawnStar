@@ -206,6 +206,7 @@ namespace Server.DB
                 Count = count,
                 Enhance = 0,
                 Enchant = 0,
+                Grade = itemData.grade.ToString(),
                 OwnerDbId = player.PlayerDbId,
                 Slot = slot.Value,
                 Options = itemData.options
@@ -221,7 +222,7 @@ namespace Server.DB
             {
                 db.Entry(itemDb).State = EntityState.Unchanged;
                 db.Entry(itemDb).Property(nameof(itemDb.Enchant)).IsModified = true;
-                db.Entry(itemDb).Property(nameof(itemDb.Options)).IsModified = true;
+                db.Entry(itemDb).Property(nameof(itemDb.OptionsJson)).IsModified = true;
                 bool success = db.SaveChangesEx();
                 if (success)
                 {
@@ -238,7 +239,7 @@ namespace Server.DB
                             }
 
                             S_Enchant enchantPacket = new S_Enchant();
-                            enchantPacket.ItemInfo.MergeFrom(iItem.Info);
+                            enchantPacket.ItemInfo = iItem.Info;
                             enchantPacket.Success = true;
                             player.Session.Send(enchantPacket);
                         }
