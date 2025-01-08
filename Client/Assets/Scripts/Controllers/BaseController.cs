@@ -410,7 +410,7 @@ public class BaseController : MonoBehaviour
         GameObject effect = Managers.Resource.Instantiate(prefab, transform);
         Animator animator = effect.GetComponent<Animator>();
         animator.Play("START");
-        yield return new WaitForSeconds(duration * 1000);
+        yield return new WaitForSeconds(duration);
         Managers.Resource.Destroy(effect);
     }
     public virtual IEnumerator CoUseEffect(string prefab, int delay = 0)

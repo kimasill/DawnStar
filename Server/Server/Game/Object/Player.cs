@@ -466,7 +466,8 @@ namespace Server.Game
                     continue;
                 foreach (var option in options)
                 {
-                    if (Enum.TryParse(option.Key, out ItemOptionType optionType))
+                    string key = option.Key.Split('_')[0];
+                    if (Enum.TryParse(key, out ItemOptionType optionType))
                     {
                         switch (optionType)
                         {
@@ -495,10 +496,10 @@ namespace Server.Game
                                 EquipCriticalDamage += int.Parse(option.Value);
                                 break;
                             case ItemOptionType.AttackSpeed:
-                                EquipAttackSpeed += int.Parse(option.Value);
+                                EquipAttackSpeed += float.Parse(option.Value)/10.0f;
                                 break;
                             case ItemOptionType.Speed:
-                                EquipSpeed += int.Parse(option.Value);
+                                EquipSpeed += float.Parse(option.Value)/10.0f;
                                 break;
                             case ItemOptionType.InvokeSpeed:
                                 EquipInvokeSpeed += int.Parse(option.Value);

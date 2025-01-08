@@ -24,8 +24,8 @@
         {
           "option": "AttackSpeed",
           "probability": 0.2,
-          "minValue": 0.1,
-          "maxValue": 0.5
+          "minValue": 1,
+          "maxValue": 5
         },
         {
           "option": "Accuracy",
@@ -65,8 +65,8 @@
         {
           "option": "Speed",
           "probability": 0.2,
-          "minValue": 0.1,
-          "maxValue": 0.5
+          "minValue": 1,
+          "maxValue": 5
         }
       ]
     },
