@@ -106,149 +106,101 @@ namespace Server.Game
         public override int AdditionalAttack
         {
             get 
-            { 
-                int baseStat = (int)((Stat.Attack + EquipDamage) * (AdditionalDamageMulti / 100));
-                return _additionalAttack + baseStat; 
-            }
-            set
             {
-                _additionalAttack = value;
-                SendAdditionalStat();
+                int multiplication = (int)((Stat.Attack + EquipDamage) * (AdditionalDamageMulti / 100));
+                return _additionalAttack + EquipDamage + _buffedDamage + multiplication; 
             }
         }
         float AdditionalDamageMulti { get{ return _additionalDamageMulti + EquipDamageMulti; }}
         public override int AdditionalDefense
         {
-            get 
+            get
             {
-                int baseStat = (int)((Stat.Defense + EquipDefense) * (AdditionalDefenseMulti/100));
-                return _additionalDefense + baseStat;
-            }
-            set
-            {
-                _additionalDefense = value;
-                SendAdditionalStat();
+                int multiplication = (int)((Stat.Defense + EquipDefense) * (AdditionalDefenseMulti / 100));
+                return _additionalDefense + EquipDefense + (int)_buffedDefense + multiplication;
             }
         }
+
         float AdditionalDefenseMulti { get { return _additionalDefenseMulti + EquipDefenseMulti; } }
-        public override float AdditionalInvokeSpeed
-        {
-            get { return _additionalInvokeSpeed + EquipInvokeSpeed; }
-            set
-            {
-                _additionalInvokeSpeed = value;
-                SendAdditionalStat();
-            }
-        }
-
-        public override float AdditionalCoolTime
-        {
-            get { return _additionalCoolTime + EquipCoolTime; }
-            set
-            {
-                _additionalCoolTime = value;
-                SendAdditionalStat();
-            }
-        }
-
         public override int AdditionalCriticalChance
         {
-            get { return _additionalCriticalChance + EquipCriticalChance; }
-            set
-            {
-                _additionalCriticalChance = value;
-                SendAdditionalStat();
+            get
+            {                
+                return _additionalCriticalChance + EquipCriticalChance + _buffedCriticalChance;
             }
         }
 
         public override int AdditionalCriticalDamage
         {
-            get { return _additionalCriticalDamage + EquipCriticalDamage; }
-            set
+            get
             {
-                _additionalCriticalDamage = value;
-                SendAdditionalStat();
+                return _additionalCriticalDamage + EquipCriticalDamage + _buffedCriticalDamage;
             }
         }
 
         public override int AdditionalAvoidance
         {
-            get { return _additionalAvoidance + EquipAvoidance; }
-            set
+            get
             {
-                _additionalAvoidance = value;
-                SendAdditionalStat();
+                return _additionalAvoidance + EquipAvoidance + _buffedAvoidance;
             }
         }
 
         public override int AdditionalAccuracy
         {
-            get { return _additionalAccuracy + EquipAccuracy; }
-            set
+            get
             {
-                _additionalAccuracy = value;
-                SendAdditionalStat();
+                return _additionalAccuracy + EquipAccuracy + _buffedAccuracy;
             }
         }
 
         public override float AdditionalAttackSpeed
         {
-            get { return _additionalAttackSpeed + EquipAttackSpeed; }
-            set
+            get
             {
-                _additionalAttackSpeed = value;
-                SendAdditionalStat();
+                return _additionalAttackSpeed + EquipAttackSpeed + _buffedAttackSpeed;
             }
         }
 
         public override float AdditionalSpeed
         {
-            get { return _additionalSpeed + EquipSpeed; }
-            set
+            get
             {
-                _additionalSpeed = value;
-                SendAdditionalStat();
+                return _additionalSpeed + EquipSpeed + _buffedSpeed;
             }
         }
         float AdditionalHpMulti { get { return _additionalHpMulti + EquipHpMulti; } }
         public override int AdditionalHp
         {
-            get { return _additionalHp + (int)(Stat.MaxHp * (AdditionalHpMulti / 100)); }
-            set
+            get
             {
-                _additionalHp = value;
-                SendAdditionalStat();
+                int multiplication = (int)((Stat.Hp + EquipHp) * (AdditionalHpMulti / 100));
+                return _additionalHp + EquipHp + _buffedHp + multiplication;
             }
         }
-
         float AdditionalUpMulti { get { return _additionalUpMulti + EquipUpMulti; } }
         public override int AdditionalUp
         {
-            get { return _additionalUp + (int)(Stat.MaxUp * (AdditionalUpMulti / 100)); }
-            set
+            get
             {
-                _additionalUp = value;
-                SendAdditionalStat();
+                int multiplication = (int)((Stat.Up + EquipUp) * (AdditionalUpMulti / 100));
+                return _additionalUp + EquipUp + _buffedUp + multiplication;
             }
         }
 
         public override int AdditionalHpRegen
         {
-            get { return _additionalHpRegen + EquipHpRegen; }
-            set
+            get
             {
-                _additionalHpRegen = value;
-                SendAdditionalStat();
+                return _additionalHpRegen + EquipHpRegen + _buffedHpRegen;
             }
         }
 
         public override int AdditionalUpRegen
         {
-            get { return _additionalUpRegen + EquipUpRegen; }
-            set
+            get
             {
-                _additionalUpRegen = value;
-                SendAdditionalStat();
+                return _additionalUpRegen + EquipUpRegen + _buffedUpRegen;
             }
         }
 

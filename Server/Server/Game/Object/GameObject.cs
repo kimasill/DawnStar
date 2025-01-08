@@ -53,48 +53,49 @@ namespace Server.Game
         public virtual float TotalDamageReduce { get; set; }
 
         protected int _additionalAttack;
-        public virtual int AdditionalAttack { get; set; }
-
+        protected int _buffedDamage;        
         protected int _additionalDefense;
-        public virtual int AdditionalDefense { get; set; }
-
+        protected float _buffedDefense;
         protected float _additionalInvokeSpeed;
-        public virtual float AdditionalInvokeSpeed { get; set; }
-
         protected float _additionalCoolTime;
-        public virtual float AdditionalCoolTime { get; set; }
-
         protected int _additionalCriticalChance;
-        public virtual int AdditionalCriticalChance { get; set; }
-
+        protected int _buffedCriticalChance;
         protected int _additionalCriticalDamage;
-        public virtual int AdditionalCriticalDamage { get; set; }
-
+        protected int _buffedCriticalDamage;
         protected int _additionalAvoidance;
-        public virtual int AdditionalAvoidance { get;  set; }
-
+        protected int _buffedAvoidance;
         protected int _additionalAccuracy;
-        public virtual int AdditionalAccuracy { get; set; }
-
+        protected int _buffedAccuracy;
         protected float _additionalAttackSpeed;
-        public virtual float AdditionalAttackSpeed { get; set; }
-
+        protected float _buffedAttackSpeed;
         protected float _additionalSpeed;
-        public virtual float AdditionalSpeed { get; set; }
-
+        protected float _buffedSpeed;
         protected int _additionalHp;
-        public virtual int AdditionalHp { get; set; }
-
+        protected int _buffedHp;
         protected int _additionalUp;
-        public virtual int AdditionalUp { get; set; }
+        protected int _buffedUp;
         protected int _additionalHpRegen;
-        public virtual int AdditionalHpRegen { get; set; }
+        protected int _buffedHpRegen;
         protected int _additionalUpRegen;
-        public virtual int AdditionalUpRegen { get; set; }
+        protected int _buffedUpRegen;
         protected int _additionalDamageMulti;
         protected int _additionalDefenseMulti;
         protected int _additionalHpMulti;
         protected int _additionalUpMulti;
+        public virtual int AdditionalAttack { get { return _additionalAttack + _buffedDamage; } }
+        public virtual int AdditionalDefense { get { return _additionalDefense + (int)_buffedDefense; } }
+        public virtual float AdditionalInvokeSpeed { get { return _additionalInvokeSpeed; } set { _additionalInvokeSpeed = value; } }
+        public virtual float AdditionalCoolTime { get { return _additionalCoolTime; } }
+        public virtual int AdditionalCriticalChance { get { return _additionalCriticalChance + _buffedCriticalChance; } }
+        public virtual int AdditionalCriticalDamage { get { return _additionalCriticalDamage + _buffedCriticalDamage; } }
+        public virtual int AdditionalAvoidance { get { return _additionalAvoidance + _buffedAvoidance; } }
+        public virtual int AdditionalAccuracy { get { return _additionalAccuracy + _buffedAccuracy; } }
+        public virtual float AdditionalAttackSpeed { get { return _additionalAttackSpeed + _buffedAttackSpeed; } }
+        public virtual float AdditionalSpeed { get { return _additionalSpeed + _buffedSpeed; } }
+        public virtual int AdditionalHp { get { return _additionalHp + _buffedHp; } }
+        public virtual int AdditionalUp { get { return _additionalUp + _buffedUp; } }
+        public virtual int AdditionalHpRegen { get { return _additionalHpRegen + _buffedHpRegen; } }
+        public virtual int AdditionalUpRegen { get { return _additionalUpRegen + _buffedUpRegen; } }
         public virtual float TotalStiffTime { get { return Stat.StiffTime; }}
         public int Hp
         {
@@ -442,39 +443,39 @@ namespace Server.Game
             {
                 case "공격력":
                     applyValue = isApplying ? TotalAttack * value * multiplier : value * multiplier;
-                    AdditionalAttack += (int)applyValue;
+                    _buffedDamage += (int)applyValue;
                     break;
                 case "방어력":
                     applyValue = isApplying ? TotalDefense * value * multiplier : value * multiplier;
-                    AdditionalDefense += (int)applyValue;
+                    _buffedDefense += (int)applyValue;
                     break;
                 case "공격 속도":
                     applyValue = value * multiplier * 100;
-                    AdditionalAttackSpeed += applyValue;
+                    _buffedAttackSpeed += applyValue;
                     break;
                 case "치명타 확률":
                     applyValue = value * multiplier * 100;
-                    AdditionalCriticalChance += (int)applyValue;
+                    _buffedCriticalChance += (int)applyValue;
                     break;
                 case "치명타 피해":
                     applyValue = value * multiplier * 100;
-                    AdditionalCriticalDamage += (int)applyValue;
+                    _buffedCriticalDamage += (int)applyValue;
                     break;
                 case "회피":
                     applyValue = value * multiplier * 100;
-                    AdditionalAvoidance += (int)applyValue;
+                    _buffedAvoidance += (int)applyValue;
                     break;
                 case "명중":
                     applyValue = value * multiplier * 100;
-                    AdditionalAccuracy += (int)applyValue;
+                    _buffedAccuracy += (int)applyValue;
                     break;
                 case "이동 속도":
                     applyValue = isApplying ? TotalSpeed * value * multiplier : value * multiplier;
-                    AdditionalSpeed += applyValue;
+                    _buffedSpeed += applyValue;
                     break;
                 case "체력":
                     applyValue = isApplying ? MaxHp * value * multiplier : value * multiplier;
-                    AdditionalHp += (int)applyValue;
+                    _buffedHp += (int)applyValue;
                     break;
                 case "회복":
                     if (isApplying)
