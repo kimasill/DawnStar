@@ -79,6 +79,8 @@ namespace Server
                                 Speed = playerDb.Speed,
                                 TotalExp = playerDb.Exp,
                                 StatPoint = playerDb.StatPoint,
+                                CriticalChance = playerDb.CriticalChance,
+                                CriticalDamage = playerDb.CriticalDamage,
                                 PotionPerformance = playerDb.PotionPerformance,
                                 MaxPotion = playerDb.MaxPotion
                             }
@@ -394,6 +396,8 @@ namespace Server
                             UpRegen = stat.UpRegen,
                             Attack = stat.Attack,                        
                             Speed = stat.Speed,
+                            CriticalChance = stat.CriticalChance,
+                            CriticalDamage = stat.CriticalDamage,
                             PotionPerformance = 1,
                             MaxPotion = 5,
                             Exp = 0,

@@ -298,10 +298,6 @@ public class MyPlayerController : PlayerController
             Managers.Network.Send(skill);            
         }
     }
-    public IEnumerator AttackDelay()
-    {
-        yield return new WaitForSeconds(1000*(Stat.AttackSpeed+AdditionalAttackSpeed));
-    }
     protected override void MoveToNextPos()
     {
         if (_moveKeyPressed == false)

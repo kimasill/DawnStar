@@ -5,6 +5,8 @@
       "maxHp": 200,
       "maxUp": 100,
       "attack": 10,
+      "criticalChance": 0,
+      "criticalDamage": 50,
       "defense": 0,
       "speed": 5.0,
       "totalExp": 0,

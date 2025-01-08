@@ -337,7 +337,8 @@ class PacketHandler
     {
         C_RequestStat requestStatPacket = packet as C_RequestStat;
         ClientSession clientSession = session as ClientSession;
-        
+
+        clientSession.MyPlayer.RefreshAdditionalStat();
         clientSession.MyPlayer.SendAdditionalStat();
     }
 

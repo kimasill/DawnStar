@@ -187,7 +187,8 @@
       "armorType": "Helmet",
       "defense": "20",
       "price": "3000",
-      "iconPath": "Textures/Item/Armors/Helmet/Helmet_Seeker",
+      "iconPath": "Textures/Item/Armors/Helmet/Icon/Helmet_Seeker_Icon",
+      "prefabPath": "Textures/Item/Armors/Helmet/Helmet_Seeker",
       "description": "구도자가 사용하던 투구. 미지의 기운이 깃들어 있다.",
       "options": {
         "Avoid": "10",
@@ -212,8 +213,9 @@
       "armorType": "Helmet",
       "defense": 30,
       "price": 5000,
-      "iconPath": "Textures/Item/Armors/Helmet/Helmet_USC",
-      "description": "USC의 전투헬멧. 마수를 상대하는데 특화되어 있다.",
+      "iconPath": "Textures/Item/Armors/Helmet/Icon/Helmet_USC_Icon",
+      "prefabPath": "Textures/Item/Armors/Helmet/Helmet_USC",      
+      "description": "USC의 전투헬멧. 마수를 상대하는데 특화되어있다.",
       "grade": "Normal"
     },
     {
