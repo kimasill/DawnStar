@@ -19,6 +19,8 @@ namespace Server.Data
         public int Defence;
         public int Accuracy;
         public int Avoid;
+        public int CriticalDamage;
+        public int CriticalChance;
         public float Speed;
         public float AttackSpeed;
         public float InvokeSpeed;

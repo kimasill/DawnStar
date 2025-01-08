@@ -90,15 +90,13 @@ public class EquipmentController : MonoBehaviour
         {
             if (armor.ArmorType == ArmorType.Helmet)
             {
-                Helmet = armor;
+                Helmet = armor;                
                 _hairList[2].sprite = sprite[0];
-                //_hairList[2].transform.localScale = new Vector3(2, 2, 1); // 크기를 2배로 설정
             }
             else if (armor.ArmorType == ArmorType.Armor)
             {
                 Armor = armor;
-                Sprite[] armorSprite = Managers.Resource.LoadAll<Sprite>(itemData.prefabPath);
-                foreach (var t in armorSprite)
+                foreach (var t in sprite)
                 {
                     if (t.name == "Body")
                     {
@@ -119,8 +117,7 @@ public class EquipmentController : MonoBehaviour
             else if (armor.ArmorType == ArmorType.Boots)
             {
                 Boots = armor;
-                Sprite[] bootsSprite = Managers.Resource.LoadAll<Sprite>(itemData.prefabPath);
-                foreach (var t in bootsSprite)
+                foreach (var t in sprite)
                 {
                     if (t.name == "Left")
                     {

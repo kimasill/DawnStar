@@ -282,30 +282,7 @@ namespace Server.Game
             S_Respawn respawnPacket = new S_Respawn();            
             Session.Send(respawnPacket);
         }
-        public void SendAdditionalStat()
-        {
-            S_ChangeAdditionalStat additionalStat = new S_ChangeAdditionalStat()
-            {
-                StatInfo = new StatInfo()
-                {
-                    Attack = AdditionalAttack,
-                    Defense = AdditionalDefense,
-                    Avoid = AdditionalAvoidance,
-                    Accuracy = AdditionalAccuracy,
-                    CriticalChance = AdditionalCriticalChance,
-                    CriticalDamage = AdditionalCriticalDamage,
-                    AttackSpeed = AdditionalAttackSpeed,
-                    Speed = AdditionalSpeed,
-                    InvokeSpeed = AdditionalInvokeSpeed,
-                    CoolTime = AdditionalCoolTime,
-                    Hp = AdditionalHp,
-                    Up = AdditionalUp,
-                    UpRegen = AdditionalUpRegen,
-                    HpRegen = AdditionalHpRegen
-                }
-            };
-            Session.Send(additionalStat);
-        }
+        
 
         public void OnlevelUp()
         {
@@ -433,7 +410,30 @@ namespace Server.Game
             RefreshAdditionalStat();
             SendAdditionalStat();
         }
-
+        public override void SendAdditionalStat()
+        {
+            S_ChangeAdditionalStat additionalStat = new S_ChangeAdditionalStat()
+            {
+                StatInfo = new StatInfo()
+                {
+                    Attack = AdditionalAttack,
+                    Defense = AdditionalDefense,
+                    Avoid = AdditionalAvoidance,
+                    Accuracy = AdditionalAccuracy,
+                    CriticalChance = AdditionalCriticalChance,
+                    CriticalDamage = AdditionalCriticalDamage,
+                    AttackSpeed = AdditionalAttackSpeed,
+                    Speed = AdditionalSpeed,
+                    InvokeSpeed = AdditionalInvokeSpeed,
+                    CoolTime = AdditionalCoolTime,
+                    Hp = AdditionalHp,
+                    Up = AdditionalUp,
+                    UpRegen = AdditionalUpRegen,
+                    HpRegen = AdditionalHpRegen
+                }
+            };
+            Session.Send(additionalStat);
+        }
         public void RefreshAdditionalStat()
         {
             EquipDamage = 0;
@@ -534,7 +534,7 @@ namespace Server.Game
                     case ItemType.Weapon:
                         EquipDamage += ((Weapon)item).Damage;
                         WeaponRange = ((Weapon)item).Range;
-                        EquipAttackSpeed += ((Weapon)item).AttackSpeed;
+                        EquipAttackSpeed += ((Weapon)item).AttackSpeed/10f;
                         break;
                     case ItemType.Armor:
                         EquipDefense += ((Armor)item).Defense;

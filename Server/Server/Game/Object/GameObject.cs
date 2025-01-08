@@ -341,6 +341,7 @@ namespace Server.Game
                     Value = tValue
                 };
                 Room.Broadcast(CellPos, buffPacket);
+
                 Console.WriteLine($"Buff {buff.name} applied with value {afterValue}");
                 Room.PushAfter(buff.duration * 1000, () =>
                 {
@@ -450,23 +451,23 @@ namespace Server.Game
                     _buffedDefense += (int)applyValue;
                     break;
                 case "공격 속도":
-                    applyValue = value * multiplier * 100;
+                    applyValue = isApplying ? TotalAttackSpeed * value * multiplier: value * multiplier;
                     _buffedAttackSpeed += applyValue;
                     break;
                 case "치명타 확률":
-                    applyValue = value * multiplier * 100;
+                    applyValue = isApplying ? TotalCriticalChance * value * multiplier: value * multiplier;
                     _buffedCriticalChance += (int)applyValue;
                     break;
                 case "치명타 피해":
-                    applyValue = value * multiplier * 100;
+                    applyValue = isApplying ? TotalCriticalDamage * value * multiplier: value * multiplier;
                     _buffedCriticalDamage += (int)applyValue;
                     break;
                 case "회피":
-                    applyValue = value * multiplier * 100;
+                    applyValue = isApplying ? TotalAvoidance * value * multiplier : value * multiplier;
                     _buffedAvoidance += (int)applyValue;
                     break;
                 case "명중":
-                    applyValue = value * multiplier * 100;
+                    applyValue = isApplying ? TotalAccuracy * value * multiplier : value * multiplier;
                     _buffedAccuracy += (int)applyValue;
                     break;
                 case "이동 속도":
@@ -489,8 +490,8 @@ namespace Server.Game
                     applyValue = value;
                     break;
             }
+            SendAdditionalStat();
             return applyValue;
-
         }
         public virtual void Ondead(GameObject attacker)
         {
@@ -514,6 +515,10 @@ namespace Server.Game
         public virtual GameObject GetOwner()
         {
             return this;
+        }
+
+        public virtual void SendAdditionalStat()
+        {
         }
     }
 }

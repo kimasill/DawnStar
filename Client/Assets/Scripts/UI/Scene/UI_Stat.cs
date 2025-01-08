@@ -303,7 +303,7 @@ public class UI_Stat : UI_Base
             Get<TMP_Text>((int)Texts.AttackValueText).text = $"{player.Stat.Attack + player.AdditionalAttack} + ({player.AdditionalAttack})";
             Get<TMP_Text>((int)Texts.DefenseValueText).text = $"{player.Stat.Defense + player.AdditionalDefense} + ({player.AdditionalDefense})";
             Get<TMP_Text>((int)Texts.HPValueText).text = $"{player.Stat.MaxHp + player.AdditionalHp}  + ({player.AdditionalHp})";
-            Get<TMP_Text>((int)Texts.AttackSpeedValueText).text = $"{(player.Stat.AttackSpeed + player.AdditionalAttackSpeed)*10} + ({player.AdditionalAttackSpeed*10})/s";
+            Get<TMP_Text>((int)Texts.AttackSpeedValueText).text = $"{(player.Stat.AttackSpeed + player.AdditionalAttackSpeed)*10} + ({player.AdditionalAttackSpeed*10})";
             Get<TMP_Text>((int)Texts.CriticalChanceValueText).text = $"{player.Stat.CriticalChance + player.AdditionalCriticalChance} + ({player.AdditionalCriticalChance})%";
             Get<TMP_Text>((int)Texts.CriticalDamageValueText).text = $"{player.Stat.CriticalDamage + player.AdditionalCriticalDamage} + ({player.AdditionalCriticalDamage})%";
             Get<TMP_Text>((int)Texts.AvoidValueText).text = $"{player.Stat.Avoid + player.AdditionalAvoidance} + ({player.AdditionalAvoidance})%";
