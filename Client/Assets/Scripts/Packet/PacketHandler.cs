@@ -705,4 +705,11 @@ class PacketHandler
             Managers.Object.MyPlayer.RefreshAdditionalStat();
         }
     }
+
+    public static void S_SystemNoticeHandler(PacketSession session, IMessage packet)
+    {
+        S_SystemNotice noticePacket = packet as S_SystemNotice;
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        gameSceneUI.NotificationUI.ShowBasicNoti(noticePacket.Message);
+    }
 }

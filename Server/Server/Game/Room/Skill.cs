@@ -240,7 +240,7 @@ namespace Server.Game
             switch (skillData.skillLogicType)
             {
                 case SkillLogicType.Block:
-                    BlockAsync(skillData);
+                    Block(skillData, target);
                     break;
                 case SkillLogicType.RealTimeByEnemyNumber:
                     RealTimeByEnemyNum(skillData);

@@ -1,5 +1,6 @@
 ﻿using Data;
 using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
@@ -225,7 +226,7 @@ public class CreatureController : BaseController
             if (skillData.fix)
             {
                 int delay = (int)(TotalInvokeDelay);
-                StartEffectCoroutine(CoUseEffect(skillData.prefabs[phase], delay));                
+                StartEffectCoroutine(CoUseEffect(skillData.prefabs[phase], delay, skillData.effectDuration));                
                 return;
             }
             else
@@ -238,7 +239,7 @@ public class CreatureController : BaseController
             if (skillData.fix)
             {
                 int delay = (int)(TotalInvokeDelay);
-                StartEffectCoroutine(CoUseEffect(skillData.prefab, delay));
+                StartEffectCoroutine(CoUseEffect(skillData.prefab, delay, skillData.effectDuration));
                 return;
             }
             else
