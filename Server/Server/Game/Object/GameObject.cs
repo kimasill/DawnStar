@@ -48,7 +48,7 @@ namespace Server.Game
         public virtual int TotalAccuracy { get { return Stat.Accuracy + AdditionalAccuracy; } }
         public virtual float TotalAttackSpeed { get { return Stat.AttackSpeed + AdditionalAttackSpeed; } }
         public virtual int TotalCriticalChance { get { return Stat.CriticalChance + AdditionalCriticalChance; } }
-        public virtual int TotalCriticalDamage { get { return (int)MathF.Max(Stat.CriticalDamage + AdditionalCriticalDamage, 2); } }
+        public virtual int TotalCriticalDamage { get { return Stat.CriticalDamage + AdditionalCriticalDamage; } }
         public virtual int TotalSpeed { get { return (int)(Stat.Speed + AdditionalSpeed); } }
         public virtual float TotalDamageReduce { get; set; }
 
@@ -370,6 +370,9 @@ namespace Server.Game
                     BuffId = buff.id,
                     Value = tValue
                 };
+
+                Room.Broadcast(CellPos, buffPacket);
+
                 Console.WriteLine($"Buff {buff.id} removed");
             }
         }
@@ -429,6 +432,7 @@ namespace Server.Game
                     DebuffId = debuff.id,
                     Value = tValue
                 };
+                Room.Broadcast(CellPos, buffPacket);
                 Console.WriteLine($"Debuff {debuff.id} removed");
             }
         }

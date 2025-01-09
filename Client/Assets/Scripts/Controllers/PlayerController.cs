@@ -82,18 +82,38 @@ public class PlayerController : CreatureController
         }
         else if (State == CreatureState.Skill)
         {
-            Debug.Log("PlayerController UpdateAnimation State == CreatureState.Skill");
             switch (LookDir)
             {
                 case LookDir.LookLeft:
-                    Animator.Play(_rangedSkill ? "ATTACK_WEAPON_RIGHT" : "ATTACK");
+                    gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
                     break;
                 case LookDir.LookRight:
-                    Animator.Play(_rangedSkill ? "ATTACK_WEAPON_RIGHT" : "ATTACK");
+                    gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
                     break;
             }
+            if (SkillData != null)
+            {
+                switch (SkillData.skillType)
+                {
+                    case SkillType.SkillAttack:
+                        if(SkillData.realization)
+                            Animator.Play("ATTACK_SKILL");
+                        else
+                            Animator.Play("ATTACK");                        
+                        break;
+                    case SkillType.SkillBuff:
+                        Animator.Play("IDLE");
+                        break;
+                    case SkillType.SkillSpot:
+                        Animator.Play("ATTACK_MAGIC");
+                        break;
+                    default:
+                        Animator.Play("ATTACK");
+                        break;
+                }
+            }
         }
-        else if(State == CreatureState.Stiff)
+        else if (State == CreatureState.Stiff)
         {
             switch (LookDir)
             {
@@ -138,12 +158,13 @@ public class PlayerController : CreatureController
         _isAttacking = true;
         _rangedSkill = false;
 
-        SkillId = skill.Info.SkillId;
-        State = CreatureState.Skill;        
+        SkillId = skill.Info.SkillId;              
         SkillData skillData = null;
         Managers.Data.SkillDict.TryGetValue(SkillId, out skillData);
         if (skillData == null)
             return;
+        SkillData = skillData;
+        State = CreatureState.Skill;
         if (skillData.prefab != null && skillData.isObject != true)
         {
             UseSkillEffect(skillData, skill.Phase);

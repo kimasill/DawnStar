@@ -116,6 +116,7 @@ public class MyPlayerController : PlayerController
             if (statUI.gameObject.activeSelf)
             {
                 statUI.gameObject.SetActive(false);
+                Managers.UI.CloseAllPopupUI();
             }
             else
             {

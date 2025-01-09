@@ -6,7 +6,7 @@
       "maxUp": 100,
       "attack": 10,
       "criticalChance": 0,
-      "criticalDamage": 50,
+      "criticalDamage": 20,
       "defense": 0,
       "speed": 5.0,
       "totalExp": 0,

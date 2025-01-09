@@ -117,7 +117,8 @@ class PacketHandler
         }        
         cc.UseSkill(skillPacket);
     }
-    public static void S_BuffHandler(PacketSession session, IMessage packet) {
+    public static void S_BuffHandler(PacketSession session, IMessage packet) 
+    {
         S_Buff buffPacket = packet as S_Buff;
         GameObject go = Managers.Object.FindById(buffPacket.ObjectId);
         if (go == null)
@@ -136,7 +137,6 @@ class PacketHandler
         }
         else if(buffPacket.DebuffId>0)
         {
-            
             gameSceneUI.GameWindow.BuffPanel.AddDebuff(buffPacket.BuffId, buffPacket.Value);
         }
     }

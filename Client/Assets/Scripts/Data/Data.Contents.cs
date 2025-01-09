@@ -57,6 +57,7 @@ namespace Data
         public List<BuffInfo> buffList;
         public DebuffInfo debuff;
         public List<DebuffInfo> debuffList;
+        public bool realization;
         public int unchartedPoint;
         public string description;
         public string prefab;
