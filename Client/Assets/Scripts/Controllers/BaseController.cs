@@ -413,7 +413,7 @@ public class BaseController : MonoBehaviour
         yield return new WaitForSeconds(duration);
         Managers.Resource.Destroy(effect);
     }
-    public virtual IEnumerator CoUseEffect(string prefab, int delay = 0)
+    public virtual IEnumerator CoUseEffect(string prefab, int delay = 0, float duration = 0)
     {
         if (delay > 0)
             yield return new WaitForSeconds(delay);
@@ -426,8 +426,13 @@ public class BaseController : MonoBehaviour
         effect.transform.localPosition = new Vector3(effect.transform.localPosition.x * dir , effect.transform.localPosition.y, 0);
         Animator animator = effect.GetComponent<Animator>();
         animator.Play("START");
-        yield return new WaitForEndOfFrame();
-        yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f);
+        if(duration > 0)
+            yield return new WaitForSeconds(duration);
+        else
+        {
+            yield return new WaitForEndOfFrame();
+            yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f);
+        }
         Managers.Resource.Destroy(effect);
     }
     protected bool CheckAnimationClip(string inspectorName)

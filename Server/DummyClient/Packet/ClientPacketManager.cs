@@ -103,7 +103,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SChangeUp, MakePacket<S_ChangeUp>);
 		_handler.Add((ushort)MsgId.SChangeUp, PacketHandler.S_ChangeUpHandler);		
 		_onRecv.Add((ushort)MsgId.SEnchant, MakePacket<S_Enchant>);
-		_handler.Add((ushort)MsgId.SEnchant, PacketHandler.S_EnchantHandler);
+		_handler.Add((ushort)MsgId.SEnchant, PacketHandler.S_EnchantHandler);		
+		_onRecv.Add((ushort)MsgId.SSystemNotice, MakePacket<S_SystemNotice>);
+		_handler.Add((ushort)MsgId.SSystemNotice, PacketHandler.S_SystemNoticeHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

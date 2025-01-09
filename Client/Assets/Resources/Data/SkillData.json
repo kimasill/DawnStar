@@ -43,7 +43,7 @@
       },
       "prefab": "Magic/MoonLightVortex",
       "isObject": "true",
-      "unchartedPoint": "50",
+      "unchartedPoint": "90",
       "description": "달빛을 받아 소용돌이 치는 지대를 생성해서 주변에 피해를 준다.",
       "icon": "Textures/Images/Icons/Skill/MoonLightVortex"
     },
@@ -69,7 +69,7 @@
       },
       "prefab": "Effect/Crossslash",
       "icon": "Textures/Images/Icons/Skill/Crossslash",
-      "unchartedPoint": "5",
+      "unchartedPoint": "42",
       "description": "정면의 적을 두차례 찔러 피해를 준다."
     },
     {
@@ -82,7 +82,7 @@
         "shapeType": "ShapeCross",
         "range": "6.0"
       },
-      "unchartedPoint": "20",
+      "unchartedPoint": "55",
       "description": "4방향에 강력한 피해를 입힌다."
     },
     {
@@ -95,7 +95,7 @@
         "shapeType": "ShapeCircle",
         "range": "5.0"
       },
-      "unchartedPoint": "20",
+      "unchartedPoint": "76",
       "description": "주변적에게 강력한 피해를 줘서 생명력을 흩어지게 하고, 일부분 생명력을 회복한다."
     },
     {
@@ -115,7 +115,7 @@
         "isHoming": "true"
       },
       "isObject": "true",
-      "unchartedPoint": "50",
+      "unchartedPoint": "125",
       "prefab": "Magic/Execution",
       "icon": "Textures/Images/Icons/Skill/Execution",
       "description": "주변적들을 지정해서 집행한다."
@@ -132,7 +132,7 @@
         "value": "0.5",
         "isPercent": "false"
       },
-      "unchartedPoint": "100",
+      "unchartedPoint": "120",
       "description": "가장 가까운 적을 지정하고, 해당 대상을 공격할때 일정시간 피해량이 증가한다."
     },
     {
@@ -146,7 +146,7 @@
         "shapeType": "ShapeRect",
         "range": "2.0"
       },
-      "unchartedPoint": "10",
+      "unchartedPoint": "60",
       "description": "정면의 적에게 강력한 피해를 준다."
     },
     {
@@ -159,7 +159,7 @@
         "shapeType": "ShapeCircle",
         "range": "3.0"
       },
-      "unchartedPoint": "20",
+      "unchartedPoint": "37",
       "description": "주변적에게 강력한 피해를 준다."
     },
     {
@@ -192,7 +192,7 @@
         "isPercent": "false"
       },
       "isObject": "true",
-      "unchartedPoint": "20",
+      "unchartedPoint": "45",
       "description": "닿는순간 폭발하여 독성피해를 준다."
     },
     {
@@ -218,7 +218,7 @@
         "value": "0.1",
         "isPercent": "false"
       },
-      "unchartedPoint": "20",
+      "unchartedPoint": "140",
       "description": "공중에서 땅으로 충격마법을 소환하여 독성피해를 준다.",
       "prefab": "Magic/PoisonShock",
       "icon": "Textures/Images/Icons/Skill/PoisonShock",

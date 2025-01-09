@@ -86,12 +86,9 @@ namespace Server.Game
             }
         }
 
-        private async void BlockAsync(SkillData data)
+        private void Block(SkillData data, GameObject target)
         {
-            float prevReduce = Owner.TotalDamageReduce;
-            Owner.TotalDamageReduce = data.buff.value;
-            await Task.Delay(data.buff.duration * 1000);
-            Owner.TotalDamageReduce = prevReduce;
+            ApplyBuff(data, target);
         }
     }
 }

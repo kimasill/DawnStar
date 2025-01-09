@@ -308,7 +308,7 @@
       "description": "간수의 반지. 반지와의 거래를 통해 강력한 힘을 사용할 수 있다.",
       "options": {
         "Up": "15",
-        "UpRegen": "10",
+        "UpRegen": "2",
         "Skill": "18"
       },
       "grade": "Epic"

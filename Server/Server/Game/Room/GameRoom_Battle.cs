@@ -54,11 +54,17 @@ namespace Server.Game
 
             SkillData skillData = null;
             if (DataManager.SkillDict.TryGetValue(skillPacket.Info.SkillId, out skillData) == false)
+            {
                 return;
+            }
+                
             bool isCool;
 
             if (player.Stat.Up < skillData.unchartedPoint)
             {
+                S_SystemNotice systemNotice = new S_SystemNotice();
+                systemNotice.Message = "Not enough uncharted point";
+                player.Session.Send(systemNotice);
                 return;
             }
 
@@ -73,6 +79,9 @@ namespace Server.Game
             
             if (!isCool)
             {
+                S_SystemNotice systemNotice = new S_SystemNotice();
+                systemNotice.Message = "Skill is on cooldown";
+                player.Session.Send(systemNotice);
                 return;
             }
             Broadcast(player.CellPos, skill);
