@@ -37,6 +37,8 @@ RectTransform:
   - {fileID: 4223902622424142157}
   - {fileID: 2289995006353389879}
   - {fileID: 4955449274105177230}
+  - {fileID: 1615091143571529823}
+  - {fileID: 1965603097223356608}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -126,12 +128,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3372652481726120162}
+  m_Father: {fileID: 532552598759203897}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.7098999, y: 0.85458374}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 27.815002, y: 14.087}
+  m_SizeDelta: {x: 136.83008, y: 28.174}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2655642002554314879
 CanvasRenderer:
@@ -221,7 +223,7 @@ MonoBehaviour:
   m_verticalMapping: 0
   m_uvLineOffset: 0
   m_geometrySortingOrder: 0
-  m_IsTextObjectScaleStatic: 0
+  m_IsTextObjectScaleStatic: 1
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
@@ -396,12 +398,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4147455165846350461}
+  m_Father: {fileID: 532552598759203897}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00064087, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 27.316, y: -12.8876}
+  m_SizeDelta: {x: 135.8277, y: 23.5233}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5395890905220575656
 CanvasRenderer:
@@ -459,8 +461,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16
-  m_fontSizeBase: 16
+  m_fontSize: 18
+  m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -491,7 +493,7 @@ MonoBehaviour:
   m_verticalMapping: 0
   m_uvLineOffset: 0
   m_geometrySortingOrder: 0
-  m_IsTextObjectScaleStatic: 0
+  m_IsTextObjectScaleStatic: 1
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
@@ -513,7 +515,7 @@ GameObject:
   - component: {fileID: 3186888092701142734}
   - component: {fileID: 1054558866192198461}
   m_Layer: 5
-  m_Name: ExpText
+  m_Name: ExpValue_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -682,7 +684,7 @@ PrefabInstance:
     - target: {fileID: 56624015100826411, guid: 9c213c92e13b7804bb03faf3aaed1704,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: -51.4807
+      value: -48.3013
       objectReference: {fileID: 0}
     - target: {fileID: 56624015100826411, guid: 9c213c92e13b7804bb03faf3aaed1704,
         type: 3}
@@ -727,7 +729,7 @@ PrefabInstance:
     - target: {fileID: 56624015100826411, guid: 9c213c92e13b7804bb03faf3aaed1704,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -10.482
+      value: -12.0717
       objectReference: {fileID: 0}
     - target: {fileID: 56624015100826411, guid: 9c213c92e13b7804bb03faf3aaed1704,
         type: 3}
@@ -867,11 +869,7 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 7676482695438364165, guid: 9c213c92e13b7804bb03faf3aaed1704, type: 3}
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 56624015100826411, guid: 9c213c92e13b7804bb03faf3aaed1704,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1965603097223356608}
+    m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8717437607826758602, guid: 9c213c92e13b7804bb03faf3aaed1704,
         type: 3}
@@ -911,6 +909,7 @@ MonoBehaviour:
   IsMouseover: 0
   _upBar: {fileID: 4314895288374105036}
   _upGroup: {fileID: 4147455165846350461}
+  _upText: {fileID: 0}
 --- !u!1001 &5672208033577180241
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1409,11 +1408,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 5375604810513419802, guid: 24cb38012202b5d4bb3e0f121a06ba20,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1615091143571529823}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 24cb38012202b5d4bb3e0f121a06ba20, type: 3}
 --- !u!224 &3372652481726120162 stripped

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static Item;
 
@@ -15,7 +16,9 @@ public class UI_StateBar : UI_Base
     enum Texts
     {
         LevelText,
-        ExpText,
+        ExpValue_Text,
+        HpValue_Text,
+        UpValue_Text
     }
     bool _init = false;
     public bool Set = false;
@@ -26,6 +29,10 @@ public class UI_StateBar : UI_Base
     RectTransform _upBarRect;
     Coroutine _hpBarCoroutine;
     Coroutine _upBarCoroutine;
+    Coroutine _expBarCoroutine;
+    TMP_Text _upText;
+    TMP_Text _hpText;
+    TMP_Text _expText;
     public override void Init()
     {
         Bind<TMP_Text>(typeof(Texts));
@@ -34,6 +41,20 @@ public class UI_StateBar : UI_Base
         _upBar = GetComponentInChildren<UI_UpBar>();
         _hpBarRect = _hpBar.GetComponent<RectTransform>();
         _upBarRect = _upBar.GetComponent<RectTransform>();
+        _upText = GetTextMeshPro((int)Texts.UpValue_Text);
+        _hpText = GetTextMeshPro((int)Texts.HpValue_Text);
+        _expText = GetTextMeshPro((int)Texts.ExpValue_Text);
+        _upText.text = "0/0";
+        _upText.gameObject.SetActive(false);        
+        _hpText.text = "0/0";
+        _hpText.gameObject.SetActive(false);
+        _expText.gameObject.SetActive(false);
+        _hpBar.gameObject.BindEvent((PointerEventData data) => OnPointerEnter(data, _hpText), Define.UIEvent.MouseOver);
+        _hpBar.gameObject.BindEvent((PointerEventData data) => OnPointerExit(data, _hpText), Define.UIEvent.MouseOut);
+        _upBar.gameObject.BindEvent((PointerEventData data) => OnPointerEnter(data, _upText), Define.UIEvent.MouseOver);
+        _upBar.gameObject.BindEvent((PointerEventData data) => OnPointerExit(data, _upText), Define.UIEvent.MouseOut);
+        _expBar.gameObject.BindEvent((PointerEventData data) => OnPointerEnter(data, _expText), Define.UIEvent.MouseOver);
+        _expBar.gameObject.BindEvent((PointerEventData data) => OnPointerExit(data, _expText), Define.UIEvent.MouseOut);
         _init = true;
     }
 
@@ -57,13 +78,17 @@ public class UI_StateBar : UI_Base
     {
         if (_expBar == null)
             return;
-        float ratio = 0.0f;
+        float targetRatio = 0.0f;
         if (_myPlayer.Stat.TotalExp > 0)
         {
             int nextExp = _nextExp - _prevExp;
-            ratio = (float)(_myPlayer.Stat.TotalExp - _prevExp) / nextExp;
+            targetRatio = (float)(_myPlayer.Stat.TotalExp - _prevExp) / nextExp;
         }
-        _expBar.SetUIExpBar(ratio);
+        if (_expBarCoroutine != null)
+        {
+            StopCoroutine(_expBarCoroutine);
+        }
+        _expBarCoroutine = StartCoroutine(LerpExpBar(targetRatio));
     }
     public void UpdateHpBar()
     {
@@ -115,12 +140,12 @@ public class UI_StateBar : UI_Base
             elapsedTime += Time.deltaTime;
             float newRatio = Mathf.Lerp(startRatio, targetRatio, elapsedTime / duration);
             _hpBar.SetHpBar(newRatio);
-            _hpBar.SetHpText(Mathf.RoundToInt(newRatio * _myPlayer.Stat.MaxHp), _myPlayer.Stat.MaxHp);
+            _hpText.text = $"{Mathf.RoundToInt(newRatio * _myPlayer.TotalHp)},{_myPlayer.TotalHp}";
             yield return null;
         }
 
         _hpBar.SetHpBar(targetRatio);
-        _hpBar.SetHpText(_myPlayer.Stat.Hp, _myPlayer.Stat.MaxHp);
+        _hpText.text = $"{_myPlayer.Hp},{_myPlayer.TotalHp}";
     }
     private IEnumerator LerpUpBar(float targetRatio)
     {
@@ -132,18 +157,44 @@ public class UI_StateBar : UI_Base
             elapsedTime += Time.deltaTime;
             float newRatio = Mathf.Lerp(startRatio, targetRatio, elapsedTime / duration);
             _upBar.SetUpBar(newRatio);
-            _upBar.SetUpText(Mathf.RoundToInt(newRatio * _myPlayer.Stat.MaxUp), _myPlayer.Stat.MaxUp);
+            _upText.text = $"{Mathf.RoundToInt(newRatio * _myPlayer.TotalUp)}/{_myPlayer.TotalUp}";
             yield return null;
         }
         _upBar.SetUpBar(targetRatio);
-        _upBar.SetUpText(_myPlayer.Stat.Up, _myPlayer.Stat.MaxUp);
+        _upText.text = $"{_myPlayer.Up}/{_myPlayer.TotalUp}";
+    }
+    private IEnumerator LerpExpBar(float targetRatio)
+    {
+        float startRatio = _expBar.CurrentRatio;
+        float elapsedTime = 0f;
+        float duration = 0.5f; // Lerp duration
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float newRatio = Mathf.Lerp(startRatio, targetRatio, elapsedTime / duration);
+            _expBar.SetUIExpBar(newRatio);
+            _expText.text = $"Exp:{Mathf.RoundToInt(newRatio * (_nextExp - _prevExp))}/{_nextExp - _prevExp}";
+            yield return null;
+        }
+        _expBar.SetUIExpBar(targetRatio);
+        _expText.text = $"Exp:{_myPlayer.Stat.TotalExp - _prevExp}/{_nextExp - _prevExp}";
     }
     public void RefreshUI()
     {
         if (_init == false)
             return;
         UpdateExpBar();
-        GetTextMeshPro((int)Texts.ExpText).text = $"Exp:{_myPlayer.Stat.TotalExp - _prevExp}";
+        UpdateHpBar();
+        UpdateUpBar();
         GetTextMeshPro((int)Texts.LevelText).text = $"Lv. {_myPlayer.Stat.Level}";
+    }
+    private void OnPointerEnter(PointerEventData eventData, TMP_Text text)
+    {
+        text.gameObject.SetActive(true);
+    }
+
+    private void OnPointerExit(PointerEventData eventData, TMP_Text text)
+    {
+        text.gameObject.SetActive(false);
     }
 }
