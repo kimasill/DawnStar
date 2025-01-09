@@ -7,7 +7,7 @@
           "option": "Damage",
           "probability": 0.2,
           "minValue": 1,
-          "maxValue": 15
+          "maxValue": 20
         },
         {
           "option": "CriticalChance",
@@ -40,33 +40,45 @@
       "optionData": [
         {
           "option": "Hp",
-          "probability": 0.2,
+          "probability": 0.15,
           "minValue": 10,
           "maxValue": 200
         },
         {
           "option": "Defense",
-          "probability": 0.2,
+          "probability": 0.15,
           "minValue": 1,
           "maxValue": 20
         },
         {
           "option": "Avoid",
-          "probability": 0.2,
+          "probability": 0.15,
           "minValue": 1,
           "maxValue": 10
         },
         {
           "option": "HpRegen",
-          "probability": 0.2,
+          "probability": 0.15,
+          "minValue": 1,
+          "maxValue": 12
+        },
+        {
+          "option": "Speed",
+          "probability": 0.15,
           "minValue": 1,
           "maxValue": 5
         },
         {
-          "option": "Speed",
-          "probability": 0.2,
+          "option": "DefenseMulti",
+          "probability": 0.125,
           "minValue": 1,
-          "maxValue": 5
+          "maxValue": 18
+        },
+        {
+          "option": "HpMulti",
+          "probability": 0.125,
+          "minValue": 1,
+          "maxValue": 18
         }
       ]
     },
@@ -76,7 +88,7 @@
         {
           "option": "Up",
           "probability": 0.2,
-          "minValue": 5,
+          "minValue": 1,
           "maxValue": 50
         },
         {
@@ -95,7 +107,7 @@
           "option": "Attack",
           "probability": 0.1,
           "minValue": 1,
-          "maxValue": 10
+          "maxValue": 12
         },
         {
           "option": "DefenseMulti",
@@ -107,13 +119,13 @@
           "option": "HpMulti",
           "probability": 0.1,
           "minValue": 1,
-          "maxValue": 10
+          "maxValue": 12
         },
         {
           "option": "UpMulti",
           "probability": 0.1,
           "minValue": 1,
-          "maxValue": 10
+          "maxValue": 12
         }
       ]
     }
