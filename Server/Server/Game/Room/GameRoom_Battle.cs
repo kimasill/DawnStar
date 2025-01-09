@@ -95,7 +95,7 @@ namespace Server.Game
                     if (randomValue < player.TotalCriticalChance)
                     {
                         // critical 공격
-                        damage = damage * player.TotalCriticalDamage;
+                        damage += (int)(damage * player.TotalCriticalDamage / 100f);
                         damagePacket.Critical = true;
                     }
                 }
