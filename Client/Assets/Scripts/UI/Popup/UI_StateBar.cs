@@ -24,6 +24,8 @@ public class UI_StateBar : UI_Base
     UI_UpBar _upBar;
     RectTransform _hpBarRect;
     RectTransform _upBarRect;
+    Coroutine _hpBarCoroutine;
+    Coroutine _upBarCoroutine;
     public override void Init()
     {
         Bind<TMP_Text>(typeof(Texts));
@@ -71,13 +73,17 @@ public class UI_StateBar : UI_Base
         {
             _myPlayer = Managers.Object.MyPlayer;
         }
-        float ratio = 0.0f;
+        float targetRatio = 0.0f;
         if (_myPlayer.Stat.MaxHp > 0)
         {
-            ratio = ((float)_myPlayer.Stat.Hp / _myPlayer.Stat.MaxHp);
+            targetRatio = ((float)_myPlayer.Stat.Hp / _myPlayer.Stat.MaxHp);
         }
         _hpBar.InitializeFrame(_myPlayer.Stat.MaxHp);
-        _hpBar.SetHpBar(ratio);
+        if (_hpBarCoroutine != null)
+        {
+            StopCoroutine(_hpBarCoroutine);
+        }
+        _hpBarCoroutine = StartCoroutine(LerpHpBar(targetRatio));
     }
     public void UpdateUpBar()
     {
@@ -86,13 +92,51 @@ public class UI_StateBar : UI_Base
         {
             _myPlayer = Managers.Object.MyPlayer;
         }
-        float ratio = 0.0f;
+        float targetRatio = 0.0f;
         if (_myPlayer.Stat.MaxUp > 0)
         {
-            ratio = ((float)_myPlayer.Stat.Up / _myPlayer.Stat.MaxUp);
+            targetRatio = ((float)_myPlayer.Stat.Up / _myPlayer.Stat.MaxUp);
         }
         _upBar.InitializeFrame(_myPlayer.Stat.MaxUp);
-        _upBar.SetUpBar(ratio);
+        if (_upBarCoroutine != null)
+        {
+            StopCoroutine(_upBarCoroutine);
+        }
+        _upBarCoroutine = StartCoroutine(LerpUpBar(targetRatio));
+    }
+    private IEnumerator LerpHpBar(float targetRatio)
+    {
+        float startRatio = _hpBar.CurrentRatio;
+        float elapsedTime = 0f;
+        float duration = 0.5f; // Lerp duration
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float newRatio = Mathf.Lerp(startRatio, targetRatio, elapsedTime / duration);
+            _hpBar.SetHpBar(newRatio);
+            _hpBar.SetHpText(Mathf.RoundToInt(newRatio * _myPlayer.Stat.MaxHp), _myPlayer.Stat.MaxHp);
+            yield return null;
+        }
+
+        _hpBar.SetHpBar(targetRatio);
+        _hpBar.SetHpText(_myPlayer.Stat.Hp, _myPlayer.Stat.MaxHp);
+    }
+    private IEnumerator LerpUpBar(float targetRatio)
+    {
+        float startRatio = _upBar.CurrentRatio;
+        float elapsedTime = 0f;
+        float duration = 0.5f; // Lerp duration
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float newRatio = Mathf.Lerp(startRatio, targetRatio, elapsedTime / duration);
+            _upBar.SetUpBar(newRatio);
+            _upBar.SetUpText(Mathf.RoundToInt(newRatio * _myPlayer.Stat.MaxUp), _myPlayer.Stat.MaxUp);
+            yield return null;
+        }
+        _upBar.SetUpBar(targetRatio);
+        _upBar.SetUpText(_myPlayer.Stat.Up, _myPlayer.Stat.MaxUp);
     }
     public void RefreshUI()
     {

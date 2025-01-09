@@ -237,7 +237,7 @@ namespace Server.Game
             {
                 if (option.Key == "Heal")
                 {
-                    int healAmount = int.Parse(option.Value) * player.PotionPerformance;
+                    int healAmount = int.Parse(option.Value) + int.Parse(option.Value) * player.PotionPerformance / 100;
                     player.ChangeHp(player.Hp + healAmount);
                     player.Inven.Remove(item.ItemDbId, 1);
                     ItemDb itemDb = new ItemDb()
@@ -251,7 +251,7 @@ namespace Server.Game
                 }
                 if(option.Key == "UpRecovery")
                 {
-                    int healAmount = int.Parse(option.Value) * player.PotionPerformance;
+                    int healAmount = int.Parse(option.Value) + int.Parse(option.Value) * player.PotionPerformance / 100;
                     player.ChangeUp(player.Up + healAmount);
                     player.Inven.Remove(item.ItemDbId, 1);
                     ItemDb itemDb = new ItemDb()

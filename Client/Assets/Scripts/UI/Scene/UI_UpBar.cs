@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class UI_UpBar : UI_Base
@@ -9,8 +10,19 @@ public class UI_UpBar : UI_Base
     RectTransform _upBar = null;
     [SerializeField]
     RectTransform _upGroup = null;
+    [SerializeField]
+    TMP_Text _upText = null;
+
+    public float CurrentRatio { get; private set; } = 1;
+
+    enum Texts
+    {
+        UpValue_Text
+    }
+
     public void SetUpBar(float ratio)
     {
+        CurrentRatio = ratio;
         ratio = Mathf.Clamp(ratio, 0, 1);
         _upBar.localScale = new Vector3(ratio, 1, 1);
         _upBar.anchoredPosition = new Vector2(-_upBar.rect.width * (1 - ratio) / 2, 0);
@@ -34,5 +46,27 @@ public class UI_UpBar : UI_Base
     public override void Init()
     {
         _upGroup = GetComponent<RectTransform>();
+        Bind<TMP_Text>(typeof(Texts));
+        _upText = GetTextMeshPro((int)Texts.UpValue_Text);
+        _upText.text = "0/0";
+        _upText.gameObject.SetActive(false);
+        gameObject.BindEvent(OnPointerEnter, Define.UIEvent.MouseOver);
+
+    }
+
+    public void SetUpText(int up, int maxUp)
+    {
+        GetTextMeshPro((int)Texts.UpValue_Text).text = $"{up}/{maxUp}";
+    }
+
+    public override void OnPointerEnter(UnityEngine.EventSystems.PointerEventData eventData)
+    {
+        base.OnPointerEnter(eventData);
+        _upText.gameObject.SetActive(true);
+    }
+    public override void OnPointerExit(UnityEngine.EventSystems.PointerEventData eventData)
+    {
+        base.OnPointerExit(eventData);
+        _upText.gameObject.SetActive(false);
     }
 }
