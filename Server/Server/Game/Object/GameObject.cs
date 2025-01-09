@@ -459,7 +459,7 @@ namespace Server.Game
                     _buffedAttackSpeed += applyValue;
                     break;
                 case "치명타 확률":
-                    applyValue = isApplying ? TotalCriticalChance * value * multiplier: value * multiplier;
+                    applyValue = isApplying ? value * multiplier: value * multiplier;
                     _buffedCriticalChance += (int)applyValue;
                     break;
                 case "치명타 피해":
@@ -487,7 +487,7 @@ namespace Server.Game
                         OnHealed((int)value, this);
                     break;
                 case "데미지 감소":
-                    applyValue = isApplying ? TotalDamageReduce * value * multiplier : value * multiplier;
+                    applyValue = isApplying ? value * multiplier : value * multiplier;
                     TotalDamageReduce += applyValue;
                     break;
                 default:
