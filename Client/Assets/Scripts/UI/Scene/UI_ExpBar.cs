@@ -7,6 +7,7 @@ public class UI_ExpBar : UI_Base
     [SerializeField]
     RectTransform _expBar = null;
 
+    public float CurrentRatio { get; private set; } = 1;
     public override void Init()
     {
         
@@ -14,6 +15,7 @@ public class UI_ExpBar : UI_Base
 
     public void SetUIExpBar(float ratio)
     {
+        CurrentRatio = ratio;
         ratio = Mathf.Clamp(ratio, 0, 1);
         _expBar.localScale = new Vector3(ratio, 1, 1);
         _expBar.anchoredPosition = new Vector2(-_expBar.rect.width * (1 - ratio) / 2, 0);

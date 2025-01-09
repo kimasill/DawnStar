@@ -62,6 +62,8 @@ public class CreatureController : BaseController
     protected int _additionalHpRegen;
     public virtual int AdditionalHpRegen { get; set; }
     protected float TotalInvokeDelay { get { return Stat.InvokeSpeed + AdditionalInvokeSpeed; } }
+    public int TotalHp { get { return Stat.MaxHp + AdditionalHp; } }
+    public int TotalUp { get { return Stat.MaxUp + AdditionalUp; } }
     protected int SkillId;
     protected string _animation;
     public override StatInfo Stat
@@ -73,7 +75,7 @@ public class CreatureController : BaseController
             UpdateHpBar();
 		}
 	}
-
+    
     public override int Hp
 	{
 		get { return Stat.Hp; }

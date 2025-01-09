@@ -351,6 +351,8 @@ namespace Server.Game
         }
         public void RemoveBuff(BuffInfo buff, float value,  int count = 1)
         {
+            if (Room == null)
+                return;
             if (Buffs.ContainsKey(buff.id) == false)
                 return;
 
@@ -414,6 +416,8 @@ namespace Server.Game
         }
         public void RemoveDebuff(DebuffInfo debuff, float value, int count = 1)
         {
+            if (Room == null)
+                return;
             if (Debuffs.ContainsKey(debuff.id) ==false)
                 return;
 
