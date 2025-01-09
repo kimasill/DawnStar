@@ -236,7 +236,7 @@
         "shapeType": "ShapeLine",
         "range": "2.0"
       },
-      "unchartedPoint": "10",
+      "unchartedPoint": "32",
       "description": "정면의 적을 밀쳐낸다."
     },
     {
@@ -251,7 +251,7 @@
         "shapeType": "ShapeCircle",
         "range": "5.0"
       },
-      "unchartedPoint": "20",
+      "unchartedPoint": "35",
       "description": "주변적을 자신으로 끌어당긴다.",
       "isObject" :  false,
       "prefab": "Effect/Pulling",
@@ -273,7 +273,7 @@
         "value": "0.0",
         "isPercent": "false"
       },
-      "unchartedPoint": "20",
+      "unchartedPoint": "28",
       "description": "강한충격으로 적을 행동불가 상태로 만든다."
     },
     {
@@ -289,7 +289,7 @@
         "value": "0.9",
         "isPercent": "false"
       },
-      "unchartedPoint": "20",
+      "unchartedPoint": "40",
       "description": "일정시간동안 받는 피해량을 감소시킨다.",
       "prefab": "Effect/Shield",
       "effectDuration": 4.0,
@@ -317,7 +317,7 @@
       "prefab": "Magic/BoneSwarm",
       "icon": "Textures/Images/Icons/Skill/BoneSwarm",
       "isObject": "true",
-      "unchartedPoint": "20",
+      "unchartedPoint": "72",
       "description": "주변적에게 공격을 시전하는 뼈무리를 소환한다."
     },
     {
@@ -360,7 +360,7 @@
           "isPercent": "false"
         }
       ],
-      "unchartedPoint": "100",
+      "unchartedPoint": "110",
       "description": "일정시간동안 치명타확률, 치명타데미지, 이동속도, 공격속도가 증가한다.",
       "prefab": "Effect/DeadlyDecision",
       "icon": "Textures/Images/Icons/Skill/DeadlyDecision",
@@ -388,7 +388,7 @@
         "Effect/Blood_m"
       ],
       "icon": "Textures/Images/Icons/Skill/Assassination",
-      "unchartedPoint": "20",
+      "unchartedPoint": "91",
       "description": "적 뒤로이동한 후, 공격하여 강력한 피해를 준다.",
       "isObject": "false",
       "fix": "true"
@@ -410,7 +410,7 @@
       "prefab": "Magic/FireBlaster",
       "icon": "Textures/Images/Icons/Skill/FlameSnake",
       "isObject": "false",
-      "unchartedPoint": "20",
+      "unchartedPoint": "85",
       "description": "정면의 적에게 기다란 화염을 분사한다."
     },
     {
@@ -422,7 +422,7 @@
       "skillType": "SkillBuff",
       "prefab": "Effect/Heal",
       "icon": "Textures/Images/Icons/Skill/Heal",
-      "unchartedPoint": "20",
+      "unchartedPoint": "28",
       "description": "일정시간동안 생명력을 회복한다.",
       "isObject": "false",
       "fix": "true"
@@ -442,7 +442,7 @@
         "direction": "DirectionBack"
       },
       "icon": "Textures/Images/Icons/Skill/Hide",
-      "unchartedPoint": "20",
+      "unchartedPoint": "50",
       "description": "뒤로 일정 거리 물러난다. 상태이상을 무시한다."
     },
     {
@@ -476,7 +476,7 @@
       "isObject": "true",
       "prefab": "Magic/Icing",
       "icon": "Textures/Images/Icons/Skill/Icing",
-      "unchartedPoint": "20",
+      "unchartedPoint": "44",
       "description": "좁은 범위를 순간적으로 동결시킨다.",
       "fix": "true"
     },
@@ -494,7 +494,7 @@
       "isObject": "false",
       "prefab": "Effect/DustFx",
       "icon": "Textures/Images/Icons/Skill/DownwardStrike",
-      "unchartedPoint": "10",
+      "unchartedPoint": "40",
       "description": "주변적에게 강력한 피해를 준다.",
       "fix": "true"
     },
@@ -577,7 +577,7 @@
         "isTarget": true
       },
       "isObject": false,
-      "unchartedPoint": 10
+      "unchartedPoint": 25
     },
     {
       "id": 29,
@@ -607,7 +607,7 @@
         "isTarget": true
       },
       "isObject": false,
-      "unchartedPoint": 10
+      "unchartedPoint": 62
     },
     {
       "id": 30,
@@ -629,7 +629,7 @@
         "isTarget": true
       },
       "isObject": false,
-      "unchartedPoint": 10
+      "unchartedPoint": 35
     },
     {
       "id": 31,
@@ -648,7 +648,7 @@
         "shapeType": "ShapeCircle",
         "range": "2.0"
       },
-      "unchartedPoint": "20",
+      "unchartedPoint": "39",
       "description": "바닥에서 맹독을 분출시킨다.",
       "prefab": "Magic/PoisonCloud",
       "icon": "Textures/Images/Icons/Skill/PoisonCloud",
@@ -675,7 +675,7 @@
         "isTarget": true
       },
       "isObject": false,
-      "unchartedPoint": 10
+      "unchartedPoint": 30
     },
     {
       "id": 33,
@@ -698,7 +698,7 @@
       },
       "prefab": "Magic/ManaBeam",
       "isObject": false,
-      "unchartedPoint": 10,
+      "unchartedPoint": 200,
       "description": "정면의 적에게 마나 빔을 발사한다."
     },
     {
@@ -726,7 +726,7 @@
         "isTarget": true
       },
       "isObject": false,
-      "unchartedPoint": 10
+      "unchartedPoint": 54
     },
     {
       "id": 35,
@@ -762,7 +762,7 @@
         "isPercent": "false"
       },
       "isObject": "true",
-      "unchartedPoint": "20",
+      "unchartedPoint": "135",
       "description": "닿는순간 폭발하여 독성피해를 준다."
     },
     {
@@ -828,7 +828,7 @@
       "isObject": false,
       "prefab": "Effect/Mark",
       "icon": "Textures/Images/Icons/Skill/Mark",
-      "unchartedPoint": 10,
+      "unchartedPoint": 70,
       "description": "적을 지정하여 일정시간동안 추가피해를 준다.",
       "fix": true
     },
@@ -861,7 +861,7 @@
       },
       "prefab": "Magic/PotCannon",
       "isObject": true,
-      "unchartedPoint": 20,
+      "unchartedPoint": 22,
       "description": "항아리안에서 기운을 발사하여 폭발시킨다."
     },
     {
@@ -881,7 +881,7 @@
         "maxCount": "20",
         "isHoming": "false"
       },
-      "unchartedPoint": "20",
+      "unchartedPoint": "98",
       "description": "공중에서 땅으로 충격마법을 소환하여 피해를 준다.",
       "prefab": "Magic/PoisonShock",
       "icon": "Textures/Images/Icons/Skill/PoisonShock",
@@ -890,7 +890,7 @@
     {
       "id": 40,
       "name": "분노",
-      "coolTime": 60,
+      "coolTime": 50,
       "skillType": "SkillBuff",
       "buff": {
         "id": 1,
@@ -899,7 +899,7 @@
         "value": 0.5,
         "isPercent": false
       },
-      "unchartedPoint": 100,
+      "unchartedPoint": 88,
       "description": "일정시간동안 공격력이 증가한다."
     }
   ]
