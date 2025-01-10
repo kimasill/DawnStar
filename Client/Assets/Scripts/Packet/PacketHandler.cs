@@ -712,4 +712,12 @@ class PacketHandler
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
         gameSceneUI.NotificationUI.ShowBasicNoti(noticePacket.Message);
     }
+
+    public static void S_ChatHandler(PacketSession session, IMessage packet)
+    {
+        S_Chat chatPacket = packet as S_Chat;
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        UI_GameWindow gameWindow = gameSceneUI.GameWindow;
+        gameWindow.Chat.ApplyMessage(chatPacket.PlayerId, chatPacket.PlayerName, chatPacket.Message);
+    }
 }

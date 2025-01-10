@@ -101,7 +101,7 @@ public class UI_StateBar : UI_Base
         float targetRatio = 0.0f;
         if (_myPlayer.Stat.MaxHp > 0)
         {
-            targetRatio = ((float)_myPlayer.Stat.Hp / _myPlayer.Stat.MaxHp);
+            targetRatio = ((float)_myPlayer.Stat.Hp / _myPlayer.TotalHp);
         }
         _hpBar.InitializeFrame(_myPlayer.Stat.MaxHp);
         if (_hpBarCoroutine != null)
@@ -120,7 +120,7 @@ public class UI_StateBar : UI_Base
         float targetRatio = 0.0f;
         if (_myPlayer.Stat.MaxUp > 0)
         {
-            targetRatio = ((float)_myPlayer.Stat.Up / _myPlayer.Stat.MaxUp);
+            targetRatio = ((float)_myPlayer.Stat.Up / _myPlayer.TotalUp);
         }
         _upBar.InitializeFrame(_myPlayer.Stat.MaxUp);
         if (_upBarCoroutine != null)
@@ -140,7 +140,7 @@ public class UI_StateBar : UI_Base
             elapsedTime += Time.deltaTime;
             float newRatio = Mathf.Lerp(startRatio, targetRatio, elapsedTime / duration);
             _hpBar.SetHpBar(newRatio);
-            _hpText.text = $"{Mathf.RoundToInt(newRatio * _myPlayer.TotalHp)},{_myPlayer.TotalHp}";
+            _hpText.text = $"{Mathf.RoundToInt(newRatio * _myPlayer.TotalHp)}/{_myPlayer.TotalHp}";
             yield return null;
         }
 
