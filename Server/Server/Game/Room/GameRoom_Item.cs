@@ -416,28 +416,30 @@ namespace Server.Game
                 return;
 
             // 필요한 재료가 인벤토리에 있는지 확인
-            List<Item> requiredItems = new List<Item>();
+            List<ItemDb> requiredItems = new List<ItemDb>();
             foreach (var piece in itemData.pieces)
             {
                 Item item = player.Inven.FindByTemplateId(piece.templateId);
                 if (item == null || item.Count < piece.count * makeItemPacket.Count)
                     return; // 재료가 부족하면 종료
 
-                requiredItems.Add(item);
-            }
-
-            // 재료를 인벤토리에서 제거
-            foreach (var item in requiredItems)
-            {
                 ItemDb itemDb = new ItemDb()
                 {
                     TemplateId = item.TemplateId,
-                    Count = item.Count * makeItemPacket.Count,
+                    Count = piece.count * makeItemPacket.Count,
                     OwnerDbId = player.PlayerDbId,
                     Slot = item.Slot
                 };
+
+                requiredItems.Add(itemDb);
+            }
+
+            // 재료를 인벤토리에서 제거
+            foreach (var itemDb in requiredItems)
+            {
                 DbTransaction.SaveRemovedItemDB(player, itemDb, this);
             }
+
             ItemDb newItemDb = new ItemDb()
             {
                 TemplateId = itemData.id,

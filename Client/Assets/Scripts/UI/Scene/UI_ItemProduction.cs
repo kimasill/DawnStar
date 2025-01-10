@@ -18,7 +18,8 @@ public class UI_ItemProduction : UI_Base
     public List<UI_Display_Item> CostItems { get; set; } = new List<UI_Display_Item>();
     private UI_Enhance _ui_Enhance;
     private Item _selectedItem;
-    
+    private RectTransform _productContentRect;
+
     enum Images
     {
         ItemProduction_CostPanel,
@@ -36,6 +37,7 @@ public class UI_ItemProduction : UI_Base
         Items.Clear();
 
         ScrollRect = GetComponentInChildren<ScrollRect>();
+        _productContentRect = ScrollRect.content.GetComponent<RectTransform>();
         Bind<Image>(typeof(Images));
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.ItemProduction_Button).gameObject.BindEvent(OnClickProductionButton);
@@ -90,7 +92,7 @@ public class UI_ItemProduction : UI_Base
             count = x.count
         }).ToList();
         SetDisplayItem(costData, GetImage((int)Images.ItemProduction_CostPanel).gameObject.transform);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(ScrollRect.content);
+        UpdateContentSize();
     }
     public void SetDisplayItem(List<CostData> costData, Transform transform)
     {        
@@ -114,10 +116,14 @@ public class UI_ItemProduction : UI_Base
             }
         }
     }
+    private void UpdateContentSize()
+    {
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_productContentRect);
+    }
     public override void OnScroll(float scrollDelta)
     {
         if (ScrollRect != null)
-        {
+        { 
             float scrollAmount = -scrollDelta * 0.1f; // 스크롤 속도 조절
             ScrollRect.verticalNormalizedPosition = Mathf.Clamp01(ScrollRect.verticalNormalizedPosition - scrollAmount);
         }
