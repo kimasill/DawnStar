@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class UI_GameWindow : UI_Base
 {
@@ -12,6 +13,8 @@ public class UI_GameWindow : UI_Base
     public UI_QuickSlot QuickSlot { get; set; }
     public UI_SkillSlot SkillSlot { get; set; }
     public UI_BuffPanel BuffPanel { get; set; }
+    public UI_Chat Chat { get; set; }
+    [SerializeField] public GameObject ChatButton;
     public override void Init()
     {
         StateUI = GetComponentInChildren<UI_StateBar>();
@@ -19,7 +22,12 @@ public class UI_GameWindow : UI_Base
         QuickSlot = GetComponentInChildren<UI_QuickSlot>();
         SkillSlot = GetComponentInChildren<UI_SkillSlot>();
         BuffPanel = GetComponentInChildren<UI_BuffPanel>();
+        Chat = GetComponentInChildren<UI_Chat>();
+        Chat.CloseAction = () => ChatButton.SetActive(true); 
+
+        ChatButton.BindEvent(OnClickChatButton);
         StoryPanel.gameObject.SetActive(false);
+        Chat.gameObject.SetActive(false);
     }
     public void ShowScript(List<string> strings)
     {
@@ -88,5 +96,14 @@ public class UI_GameWindow : UI_Base
         {
             Debug.LogWarning("StateUI를 찾을 수 없습니다.");
         }
+    }
+
+    public void OnClickChatButton(PointerEventData eventData)
+    {
+        if (Chat != null)
+        {
+            Chat.OpenUI(eventData);
+        }
+        ChatButton.SetActive(false);
     }
 }

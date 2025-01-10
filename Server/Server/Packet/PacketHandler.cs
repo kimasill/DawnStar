@@ -400,4 +400,16 @@ class PacketHandler
 
         clientSession.MyPlayer.Inven.SortInven(clientSession.MyPlayer);
     }
+
+    public static void C_ChatHandler(PacketSession session, IMessage packet)
+    {
+        C_Chat chatPacket = packet as C_Chat;
+        ClientSession clientSession = session as ClientSession;
+        if (clientSession == null || clientSession.MyPlayer == null)
+            return;
+        GameRoom room = clientSession.MyPlayer.Room;
+        if (room == null)
+            return;
+        room.HandleChat(clientSession.MyPlayer, chatPacket.Message);
+    }
 }

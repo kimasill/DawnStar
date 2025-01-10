@@ -76,8 +76,11 @@ public class MyPlayerController : PlayerController
         SkillKeys[4] = KeyCode.V;
     }
 
-    protected override void UpdateController() 
+    protected override void UpdateController()
     {
+        if (UI_Chat.IsChatting)
+            return;
+        
         GetUIKeyInput();
         switch (State)
         {

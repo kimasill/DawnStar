@@ -75,6 +75,8 @@ enum MsgId {
   C_ENCHANT = 67;
   S_ENCHANT = 68;
   S_SYSTEM_NOTICE = 69;
+  C_CHAT = 70;
+  S_CHAT = 71;
 }
 enum CreatureState{
   IDLE = 0;
@@ -615,6 +617,16 @@ message S_QuestList{
 
 message S_SystemNotice{
 	string message = 1;
+}
+
+message C_Chat{
+	string message = 1;
+}
+
+message S_Chat{
+	int32 playerId = 1;
+	string playerName = 2;
+	string message = 3;
 }
 
 message S_StartQuest{

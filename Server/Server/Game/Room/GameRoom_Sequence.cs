@@ -274,5 +274,16 @@ namespace Server.Game
                 PartyMatchingSystem.Instance.Unregister(player.Session, mapId);
             }
         }
+
+        public void HandleChat(Player player, string message)
+        {
+            if (player == null)
+                return;
+            S_Chat chatPacket = new S_Chat();
+            chatPacket.PlayerId = player.Info.ObjectId;
+            chatPacket.PlayerName = player.Info.Name;
+            chatPacket.Message = message;
+            Broadcast(player.CellPos, chatPacket);
+        }
     }
 }
