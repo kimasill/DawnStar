@@ -16,7 +16,6 @@ namespace Server.Game
         public float Range { get; set; }
         public GameObject Target { get; set; }                
         int _count = 0;
-        public Action<GameObject> OnHit { get; set; }
         private GameRoom _room;
 
         private int _coolTick = 0;
@@ -43,10 +42,18 @@ namespace Server.Game
             List<Vector2Int> attackTiles = SkillLogic.GetAllTargetsInRange(CellPos, (int)Range);
             foreach (Vector2Int pos in attackTiles)
             {
-                GameObject target = Owner.Room.Map.Find(pos);
-                if (target != null && target != Owner)
+                List<GameObject> targets = Room.Map.Find(pos);
+                if (targets.Count > 0)
                 {
-                    target.OnDamaged(Owner, Data.damage);
+                    foreach (GameObject target in targets)
+                    {
+                        if (target == Owner)
+                            continue;
+                        if (target != null && target != Owner)
+                        {
+                            target.OnDamaged(Owner, Data.damage);
+                        }
+                    }
                 }
             }                
             _count++;

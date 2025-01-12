@@ -32,12 +32,20 @@ namespace Server.Game
             }
             else
             {
-                GameObject target = Room.Map.Find(destPos);
-                if (target != null)
+                List<GameObject> targets = Room.Map.Find(destPos);
+                if (targets.Count > 0)
                 {
-                    target.OnDamaged(this, Data.damage + Owner.TotalAttack); //피격판정                    
+                    foreach (GameObject target in targets)
+                    {
+                        if (target == Owner)
+                            continue;
+                        if (target != null)
+                        {
+                            target.OnDamaged(this, Data.damage + Owner.TotalAttack); //피격판정                    
+                        }
+                        Room.Push(Room.LeaveGame, Id);
+                    }
                 }
-                Room.Push(Room.LeaveGame, Id);
             }
         }
 

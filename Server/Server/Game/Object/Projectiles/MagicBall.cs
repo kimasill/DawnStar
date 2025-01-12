@@ -74,11 +74,17 @@ namespace Server.Game
                 }
                 else
                 { 
-                    GameObject target = Room.Map.Find(destPos);
-                    if (target != null && target != Owner)
+                    List<GameObject> targets = Room.Map.Find(destPos);
+                    if (targets.Count > 0)
                     {
-                        target.OnDamaged(this, Data.damage + Owner.TotalAttack); // 피격 판정
-                        OnHit?.Invoke(target);
+                        foreach (GameObject target in targets)
+                        {
+                            if (target != null && target != Owner)
+                            {
+                                target.OnDamaged(this, Data.damage + Owner.TotalAttack); // 피격 판정
+                                OnHit?.Invoke(target);
+                            }
+                        }
                     }
                     DespawnAnim = true;
                     Room.Push(Room.LeaveGame, Id);
@@ -118,11 +124,17 @@ namespace Server.Game
 
             foreach (Vector2Int pos in targetPositions)
             {
-                GameObject target = Room.Map.Find(pos);
-                if (target != null && target != Owner)
+                List<GameObject> targets = Room.Map.Find(pos);
+                if (targets.Count > 0)
                 {
-                    target.OnDamaged(this, Data.damage + Owner.TotalAttack); // 피격 판정
-                    OnHit?.Invoke(target);
+                    foreach (GameObject target in targets)
+                    {
+                        if (target != null && target != Owner)
+                        {
+                            target.OnDamaged(this, Data.damage + Owner.TotalAttack); // 피격 판정
+                            OnHit?.Invoke(target);
+                        }
+                    }
                 }
             }
             DespawnAnim = true;

@@ -46,23 +46,26 @@ namespace Server.Game
             }
             foreach (Vector2Int pos in skillPos)
             {
-                GameObject target = Owner.Room.Map.Find(pos);
-                if (target != null)
+                List<GameObject> targets = Owner.Room.Map.Find(pos);
+                if (targets.Count > 0)
                 {
-                    if (target == Owner)
+                    foreach (GameObject target in targets)
                     {
-                        continue;
-                    }
-                    if (_target != null)
-                    {
-                        if (target != _target)
+                        if (target == Owner)
+                        {
                             continue;
+                        }
+                        if (_target != null)
+                        {
+                            if (target != _target)
+                                continue;
+                        }
+                        CalculateDistance(target, () =>
+                        {
+                            target.OnDamaged(Owner, Owner.TotalAttack + data.damage);
+                            ApplyAfterEffect(data, target);
+                        }, range);
                     }
-                    CalculateDistance(target, () =>
-                    {
-                        target.OnDamaged(Owner, Owner.TotalAttack + data.damage);
-                        ApplyAfterEffect(data, target);
-                    }, range);
                 }
             }
             isExecuting = false;
@@ -86,17 +89,20 @@ namespace Server.Game
                 {
                     await Task.Delay((int)(data.term / Owner.TotalAttackSpeed * 1000));
                 }
-                List<Vector2Int> targets = SkillLogic.GetTargetsInLine(Owner.CellPos, Owner.Info.Position.MoveDir, (int)data.shape.range);
-                foreach (var pos in targets)
+                List<Vector2Int> targetPos = SkillLogic.GetTargetsInLine(Owner.CellPos, Owner.Info.Position.MoveDir, (int)data.shape.range);
+                foreach (var pos in targetPos)
                 {
-                    GameObject target = Owner.Room.Map.Find(pos);
-                    if (target != null)
+                    List<GameObject> targets = Owner.Room.Map.Find(pos);
+                    if (targets.Count > 0)
                     {
-                        if (target == Owner)
+                        foreach (GameObject target in targets)
                         {
-                            continue;
+                            if (target == Owner)
+                            {
+                                continue;
+                            }
+                            target.OnDamaged(Owner, Owner.TotalAttack + data.damage);
                         }
-                        target.OnDamaged(Owner, Owner.TotalAttack + data.damage);
                     }
                 }
             }
@@ -186,14 +192,17 @@ namespace Server.Game
                 }
                 foreach (Vector2Int pos in skillPos)
                 {
-                    GameObject newTarget = Owner.Room.Map.Find(pos);
-                    if (newTarget != null)
+                    List<GameObject> targets = Owner.Room.Map.Find(pos);
+                    if (targets.Count > 0)
                     {
-                        if (newTarget == Owner)
+                        foreach (GameObject newTarget in targets)
                         {
-                            continue;
+                            if (newTarget == Owner)
+                            {
+                                continue;
+                            }
+                            newTarget.OnDamaged(Owner, Owner.TotalAttack + data.damage);
                         }
-                        newTarget.OnDamaged(Owner, Owner.TotalAttack + data.damage);
                     }
                 }
             }
@@ -234,11 +243,17 @@ namespace Server.Game
 
                 foreach (Vector2Int pos in skillPos)
                 {
-                    // pos에 있는 타겟에게 데미지를 주는 로직 추가
-                    GameObject targetInPos = Owner.Room.Map.Find(pos);
-                    if (targetInPos != null)
+                    List<GameObject> targets = Owner.Room.Map.Find(pos);
+                    if (targets.Count > 0)
                     {
-                        targetInPos.OnDamaged(Owner, Owner.TotalAttack + data.damage);
+                        foreach (GameObject newTarget in targets)
+                        {
+                            if (newTarget == Owner)
+                            {
+                                continue;
+                            }
+                            newTarget.OnDamaged(Owner, Owner.TotalAttack + data.damage);
+                        }
                     }
                 }
                 angle += angleIncrement;

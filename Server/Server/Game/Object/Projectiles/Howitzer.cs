@@ -52,11 +52,19 @@ namespace Server.Game
 
             foreach (Vector2Int pos in targetPositions)
             {
-                GameObject target = Room.Map.Find(pos);
-                if (target != null && target != Owner)
+                List<GameObject> targets = Room.Map.Find(pos);
+                if (targets.Count > 0)
                 {
-                    target.OnDamaged(this, Data.damage + Owner.TotalAttack); // 피격 판정
-                    OnHit?.Invoke(target);
+                    foreach (GameObject target in targets)
+                    {
+                        if (target == Owner)
+                            continue;
+                        if (target != null)
+                        {
+                            target.OnDamaged(this, Data.damage + Owner.TotalAttack); // 피격 판정
+                            OnHit?.Invoke(target);
+                        }
+                    }
                 }
             }
             DespawnAnim = true;

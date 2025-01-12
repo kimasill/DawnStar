@@ -84,17 +84,17 @@ public class UI_SkillSlot : UI_Base
                             }
                             else if (ringCount == 1)
                             {
-                                _ringSkill2.KeyText.text = Managers.Object.MyPlayer.SkillKeys[4].ToString();
+                                _ringSkill2.KeyText.text = Managers.Object.MyPlayer.SkillKeys[3].ToString();
                                 if (_ringSkill2.KeyText.text == "None")
-                                    _ringSkill2.KeyText.text = "V";
+                                    _ringSkill2.KeyText.text = "T";
                                 ringCount++;
                             }
                         }
                         else if (((Item.Jewelry)item.Value).JewelryType == JewelryType.Necklace)
                         {
-                            _necklaceSkill.KeyText.text = Managers.Object.MyPlayer.SkillKeys[3].ToString();
+                            _necklaceSkill.KeyText.text = Managers.Object.MyPlayer.SkillKeys[4].ToString();
                             if (_necklaceSkill.KeyText.text == "None")
-                                _necklaceSkill.KeyText.text = "T";
+                                _necklaceSkill.KeyText.text = "V";
                         }
                     }
 
