@@ -661,21 +661,22 @@ namespace Server.DB
                     if (existingShopDb == null)
                     {
                         db.Shops.Add(shopDb);
-                        foreach (ShopItemDb shopItemDb in shopDb.ShopItems)
+                        db.SaveChangesEx();
+                        existingShopDb = shopDb;
+                        existingShopDb.ShopDbId = db.Entry(shopDb).Property(s => s.ShopDbId).CurrentValue;
+                    }
+                    foreach (ShopItemDb shopItemDb in shopDb.ShopItems)
+                    {
+                        if (db.ShopItems.Where(i => i.ItemId == shopItemDb.ItemId && i.ShopDbId == existingShopDb.ShopDbId).FirstOrDefault() == null)
                         {
+                            shopItemDb.ShopDbId = existingShopDb.ShopDbId; // ShopItemDb에 ShopDbId를 설정합니다.
                             db.ShopItems.Add(shopItemDb);
-                        }                        
+                        }
                     }
                     bool success = db.SaveChangesEx();
                     
                     if (success)
                     {
-                        if (existingShopDb == null)
-                        {
-                            existingShopDb = shopDb;
-                            existingShopDb.ShopDbId = db.Entry(shopDb).Property(s => s.ShopDbId).CurrentValue;
-                        }
-
                         List<ShopItemDb> shopItemDbs = db.ShopItems
                        .Where(s => s.ShopDbId == existingShopDb.ShopDbId)
                        .ToList();

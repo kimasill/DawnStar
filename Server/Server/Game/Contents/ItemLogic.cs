@@ -15,7 +15,7 @@ namespace Server.Game
         public static List<ItemRewardData> GetRandomReward(List<ItemRewardData> rewards)
         {
             int rand = new Random().Next(0, 101);
-            
+
             List<ItemRewardData> itemsToAdd = new List<ItemRewardData>();
 
             foreach (ItemRewardData rewardData in rewards)
@@ -51,46 +51,50 @@ namespace Server.Game
                 if (item.ItemType == ItemType.Weapon)
                 {
                     WeaponData weaponData = (WeaponData)itemData;
-                    itemDb.Damage = (int)(weaponData.damage + (weaponData.damage*0.5)*item.Rank + (weaponData.damage* enhanceData.value));
+                    itemDb.Damage = (int)(weaponData.damage + (weaponData.damage * 0.5) * item.Rank + (weaponData.damage * enhanceData.value));
+                    itemDb.Options = item.Options.ToDictionary(entry => entry.Key, entry => entry.Value);
                 }
-                else if(item.ItemType == ItemType.Armor)
+                else if (item.ItemType == ItemType.Armor)
                 {
                     ArmorData armorData = (ArmorData)itemData;
-                    itemDb.Defense = (int)(armorData.defense + (armorData.defense * 0.5)*item.Rank + (armorData.defense * enhanceData.value));
+                    itemDb.Defense = (int)(armorData.defense + (armorData.defense * 0.5) * item.Rank + (armorData.defense * enhanceData.value));
+                    itemDb.Options = item.Options.ToDictionary(entry => entry.Key, entry => entry.Value);
                 }
-
-                foreach(KeyValuePair<string, string> option in item.Options)
+                else if (item.ItemType == ItemType.Jewelry)
                 {
-                    string value = option.Value;
-                    if (option.Key == ItemOptionType.CriticalChance.ToString())
+                    foreach (KeyValuePair<string, string> option in item.Options)
                     {
-                        value = (float.Parse(option.Value) * (enhanceData.value * 2)).ToString();
+                        string value = option.Value;
+                        if (option.Key == ItemOptionType.CriticalChance.ToString())
+                        {
+                            value = (float.Parse(option.Value) * (1 + enhanceData.value * 2)).ToString();
+                        }
+                        else if (option.Key == ItemOptionType.CriticalDamage.ToString())
+                        {
+                            value = (int.Parse(option.Value) * (1 + enhanceData.value)).ToString();
+                        }
+                        else if (option.Key == ItemOptionType.Avoid.ToString())
+                        {
+                            value = (int.Parse(option.Value) * (1 + enhanceData.value)).ToString();
+                        }
+                        else if (option.Key == ItemOptionType.Accuracy.ToString())
+                        {
+                            value = (int.Parse(option.Value) * (1 + enhanceData.value)).ToString();
+                        }
+                        else if (option.Key == ItemOptionType.Hp.ToString())
+                        {
+                            value = (int.Parse(option.Value) * (1 + enhanceData.value * 2)).ToString();
+                        }
+                        else if (option.Key == ItemOptionType.Up.ToString())
+                        {
+                            value = (int.Parse(option.Value) * (1 + enhanceData.value)).ToString();
+                        }
+                        else if (option.Key == ItemOptionType.UpRegen.ToString())
+                        {
+                            value = (int.Parse(option.Value) * (1 + enhanceData.value)).ToString();
+                        }
+                        itemDb.Options.Add(option.Key, value);
                     }
-                    else if (option.Key == ItemOptionType.CriticalDamage.ToString())
-                    {
-                        value = (int.Parse(option.Value) * enhanceData.value).ToString();
-                    }
-                    else if (option.Key == ItemOptionType.Avoid.ToString())
-                    {
-                        value = (int.Parse(option.Value) * enhanceData.value).ToString();
-                    }
-                    else if (option.Key == ItemOptionType.Accuracy.ToString())
-                    {
-                        value = (int.Parse(option.Value) * enhanceData.value).ToString();
-                    }
-                    else if (option.Key == ItemOptionType.Hp.ToString())
-                    {
-                        value = (int.Parse(option.Value) * (enhanceData.value*2)).ToString();
-                    }
-                    else if (option.Key == ItemOptionType.Up.ToString())
-                    {
-                        value = (int.Parse(option.Value) * enhanceData.value).ToString();
-                    }
-                    else if (option.Key == ItemOptionType.UpRegen.ToString())
-                    {
-                        value = (int.Parse(option.Value) * enhanceData.value).ToString();
-                    }
-                    itemDb.Options.Add(option.Key, value);
                 }
 
                 itemDb.ItemDbId = item.ItemDbId;
@@ -101,16 +105,16 @@ namespace Server.Game
                 itemDb.Enhance = item.Rank;
                 itemDb.Grade = item.Grade.ToString();
                 itemDb.OwnerDbId = player.PlayerDbId;
-                
+
                 return itemDb;
             }
             return null;
         }
 
-        public static Dictionary<string,string> Enchant(Player player, Item item, EnchantData enchantData)
+        public static Dictionary<string, string> Enchant(Player player, Item item, EnchantData enchantData)
         {
-            if(item.Enchant >= 4){return null;}
-            if(item.ItemType != enchantData.itemType) { return null; }
+            if (item.Enchant >= 4) { return null; }
+            if (item.ItemType != enchantData.itemType) { return null; }
             Dictionary<string, string> options = new Dictionary<string, string>();
             Random rand = new Random();
             ItemDb itemDb = new ItemDb();
@@ -122,7 +126,7 @@ namespace Server.Game
                 {
                     float gradeBonous = 1 + ((int)item.Grade / 2.0f);
                     int randomValue = rand.Next(optionData.minValue, optionData.maxValue + 1);
-                    string optionValue = ((int)(randomValue * gradeBonous)).ToString();                     
+                    string optionValue = ((int)(randomValue * gradeBonous)).ToString();
                     options.Add(optionData.option.ToString(), optionValue);
                     break;
                 }

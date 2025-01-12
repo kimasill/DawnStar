@@ -101,7 +101,7 @@ namespace Server.Game
                 {
                     respawnPos.x = _rand.Next(Map.MinX, Map.MaxX + 1);
                     respawnPos.y = _rand.Next(Map.MinY, Map.MaxY + 1);
-                    if (Map.Find(respawnPos) == null)
+                    if (Map.Find(respawnPos).Count == 0)
                     {
                         gameObject.CellPos = respawnPos;
                         break;

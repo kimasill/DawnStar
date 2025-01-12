@@ -8,7 +8,7 @@
       "skillType": "SkillAttack",
       "skillLogicType": "BasicAttack",
       "shape": {
-        "shapeType": "ShapeBent",
+        "shapeType": "ShapeLine",
         "range": "1.0"
       }
     },

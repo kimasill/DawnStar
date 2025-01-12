@@ -123,7 +123,7 @@ namespace Server.Game
 
             List<Vector2Int> tiles = new List<Vector2Int>();
 
-            for (int i = 0; i < range; i++)
+            for (int i = 0; i < range+1; i++)
             {
                 Vector2Int offset = GetOffsetByDirection(dir, i);
                 Vector2Int tile = center + offset;

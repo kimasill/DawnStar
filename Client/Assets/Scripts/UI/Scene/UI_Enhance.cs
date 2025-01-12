@@ -151,7 +151,7 @@ public class UI_Enhance : UI_Base
         if (itemData == null)
             return;
 
-        if(itemData.itemType == ItemType.Weapon)
+        if (itemData.itemType == ItemType.Weapon)
         {
             Weapon weapon = _selectedItem as Weapon;
             WeaponData weaponData = itemData as WeaponData;
@@ -163,18 +163,25 @@ public class UI_Enhance : UI_Base
             ArmorData armorData = itemData as ArmorData;
             AddStat($"¹æ¾î·Â + {armor.Defense - armorData.defense}");
         }
-
-        foreach (var option in itemData.options)
+        else if (itemData.itemType == ItemType.Jewelry)
         {
-            string baseKey = Content.ConvertSpecialOptions(option.Key);
-            int baseValue = int.Parse(option.Value);
-            int enhanceValue = 0;
-            if (_selectedItem.Options.ContainsKey(option.Key))
+            Jewelry jewelry = _selectedItem as Jewelry;
+            JewelryData jewelryData = itemData as JewelryData;
+            foreach (var option in itemData.options)
             {
-                enhanceValue = int.Parse(_selectedItem.Options[option.Key]);
-            }
+                if (option.Key == "Skill")
+                    continue;
 
-            AddStat($"{baseKey} + {enhanceValue - baseValue}");
+                string baseKey = Content.ConvertSpecialOptions(option.Key);
+                int baseValue = int.Parse(option.Value);
+                int enhanceValue = 0;
+                if (_selectedItem.Options.ContainsKey(option.Key))
+                {
+                    enhanceValue = int.Parse(_selectedItem.Options[option.Key]);
+                }
+
+                AddStat($"{baseKey} + {enhanceValue - baseValue}");
+            }
         }
     }
     private void AddStat(string statText)
