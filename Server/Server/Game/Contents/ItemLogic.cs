@@ -113,7 +113,13 @@ namespace Server.Game
 
         public static Dictionary<string, string> Enchant(Player player, Item item, EnchantData enchantData)
         {
-            if (item.Enchant >= 4) { return null; }
+            if (item.Enchant >= (1+(int)item.Grade)) 
+            {
+                S_SystemNotice systemNotice = new S_SystemNotice();
+                systemNotice.Message = "남은 마법부여 횟수가 없습니다.";
+                player.Session.Send(systemNotice);
+                return null; 
+            }
             if (item.ItemType != enchantData.itemType) { return null; }
             Dictionary<string, string> options = new Dictionary<string, string>();
             Random rand = new Random();

@@ -304,6 +304,9 @@ namespace Server.Game
                 Item costItem = player.Inven.FindByTemplateId(cost.templateId);
                 if (costItem.Count < cost.count || costItem == null)
                 {
+                    S_SystemNotice systemNotice = new S_SystemNotice();
+                    systemNotice.Message = "강화 재료가 부족합니다.";
+                    player.Session.Send(systemNotice);
                     return;
                 }
                 ItemDb itemDb = new ItemDb()

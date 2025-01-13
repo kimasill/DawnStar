@@ -306,10 +306,9 @@ public class UI_Stat : UI_Base
             Get<TMP_Text>((int)Texts.AttackSpeedValueText).text = $"{(player.Stat.AttackSpeed + player.AdditionalAttackSpeed)*10} + ({player.AdditionalAttackSpeed*10})";
             Get<TMP_Text>((int)Texts.CriticalChanceValueText).text = $"{player.Stat.CriticalChance + player.AdditionalCriticalChance} + ({player.AdditionalCriticalChance})%";
             Get<TMP_Text>((int)Texts.CriticalDamageValueText).text = $"{player.Stat.CriticalDamage + player.AdditionalCriticalDamage} + ({player.AdditionalCriticalDamage})%";
-            Get<TMP_Text>((int)Texts.AvoidValueText).text = $"{player.Stat.Avoid + player.AdditionalAvoidance} + ({player.AdditionalAvoidance})%";
-            Get<TMP_Text>((int)Texts.AccuracyValueText).text = $"{player.Stat.Accuracy + player.Stat.Accuracy} + ({player.AdditionalAccuracy})%";
-            Get<TMP_Text>((int)Texts.UPValueText).text = $"{player.Stat.Up + player.AdditionalUp} + ({player.AdditionalUp})";
-            Get<TMP_Text>((int)Texts.AvoidValueText).text = $"{player.Stat.Avoid + player.AdditionalAvoidance} + ({player.AdditionalAvoidance})%";
+            Get<TMP_Text>((int)Texts.AvoidValueText).text = $"{player.Stat.Avoid + player.AdditionalAvoidance} + ({player.AdditionalAvoidance})";
+            Get<TMP_Text>((int)Texts.AccuracyValueText).text = $"{player.Stat.Accuracy + player.Stat.Accuracy} + ({player.AdditionalAccuracy})";
+            Get<TMP_Text>((int)Texts.UPValueText).text = $"{player.Stat.MaxUp + player.AdditionalUp} + ({player.AdditionalUp})";            
             Get<TMP_Text>((int)Texts.UPRegenValueText).text = $"{player.Stat.UpRegen + player.AdditionalUpRegen} + ({player.AdditionalUpRegen}) /s";
             Get<TMP_Text>((int)Texts.HPRegenValueText).text = $"{player.Stat.HpRegen + player.AdditionalHpRegen} + ({player.AdditionalHpRegen})/s";
             Get<TMP_Text>((int)Texts.MoveSpeedValueText).text = $"{(player.Stat.Speed + player.AdditionalSpeed)*10} + ({player.AdditionalSpeed*10})";
