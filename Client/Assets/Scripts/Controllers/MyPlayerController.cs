@@ -13,7 +13,8 @@ using static Item;
 public class MyPlayerController : PlayerController
 {
     bool _moveKeyPressed = false;
-    
+    bool _attackKeyPressed = false;
+
     private NPCController _NPCController;
     private CameraController _cameraController;
     private ChestController _chestController;
@@ -24,7 +25,6 @@ public class MyPlayerController : PlayerController
     public CameraController CameraController { get; private set; }
 
     public KeyCode[] SkillKeys { get; private set;} = new KeyCode[5];
-
     public override int Exp
     {
         get { return Stat.TotalExp; }
@@ -203,7 +203,7 @@ public class MyPlayerController : PlayerController
             }
             UI_Inventory invenUI = GameScene.InvenUI;
 
-            if (mapUI.gameObject.activeSelf && mapUI.IsMouseover)
+            if (mapUI != null && mapUI.gameObject.activeSelf && mapUI.IsMouseover)
             {
                 mapUI.OnScroll(Input.mouseScrollDelta.y); // 스크롤에 따라 지도 크기 조절
             }
@@ -293,13 +293,18 @@ public class MyPlayerController : PlayerController
             return;
 
         // 스킬 상태로 갈지 확인
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space) && !_attackKeyPressed)
         {
+            _attackKeyPressed = true;
             Debug.Log("기본공격");
             //TODO: 무기따라 ID선택
             C_Skill skill = new C_Skill() { Info = new SkillInfo()};
             skill.Info.SkillId = 1;
             Managers.Network.Send(skill);            
+        }
+        else if (Input.GetKeyUp(KeyCode.Space))
+        {
+            _attackKeyPressed = false;
         }
     }
     protected override void MoveToNextPos()

@@ -445,8 +445,8 @@
           "name": "성당 입구",
           "mapId": 5,
           "destination": 504,
-          "posX": -12,
-          "posY": -5
+          "posX": 19,
+          "posY": -50
         },
         {
           "id": 702,

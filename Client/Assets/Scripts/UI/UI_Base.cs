@@ -1,16 +1,10 @@
-﻿using Data;
-using Google.Protobuf.Protocol;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Device;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
-using Screen = UnityEngine.Screen;
 
 public abstract class UI_Base : MonoBehaviour
 {
