@@ -80,6 +80,23 @@ public static class Content
         }
     }
 
+    public static Color GetColorByIndex(int index)
+    {
+        switch (index % 4)
+        {
+            case 0:
+                return Content.GetGradeColor(Grade.Normal);
+            case 1:
+                return Content.GetGradeColor(Grade.Rare);
+            case 2:
+                return Content.GetGradeColor(Grade.Elite);
+            case 3:
+                return Content.GetGradeColor(Grade.Epic);
+            default:
+                return Content.GetGradeColor(Grade.Normal);
+        }
+    }
+
     public static Color GetEnhanceColor(int rank)
     {
         if (rank == 0)

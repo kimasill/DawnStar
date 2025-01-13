@@ -323,6 +323,7 @@ namespace Server.Game
             {
                 Room.Push(Room.ResetRoom);
             }
+            GameLogic.Instance.UpdateRoom(Room);
         }
 
         public void HandleEquipItem(C_EquipItem equipPacket)

@@ -47,6 +47,8 @@ public class BaseController : MonoBehaviour
         }
     }
     protected bool _updated = false;
+    protected bool _sorted = false;
+    protected int _individualSortingOrder = 0;
     private long _stiffEndTick = 0;
     protected float _attackTime;
     PositionInfo _positionInfo = new PositionInfo();
@@ -191,7 +193,12 @@ public class BaseController : MonoBehaviour
         if (_sprite == null)
             return;
 
-        _sprite.sortingOrder += -CellPos.y * 10;
+        if(!_sorted)
+        {
+            _individualSortingOrder = _sprite.sortingOrder;
+            _sorted = true;
+        }
+        _sprite.sortingOrder = -CellPos.y * 10 + _individualSortingOrder;
     }
     protected virtual void UpdateAnimation()
     {

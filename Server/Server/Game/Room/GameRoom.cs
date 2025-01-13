@@ -116,8 +116,12 @@ namespace Server.Game
                 player = gameObject as Player;
                 if (player == null)
                     return;
-                player.Info.MapInfo = player.MapInfo;
+                if (_players.ContainsKey(player.Id))
+                {
+                    LeaveGame(player.Id);
+                }
 
+                player.Info.MapInfo = player.MapInfo;
                 _players.Add(gameObject.Id, player);
                 player.Room = this;
                 player.IsDead = false;
