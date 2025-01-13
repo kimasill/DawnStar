@@ -145,7 +145,7 @@ public class UI_Matching : UI_Base
             {
                 if (Managers.Data.ItemDict.TryGetValue(itemId, out Data.ItemData itemData))
                 {
-                    UI_ItemIcon itemIcon = Managers.Resource.Instantiate("UI/Scene/UI_ItemIcon", _content.transform).GetComponent<UI_ItemIcon>();
+                    UI_ItemIcon itemIcon = Managers.Resource.Instantiate("UI/Scene/UI_Display_Item", _content.transform).GetComponent<UI_Display_Item>();
                     _itemIcons.Add(itemIcon);
                     ItemInfo itemInfo = new ItemInfo()
                     {

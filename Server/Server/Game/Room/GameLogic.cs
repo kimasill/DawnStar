@@ -69,7 +69,7 @@ namespace Server.Game
             });
         }
 
-        public async Task<GameRoom> GetRoom(Player player, int newMapId, GameRoom room, bool add)
+        public async Task<GameRoom> GetRoom(int newMapId, bool add)
         {
             GameRoom newRoom;
             if (add == false)

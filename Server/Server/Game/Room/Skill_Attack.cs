@@ -47,9 +47,10 @@ namespace Server.Game
             foreach (Vector2Int pos in skillPos)
             {
                 List<GameObject> targets = Owner.Room.Map.Find(pos);
-                if (targets.Count > 0)
+                List<GameObject> targetsCopy = new List<GameObject>(targets);
+                if (targetsCopy.Count > 0)
                 {
-                    foreach (GameObject target in targets)
+                    foreach (GameObject target in targetsCopy)
                     {
                         if (target == Owner)
                         {

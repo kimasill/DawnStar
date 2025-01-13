@@ -86,7 +86,6 @@ GameObject:
   - component: {fileID: 5226331922140621160}
   - component: {fileID: 4133065504003362241}
   - component: {fileID: 2307830996634440496}
-  - component: {fileID: 7666678093306005728}
   m_Layer: 5
   m_Name: UI_ItemIcon
   m_TagString: Untagged
@@ -152,17 +151,3 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7666678093306005728
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7393944475604039975}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02d8d81d7ac067e4da340a5c95652e2b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _icon: {fileID: 0}
-  _itemDescription: {fileID: 0}

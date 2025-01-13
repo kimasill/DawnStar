@@ -248,15 +248,13 @@ namespace Server
                 ServerState = PlayerServerState.ServerStateGame;
                 GameLogic.Instance.Push(() =>
                 {
-                    GameRoom room = GameLogic.Instance.Find(1); // 멀티서버
-                    if (room != null)
+                    GameRoom room = GameLogic.Instance.FindByMapId(mapId); // 플레이어의 mapId로 룸을 찾음
+                    if (room == null)
                     {
-                        room.Push(room.EnterGame, MyPlayer, false);
+                        room = GameLogic.Instance.Add(mapId); // 룸이 없으면 새로 생성
+                        Console.WriteLine($"Created new game room for mapId: {mapId}");
                     }
-                    else
-                    {
-                        Console.WriteLine("Failed to find game room for multiplayer.");
-                    }
+                    room.Push(room.EnterGame, MyPlayer, false);
                 });
             }
         }

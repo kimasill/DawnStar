@@ -1,8 +1,5 @@
-using static UI_StoryScene;
-using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;

@@ -116,7 +116,7 @@ namespace Server.Game
             else if (nextMapData.type == MapType.Field)
                 add = false;
 
-            GameRoom room = await GameLogic.Instance.GetRoom(player, mapId, this, add);
+            GameRoom room = await GameLogic.Instance.GetRoom(mapId, add);
             HandleMapChanged(player, nextMapData, destPortalId, room);            
         }
         public void HandleMapChanged(Player player, MapData map, int destPortalId, GameRoom pRoom)
@@ -140,9 +140,8 @@ namespace Server.Game
             if (pRoom != null)
             {
                 player.Room = pRoom;
-                DbTransaction.Instance.Push(pRoom.EnterGame, player, false);
+                pRoom.Push(pRoom.EnterGame, player, false);
             }
-            GameLogic.Instance.UpdateRoom(this);
         }
 
         public void UpdatePlayerMapInfo(Player player, MapData map, int destPortalId)

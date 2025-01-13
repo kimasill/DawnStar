@@ -70,7 +70,8 @@ namespace Server
             foreach (var member in party.Members)
             {
                 member.Session.ServerState = PlayerServerState.ServerStateGame;
-                member.Room.Push(member.Room.HandleMapChanged, member, mapData, mapData.portals.First().id, room);
+                GameLogic.Instance.UpdateRoom(member.Room);
+                room.Push(member.Room.HandleMapChanged, member, mapData, mapData.portals.First().id, room);
             }
         }
     }
