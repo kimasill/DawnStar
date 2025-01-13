@@ -133,7 +133,7 @@ namespace Server
             {
                 if (MyPlayer == null)
                     return;
-                GameRoom room = GameLogic.Instance.Find(1);
+                GameRoom room = GameLogic.Instance.Find(MyPlayer.Room.RoomId);
                 room.Push(room.LeaveGame, MyPlayer.Info.ObjectId);
             });
 
