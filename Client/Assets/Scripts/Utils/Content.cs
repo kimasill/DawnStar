@@ -9,6 +9,8 @@ public static class Content
         {
             switch (optionType)
             {
+                case ItemOptionType.Damage:
+                    return "공격력";
                 case ItemOptionType.Attack:
                     return "공격력";
                 case ItemOptionType.Defense:
@@ -42,6 +44,31 @@ public static class Content
             }
         }
         return option;
+    }
+    public static string ConvertSpecialOptionsValue(string option, string value)
+    {
+        string key = option.Split('_')[0];
+        if (System.Enum.TryParse(key, out ItemOptionType optionType))
+        {
+            switch (optionType)
+            {
+                case ItemOptionType.Attack:
+                    return $"{value}%";
+                case ItemOptionType.DefenseMulti:
+                    return $"{value}%";
+                case ItemOptionType.HpMulti:
+                    return $"{value}%";
+                case ItemOptionType.UpMulti:
+                    return $"{value}%";
+                case ItemOptionType.CriticalChance:
+                    return $"{value}%";
+                case ItemOptionType.CriticalDamage:
+                    return $"{value}%";
+                default:
+                    return value;
+            }
+        }
+        return value;
     }
     public static string ConvertGrade(Grade grade)
     {

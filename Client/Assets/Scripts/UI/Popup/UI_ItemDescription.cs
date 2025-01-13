@@ -126,7 +126,8 @@ public class UI_ItemDescription : UI_Popup
                 }
             }
             string key = Content.ConvertSpecialOptions(option.Key);
-            AddStat($"{key}: {option.Value}");
+            string value = Content.ConvertSpecialOptionsValue(option.Key, option.Value);
+            AddStat($"{key}: {value}");
         }
         // StatPanel과 ItemPanel의 크기 조정
         LayoutRebuilder.ForceRebuildLayoutImmediate(_statPanelRectTransform);
