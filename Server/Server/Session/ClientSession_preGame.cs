@@ -193,28 +193,6 @@ namespace Server
                 }
 
                 MyPlayer.Session = this;
-                S_ItemList itemListPacket = new S_ItemList();
-
-                using (AppDbContext db = new AppDbContext())
-                {
-                    List<ItemDb> items = db.Items
-                        .Where(i => i.OwnerDbId == playerInfo.PlayerDbId)
-                        .ToList();
-                    foreach (ItemDb itemDb in items)
-                    {
-                        Item item = Item.MakeItem(itemDb);
-                        if (item != null)
-                        {
-                            MyPlayer.Inven.Add(item);
-
-                            ItemInfo info = new ItemInfo();
-                            info.MergeFrom(item.Info);
-                            itemListPacket.Items.Add(info);
-                        }
-                    }
-                }
-                Send(itemListPacket);
-                
                 using (AppDbContext db = new AppDbContext())
                 {
                     MapDb mapDb = db.Maps
@@ -241,6 +219,7 @@ namespace Server
                 {
                     GameRoom room = GameLogic.Instance.Add(mapId);
                     room.Push(room.EnterGame, MyPlayer, false);
+                    room.PushAfter(1000, UpdateItemList, playerInfo);
                 });
             }
             else
@@ -255,10 +234,34 @@ namespace Server
                         Console.WriteLine($"Created new game room for mapId: {mapId}");
                     }
                     room.Push(room.EnterGame, MyPlayer, false);
+                    room.PushAfter(1000,UpdateItemList, playerInfo);
                 });
             }
         }
+        public void UpdateItemList(LobbyPlayerInfo playerInfo)
+        {
+            S_ItemList itemListPacket = new S_ItemList();
+            itemListPacket.ObjectId = MyPlayer.Id;
+            using (AppDbContext db = new AppDbContext())
+            {
+                List<ItemDb> items = db.Items
+                    .Where(i => i.OwnerDbId == playerInfo.PlayerDbId)
+                    .ToList();
+                foreach (ItemDb itemDb in items)
+                {
+                    Item item = Item.MakeItem(itemDb);
+                    if (item != null)
+                    {
+                        MyPlayer.Inven.Add(item);
 
+                        ItemInfo info = new ItemInfo();
+                        info.MergeFrom(item.Info);
+                        itemListPacket.Items.Add(info);
+                    }
+                }
+            }
+            Send(itemListPacket);
+        }
         public bool ChangeServerState(int mapId)
         {
             DataManager.MapDict.TryGetValue(mapId, out MapData mapData);

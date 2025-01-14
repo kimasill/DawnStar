@@ -403,10 +403,11 @@ namespace Server.Game
             DbTransaction.EquipItemNoti(this, item);
 
             // 클라이언트에게 알림
-            S_EquipItem equipNoti = new S_EquipItem();
+            S_EquipItem equipNoti = new S_EquipItem();     
+            equipNoti.ObjectId = Id;
             equipNoti.ItemDbId = equipPacket.ItemDbId;
             equipNoti.Equipped = equipPacket.Equipped;
-            Session.Send(equipNoti);
+            Room.Broadcast(CellPos, equipNoti);
 
             RefreshAdditionalStat();
             SendAdditionalStat();

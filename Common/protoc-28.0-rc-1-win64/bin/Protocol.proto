@@ -470,6 +470,7 @@ message C_Respawn{
 
 message S_ItemList{
 	repeated ItemInfo items = 1;
+	int32 objectId = 2;
 }
 
 message S_AddItem{
@@ -492,8 +493,9 @@ message C_EquipItem{
 }
 
 message S_EquipItem{
-	int32 ItemDbId = 1;
-	bool equipped = 2;
+	int32 ObjectId = 1;
+	int32 ItemDbId = 2;
+	bool equipped = 3;
 }
 message C_UseItem{
 	int32 itemDbId = 1;

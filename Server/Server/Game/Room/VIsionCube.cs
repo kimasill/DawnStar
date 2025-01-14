@@ -117,9 +117,18 @@ namespace Server.Game.Room
                     {
                         continue;
                     }
+                    else if (obj.ObjectType == GameObjectType.Player)
+                    {
+                        Player player = obj as Player;
+                        if (player.Session == null)
+                        {
+                            continue;
+                        }
+                        Owner.Room.PushAfter(100, Owner.Room.HandleItemList, Owner, player, true);
+                    }
                     ObjectInfo info = new ObjectInfo();
                     info.MergeFrom(obj.Info);
-                    spawnPacket.Objects.Add(info);                    
+                    spawnPacket.Objects.Add(info);  
                 }
                 Owner.Session.Send(spawnPacket);
             }

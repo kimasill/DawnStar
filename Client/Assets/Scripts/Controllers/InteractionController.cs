@@ -27,7 +27,6 @@ public class InteractionController : BaseController
         _cameraController = Managers.Scene.CurrentScene.MainCamera.GetComponent<CameraController>();
         if(Managers.Map!= null)
             CellPos = Managers.Map.CurrentGrid.WorldToCell(transform.position);
-        UpdateSortingLayer();
     }
 
     public void SetInteraction(int interactionId)
