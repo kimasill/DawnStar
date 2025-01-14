@@ -453,8 +453,8 @@
           "name": "성당 출구",
           "mapId": 5,
           "destination": 504,
-          "posX": -12,
-          "posY": -5
+          "posX": 18,
+          "posY": 50
         }
       ],
       "chests": [

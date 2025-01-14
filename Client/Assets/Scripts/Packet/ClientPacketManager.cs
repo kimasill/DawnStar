@@ -107,7 +107,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SSystemNotice, MakePacket<S_SystemNotice>);
 		_handler.Add((ushort)MsgId.SSystemNotice, PacketHandler.S_SystemNoticeHandler);		
 		_onRecv.Add((ushort)MsgId.SChat, MakePacket<S_Chat>);
-		_handler.Add((ushort)MsgId.SChat, PacketHandler.S_ChatHandler);
+		_handler.Add((ushort)MsgId.SChat, PacketHandler.S_ChatHandler);		
+		_onRecv.Add((ushort)MsgId.SUpdateItemList, MakePacket<S_UpdateItemList>);
+		_handler.Add((ushort)MsgId.SUpdateItemList, PacketHandler.S_UpdateItemListHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

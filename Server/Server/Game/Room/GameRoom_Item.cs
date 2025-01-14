@@ -455,11 +455,10 @@ namespace Server.Game
             DbTransaction.SaveAddItemDB(player, newItemDb, this);
         }
 
-        public void HandleItemList(Player reqPlayer, Player tarPlayer, bool equip)
+        public void HandleEquippedItemList(Player reqPlayer, Player tarPlayer, bool equip)
         {
-            S_ItemList itemListPacket = new S_ItemList();
+            S_UpdateItemList itemListPacket = new S_UpdateItemList();
             itemListPacket.ObjectId = tarPlayer.Id;
-
             if (equip == false)
             {
                 itemListPacket.Items.AddRange(tarPlayer.Inven.Items.Values

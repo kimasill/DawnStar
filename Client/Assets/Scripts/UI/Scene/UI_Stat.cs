@@ -297,6 +297,8 @@ public class UI_Stat : UI_Base
             }
                 //Text ¼³Á¤
             MyPlayerController player = Managers.Object.MyPlayer;
+            if (player == null)
+                return;
             player.RefreshAdditionalStat();
 
             Get<TMP_Text>((int)Texts.NameText).text = player.name;

@@ -63,12 +63,15 @@ public class BatController : MonsterController
     private IEnumerator PlayMoveToAttackAnimation()
     {
         Animator.Play("MOVETOINSTANCE");
+        yield return new WaitForEndOfFrame();
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed);
 
         Animator.Play("INSTANCE");
+        yield return new WaitForEndOfFrame();
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed);
 
         Animator.Play("ATTACK");
+        yield return new WaitForEndOfFrame();
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed);
 
         State = CreatureState.Idle;
@@ -77,9 +80,11 @@ public class BatController : MonsterController
     private IEnumerator PlayAttackAnimation()
     {
         Animator.Play("ATTACK");
+        yield return new WaitForEndOfFrame();
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed);
 
         Animator.Play("INSTANCE");
+        yield return new WaitForEndOfFrame();
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed * 2);
 
         State = CreatureState.Idle;
