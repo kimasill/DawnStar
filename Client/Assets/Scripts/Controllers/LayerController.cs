@@ -89,6 +89,8 @@ public class LayerController : MonoBehaviour
                     tileObject.transform.localPosition = tilemap.CellToLocalInterpolated(pos + tilemap.tileAnchor);
                     SpriteRenderer spriteRenderer = tileObject.AddComponent<SpriteRenderer>();
                     spriteRenderer.sprite = tilemap.GetSprite(pos);
+                    //Vector3Int cellPosition = _grid.WorldToCell(spriteRenderer.transform.position);
+
                     spriteRenderer.sortingOrder = -pos.y * 10 + indSortingOrder;
                     spriteRenderer.sortingLayerName = tilemap.GetComponent<TilemapRenderer>().sortingLayerName;
                 }

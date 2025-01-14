@@ -336,7 +336,6 @@ class PacketHandler
             Managers.Map.SetChests(objectInfo.MapInfo.ChestIds.ToList());
             Managers.Map.SetInteractions(objectInfo.MapInfo.InteractionIds.ToList());
             Managers.Scene.CurrentScene.CheckOnSceneLoadedQuest();
-
             C_RequestStat request = new C_RequestStat();
             Managers.Network.Send(request);
         }
@@ -373,10 +372,9 @@ class PacketHandler
             Managers.Network.Send(enterGamePacket);
         }
     }
-
-    public static void S_ItemListHandler(PacketSession session, IMessage packet)
+    public static void S_UpdateItemListHandler(PacketSession session, IMessage packet)
     {
-        S_ItemList itemPacket = packet as S_ItemList;
+        S_UpdateItemList itemPacket = packet as S_UpdateItemList;
 
         GameObject obj = Managers.Object.FindById(itemPacket.ObjectId);
         if (obj == null)
@@ -389,25 +387,7 @@ class PacketHandler
         {
             return;
         }
-        if (bc.Id == Managers.Object.MyPlayer.Id)
-        {
-            Managers.Inventory.Clear();
-            //메모리에 아이템 정보 저장
-            foreach (ItemInfo itemInfo in itemPacket.Items)
-            {
-                Item item = Item.MakeItem(itemInfo);
-                Managers.Inventory.Add(item);
-            }
-            MyPlayerController mypc = bc as MyPlayerController;
-            mypc.RefreshAdditionalStat();
-
-            Managers.Inventory.RefreshEquipment(mypc.Equipment);
-
-            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-            gameSceneUI.InvenUI.RefreshUI();
-            gameSceneUI.GameWindow.SkillSlot.RefreshUI();
-        }
-        else
+        if (bc is PlayerController)
         {
             PlayerController pc = bc as PlayerController;
             foreach (ItemInfo itemInfo in itemPacket.Items)
@@ -415,6 +395,31 @@ class PacketHandler
                 Item item = Item.MakeItem(itemInfo);
                 pc.Equipment.EquipItem(item);
             }
+        }
+    }
+    public static void S_ItemListHandler(PacketSession session, IMessage packet)
+    {
+        S_ItemList itemPacket = packet as S_ItemList;
+        if (itemPacket.Items == null)
+        {
+            return;
+        }
+        Managers.Inventory.Clear();
+        //메모리에 아이템 정보 저장
+        foreach (ItemInfo itemInfo in itemPacket.Items)
+        {
+            Item item = Item.MakeItem(itemInfo);
+            Managers.Inventory.Add(item);
+        }
+
+        if(Managers.Object.MyPlayer != null)
+        {
+            Managers.Object.MyPlayer.RefreshAdditionalStat();
+            Managers.Inventory.RefreshEquipment(Managers.Object.MyPlayer.Equipment);
+
+            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+            gameSceneUI.InvenUI.RefreshUI();
+            gameSceneUI.GameWindow.SkillSlot.RefreshUI();
         }
     }
 

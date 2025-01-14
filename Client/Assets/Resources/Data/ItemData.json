@@ -318,11 +318,13 @@
       "name": "죽은 기운의 원흉",
       "jewelryType": "Earring",
       "price": 17800,
-      "iconPath": "Textures/Item/Jewelry/Icon/Earing_SourceOfDead",
+      "iconPath": "Textures/Item/Jewelry/Icon/Earing_SourceOfDeath",
       "description": "죽은자의 영혼을 불러들이는 귀걸이. 납골당 일대를 장악한 기운의 원인이었다.",
       "options": {
-        "Up": "20",
-        "UpRegen": "15"
+        "Up": "40",
+        "UpRegen": "4",
+        "CriticalChance": "10",
+        "CriticalDamage": "20"
       },
       "grade": "Epic"
     },
@@ -334,8 +336,8 @@
       "iconPath": "Textures/Item/Jewelry/Icon/Necklace_Beholder",
       "description": "예언자의 눈. 미래를 예측하는 능력을 부여한다.",
       "options": {
-        "Up": 25,
-        "UpRegen": 20,
+        "Up": 100,
+        "UpRegen": 7,
         "Skill": 37
       },
       "grade": "Uncharted"

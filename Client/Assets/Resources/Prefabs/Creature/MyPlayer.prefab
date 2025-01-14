@@ -3644,7 +3644,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: -825368885
   m_SortingLayer: 3
-  m_SortingOrder: 10
+  m_SortingOrder: 0
   m_SortAtRoot: 0
 --- !u!95 &5989253925918591075
 Animator:

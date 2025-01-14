@@ -77,6 +77,7 @@ enum MsgId {
   S_SYSTEM_NOTICE = 69;
   C_CHAT = 70;
   S_CHAT = 71;
+  S_UPDATE_ITEM_LIST = 73;
 }
 enum CreatureState{
   IDLE = 0;
@@ -470,7 +471,10 @@ message C_Respawn{
 
 message S_ItemList{
 	repeated ItemInfo items = 1;
-	int32 objectId = 2;
+}
+message S_UpdateItemList{
+	int32 objectId = 1;
+	repeated ItemInfo items = 2;
 }
 
 message S_AddItem{

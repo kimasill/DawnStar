@@ -248,7 +248,6 @@ class PacketHandler
             return;
         room.Push(room.HandleRemoveItem, player, removeItemPacket);
     }
-
     public static void C_RequestMonsterHandler(PacketSession session, IMessage packet)
     {
         C_RequestMonster spawnPacket = packet as C_RequestMonster;

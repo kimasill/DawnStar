@@ -127,7 +127,7 @@ namespace Server.Game
                 return;
             }
             LeaveGame(player.Id, save:false);
-            DbTransaction.Instance.Push(UpdatePlayerMapInfo, player, map, destPortalId);
+            UpdatePlayerMapInfo(player, map, destPortalId);
 
             MapDb mapDb = new MapDb()
             {                
@@ -136,7 +136,7 @@ namespace Server.Game
                 Scene = map.name,
                 MapName = map.name
             };
-            DbTransaction.Instance.Push(DbTransaction.SavePlayerMap,player, mapDb);
+            DbTransaction.SavePlayerMap(player, mapDb);
             if (pRoom != null)
             {
                 player.Room = pRoom;

@@ -46,11 +46,10 @@ namespace Server.Game
             }
             foreach (Vector2Int pos in skillPos)
             {
-                List<GameObject> targets = Owner.Room.Map.Find(pos);
-                List<GameObject> targetsCopy = new List<GameObject>(targets);
-                if (targetsCopy.Count > 0)
+                List<GameObject> targets = new List<GameObject>(Owner.Room.Map.Find(pos));
+                if (targets.Count > 0)
                 {
-                    foreach (GameObject target in targetsCopy)
+                    foreach (GameObject target in targets)
                     {
                         if (target == Owner)
                         {
@@ -79,11 +78,18 @@ namespace Server.Game
                 {
                     if (i >= 1)
                     {
-                        await Task.Delay((int)((data.terms[i] - data.terms[i - 1]) / Owner.TotalAttackSpeed * 1000));
+                        int delay = (int)((data.terms[i] - data.terms[i - 1]) / Owner.TotalAttackSpeed * 1000);
+                        if (delay < 0) delay = 0; // Ensure delay is non-negative
+                        await Task.Delay(delay);
                     }
                     else if (i == 0)
                     {
-                        await Task.Delay((int)(data.terms[i] / Owner.TotalAttackSpeed * 1000));
+                        int delay = (int)(data.terms[i] / Owner.TotalAttackSpeed * 1000);
+                        if (delay < 0)
+                        {
+                            delay = 0; // or handle the error appropriately
+                        }
+                        await Task.Delay(delay);
                     }
                 }
                 else if (data.term != 0)
@@ -93,7 +99,7 @@ namespace Server.Game
                 List<Vector2Int> targetPos = SkillLogic.GetTargetsInLine(Owner.CellPos, Owner.Info.Position.MoveDir, (int)data.shape.range);
                 foreach (var pos in targetPos)
                 {
-                    List<GameObject> targets = Owner.Room.Map.Find(pos);
+                    List<GameObject> targets = new List<GameObject>(Owner.Room.Map.Find(pos));
                     if (targets.Count > 0)
                     {
                         foreach (GameObject target in targets)
@@ -193,7 +199,7 @@ namespace Server.Game
                 }
                 foreach (Vector2Int pos in skillPos)
                 {
-                    List<GameObject> targets = Owner.Room.Map.Find(pos);
+                    List<GameObject> targets = new List<GameObject>(Owner.Room.Map.Find(pos));
                     if (targets.Count > 0)
                     {
                         foreach (GameObject newTarget in targets)
@@ -244,7 +250,7 @@ namespace Server.Game
 
                 foreach (Vector2Int pos in skillPos)
                 {
-                    List<GameObject> targets = Owner.Room.Map.Find(pos);
+                    List<GameObject> targets = new List<GameObject>(Owner.Room.Map.Find(pos));
                     if (targets.Count > 0)
                     {
                         foreach (GameObject newTarget in targets)

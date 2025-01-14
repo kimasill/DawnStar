@@ -124,7 +124,7 @@ namespace Server.Game.Room
                         {
                             continue;
                         }
-                        Owner.Room.PushAfter(100, Owner.Room.HandleItemList, Owner, player, true);
+                        Owner.Room.PushAfter(100, Owner.Room.HandleEquippedItemList, Owner, player, true);
                     }
                     ObjectInfo info = new ObjectInfo();
                     info.MergeFrom(obj.Info);
