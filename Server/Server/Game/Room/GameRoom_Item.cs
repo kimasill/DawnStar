@@ -454,5 +454,25 @@ namespace Server.Game
 
             DbTransaction.SaveAddItemDB(player, newItemDb, this);
         }
+
+        public void HandleItemList(Player reqPlayer, Player tarPlayer, bool equip)
+        {
+            S_ItemList itemListPacket = new S_ItemList();
+            itemListPacket.ObjectId = tarPlayer.Id;
+
+            if (equip == false)
+            {
+                itemListPacket.Items.AddRange(tarPlayer.Inven.Items.Values
+                .Select(x => x.Info));
+            }
+            else
+            {
+                itemListPacket.Items.AddRange(tarPlayer.Inven.Items.Values
+                .Select(x => x.Info)
+                .Where(x => x.Equipped == true)
+                );
+            }
+            reqPlayer.Session.Send(itemListPacket);
+        }
     }
 }

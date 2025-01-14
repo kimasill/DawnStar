@@ -48,7 +48,7 @@ public class ObjectManager
             }
             else
             {
-                GameObject go = Managers.Resource.Instantiate("Creature/PlayerWarrior");
+                GameObject go = Managers.Resource.Instantiate("Creature/Player");
                 go.name = info.Name;
                 _objects.Add(info.ObjectId, go);
 

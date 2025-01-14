@@ -45,7 +45,7 @@ public class ChestController : BaseController
         
         _headUpIcon.SetActive(true);
         _headUpIcon.gameObject.GetComponent<SpriteRenderer>().sprite = Managers.Resource.Load<Sprite>("Textures/Images/QuestIcons/Icon_Chest");
-        _headUpIcon.transform.position = new Vector3(transform.position.x, transform.position.y + 1f, 0);
+        _headUpIcon.transform.position = new Vector3(transform.position.x, transform.position.y + 0.5f, 0);
 
         if(_headUpText == null)
             _headUpText = _headUpIcon.GetComponentInChildren<TextMeshPro>();

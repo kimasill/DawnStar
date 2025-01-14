@@ -377,23 +377,44 @@ class PacketHandler
     public static void S_ItemListHandler(PacketSession session, IMessage packet)
     {
         S_ItemList itemPacket = packet as S_ItemList;
-        Managers.Inventory.Clear();
 
-        //메모리에 아이템 정보 저장
-        foreach (ItemInfo itemInfo in itemPacket.Items)
+        GameObject obj = Managers.Object.FindById(itemPacket.ObjectId);
+        if (obj == null)
         {
-            Item item = Item.MakeItem(itemInfo);
-            Managers.Inventory.Add(item);
+            Debug.LogError($"S_ItemListHandler: Object with ID {itemPacket.ObjectId} not found.");
+            return;
         }
-        if (Managers.Object.MyPlayer != null)
+        BaseController bc = obj.GetComponent<BaseController>();
+        if (bc == null)
         {
-            Managers.Object.MyPlayer.RefreshAdditionalStat();
-            EquipmentController equipment = Managers.Object.MyPlayer.Equipment;
-            Managers.Inventory.RefreshEquipment(equipment);
+            return;
+        }
+        if (bc.Id == Managers.Object.MyPlayer.Id)
+        {
+            Managers.Inventory.Clear();
+            //메모리에 아이템 정보 저장
+            foreach (ItemInfo itemInfo in itemPacket.Items)
+            {
+                Item item = Item.MakeItem(itemInfo);
+                Managers.Inventory.Add(item);
+            }
+            MyPlayerController mypc = bc as MyPlayerController;
+            mypc.RefreshAdditionalStat();
+
+            Managers.Inventory.RefreshEquipment(mypc.Equipment);
 
             UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
             gameSceneUI.InvenUI.RefreshUI();
             gameSceneUI.GameWindow.SkillSlot.RefreshUI();
+        }
+        else
+        {
+            PlayerController pc = bc as PlayerController;
+            foreach (ItemInfo itemInfo in itemPacket.Items)
+            {
+                Item item = Item.MakeItem(itemInfo);
+                pc.Equipment.EquipItem(item);
+            }
         }
     }
 
@@ -448,29 +469,29 @@ class PacketHandler
 
     public static void S_EquipItemHandler(PacketSession session, IMessage packet)
     {
-        S_EquipItem equipItemOk = packet as S_EquipItem;
-
-        //메모리에 아이템 정보 적용
-        Item item  = Managers.Inventory.Get(equipItemOk.ItemDbId);
-        if(item == null)
+        S_EquipItem equipItem = packet as S_EquipItem;
+        if(Managers.Object.MyPlayer.Id == equipItem.ObjectId)
         {
-            return;
-        }
-        item.Equipped = equipItemOk.Equipped;        
-        Debug.Log("S_EquipItemHandler");
-
-        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-        gameSceneUI.InvenUI.RefreshUI();
-        if (Managers.Object.MyPlayer != null)
-        { 
-            if(item.ItemType == ItemType.Weapon || item.ItemType == ItemType.Armor)
+            Item item = Managers.Inventory.Get(equipItem.ItemDbId);
+            if (item == null)
             {
-                Managers.Object.MyPlayer.Equipment.EquipItem(item);
+                return;
             }
-            Managers.Object.MyPlayer.RefreshAdditionalStat();
-            gameSceneUI.StatUI.RefreshUI();
-            gameSceneUI.GameWindow.SkillSlot.RefreshUI();
-        }            
+            item.Equipped = equipItem.Equipped;
+
+            UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+            gameSceneUI.InvenUI.RefreshUI();
+            if (Managers.Object.MyPlayer != null)
+            {
+                if (item.ItemType == ItemType.Weapon || item.ItemType == ItemType.Armor)
+                {
+                    Managers.Object.MyPlayer.Equipment.EquipItem(item);
+                }
+                Managers.Object.MyPlayer.RefreshAdditionalStat();
+                gameSceneUI.StatUI.RefreshUI();
+                gameSceneUI.GameWindow.SkillSlot.RefreshUI();
+            }
+        }
     }
 
     public static void S_ShopListHandler(PacketSession session, IMessage packet)

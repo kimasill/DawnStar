@@ -1,11 +1,13 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.U2D;
 
 public class CameraController : MonoBehaviour
 {
     public float smoothSpeed = 0.125f;
     public Vector3 offset = new Vector3(0, 0, -10);
     public float smoothTime = 0.075f;
+    public float zoomLevel = 2f;
     private Vector3 velocity = Vector3.zero;
     private Transform target;
 
@@ -13,11 +15,38 @@ public class CameraController : MonoBehaviour
     public float maxSmoothTime = 0.5f; // 최대 이동 속도
     public float distanceThreshold = 5f; // 속도 조절을 시작할 거리
 
+    public int assetsPPU = 200; // 픽셀 퍼 유닛
+    public int refResolutionX = 1920; // 참조 해상도 X
+    public int refResolutionY = 1080; // 참조 해상도 Y
+
     public void SetTarget(Transform newTarget)
     {
         target = newTarget;
     }
-
+    public void SetPixelPerfect(int resolutionX = 0, int resolutionY = 0)
+    {
+        PixelPerfectCamera pixelPerfectCamera = Camera.main.GetComponent<PixelPerfectCamera>();
+        if (pixelPerfectCamera == null)
+        {
+            pixelPerfectCamera = Camera.main.gameObject.AddComponent<PixelPerfectCamera>();
+        }
+        pixelPerfectCamera.assetsPPU = assetsPPU;
+        if(resolutionX != 0 && resolutionY != 0)
+        {
+            pixelPerfectCamera.refResolutionX = resolutionX;
+            pixelPerfectCamera.refResolutionY = resolutionY;
+        }
+        else
+        {
+            pixelPerfectCamera.refResolutionX = refResolutionX;
+            pixelPerfectCamera.refResolutionY = refResolutionY;
+        }
+        pixelPerfectCamera.upscaleRT = true;
+        pixelPerfectCamera.pixelSnapping = true;
+        pixelPerfectCamera.stretchFill = true;
+        pixelPerfectCamera.refResolutionX = (int)(refResolutionX / zoomLevel);
+        pixelPerfectCamera.refResolutionY = (int)(refResolutionY / zoomLevel);
+    }
     public IEnumerator MoveToPosition(Transform targetTransform)
     {
         target = null;

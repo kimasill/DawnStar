@@ -17,6 +17,9 @@ class CryptScene : BaseScene
         Managers.Map.LoadMap(7); // DawnTownDead ¸Ê ·Îµå
         Screen.SetResolution(640, 480, false);
         Camera.main.orthographicSize = ZoomLevel;
+
+        _cameraController = Camera.main.GetComponent<CameraController>();
+        _cameraController.SetPixelPerfect();
         _sceneUi = Managers.UI.ShowSceneUI<UI_GameScene>();
         _sceneUi.SetActive(_sceneUi.GameWindow, true);
         _description = Managers.UI.ShowPopupUI<UI_Description>();
