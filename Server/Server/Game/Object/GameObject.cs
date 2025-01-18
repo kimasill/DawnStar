@@ -44,8 +44,31 @@ namespace Server.Game
         public virtual float TotalInvokeSpeed { get { return Stat.InvokeSpeed + AdditionalInvokeSpeed; } }
         public virtual int TotalAttack { get { return Stat.Attack + AdditionalAttack;  } }
         public virtual int TotalDefense { get { return Stat.Defense + AdditionalDefense; } }
+        public float DefenseRate
+        {
+            get
+            {
+                float defenseFactor = (float)Math.Pow(TotalDefense, 0.75f);
+                return defenseFactor / (defenseFactor + 125);
+            }
+        }
         public virtual int TotalAvoidance { get { return Stat.Avoid + AdditionalAvoidance; } }
+        public float AvoidanceRate 
+        { 
+            get {
+                float avoidFactor = (float)Math.Pow(TotalAvoidance, 0.65f);
+                return avoidFactor / (avoidFactor + 100);                
+            } 
+        }
         public virtual int TotalAccuracy { get { return Stat.Accuracy + AdditionalAccuracy; } }
+        public float AccuracyRate
+        {
+            get
+            {
+                float accuracyFactor = (float)Math.Pow(TotalAccuracy, 0.55f);
+                return accuracyFactor / (accuracyFactor + 100);
+            }
+        }
         public virtual float TotalAttackSpeed { get { return Stat.AttackSpeed + AdditionalAttackSpeed; } }
         public virtual int TotalCriticalChance { get { return Stat.CriticalChance + AdditionalCriticalChance; } }
         public virtual int TotalCriticalDamage { get { return Stat.CriticalDamage + AdditionalCriticalDamage; } }

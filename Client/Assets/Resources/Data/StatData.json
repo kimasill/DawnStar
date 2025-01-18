@@ -7,6 +7,8 @@
       "attack": 10,
       "criticalChance": 0,
       "criticalDamage": 20,
+      "accuracy": 0,
+      "avoid": 0,
       "defense": 0,
       "speed": 5.0,
       "totalExp": 0,
