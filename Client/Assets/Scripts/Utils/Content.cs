@@ -26,9 +26,9 @@ public static class Content
                 case ItemOptionType.Hp:
                     return "체력";
                 case ItemOptionType.Avoid:
-                    return "회피율";
+                    return "회피";
                 case ItemOptionType.Accuracy:
-                    return "명중률";
+                    return "적중";
                 case ItemOptionType.HpRegen:
                     return "체력 회복";
                 case ItemOptionType.Heal:

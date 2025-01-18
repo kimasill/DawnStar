@@ -113,13 +113,30 @@ namespace Server.Game
             // 방어력을 적용한 데미지 계산 (victim null 확인 추가)
             if (victim != null)
             {
-                float defenseFactor = (float)Math.Pow(victim.TotalDefense, 0.7f);
-                damage = (int)(damage * (1 - (defenseFactor / (defenseFactor + 100))));
+                damage = (int)(damage * ( 1 - victim.DefenseRate ));
             }
 
+            // 데미지 감소 적용
             if (victim.TotalDamageReduce != 0)
             {
-                damage = (int)(damage * (1-victim.TotalDamageReduce));
+                damage = (int)(damage * ( 1 - victim.TotalDamageReduce ));
+            }
+
+            // 회피 와 적중  
+            if (victim.TotalAvoidance > 0)
+            {
+                Random random = new Random();
+                double randomValue = random.NextDouble();
+                double accuracyRate = randomValue;
+                if (attacker.AccuracyRate > 0)
+                {
+                    accuracyRate = randomValue + attacker.AccuracyRate;
+                }
+                if (accuracyRate < victim.AvoidanceRate)
+                {
+                    damage = 0;
+                    //damagePacket.Miss = true;
+                }
             }
 
             if (damage >= 0)
