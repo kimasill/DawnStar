@@ -145,7 +145,7 @@ public class UI_StateBar : UI_Base
         }
 
         _hpBar.SetHpBar(targetRatio);
-        _hpText.text = $"{_myPlayer.Hp},{_myPlayer.TotalHp}";
+        _hpText.text = $"{_myPlayer.Hp}/{_myPlayer.TotalHp}";
     }
     private IEnumerator LerpUpBar(float targetRatio)
     {

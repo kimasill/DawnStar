@@ -26,11 +26,15 @@ public class UI_ItemDescription : UI_Popup
 
     private RectTransform _statPanelRectTransform;
     private RectTransform _itemPanelRectTransform;
+    private RectTransform _mainPanelRectTransform;
+    private RectTransform _sidePanelRectTransform;
     private RectTransform _itemDescriptionRectTransform;
     enum Images
     {
         ItemPopup_Image,
-        ItemDescriptionImage
+        ItemDescriptionImage,
+        MainPanel,
+        SidePanel,
     }
 
     enum Texts
@@ -51,15 +55,15 @@ public class UI_ItemDescription : UI_Popup
         {
             Destroy(child.gameObject);
         }
-        GameObject go = Managers.Resource.Instantiate("UI/Popup/UI_Item_Stat", _grid.transform);
-        UI_Item_Stat stat = go.GetOrAddComponent<UI_Item_Stat>();
-        Items.Add(stat);
+        
 
         Bind<Image>(typeof(Images));
         Bind<TMP_Text>(typeof(Texts));
         _skillPanel.gameObject.SetActive(false);
         _statPanelRectTransform = _grid.gameObject.transform as RectTransform;
         _itemPanelRectTransform = _itemPopup.GetComponent<RectTransform>();
+        _mainPanelRectTransform = GetImage((int)Images.MainPanel).gameObject.transform as RectTransform;
+        _sidePanelRectTransform = GetImage((int)Images.SidePanel).gameObject.transform as RectTransform;
         _itemDescriptionRectTransform = GetImage((int)Images.ItemDescriptionImage).gameObject.transform as RectTransform;
     }
 
@@ -71,6 +75,7 @@ public class UI_ItemDescription : UI_Popup
 
     public void CloseUI(PointerEventData eventData)
     {
+        Items.Clear();
         ClosePopupUI();
     }
 
@@ -129,9 +134,7 @@ public class UI_ItemDescription : UI_Popup
             string value = Content.ConvertSpecialOptionsValue(option.Key, option.Value);
             AddStat($"{key}: {value}");
         }
-        // StatPanel과 ItemPanel의 크기 조정
-        LayoutRebuilder.ForceRebuildLayoutImmediate(_statPanelRectTransform);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(_itemPanelRectTransform);
+        AdjustPanelSizes();
     }
     private void SetConsumableItem(Item.Consumable item)
     {
@@ -150,11 +153,27 @@ public class UI_ItemDescription : UI_Popup
     private void SetGoodsItem(Item.Goods item)
     {
     }
+    private void AdjustPanelSizes()
+    {
+        float statItemHeight = Items.Count == 0 ? 0 : Items[0].GetComponent<RectTransform>().rect.height;
+        float statPanelHeight = statItemHeight * Items.Count;
 
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_statPanelRectTransform);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_mainPanelRectTransform);
+
+        // StatPanel의 높이를 기준으로 ItemPanel의 높이를 조정        
+        float offset = _mainPanelRectTransform.rect.height - _statPanelRectTransform.rect.height;
+
+        _statPanelRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, statPanelHeight);
+        _mainPanelRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, statPanelHeight + offset);
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_sidePanelRectTransform);
+    }
     private void AddStat(string statText)
     {
         GameObject statObject = Managers.Resource.Instantiate("UI/Popup/UI_Item_Stat", _grid.transform);
         UI_Item_Stat stat = statObject.GetOrAddComponent<UI_Item_Stat>();
+        Items.Add(stat);
         stat.Name.text = statText;
     }
 
