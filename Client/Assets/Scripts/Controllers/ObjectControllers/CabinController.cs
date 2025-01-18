@@ -50,7 +50,7 @@ public class CabinController : BaseController
         Animator.speed = 1;
         Animator.Play($"OPEN{TemplateId}");
         yield return new WaitForEndOfFrame();
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length - 0.1f);
         Animator.speed = 0;
         Animator.Play($"CLOSE{TemplateId}", 0, 0);
     }
