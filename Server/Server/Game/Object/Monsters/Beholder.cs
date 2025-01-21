@@ -19,6 +19,7 @@ namespace Server.Game.Object.Monsters
         public Beholder(MonsterData data) : base(data)
         {
             Initialize(data);
+            SkillRange = LaserRange;
         }
 
         protected override void UpdateSkill()
@@ -34,28 +35,16 @@ namespace Server.Game.Object.Monsters
                     return;
                 }
 
-                // 스킬 사용 가능한지 확인
-                Vector2Int dir = _target.CellPos - CellPos;
-                int dist = dir.cellDistanceFromZero;
-                bool canUseSkill = dist <= SkillRange;
-                if (!canUseSkill)
-                {
-                    State = CreatureState.Moving;
-                    BroadcastMove();
-                    return;
-                }
-
                 // 쿨타임 설정
                 float coolTick = (int)(1000 / TotalAttackSpeed);
                 int skillId = MagicSkillId;
                 AdditionalInvokeSpeed = 0;
+                SkillRange = LaserRange;
                 SkillData skillData = null;
-
-                DataManager.SkillDict.TryGetValue(LaserSkillId, out skillData);
+                DataManager.SkillDict.TryGetValue(skillId, out skillData);
                 if (skillData == null)
                     return;
 
-                DataManager.SkillDict.TryGetValue(skillId, out skillData);
                 if (Skill.HandleSkillCool(skillData) == false)
                 {
                     Vector2Int sDir = _target.CellPos - CellPos;
@@ -68,11 +57,11 @@ namespace Server.Game.Object.Monsters
                     {
                         skillId = LaserSkillId;
                     }
-                    AdditionalInvokeSpeed = skillData.terms[0];
                 }
                 if(skillId == KnockbackSkillId)
                 {
                     DataManager.SkillDict.TryGetValue(skillId, out skillData);
+                    SkillRange = skillData.range;    
                     if (Skill.HandleSkillCool(skillData) == false)
                     {
                         skillId = LaserSkillId;
@@ -81,28 +70,40 @@ namespace Server.Game.Object.Monsters
                 if (skillId == LaserSkillId)
                 {
                     DataManager.SkillDict.TryGetValue(skillId, out skillData);
+                    SkillRange = LaserRange;
                     if (Skill.HandleSkillCool(skillData) == false)
                     {
                         State = CreatureState.Moving;
                         BroadcastMove();
                         return;
                     }
-                    AdditionalInvokeSpeed = skillData.terms[0];
                 }
+
+                // 스킬 사용 가능한지 확인
+                Vector2Int dir = _target.CellPos - CellPos;
+                int dist = dir.cellDistanceFromZero;
+                bool canUseSkill = dist <= SkillRange;
+                if (!canUseSkill)
+                {
+                    State = CreatureState.Moving;
+                    BroadcastMove();
+                    return;
+                }
+
                 coolTick = 0;
                 foreach (var term in skillData.terms)
                 {
                     coolTick += term;
                 }
                 LookAt(dir);
+                AdditionalInvokeSpeed = skillData.terms[0];
                 S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
                 skillPacket.ObjectId = Id;
                 skillPacket.Info.SkillId = skillData.id;
                 Room.Broadcast(CellPos, skillPacket);
-
-                _coolTick = (long)(Environment.TickCount64 + coolTick);
+                Skill.StartSkill(this, skillData, target: _target);
+                _coolTick = (long)(Environment.TickCount64 + (coolTick * 1000));
             }
-
             if (_coolTick > Environment.TickCount64)
                 return;
 

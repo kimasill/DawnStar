@@ -42,16 +42,27 @@ namespace Server.Game
             List<Vector2Int> attackTiles = SkillLogic.GetAllTargetsInRange(CellPos, (int)Range);
             foreach (Vector2Int pos in attackTiles)
             {
-                List<GameObject> targets = Room.Map.Find(pos);
+                List<GameObject> targets = new List<GameObject>(Room.Map.Find(pos));
                 if (targets.Count > 0)
                 {
                     foreach (GameObject target in targets)
                     {
                         if (target == Owner)
                             continue;
-                        if (target != null && target != Owner)
+                        if(Owner is Player && target is Player)
+                        { 
+                            continue;
+                        }
+                        else if(Owner is Monster && target is Monster)
                         {
-                            target.OnDamaged(Owner, Data.damage);
+                            continue;
+                        }
+                        else
+                        {
+                            if (target != null && target != Owner)
+                            {
+                                target.OnDamaged(Owner, Data.damage);
+                            }
                         }
                     }
                 }

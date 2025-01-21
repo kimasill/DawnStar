@@ -29,7 +29,7 @@ namespace Server.Game
             //데미지 판정
             foreach (Vector2Int pos in targetPos)
             {
-                List<GameObject> targets = Owner.Room.Map.Find(pos);
+                List<GameObject> targets = new List<GameObject>(Owner.Room.Map.Find(pos));
                 if(targets.Count>0)
                 {
                     foreach (GameObject target in targets)
@@ -70,7 +70,7 @@ namespace Server.Game
                 {
                     continue;
                 }
-                List<GameObject> targets = Owner.Room.Map.Find(tile);
+                List<GameObject> targets = new List<GameObject>(Owner.Room.Map.Find(tile));
                 foreach (GameObject target in targets)
                 {
                     if (target != null)

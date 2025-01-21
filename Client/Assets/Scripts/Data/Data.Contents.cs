@@ -47,6 +47,7 @@ namespace Data
         public int damage;
         public int count;
         public float term;
+        public List<float> terms;
         public int range;
         public SkillType skillType;
         public SkillLogicType skillLogicType;
@@ -65,6 +66,7 @@ namespace Data
         public string icon;
         public float duration;
         public float effectDuration;
+        public float tickInterval;
         public bool isObject;
         public bool fix;
     }

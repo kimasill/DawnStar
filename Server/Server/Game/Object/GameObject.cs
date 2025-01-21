@@ -20,6 +20,8 @@ namespace Server.Game
         public GameRoom Room { get; set; }
         public Skill Skill { get; set; }
         public GameObjectType ObjectType { get; protected set; } = GameObjectType.None;
+        private readonly object _debuffsLock = new object();
+        private readonly object _buffsLock = new object();
         public bool IsDead { get; set; }
         public int Id 
         { 
@@ -344,18 +346,26 @@ namespace Server.Game
         {
             if (buff == null)
                 return;
-            for(int i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
             {
                 float afterValue = 0;
                 afterValue = ApplyEffect(buff.name, buff.value, true);
-                if (!Buffs.ContainsKey(buff.id))
+
+                lock (_buffsLock)
                 {
-                    Buffs[buff.id] = 0;
+                    if (Buffs.ContainsKey(buff.id))
+                    {
+                        Buffs[buff.id] += afterValue;
+                    }
+                    else
+                    {
+                        Buffs[buff.id] = afterValue;
+                    }
                 }
-                Buffs[buff.id] += afterValue;
 
                 float tValue = 0;
-                Buffs.TryGetValue(buff.id, out tValue);
+                lock (_buffsLock)
+                    Buffs.TryGetValue(buff.id, out tValue);
 
                 S_Buff buffPacket = new S_Buff() 
                 {
@@ -366,10 +376,13 @@ namespace Server.Game
                 Room.Broadcast(CellPos, buffPacket);
 
                 Console.WriteLine($"Buff {buff.name} applied with value {afterValue}");
-                Room.PushAfter(buff.duration * 1000, () =>
+                if(Room != null)
                 {
-                    RemoveBuff(buff, afterValue, count);
-                });
+                    Room.PushAfter(buff.duration * 1000, () =>
+                    {
+                        RemoveBuff(buff, afterValue, count);
+                    });
+                }
             }
         }
         public void RemoveBuff(BuffInfo buff, float value,  int count = 1)
@@ -415,14 +428,21 @@ namespace Server.Game
                 }
                 else value = ApplyEffect(debuff.name, debuff.value, true);
 
-                if (!Debuffs.ContainsKey(debuff.id))
+                lock (_debuffsLock)
                 {
-                    Debuffs[debuff.id] = 0;
+                    if (Debuffs.ContainsKey(debuff.id))
+                    {
+                        Debuffs[debuff.id] += value;
+                    }
+                    else
+                    {
+                        Debuffs[debuff.id] = value;
+                    }
                 }
-                Debuffs[debuff.id] += value;
 
                 float tValue = 0;
-                Debuffs.TryGetValue(debuff.id, out tValue);
+                lock (_debuffsLock)
+                    Debuffs.TryGetValue(debuff.id, out tValue);
 
                 S_Buff buffPacket = new S_Buff()
                 {
@@ -431,10 +451,13 @@ namespace Server.Game
                     Value = tValue
                 };
                 Console.WriteLine($"Debuff {debuff.name} applied with value {debuff.value}");
-                Room.PushAfter(debuff.duration * 1000, () =>
+                if(Room != null)
                 {
-                    RemoveDebuff(debuff, value, count);
-                });
+                    Room.PushAfter(debuff.duration * 1000, () =>
+                    {
+                        RemoveDebuff(debuff, value, count);
+                    });
+                }
             }
         }
         public void RemoveDebuff(DebuffInfo debuff, float value, int count = 1)

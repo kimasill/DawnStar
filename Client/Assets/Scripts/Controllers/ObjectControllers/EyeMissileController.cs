@@ -36,7 +36,7 @@ public class EyeMissileController : BaseController
         // 이동 중일 때 애니메이션 업데이트 로직을 추가할 수 있습니다.
     }
 
-    protected override IEnumerator DespawnAnim()
+    public override IEnumerator DespawnAnim()
     {
         if (Animator == null)
         {
@@ -48,6 +48,7 @@ public class EyeMissileController : BaseController
     private IEnumerator PlayImpactAnimationAndDisappear()
     {
         Animator.Play("IMPACT");
+        yield return new WaitForEndOfFrame();
         yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
         gameObject.SetActive(false);
     }

@@ -518,8 +518,8 @@
           "name": "연구실 입구",
           "mapId": 5,
           "destination": 505,
-          "posX": 0,
-          "posY": 0
+          "posX": 7,
+          "posY": -15
         },
         {
           "id": 802,
