@@ -32,7 +32,7 @@ public class ProjectileExController : BaseController
     protected override void UpdateAnimation()
     {
     }
-    protected override IEnumerator DespawnAnim()
+    public override IEnumerator DespawnAnim()
     {
         if(Animator == null)
         {

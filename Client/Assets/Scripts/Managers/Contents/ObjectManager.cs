@@ -160,7 +160,6 @@ public class ObjectManager
         GameObject go = FindById(id);
         if (go == null)
         {
-            Debug.LogError($"GameObject with id {id} not found.");
             yield break;
         }
 
@@ -170,7 +169,7 @@ public class ObjectManager
             Debug.LogError($"BaseController not found on GameObject with id {id}.");
             yield break;
         }
-        bc.PlayDespawnAnimation();
+        yield return bc.DespawnAnim();
         Remove(id);
     }
 

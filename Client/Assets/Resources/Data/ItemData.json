@@ -351,7 +351,6 @@
       "description": "힘의 대가. 강력한 힘을 부여한다.",
       "options": {
         "Up": 30,
-        "UpRegen": 25,
         "Skill": 36
       },
       "grade": "Elite"

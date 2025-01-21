@@ -30,16 +30,28 @@ public class LoopMagicController : BaseController
         Animator.Play("LOOP");        
     }
 
-    protected override IEnumerator DespawnAnim()
+    public override IEnumerator DespawnAnim()
     {
-        if(_coroutine != null)
+        if (_coroutine != null)
         {
             StopCoroutine(_coroutine);
         }
+        if (this == null || Animator == null)
+        {
+            yield break;
+        }
         Animator.speed = 1;
         Animator.Play("END");
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
-        gameObject.SetActive(false);
-        AfterAnimationAction?.Invoke();
+        yield return new WaitForEndOfFrame();
+        if(Animator == null)
+        {
+            yield break;
+        }
+        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length - 0.05f);
+        if (this != null)
+        {
+            gameObject.SetActive(false);
+            AfterAnimationAction?.Invoke();
+        }
     }
 }

@@ -108,7 +108,8 @@ namespace Server.Game
                             {
                                 continue;
                             }
-                            target.OnDamaged(Owner, Owner.TotalAttack + data.damage);
+                            if(target != null)
+                                target.OnDamaged(Owner, Owner.TotalAttack + data.damage);
                         }
                     }
                 }
@@ -216,22 +217,23 @@ namespace Server.Game
         }
         private async void LoopInvocation_Rotate(SkillData data, GameObject target)
         {
+            await Task.Delay((int)Owner.TotalInvokeSpeed * 1000);
             float angle = 0;
             if (Owner.PosInfo.MoveDir == MoveDir.Up)
             {
-                angle = 0;
+                angle = 270;
             }
             else if (Owner.PosInfo.MoveDir == MoveDir.Right)
             {
-                angle = 90;
+                angle = 0;
             }
             else if (Owner.PosInfo.MoveDir == MoveDir.Down)
             {
-                angle = 180;
+                angle = 90;
             }
             else if (Owner.PosInfo.MoveDir == MoveDir.Left)
             {
-                angle = 270;
+                angle = 180;
             }
 
             float angleIncrement = 360f / (data.duration / data.tickInterval);

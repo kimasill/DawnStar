@@ -635,7 +635,7 @@
       "id": 31,
       "name": "맹독 분출",
       "coolTime": 10,
-      "damage": 40,
+      "damage": 20,
       "range": 5,
       "count": "10",
       "term": "0.5",
@@ -646,7 +646,7 @@
       "skillLogicType": "Summon",
       "shape": {
         "shapeType": "ShapeCircle",
-        "range": "2.0"
+        "range": "1.0"
       },
       "unchartedPoint": "39",
       "description": "바닥에서 맹독을 분출시킨다.",
@@ -733,6 +733,7 @@
       "name": "맹독 구체 발산",
       "coolTime": "30",
       "damage": "30",
+      "range" : "10",
       "skillType": "SkillProjectile",
       "skillLogicType": "MagicBall",
       "count": "30",
@@ -746,21 +747,15 @@
       "projectile": {
         "speed": "5.0",
         "range": "10",
-        "prefab": "Magic/PoisonExplosion",
-        "isHoming": "true",
+        "prefab": "Magic/MagicEye",
+        "isHoming": false,
         "isRandom": true
       },
       "shape": {
         "shapeType": "ShapeCircle",
         "range": "1.0"
       },
-      "debuff": {
-        "id": "8",
-        "name": "독",
-        "duration": "5",
-        "value": "0.1",
-        "isPercent": "false"
-      },
+      "prefab": "Magic/MagicEye",
       "isObject": "true",
       "unchartedPoint": "135",
       "description": "닿는순간 폭발하여 독성피해를 준다."

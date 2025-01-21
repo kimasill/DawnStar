@@ -64,7 +64,7 @@ public class CurveProjectileController : BaseController
         UpdateSortingLayer();
     }
 
-    protected override IEnumerator DespawnAnim()
+    public override IEnumerator DespawnAnim()
     {
         if (_coroutine != null)
         {

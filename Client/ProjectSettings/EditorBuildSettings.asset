@@ -29,4 +29,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Crypt.unity
     guid: f73b86bb83372ca4aaa6127a6dccb397
+  - enabled: 1
+    path: Assets/Scenes/Laboratory.unity
+    guid: c6e37599a8556db47b2c5300f2f34b1e
+  - enabled: 1
+    path: Assets/Scenes/Depth.unity
+    guid: a97e4082839cd0547ac729a73ed82915
   m_configObjects: {}

@@ -3,6 +3,7 @@ using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class BaseController : MonoBehaviour
@@ -284,11 +285,7 @@ public class BaseController : MonoBehaviour
         yield return new WaitForSeconds(delay);
         gameObject.SetActive(false);
     }
-    public void PlayDespawnAnimation()
-    {
-        StartCoroutine(DespawnAnim());
-    }
-    protected virtual IEnumerator DespawnAnim()
+    public virtual IEnumerator DespawnAnim()
     {
         yield return null;
     }

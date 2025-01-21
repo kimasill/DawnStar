@@ -74,7 +74,7 @@ namespace Server.Game
                 }
                 else
                 { 
-                    List<GameObject> targets = Room.Map.Find(destPos);
+                    List<GameObject> targets = new List<GameObject>(Owner.Room.Map.Find(destPos));
                     if (targets.Count > 0)
                     {
                         foreach (GameObject target in targets)
@@ -124,13 +124,15 @@ namespace Server.Game
 
             foreach (Vector2Int pos in targetPositions)
             {
-                List<GameObject> targets = Room.Map.Find(pos);
+                List<GameObject> targets = new List<GameObject>(Owner.Room.Map.Find(pos));
                 if (targets.Count > 0)
                 {
                     foreach (GameObject target in targets)
                     {
                         if (target != null && target != Owner)
                         {
+                            if (Owner is Monster && target is Monster)
+                                return;
                             target.OnDamaged(this, Data.damage + Owner.TotalAttack); // 피격 판정
                             OnHit?.Invoke(target);
                         }

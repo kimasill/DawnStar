@@ -209,6 +209,14 @@
       "itemIds": [
         109
       ]
+    },
+    {
+      "id": "2006",
+      "name": "PriceOfPower",
+      "multi": true,
+      "itemIds": [
+        204
+      ]
     }
   ],
   "questSigns": [

@@ -2,14 +2,20 @@
 using Server.Data;
 using Server.Game.Room;
 using System;
+using System.Collections.Generic;
 
 namespace Server.Game.Object.Monsters
 {
     internal class MutantRat : Monster
     {
+        private int _rangeSkillId = 31;
+        private int _meleeSkillId = 1;
+        private int _skillId = 1;
         public MutantRat(MonsterData data) : base(data)
         {
             Initialize(data);
+            SkillRange = 5;
+            _skillId = _rangeSkillId;
         }
 
         protected override void UpdateSkill()
@@ -24,7 +30,19 @@ namespace Server.Game.Object.Monsters
                     BroadcastMove();
                     return;
                 }
+                SkillData skillData = null;
 
+                int skillId = 31;
+                SkillRange = 5;
+                DataManager.SkillDict.TryGetValue(skillId, out skillData);
+                // 31번 스킬의 쿨타임 확인
+                if (Skill.HandleSkillCool(skillData, peek:true) == false)
+                {
+                    skillId = 1;
+                    SkillRange = 1;
+                    DataManager.SkillDict.TryGetValue(skillId, out skillData);
+                }
+                // 1번 스킬 사용                
                 // 스킬 사용 가능한지 확인
                 Vector2Int dir = _target.CellPos - CellPos;
                 int dist = dir.cellDistanceFromZero;
@@ -35,20 +53,7 @@ namespace Server.Game.Object.Monsters
                     BroadcastMove();
                     return;
                 }
-
                 LookAt(dir);
-                SkillData skillData = null;
-
-                int skillId = 31;
-                DataManager.SkillDict.TryGetValue(skillId, out skillData);
-                // 31번 스킬의 쿨타임 확인
-                if (Skill.HandleSkillCool(skillData, peek:true) == false)
-                {
-                    skillId = 1;
-                }
-                // 1번 스킬 사용
-                DataManager.SkillDict.TryGetValue(skillId, out skillData);                
-
                 S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
                 skillPacket.ObjectId = Id;
                 skillPacket.Info.SkillId = skillData.id;
@@ -65,6 +70,7 @@ namespace Server.Game.Object.Monsters
                 return;
 
             _coolTick = 0;
+            
         }
     }
 }
