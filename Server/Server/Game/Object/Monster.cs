@@ -350,6 +350,7 @@ namespace Server.Game
             if (Dir != lookDir)
             {
                 Dir = lookDir;
+                PosInfo.State = CreatureState.Idle;
                 if (Dir == MoveDir.Left)
                 {
                     LookDir = LookDir.LookLeft;

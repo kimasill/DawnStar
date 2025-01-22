@@ -15,6 +15,7 @@ namespace Server.Game
         public Vector2Int DestPos { get; set; }
         int _moveRange = 0;
         bool _isComplete = false;
+        bool _explosion = false;
 
         public override void Update()
         {
@@ -22,7 +23,11 @@ namespace Server.Game
                 return;
             if (Data == null || Data.projectile == null || Owner == null || Room == null)
                 return;
-
+            if(_explosion)
+            {
+                ExplosionDamage();
+                return;
+            }
             int tick = (int)(1000 / Data.projectile.speed);
             _moveRange += 1;
             Room.PushAfter(tick, Update);            
@@ -39,7 +44,7 @@ namespace Server.Game
                     ExplosionDamage();
                     return;
                 }
-                if (Room.Map.ApplyMove(this, path[1], false))
+                if (Room.Map.ApplyMove(this, path[1], true))
                 {
                     CellPos = path[1];
                     S_Move movePacket = new S_Move();
@@ -49,7 +54,7 @@ namespace Server.Game
                 }
                 else
                 {
-                    ExplosionDamage();
+                    _explosion = true;
                 }
             }
             else if (!Data.projectile.isHoming && !Data.projectile.isRandom)
@@ -73,22 +78,8 @@ namespace Server.Game
                     Room.Broadcast(CellPos, movePacket);
                 }
                 else
-                { 
-                    List<GameObject> targets = new List<GameObject>(Owner.Room.Map.Find(destPos));
-                    if (targets.Count > 0)
-                    {
-                        foreach (GameObject target in targets)
-                        {
-                            if (target != null && target != Owner)
-                            {
-                                target.OnDamaged(this, Data.damage + Owner.TotalAttack); // 피격 판정
-                                OnHit?.Invoke(target);
-                            }
-                        }
-                    }
-                    DespawnAnim = true;
-                    Room.Push(Room.LeaveGame, Id);
-                    _isComplete = true;
+                {
+                    _explosion = true;
                 }
             }
             else if (Data.projectile.isRandom)
@@ -104,7 +95,7 @@ namespace Server.Game
                     ExplosionDamage();
                     return;
                 }
-                if (Room.Map.ApplyMove(this, path[1], false))
+                if (Room.Map.ApplyMove(this, path[1], true))
                 {
                     CellPos = path[1];
                     S_Move movePacket = new S_Move();
@@ -114,7 +105,7 @@ namespace Server.Game
                 }
                 else
                 {
-                    ExplosionDamage();
+                    _explosion = true;
                 }
             }
         }        
@@ -132,7 +123,7 @@ namespace Server.Game
                         if (target != null && target != Owner)
                         {
                             if (Owner is Monster && target is Monster)
-                                return;
+                                continue;
                             target.OnDamaged(this, Data.damage + Owner.TotalAttack); // 피격 판정
                             OnHit?.Invoke(target);
                         }

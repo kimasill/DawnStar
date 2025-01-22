@@ -14,6 +14,7 @@ public class UI_GameWindow : UI_Base
     public UI_SkillSlot SkillSlot { get; set; }
     public UI_BuffPanel BuffPanel { get; set; }
     public UI_Chat Chat { get; set; }
+    public UI_BossHpBar BossHpBar { get; set; }
     [SerializeField] public GameObject ChatButton;
     public override void Init()
     {
@@ -23,11 +24,13 @@ public class UI_GameWindow : UI_Base
         SkillSlot = GetComponentInChildren<UI_SkillSlot>();
         BuffPanel = GetComponentInChildren<UI_BuffPanel>();
         Chat = GetComponentInChildren<UI_Chat>();
+        BossHpBar = GetComponentInChildren<UI_BossHpBar>();
         Chat.CloseAction = () => ChatButton.SetActive(true); 
 
         ChatButton.BindEvent(OnClickChatButton);
         StoryPanel.gameObject.SetActive(false);
         Chat.gameObject.SetActive(false);
+        BossHpBar.gameObject.SetActive(false);
     }
     public void ShowScript(List<string> strings)
     {

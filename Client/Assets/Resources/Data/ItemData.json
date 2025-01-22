@@ -347,7 +347,7 @@
       "name": "힘의 대가",
       "jewelryType": "Ring",
       "price": 23500,
-      "iconPath": "Textures/Item/Jewelry/Icon/Ring_PriceOfPower",
+      "iconPath": "Textures/Item/Jewelry/Ring_PriceOfPower",
       "description": "힘의 대가. 강력한 힘을 부여한다.",
       "options": {
         "Up": 30,

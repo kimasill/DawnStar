@@ -219,6 +219,7 @@ namespace Server.Game
 
                 player.OnLeaveGame(save);
                 Map.ApplyLeave(player);
+                player.Vision.Clear();
                 player.Room = null;
 
                 // 본인한테 정보 전송

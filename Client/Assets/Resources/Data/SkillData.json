@@ -753,10 +753,10 @@
       },
       "shape": {
         "shapeType": "ShapeCircle",
-        "range": "1.0"
+        "range": "0.0"
       },
       "prefab": "Magic/MagicEye",
-      "isObject": "true",
+      "isObject": true,
       "unchartedPoint": "135",
       "description": "닿는순간 폭발하여 독성피해를 준다."
     },

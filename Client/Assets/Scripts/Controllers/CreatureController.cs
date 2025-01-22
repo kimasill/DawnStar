@@ -17,6 +17,7 @@ public class CreatureController : BaseController
     protected List<Coroutine> _coSkills = new List<Coroutine>();
     protected Coroutine _coMovement;
     protected bool _rangedSkill = false;
+    public int TemplateId { get; set; }
 
     public float TotalAttackSpeed 
 	{
@@ -104,6 +105,9 @@ public class CreatureController : BaseController
 		_hpBar = go.GetComponent<HpBar>();
 		UpdateHpBar();
 	}
+    public virtual void RemoveHpBar()
+    {
+    }
     protected void StartSkillCoroutine(IEnumerator coroutine)
     {
         Coroutine co = StartCoroutine(coroutine);
@@ -208,7 +212,7 @@ public class CreatureController : BaseController
         _rangedSkill = false;
         SkillId = skill.Info.SkillId;
         SkillData skillData = null;
-        Managers.Data.SkillDict.TryGetValue(SkillId, out skillData);
+        Managers.Data.SkillDict.TryGetValue(skill.Info.SkillId, out skillData);
         if (skillData == null)
             return;
         if ((skillData.prefab != null || skillData.prefabs != null) && skillData.isObject != true)

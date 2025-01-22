@@ -14,6 +14,7 @@ namespace Server.Game.Object.Monsters
         private const int KnockbackSkillId = 34;
         private const int KnockbackRange = 2;
         private const int MagicSkillId = 35;
+        public bool IsOnSkill { get; private set; } = false;
         private float _currentAngle = 0;
 
         public Beholder(MonsterData data) : base(data)
@@ -26,6 +27,8 @@ namespace Server.Game.Object.Monsters
         {
             if (_coolTick == 0)
             {
+                if (IsOnSkill)
+                    return;
                 // 유효 타겟 확인
                 if (_target == null || _target.Room != Room || _target.Hp == 0)
                 {
@@ -89,25 +92,36 @@ namespace Server.Game.Object.Monsters
                     BroadcastMove();
                     return;
                 }
-
+                IsOnSkill = true;
                 coolTick = 0;
                 foreach (var term in skillData.terms)
                 {
                     coolTick += term;
                 }
-                LookAt(dir);
                 AdditionalInvokeSpeed = skillData.terms[0];
                 S_Skill skillPacket = new S_Skill() { Info = new SkillInfo() };
                 skillPacket.ObjectId = Id;
                 skillPacket.Info.SkillId = skillData.id;
                 Room.Broadcast(CellPos, skillPacket);
                 Skill.StartSkill(this, skillData, target: _target);
-                _coolTick = (long)(Environment.TickCount64 + (coolTick * 1000));
+                Console.WriteLine("SkillId: " + skillId);
+                _coolTick = (long)(Environment.TickCount64 + (coolTick * 1000) + (1000/TotalAttackSpeed));
+                State = CreatureState.Skill;
             }
             if (_coolTick > Environment.TickCount64)
                 return;
 
             _coolTick = 0;
+            IsOnSkill = false;
+        }
+        protected override void UpdateMoving()
+        {
+            if (IsOnSkill)
+            {
+                State = CreatureState.Skill;                
+                return;
+            }
+            base.UpdateMoving();
         }
     }
 }

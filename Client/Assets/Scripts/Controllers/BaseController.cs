@@ -52,6 +52,10 @@ public class BaseController : MonoBehaviour
     protected int _individualSortingOrder = 0;
     private long _stiffEndTick = 0;
     protected float _attackTime;
+    protected float AdjustPositionX = 0.5f;
+    protected float AdjustPositionY = 0.5f;
+    public virtual bool StuckEmune { get; set; } = false;
+    public virtual bool DebuffEmune { get; set; } = false;
     PositionInfo _positionInfo = new PositionInfo();
     public SkillData SkillData { get; set; }
     protected UI_GameScene GameScene { get; private set; }
@@ -251,6 +255,10 @@ public class BaseController : MonoBehaviour
         }
         else if (State == CreatureState.Stiff)
         {
+            if (StuckEmune)
+            {
+                return;
+            }
             switch (LookDir)
             {
                 case LookDir.LookLeft:                    
@@ -362,7 +370,7 @@ public class BaseController : MonoBehaviour
     protected virtual void UpdateMoving()
     {
 
-        Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
+        Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(AdjustPositionX, AdjustPositionY);
         Vector3 moveDir = destPos - transform.position;
 
         // 움직임 보간
