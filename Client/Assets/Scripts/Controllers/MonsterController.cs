@@ -1,4 +1,5 @@
-﻿using Google.Protobuf.Protocol;
+﻿using Data;
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,9 +9,21 @@ using static Define;
 public class MonsterController : CreatureController
 {
     int _nextMoveTick = 0;
+    public MonsterGrade Grade { get; private set; }
+    public UI_BossHpBar BossHpBar { get; private set; }
     protected override void Init()
-	{
-		base.Init();
+    { 
+        MonsterData monsterData = null;
+        Managers.Data.MonsterDict.TryGetValue(TemplateId, out monsterData);
+        if (monsterData == null)
+        {
+            Debug.Log("Monster Data is null");
+            return;
+        }
+        Grade = monsterData.grade;
+
+        base.Init();
+        
         _nextMoveTick = Environment.TickCount + 200;
     }
 
@@ -18,7 +31,52 @@ public class MonsterController : CreatureController
 	{
 		base.UpdateIdle();
 	}
+    protected override void AddHpBar()
+    {
+        if(Grade == MonsterGrade.Boss)
+        {
+            UI_GameWindow gameWindow = GameScene.GameWindow;
+            BossHpBar = gameWindow.BossHpBar;
+            BossHpBar.gameObject.SetActive(true);
+            BossHpBar.Name.text = name;
+            UpdateHpBar();
+        }
+        else
+        {
+            base.AddHpBar();
+        }   
+    }
 
+    public override void RemoveHpBar()
+    {
+        if(Grade == MonsterGrade.Boss)
+        {
+            if (BossHpBar != null)
+            {
+                BossHpBar.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            base.RemoveHpBar();
+        }
+    }
+
+    protected override void UpdateHpBar()
+    {
+        if (Grade == MonsterGrade.Boss)
+        {
+            if (BossHpBar != null && BossHpBar.HPBar != null)
+            {
+                float ratio = (float)Hp / Stat.MaxHp;
+                BossHpBar.HPBar.UpdateHpBar(ratio, Hp, Stat.MaxHp);
+            }
+        }
+        else
+        {
+            base.UpdateHpBar();
+        }
+    }
     protected override void UpdateStiff()
     {
     }

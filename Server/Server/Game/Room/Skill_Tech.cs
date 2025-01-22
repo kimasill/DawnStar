@@ -26,11 +26,11 @@ namespace Server.Game
             {
                 targetPos = SkillLogic.GetAllTargetsInRange(Owner.CellPos, range);
             }
-            //데미지 판정
+            // 데미지 판정
             foreach (Vector2Int pos in targetPos)
             {
                 List<GameObject> targets = new List<GameObject>(Owner.Room.Map.Find(pos));
-                if(targets.Count>0)
+                if (targets.Count > 0)
                 {
                     foreach (GameObject target in targets)
                     {
@@ -45,16 +45,26 @@ namespace Server.Game
                                 target.OnDamaged(Owner, Owner.TotalAttack + data.damage);
                                 ApplyAfterEffect(data, target);
                             }, data.range);
-                        }
-                        Vector2Int direction = (_target.CellPos - Owner.CellPos).normalized;
-                        destPos = new Vector2Int(_target.CellPos.x + direction.x * data.range, _target.CellPos.y + direction.y * data.range);
-                        if (Owner.Room.Map.ApplyMove(_target, destPos, collision: false))
-                        {
-                            _target.CellPos = destPos;
-                            S_ChangePosition changePosition = new S_ChangePosition();
-                            changePosition.ObjectId = _target.Id;
-                            changePosition.Position = _target.PosInfo;
-                            Owner.Room.Broadcast(_target.CellPos, changePosition);
+
+                            Vector2Int direction = (target.CellPos - Owner.CellPos).normalized;
+                            for (int i = 1; i <= data.range; i++)
+                            {
+                                destPos = new Vector2Int(target.CellPos.x + direction.x * i, target.CellPos.y + direction.y * i);
+                                if (!Owner.Room.Map.CanGo(destPos))
+                                {
+                                    destPos = new Vector2Int(target.CellPos.x + direction.x * (i - 1), target.CellPos.y + direction.y * (i - 1));
+                                    break;
+                                }
+                            }
+
+                            if (Owner.Room.Map.ApplyMove(target, destPos))
+                            {
+                                target.CellPos = destPos;
+                                S_ChangePosition changePosition = new S_ChangePosition();
+                                changePosition.ObjectId = target.Id;
+                                changePosition.Position = target.PosInfo;
+                                Owner.Room.Broadcast(target.CellPos, changePosition);
+                            }
                         }
                     }
                 }

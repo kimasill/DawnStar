@@ -69,6 +69,7 @@ public class ObjectManager
             mc.Id = info.ObjectId;
             mc.PosInfo = info.Position;
 			mc.Stat = info.StatInfo;
+            mc.TemplateId = info.TemplateId;
             mc.SyncPos();
         }
 		else if(type == GameObjectType.Projectile)

@@ -52,6 +52,12 @@ class PacketHandler
             }
             else
             {
+                GameObject go = Managers.Object.FindById(obj);
+                if (ObjectManager.GetObjectType(obj) == GameObjectType.Monster)
+                {
+                    MonsterController mc = go.GetComponent<MonsterController>();
+                    mc.RemoveHpBar();
+                }
                 Managers.Object.Remove(obj);
             }
         }

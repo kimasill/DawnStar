@@ -57,6 +57,10 @@ namespace Server.Game
                         {
                             continue;
                         }
+                        else if(target is not Monster && target is not Player)
+                        {
+                            continue;
+                        }
                         else
                         {
                             if (target != null && target != Owner)

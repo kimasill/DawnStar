@@ -9,6 +9,7 @@ public class BeholderController : MonsterController
     protected override void Init()
     {
         base.Init();
+        AdjustPositionY = 1f;
     }
     protected override void UpdateAnimation()
     {
@@ -18,6 +19,7 @@ public class BeholderController : MonsterController
         }
         if (State == CreatureState.Skill)
         {
+            StuckEmune = true;
             switch (LookDir)
             {
                 case LookDir.LookLeft:
@@ -27,15 +29,16 @@ public class BeholderController : MonsterController
                     _sprite.flipX = false;
                     break;
             }
-
+            
             if (SkillId == 34)
-                StartPsychicsCoroutine(PlayRotateKnockBack(SkillId));
+                StartCoroutine(PlayRotateKnockBack(SkillId));
             else if (SkillId == 35)
-                StartPsychicsCoroutine(PlayMissile(SkillId));
+                StartCoroutine(PlayMissile(SkillId));
             SkillId = 0;
         }
         else if (State == CreatureState.Idle)
         {
+            StuckEmune = false;
             Animator.Play("IDLE");
             switch (LookDir)
             {
@@ -49,6 +52,7 @@ public class BeholderController : MonsterController
         }
         else if (State == CreatureState.Moving)
         {
+            StuckEmune = false;
             switch (LookDir)
             {
                 case LookDir.LookLeft:
@@ -59,7 +63,7 @@ public class BeholderController : MonsterController
                     break;
             }
 
-            switch(PosInfo.MoveDir)
+            switch (PosInfo.MoveDir)
             {
                 case MoveDir.Up:
                     Animator.Play("WALK_BACK");
@@ -80,6 +84,7 @@ public class BeholderController : MonsterController
             base.UpdateAnimation();
         }
     }
+
     private IEnumerator PlayLaserRotateBeam(int skillId)
     {
         Managers.Data.SkillDict.TryGetValue(skillId, out SkillData skill);
@@ -89,35 +94,38 @@ public class BeholderController : MonsterController
             yield break;
         }
 
+        
         float duration = skill.duration;
         float elapsed = 0.0f;
         float angle = 0.0f;
-        float angleIncrement = 360.0f / (duration);
+        float angleIncrement = -360.0f / duration;
+        string currentAnimation = "";
 
-        // 초기 회전 설정
         if (PosInfo.MoveDir == MoveDir.Up)
+        {
             angle = 270;
+            currentAnimation = "LASERPREP_BACK";
+            Animator.Play(currentAnimation);
+        }
         else if (PosInfo.MoveDir == MoveDir.Right)
+        {
             angle = 0;
+            currentAnimation = "LASERPREP_FRONT";
+            Animator.Play(currentAnimation);
+        }
         else if (PosInfo.MoveDir == MoveDir.Down)
+        {
             angle = 90;
+            currentAnimation = "LASERPREP_FRONT";
+            Animator.Play(currentAnimation);
+        }
         else if (PosInfo.MoveDir == MoveDir.Left)
+        {
             angle = 180;
-
-        if (PosInfo.MoveDir == MoveDir.Up)
-            Animator.Play("LASERPREP_BACK");
-        else if (PosInfo.MoveDir == MoveDir.Down)
-            Animator.Play("LASERPREP_FRONT");
-        else if (PosInfo.MoveDir == MoveDir.Left)
-        {
-            Animator.Play("LASERPREP_SIDE");
-            _sprite.flipX = true;
+            currentAnimation = "LASERPREP_FRONT";
+            Animator.Play(currentAnimation);
         }
-        else if (PosInfo.MoveDir == MoveDir.Right)
-        {
-            Animator.Play("LASERPREP_SIDE");
-            _sprite.flipX = false;
-        }
+        StartCoroutine(UseSkill33(skill, angle));
 
         yield return new WaitForSeconds(skill.terms[0]);
 
@@ -125,89 +133,82 @@ public class BeholderController : MonsterController
         {
             elapsed += Time.deltaTime;
             angle += angleIncrement * Time.deltaTime;
+            if(angle < 0)
+            {
+                angle += 360;
+            }
             angle = angle % 360; // 0-360도 사이로 제한
+
             // 각도에 따라 애니메이션 선택 및 flip 설정
-            if (angle >= 0 && angle < 45 || angle >= 315 && angle < 360)
+            if (angle >= 315 && angle <360)
             {
                 Animator.Play("LASERLOOP_SIDE");
+                _sprite.flipX = false;
+            }
+            else if (angle >= 0 && angle < 45)
+            {
+                Animator.Play("LASERLOOP_DIAGONALFRONT");
                 _sprite.flipX = false;
             }
             else if (angle >= 45 && angle < 90)
             {
-                Animator.Play("LASERLOOP_DIAGONALFRONT");
+                Animator.Play("LASERLOOP_FRONT");
                 _sprite.flipX = false;
             }
             else if (angle >= 90 && angle < 135)
             {
-                Animator.Play("LASERLOOP_FRONT");
-                _sprite.flipX = false;
-            }
-            else if (angle >= 135 && angle < 180)
-            {
-                Animator.Play("LASERLOOP_DIAGONALBACK");
-                _sprite.flipX = false;
-            }
-            else if (angle >= 180 && angle < 225)
-            {
-                Animator.Play("LASERLOOP_BACK");
-                _sprite.flipX = false;
-            }
-            else if (angle >= 225 && angle < 270)
-            {
-                Animator.Play("LASERLOOP_DIAGONALBACK");
+                Animator.Play("LASERLOOP_DIAGONALFRONT");
                 _sprite.flipX = true;
             }
-            else if (angle >= 270 && angle < 315)
+            else if (angle >= 135 && angle < 180)
             {
                 Animator.Play("LASERLOOP_SIDE");
                 _sprite.flipX = true;
             }
-            else if (angle >= 315 && angle < 360)
+            else if (angle >= 180 && angle < 225)
             {
-                Animator.Play("LASERLOOP_DIAGONALFRONT");
+                Animator.Play("LASERLOOP_DIAGONALBACK");
                 _sprite.flipX = true;
             }
-
+            else if (angle >= 225 && angle < 270)
+            {
+                Animator.Play("LASERLOOP_BACK");
+                _sprite.flipX = false;
+            }
+            else if (angle >= 270 && angle < 315)
+            {
+                Animator.Play("LASERLOOP_DIAGONALBACK");
+                _sprite.flipX = false;
+            }
             yield return null;
         }
-        if (PosInfo.MoveDir == MoveDir.Up)
+        yield return new WaitForEndOfFrame();
+
+        if (180 < angle && angle < 360)
             Animator.Play("LASEREND_BACK");
-        else if (PosInfo.MoveDir == MoveDir.Down)
+        else if (0 <= angle &&  angle <= 180)
             Animator.Play("LASEREND_FRONT");
-        else if (PosInfo.MoveDir == MoveDir.Left)
-        {
-            Animator.Play("LASEREND_SIDE");
-            _sprite.flipX = true;
-        }
-        else if (PosInfo.MoveDir == MoveDir.Right)
-        {
-            Animator.Play("LASEREND_SIDE");
-            _sprite.flipX = false;
-        }
         yield return new WaitForSeconds(skill.terms[2]);
 
-        State = CreatureState.Idle;            
+        State = CreatureState.Idle;
     }
 
     private IEnumerator PlayRotateKnockBack(int skillId)
     {
         Managers.Data.SkillDict.TryGetValue(skillId, out SkillData skill);
-        if(skill == null)
+        if (skill == null)
         {
             Debug.Log("Skill Data is null");
             yield break;
         }
-        Animator.Play("SPINPREP");
-        yield return new WaitForEndOfFrame();
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed - 0.05f);
+        Animator.Play("SPINPREP");        
+        yield return new WaitForSeconds(skill.terms[0]);
 
         Animator.Play("SPINLOOP");
-        yield return new WaitForEndOfFrame();
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed - 0.05f);
+        yield return new WaitForSeconds(skill.terms[1]);
 
-        Animator.Play("SPINEND");
-        yield return new WaitForEndOfFrame();
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed - 0.05f);
+        Animator.Play("SPINEND");        
+        yield return new WaitForSeconds(skill.terms[2]);
 
         State = CreatureState.Idle;
     }
@@ -221,28 +222,28 @@ public class BeholderController : MonsterController
             yield break;
         }
         Animator.Play("MISSILEPREP");
-        yield return new WaitForEndOfFrame();
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed - 0.05f);
+        yield return new WaitForSeconds(skill.terms[0]);
 
         Animator.Play("MISSILELOOP");
         yield return new WaitForSeconds(skill.duration - 0.05f);
 
         Animator.Play("MISSILEEND");
         yield return new WaitForEndOfFrame();
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed - 0.05f);
+        yield return new WaitForSeconds(skill.terms[2]);
 
         State = CreatureState.Idle;
     }
-
 
     public override void UseSkill(S_Skill skill)
     {
         if (skill.Info.SkillId == 33)
         {
+            if (State == CreatureState.Skill)
+                return; 
+
             SkillId = skill.Info.SkillId;
             SkillData skillData = null;
             Managers.Data.SkillDict.TryGetValue(skill.Info.SkillId, out skillData);
-            StartCoroutine(UseSkill33(skillData));
             StartCoroutine(PlayLaserRotateBeam(skill.Info.SkillId));
 
             State = CreatureState.Skill;
@@ -253,24 +254,14 @@ public class BeholderController : MonsterController
         }
     }
 
-    private IEnumerator UseSkill33(SkillData skillData)
+    private IEnumerator UseSkill33(SkillData skillData, float angle)
     {
         yield return new WaitForSeconds(skillData.terms[0]);
         GameObject skillObj = Managers.Resource.Instantiate(skillData.prefab, transform);
         Animator animator = skillObj.GetComponent<Animator>();
+        SpriteRenderer sprite = skillObj.GetComponent<SpriteRenderer>();
+        int spriteOrder = sprite.sortingOrder;
         animator.Play("START");
-
-        // 초기 회전 설정
-        float angle = 0;
-        if (PosInfo.MoveDir == MoveDir.Up)
-            angle = 270;
-        else if (PosInfo.MoveDir == MoveDir.Right)
-            angle = 0;
-        else if (PosInfo.MoveDir == MoveDir.Down)
-            angle = 90;
-        else if (PosInfo.MoveDir == MoveDir.Left)
-            angle = 180;
-
         skillObj.transform.rotation = Quaternion.Euler(0, 0, angle);
 
         float duration = skillData.duration;
@@ -282,6 +273,10 @@ public class BeholderController : MonsterController
             elapsed += Time.deltaTime;
             angle += angleIncrement * Time.deltaTime;
             angle = angle % 360; // 0-360도 사이로 제한
+            if(angle >= 135 && angle > 360)
+                sprite.sortingOrder = spriteOrder - 5;
+            else
+                sprite.sortingOrder = spriteOrder + 5;
             skillObj.transform.rotation = Quaternion.Euler(0, 0, angle); // 각도에 따라 회전 설정
             yield return null;
         }
