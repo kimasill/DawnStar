@@ -13,11 +13,12 @@ public class UI_BossHpBar : UI_Base
 
     enum Texts
     {
-        BossName,
+        BossNameText,
     }
     public override void Init()
     {
         Bind<TMP_Text>(typeof(Texts));
-        Name = GetTextMeshPro((int)Texts.BossName);
+        Name = GetTextMeshPro((int)Texts.BossNameText);
+        HPBar = GetComponentInChildren<UI_HpBar>();
     }
 }

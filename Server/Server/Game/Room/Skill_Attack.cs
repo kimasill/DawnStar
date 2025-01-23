@@ -219,6 +219,7 @@ namespace Server.Game
         {
             await Task.Delay((int)Owner.TotalInvokeSpeed * 1000);
             float angle = 0;
+            float duration = data.duration;
             if (Owner.PosInfo.MoveDir == MoveDir.Up)
             {
                 angle = 270;
@@ -236,8 +237,8 @@ namespace Server.Game
                 angle = 180;
             }
 
-            float angleIncrement = 360f / (data.duration / data.tickInterval);
-            while (data.duration > 0)
+            float angleIncrement = 360f / (duration / data.tickInterval);
+            while (duration > 0)
             {
                 List<Vector2Int> skillPos = new List<Vector2Int>();
 
@@ -266,7 +267,7 @@ namespace Server.Game
                     }
                 }
                 angle += angleIncrement;
-                data.duration -= data.tickInterval;
+                duration -= data.tickInterval;
                 await Task.Delay((int)(data.tickInterval * 1000));
             }
         }

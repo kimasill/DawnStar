@@ -53,8 +53,8 @@ public class UI_ExpBar : UI_Base
     {
         _expText = GetComponentInChildren<TMP_Text>();
         _expText.gameObject.SetActive(false);
-        _expBar.gameObject.BindEvent((PointerEventData data) => OnPointerEnter(data), Define.UIEvent.MouseOver);
-        _expBar.gameObject.BindEvent((PointerEventData data) => OnPointerExit(data), Define.UIEvent.MouseOut);
+        gameObject.BindEvent((PointerEventData data) => OnPointerEnter(data), Define.UIEvent.MouseOver);
+        gameObject.BindEvent((PointerEventData data) => OnPointerExit(data), Define.UIEvent.MouseOut);
     }
 
     public override void OnPointerEnter(PointerEventData eventData)

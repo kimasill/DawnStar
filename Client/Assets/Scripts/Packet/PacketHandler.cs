@@ -52,11 +52,15 @@ class PacketHandler
             }
             else
             {
-                GameObject go = Managers.Object.FindById(obj);
                 if (ObjectManager.GetObjectType(obj) == GameObjectType.Monster)
                 {
-                    MonsterController mc = go.GetComponent<MonsterController>();
-                    mc.RemoveHpBar();
+
+                    GameObject go = Managers.Object.FindById(obj);
+                    if (go != null)
+                    {
+                        MonsterController mc = go.GetComponent<MonsterController>();
+                        mc.RemoveHpBar();
+                    }    
                 }
                 Managers.Object.Remove(obj);
             }
@@ -526,12 +530,12 @@ class PacketHandler
     {
         S_ChangeStat statPacket = (S_ChangeStat)packet;
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        Managers.Object.MyPlayer.Stat.MergeFrom(statPacket.StatInfo);
         if (Managers.Object.MyPlayer.Stat.Level != statPacket.StatInfo.Level)
         {
             gameSceneUI.GameWindow.StateUI.SetInfo();
             gameSceneUI.NotificationUI.ShowLevelNoti();
         }
-        Managers.Object.MyPlayer.Stat.MergeFrom(statPacket.StatInfo);
         gameSceneUI.StatUI.RefreshUI();
     }
 

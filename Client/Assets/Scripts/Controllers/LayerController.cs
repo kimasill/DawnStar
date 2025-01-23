@@ -48,6 +48,7 @@ public class LayerController : MonoBehaviour
                 {
                     AdjustTilemapSorting(tilemap, tilemapRenderer.sortingOrder);
                 }
+                tilemapRenderer.enabled = false;
             }
         }
     }

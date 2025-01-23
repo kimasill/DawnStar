@@ -104,7 +104,6 @@ namespace Server.Game.Object.Monsters
                 skillPacket.Info.SkillId = skillData.id;
                 Room.Broadcast(CellPos, skillPacket);
                 Skill.StartSkill(this, skillData, target: _target);
-                Console.WriteLine("SkillId: " + skillId);
                 _coolTick = (long)(Environment.TickCount64 + (coolTick * 1000) + (1000/TotalAttackSpeed));
                 State = CreatureState.Skill;
             }

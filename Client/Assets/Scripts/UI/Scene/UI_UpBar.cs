@@ -74,8 +74,8 @@ public class UI_UpBar : UI_Base
         _upGroup = GetComponent<RectTransform>();
         _upText = GetComponentInChildren<TMP_Text>();
         _upText.gameObject.SetActive(false);
-        _upBar.gameObject.BindEvent((PointerEventData data) => OnPointerEnter(data), Define.UIEvent.MouseOver);
-        _upBar.gameObject.BindEvent((PointerEventData data) => OnPointerExit(data), Define.UIEvent.MouseOut);
+        _upGroup.gameObject.BindEvent((PointerEventData data) => OnPointerEnter(data), Define.UIEvent.MouseOver);
+        _upGroup.gameObject.BindEvent((PointerEventData data) => OnPointerExit(data), Define.UIEvent.MouseOut);
     }
 
     public override void OnPointerEnter(PointerEventData eventData)

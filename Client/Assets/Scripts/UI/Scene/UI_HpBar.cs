@@ -77,8 +77,8 @@ public class UI_HpBar : UI_Base
         _hpText = GetTextMeshPro((int)Texts.HpValue_Text);
         _hpText.gameObject.SetActive(false);
         
-        _hpBar.gameObject.BindEvent((PointerEventData data) => OnPointerEnter(data), Define.UIEvent.MouseOver);
-        _hpBar.gameObject.BindEvent((PointerEventData data) => OnPointerExit(data), Define.UIEvent.MouseOut);
+        _hpGroup.gameObject.BindEvent((PointerEventData data) => OnPointerEnter(data), Define.UIEvent.MouseOver);
+        _hpGroup.gameObject.BindEvent((PointerEventData data) => OnPointerExit(data), Define.UIEvent.MouseOut);
     }
     public override void OnPointerEnter(PointerEventData eventData)
     {

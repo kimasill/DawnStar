@@ -634,7 +634,7 @@
     {
       "id": 31,
       "name": "맹독 분출",
-      "coolTime": 10,
+      "coolTime": 12,
       "damage": 20,
       "range": 5,
       "count": "10",
@@ -736,12 +736,12 @@
       "range" : "10",
       "skillType": "SkillProjectile",
       "skillLogicType": "MagicBall",
-      "count": "30",
-      "duration": "6",
-      "term": "0.2",
+      "count": "100",
+      "duration": "10",
+      "term": "0.1",
       "terms": [
         "0.3",
-        "6",
+        "10",
         "0.1"
       ],
       "projectile": {

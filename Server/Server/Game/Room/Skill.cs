@@ -71,7 +71,9 @@ namespace Server.Game
             {
                 range += addRange;
             }
-            _skillList.Add((skillData, target, range, distance));
+            SkillData skillDeepCopy = new SkillData(skillData);
+
+            _skillList.Add((skillDeepCopy, target, range, distance));
 
             Update();
         }

@@ -78,12 +78,55 @@ namespace Server.Data
         public List<string> prefabs;
         public string icon;
         public bool afterEffect;
+
+        public SkillData(SkillData other)
+        {
+            if (other == null)
+                return;
+            id = other.id;
+            name = other.name;
+            coolTime = other.coolTime;
+            damage = other.damage;
+            count = other.count;
+            term = other.term;
+            value = other.value;
+            terms = other.terms != null ? new List<float>(other.terms) : null;
+            values = other.values != null ? new List<float>(other.values) : null;
+            duration = other.duration;
+            tickInterval = other.tickInterval;
+            range = other.range;
+            skillType = other.skillType;
+            skillLogicType = other.skillLogicType;
+            shape = other.shape != null ? new ShapeInfo(other.shape) : null;
+            projectile = other.projectile != null ? new ProjectileInfo(other.projectile) : null;
+            spot = other.spot != null ? new SpotInfo(other.spot) : null;
+            buff = other.buff != null ? new BuffInfo(other.buff) : null;
+            buffList = other.buffList != null ? new List<BuffInfo>(other.buffList.Select(b => new BuffInfo(b))) : null;
+            debuff = other.debuff != null ? new DebuffInfo(other.debuff) : null;
+            debuffList = other.debuffList != null ? new List<DebuffInfo>(other.debuffList.Select(d => new DebuffInfo(d))) : null;
+            unchartedPoint = other.unchartedPoint;
+            description = other.description;
+            prefab = other.prefab;
+            prefabs = other.prefabs != null ? new List<string>(other.prefabs) : null;
+            icon = other.icon;
+            afterEffect = other.afterEffect;
+        }
     }
     public class ShapeInfo
     {
         public ShapeType shapeType;
         public float range;
         public DirectionType direction;
+        public ShapeInfo(ShapeInfo other)
+        {
+            if (other == null)
+            {
+                return;
+            }
+            shapeType = other.shapeType;
+            range = other.range;
+            direction = other.direction;
+        }
     }
     public class ProjectileInfo
     {
@@ -93,6 +136,20 @@ namespace Server.Data
         public bool isHoming;
         public bool isRandom;
         public string prefab;
+
+        public ProjectileInfo(ProjectileInfo other)
+        {
+            if (other == null)
+            {
+                return;
+            }
+            name = other.name;
+            speed = other.speed;
+            range = other.range;
+            isHoming = other.isHoming;
+            isRandom = other.isRandom;
+            prefab = other.prefab;
+        }
     }
     public class SpotInfo
     {
@@ -103,6 +160,21 @@ namespace Server.Data
         public int maxCount;
         public int minCount;
         public string prefab;
+
+        public SpotInfo(SpotInfo other)
+        {
+            if (other == null)
+            {
+                return;
+            }
+            name = other.name;
+            range = other.range;
+            delay = other.delay;
+            isHoming = other.isHoming;
+            maxCount = other.maxCount;
+            minCount = other.minCount;
+            prefab = other.prefab;
+        }
     }
     public class BuffInfo
     {
@@ -112,6 +184,20 @@ namespace Server.Data
         public float value;
         public bool isPercent;
         public bool isTarget;
+
+        public BuffInfo(BuffInfo other)
+        {
+            if (other == null)
+            {
+                return;
+            }
+            id = other.id;
+            name = other.name;
+            duration = other.duration;
+            value = other.value;
+            isPercent = other.isPercent;
+            isTarget = other.isTarget;
+        }
     }
 
     public class DebuffInfo
@@ -122,6 +208,20 @@ namespace Server.Data
         public float value;
         public bool isPercent;
         public bool isTarget;
+
+        public DebuffInfo(DebuffInfo other)
+        {
+            if (other == null)
+            {
+                return;
+            }
+            id = other.id;
+            name = other.name;
+            duration = other.duration;
+            value = other.value;
+            isPercent = other.isPercent;
+            isTarget = other.isTarget;
+        }
     }
 
 

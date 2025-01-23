@@ -36,7 +36,7 @@ namespace Server.Game.Object.Monsters
                 SkillRange = 5;
                 DataManager.SkillDict.TryGetValue(skillId, out skillData);
                 // 31번 스킬의 쿨타임 확인
-                if (Skill.HandleSkillCool(skillData, peek:true) == false)
+                if (Skill.HandleSkillCool(skillData) == false)
                 {
                     skillId = 1;
                     SkillRange = 1;
