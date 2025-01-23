@@ -86,7 +86,7 @@ PrefabInstance:
     - target: {fileID: 3879864987677307078, guid: f9a6e3877e3205f4b9825001dd81287c,
         type: 3}
       propertyPath: m_Name
-      value: CellGate Variant
+      value: CellGate
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

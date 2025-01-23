@@ -451,12 +451,15 @@ public class BaseController : MonoBehaviour
     {
         if (Animator == null)
             return false;
-
-        // Base Layer의 현재 상태 정보를 가져옵니다.
-        AnimatorStateInfo stateInfo = Animator.GetCurrentAnimatorStateInfo(0);
-
-        // 현재 상태의 이름이 inspectorName과 일치하는지 확인합니다.
-        return stateInfo.IsName(inspectorName);
+        
+        // 지정된 레이어의 현재 상태 정보를 가져옵니다.
+        for (int i = 0; i < Animator.layerCount; i++)
+        {
+            if (Animator.GetCurrentAnimatorStateInfo(i).IsName(inspectorName))
+                return true;
+        }
+        return false;
+        
     }
     protected virtual void UpdateSkill()
     {

@@ -112,8 +112,10 @@ namespace Server.Game
         }        
         public void ExplosionDamage()
         {
+            if (Owner.Room == null)
+                return;
             List<Vector2Int> targetPositions = SkillLogic.GetAllTargetsInRange(CellPos, (int)Data.shape.range);
-
+            
             foreach (Vector2Int pos in targetPositions)
             {
                 List<GameObject> targets = new List<GameObject>(Owner.Room.Map.Find(pos));

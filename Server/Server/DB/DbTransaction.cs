@@ -46,6 +46,11 @@ namespace Server.DB
                         existingPlayerDb.Hp = playerDb.Hp;
                         existingPlayerDb.Level = playerDb.Level;
                         existingPlayerDb.Exp = playerDb.Exp;
+                        existingPlayerDb.MaxPotion = playerDb.MaxPotion;
+                        existingPlayerDb.StatPoint = playerDb.StatPoint;
+                        existingPlayerDb.MaxHp = playerDb.MaxHp;
+                        existingPlayerDb.Attack = playerDb.Attack;
+                        existingPlayerDb.Defense = playerDb.Defense;
                         existingPlayerDb.PosX = playerDb.PosX;
                         existingPlayerDb.PosY = playerDb.PosY;
                     }
