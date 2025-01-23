@@ -271,7 +271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsMouseover: 0
-  _hpBar: {fileID: 0}
+  _hpBar: {fileID: 6003173678511391237}
   _hpGroup: {fileID: 5375604810513419802}
   _hpText: {fileID: 0}
 --- !u!1 &7857716501713317988

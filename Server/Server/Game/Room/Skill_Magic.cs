@@ -41,6 +41,11 @@ namespace Server.Game
             await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
             for (int i = 0; i < data.count; i++)
             {
+                if (Owner == null || Owner.Room == null)
+                {
+                    return;
+                }
+
                 MagicBall magicBall = ObjectManager.Instance.Add<MagicBall>();
                 magicBall.Owner = Owner;
                 magicBall.Target = _target;

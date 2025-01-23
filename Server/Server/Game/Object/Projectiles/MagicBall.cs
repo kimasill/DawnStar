@@ -44,17 +44,17 @@ namespace Server.Game
                     ExplosionDamage();
                     return;
                 }
-                if (Room.Map.ApplyMove(this, path[1], true))
+                if (Room.Map.Find(path[1]).Count > 0)
+                {
+                    _explosion = true;
+                }
+                if (Room.Map.ApplyMove(this, path[1], false))
                 {
                     CellPos = path[1];
                     S_Move movePacket = new S_Move();
                     movePacket.ObjectId = Id;
                     movePacket.Position = PosInfo;
-                    Room.Broadcast(CellPos, movePacket);                    
-                }
-                else
-                {
-                    _explosion = true;
+                    Room.Broadcast(CellPos, movePacket);
                 }
             }
             else if (!Data.projectile.isHoming && !Data.projectile.isRandom)
@@ -69,18 +69,15 @@ namespace Server.Game
                 // 직선으로 날아가는 로직
                 Vector2Int destPos = GetFrontCellPos();
 
-                if (Room.Map.ApplyMove(this, destPos))
-                {
-                    CellPos = destPos;
-                    S_Move movePacket = new S_Move();
-                    movePacket.ObjectId = Id;
-                    movePacket.Position = PosInfo;
-                    Room.Broadcast(CellPos, movePacket);
-                }
-                else
+                if (!Room.Map.ApplyMove(this, destPos))
                 {
                     _explosion = true;
                 }
+                CellPos = destPos;
+                S_Move movePacket = new S_Move();
+                movePacket.ObjectId = Id;
+                movePacket.Position = PosInfo;
+                Room.Broadcast(CellPos, movePacket);
             }
             else if (Data.projectile.isRandom)
             {
@@ -95,13 +92,17 @@ namespace Server.Game
                     ExplosionDamage();
                     return;
                 }
-                if (Room.Map.ApplyMove(this, path[1], true))
+                if (Room.Map.Find(path[1]).Count > 0)
+                {
+                    _explosion = true;
+                }
+                if (Room.Map.ApplyMove(this, path[1], false))
                 {
                     CellPos = path[1];
                     S_Move movePacket = new S_Move();
                     movePacket.ObjectId = Id;
                     movePacket.Position = PosInfo;
-                    Room.Broadcast(CellPos, movePacket);
+                    Room.Broadcast(CellPos, movePacket);                    
                 }
                 else
                 {

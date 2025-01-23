@@ -17,7 +17,7 @@ public class Damage : MonoBehaviour
     public void ShowDamage(Vector3 position)
     {
         // 오브젝트 위쪽 범위에 랜덤 위치 설정
-        Vector3 randomOffset = new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(1.0f, 1.5f), 0);
+        Vector3 randomOffset = new Vector3(Random.Range(-0.5f, 0.2f), Random.Range(0.5f, 1.0f), 0);
         transform.position = position + randomOffset;
         gameObject.SetActive(true);
         StartCoroutine(RemoveAfterDelay(1.0f));

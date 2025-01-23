@@ -1004,7 +1004,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "500",
-      "iconPath": "Textures/Item/Materials/Orb_Green",
+      "iconPath": "Textures/Item/Materials/Drop/Orb_Green",
       "description": "자연의 기운이 도는 오브"
     },
     {

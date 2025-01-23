@@ -9,7 +9,7 @@ public class BeholderController : MonsterController
     protected override void Init()
     {
         base.Init();
-        AdjustPositionY = 1f;
+        AdjustPositionY = 0.7f;
     }
     protected override void UpdateAnimation()
     {
@@ -98,7 +98,7 @@ public class BeholderController : MonsterController
         float duration = skill.duration;
         float elapsed = 0.0f;
         float angle = 0.0f;
-        float angleIncrement = -360.0f / duration;
+        float angleIncrement = 360.0f / duration;
         string currentAnimation = "";
 
         if (PosInfo.MoveDir == MoveDir.Up)
@@ -126,58 +126,53 @@ public class BeholderController : MonsterController
             Animator.Play(currentAnimation);
         }
         StartCoroutine(UseSkill33(skill, angle));
-
         yield return new WaitForSeconds(skill.terms[0]);
 
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
             angle += angleIncrement * Time.deltaTime;
-            if(angle < 0)
-            {
-                angle += 360;
-            }
             angle = angle % 360; // 0-360도 사이로 제한
 
             // 각도에 따라 애니메이션 선택 및 flip 설정
-            if (angle >= 315 && angle <360)
+            if (angle >= 330 && angle <15)
             {
                 Animator.Play("LASERLOOP_SIDE");
                 _sprite.flipX = false;
             }
-            else if (angle >= 0 && angle < 45)
-            {
-                Animator.Play("LASERLOOP_DIAGONALFRONT");
-                _sprite.flipX = false;
-            }
-            else if (angle >= 45 && angle < 90)
-            {
-                Animator.Play("LASERLOOP_FRONT");
-                _sprite.flipX = false;
-            }
-            else if (angle >= 90 && angle < 135)
-            {
-                Animator.Play("LASERLOOP_DIAGONALFRONT");
-                _sprite.flipX = true;
-            }
-            else if (angle >= 135 && angle < 180)
-            {
-                Animator.Play("LASERLOOP_SIDE");
-                _sprite.flipX = true;
-            }
-            else if (angle >= 180 && angle < 225)
+            else if (angle >= 15 && angle < 60)
             {
                 Animator.Play("LASERLOOP_DIAGONALBACK");
-                _sprite.flipX = true;
+                _sprite.flipX = false;
             }
-            else if (angle >= 225 && angle < 270)
+            else if (angle >= 60 && angle < 105)
             {
                 Animator.Play("LASERLOOP_BACK");
                 _sprite.flipX = false;
             }
-            else if (angle >= 270 && angle < 315)
+            else if (angle >= 105 && angle < 150)
             {
                 Animator.Play("LASERLOOP_DIAGONALBACK");
+                _sprite.flipX = true;
+            }
+            else if (angle >= 150 && angle < 195)
+            {
+                Animator.Play("LASERLOOP_SIDE");
+                _sprite.flipX = true;
+            }
+            else if (angle >= 195 && angle < 240)
+            {
+                Animator.Play("LASERLOOP_DIAGONALFRONT");
+                _sprite.flipX = true;
+            }
+            else if (angle >= 240 && angle < 285)
+            {
+                Animator.Play("LASERLOOP_FRONT");
+                _sprite.flipX = false;
+            }
+            else if (angle >= 285 && angle < 330)
+            {
+                Animator.Play("LASERLOOP_DIAGONALFRONT");
                 _sprite.flipX = false;
             }
             yield return null;
@@ -260,7 +255,7 @@ public class BeholderController : MonsterController
         GameObject skillObj = Managers.Resource.Instantiate(skillData.prefab, transform);
         Animator animator = skillObj.GetComponent<Animator>();
         SpriteRenderer sprite = skillObj.GetComponent<SpriteRenderer>();
-        int spriteOrder = sprite.sortingOrder;
+        int spriteOrder = gameObject.GetComponent<SpriteRenderer>().sortingOrder;
         animator.Play("START");
         skillObj.transform.rotation = Quaternion.Euler(0, 0, angle);
 
@@ -273,10 +268,10 @@ public class BeholderController : MonsterController
             elapsed += Time.deltaTime;
             angle += angleIncrement * Time.deltaTime;
             angle = angle % 360; // 0-360도 사이로 제한
-            if(angle >= 135 && angle > 360)
-                sprite.sortingOrder = spriteOrder - 5;
-            else
+            if((angle >= 195 && angle < 330 ))
                 sprite.sortingOrder = spriteOrder + 5;
+            else
+                sprite.sortingOrder = spriteOrder - 5;
             skillObj.transform.rotation = Quaternion.Euler(0, 0, angle); // 각도에 따라 회전 설정
             yield return null;
         }
