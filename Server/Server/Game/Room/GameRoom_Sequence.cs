@@ -187,7 +187,8 @@ namespace Server.Game
                 Hp = player.Stat.Hp,
                 MaxHp = player.Stat.MaxHp,
                 Attack = player.Stat.Attack,
-                Speed = player.Stat.Speed
+                Speed = player.Stat.Speed,
+                StatPoint = player.Stat.StatPoint,                
             };
             statInfoPacket.StatInfo = statInfo;
 

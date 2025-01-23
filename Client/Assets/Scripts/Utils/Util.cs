@@ -50,6 +50,24 @@ public class Util
 
         return null;
     }
+    public static IEnumerator WaitForAnimation(Animator animator, string clipName)
+    {
+        // 애니메이션 상태가 전환 중인지 확인
+        while (animator.IsInTransition(0))
+        {
+            yield return null;
+        }
 
+        // 애니메이션 클립의 길이를 가져옴
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.IsName(clipName))
+        {
+            float clipLength = stateInfo.length;
+            if (clipLength > 0)
+            {
+                yield return new WaitForSeconds(clipLength);
+            }
+        }
+    }
 
 }

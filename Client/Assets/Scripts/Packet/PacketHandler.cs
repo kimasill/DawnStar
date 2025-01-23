@@ -530,12 +530,13 @@ class PacketHandler
     {
         S_ChangeStat statPacket = (S_ChangeStat)packet;
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-        Managers.Object.MyPlayer.Stat.MergeFrom(statPacket.StatInfo);
-        if (Managers.Object.MyPlayer.Stat.Level != statPacket.StatInfo.Level)
+        
+        if (Managers.Object.MyPlayer.Stat.Level < statPacket.StatInfo.Level)
         {
-            gameSceneUI.GameWindow.StateUI.SetInfo();
             gameSceneUI.NotificationUI.ShowLevelNoti();
         }
+        Managers.Object.MyPlayer.Stat.MergeFrom(statPacket.StatInfo);
+        gameSceneUI.GameWindow.StateUI.SetInfo();
         gameSceneUI.StatUI.RefreshUI();
     }
 

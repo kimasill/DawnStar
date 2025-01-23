@@ -26,289 +26,289 @@
       "level": 3,
       "maxHp": 22,
       "totalExp": 4000,
-      "statPoint": 2
+      "statPoint": 1
     },
     {
       "level": 4,
       "maxHp": 24,
       "totalExp": 10000,
-      "statPoint": 3
+      "statPoint": 1
     },
     {
       "level": 5,
       "maxHp": 26,
       "totalExp": 20000,
-      "statPoint": 4
+      "statPoint": 2
     },
     {
       "level": 6,
       "maxHp": 29,
       "totalExp": 35000,
-      "statPoint": 5
+      "statPoint": 1
     },
     {
       "level": 7,
       "maxHp": 32,
       "totalExp": 55000,
-      "statPoint": 6
+      "statPoint": 1
     },
     {
       "level": 8,
       "maxHp": 35,
       "totalExp": 80000,
-      "statPoint": 7
+      "statPoint": 1
     },
     {
       "level": 9,
       "maxHp": 38,
       "totalExp": 110000,
-      "statPoint": 8
+      "statPoint": 1
     },
     {
       "level": 10,
       "maxHp": 42,
       "totalExp": 145000,
-      "statPoint": 9
+      "statPoint": 2
     },
     {
       "level": 11,
       "maxHp": 47,
       "totalExp": 200000,
-      "statPoint": 10
+      "statPoint": 1
     },
     {
       "level": 12,
       "maxHp": 51,
       "totalExp": 270000,
-      "statPoint": 12
+      "statPoint": 1
     },
     {
       "level": 13,
       "maxHp": 57,
       "totalExp": 360000,
-      "statPoint": 14
+      "statPoint": 1
     },
     {
       "level": 14,
       "maxHp": 62,
       "totalExp": 470000,
-      "statPoint": 16
+      "statPoint": 1
     },
     {
       "level": 15,
       "maxHp": 69,
       "totalExp": 600000,
-      "statPoint": 18
+      "statPoint": 2
     },
     {
       "level": 16,
       "maxHp": 75,
       "totalExp": 750000,
-      "statPoint": 20
+      "statPoint": 1
     },
     {
       "level": 17,
       "maxHp": 83,
       "totalExp": 920000,
-      "statPoint": 22
+      "statPoint": 1
     },
     {
       "level": 18,
       "maxHp": 91,
       "totalExp": 1110000,
-      "statPoint": 24
+      "statPoint": 1
     },
     {
       "level": 19,
       "maxHp": 100,
       "totalExp": 1320000,
-      "statPoint": 26
+      "statPoint": 1
     },
     {
       "level": 20,
       "maxHp": 111,
       "totalExp": 1550000,
-      "statPoint": 28
+      "statPoint": 2
     },
     {
       "level": 21,
       "maxHp": 122,
       "totalExp": 1850000,
-      "statPoint": 30
+      "statPoint": 1
     },
     {
       "level": 22,
       "maxHp": 134,
       "totalExp": 2200000,
-      "statPoint": 33
+      "statPoint": 1
     },
     {
       "level": 23,
       "maxHp": 147,
       "totalExp": 2600000,
-      "statPoint": 36
+      "statPoint": 1
     },
     {
       "level": 24,
       "maxHp": 162,
       "totalExp": 3050000,
-      "statPoint": 39
+      "statPoint": 1
     },
     {
       "level": 25,
       "maxHp": 178,
       "totalExp": 3550000,
-      "statPoint": 42
+      "statPoint": 2
     },
     {
       "level": 26,
       "maxHp": 194,
       "totalExp": 4100000,
-      "statPoint": 45
+      "statPoint": 1
     },
     {
       "level": 27,
       "maxHp": 213,
       "totalExp": 4700000,
-      "statPoint": 48
+      "statPoint": 1
     },
     {
       "level": 28,
       "maxHp": 233,
       "totalExp": 5350000,
-      "statPoint": 51
+      "statPoint": 1
     },
     {
       "level": 29,
       "maxHp": 255,
       "totalExp": 6050000,
-      "statPoint": 54
+      "statPoint": 1
     },
     {
       "level": 30,
       "maxHp": 278,
       "totalExp": 6800000,
-      "statPoint": 57
+      "statPoint": 2
     },
     {
       "level": 31,
       "maxHp": 304,
       "totalExp": 7700000,
-      "statPoint": 60
+      "statPoint": 1
     },
     {
       "level": 32,
       "maxHp": 332,
       "totalExp": 8700000,
-      "statPoint": 63
+      "statPoint": 1
     },
     {
       "level": 33,
       "maxHp": 363,
       "totalExp": 9800000,
-      "statPoint": 66
+      "statPoint": 1
     },
     {
       "level": 34,
       "maxHp": 398,
       "totalExp": 11000000,
-      "statPoint": 69
+      "statPoint": 1
     },
     {
       "level": 35,
       "maxHp": 436,
       "totalExp": 12300000,
-      "statPoint": 72
+      "statPoint": 2
     },
     {
       "level": 36,
       "maxHp": 477,
       "totalExp": 13700000,
-      "statPoint": 75
+      "statPoint": 1
     },
     {
       "level": 37,
       "maxHp": 525,
       "totalExp": 15200000,
-      "statPoint": 78
+      "statPoint": 1
     },
     {
       "level": 38,
       "maxHp": 580,
       "totalExp": 16800000,
-      "statPoint": 81
+      "statPoint": 1
     },
     {
       "level": 39,
       "maxHp": 641,
       "totalExp": 18500000,
-      "statPoint": 84
+      "statPoint": 1
     },
     {
       "level": 40,
       "maxHp": 713,
       "totalExp": 20300000,
-      "statPoint": 87
+      "statPoint": 2
     },
     {
       "level": 41,
       "maxHp": 794,
       "totalExp": 22500000,
-      "statPoint": 90
+      "statPoint": 1
     },
     {
       "level": 42,
       "maxHp": 886,
       "totalExp": 25000000,
-      "statPoint": 93
+      "statPoint": 1
     },
     {
       "level": 43,
       "maxHp": 989,
       "totalExp": 27700000,
-      "statPoint": 96
+      "statPoint": 1
     },
     {
       "level": 44,
       "maxHp": 1105,
       "totalExp": 30600000,
-      "statPoint": 99
+      "statPoint": 1
     },
     {
       "level": 45,
       "maxHp": 1235,
       "totalExp": 33700000,
-      "statPoint": 102
+      "statPoint": 2
     },
     {
       "level": 46,
       "maxHp": 1378,
       "totalExp": 37000000,
-      "statPoint": 105
+      "statPoint": 1
     },
     {
       "level": 47,
       "maxHp": 1536,
       "totalExp": 40500000,
-      "statPoint": 108
+      "statPoint": 1
     },
     {
       "level": 48,
       "maxHp": 1709,
       "totalExp": 44200000,
-      "statPoint": 111
+      "statPoint": 1
     },
     {
       "level": 49,
       "maxHp": 1900,
       "totalExp": 48100000,
-      "statPoint": 114
+      "statPoint": 1
     },
     {
       "level": 50,
       "maxHp": 2110,
       "totalExp": 52200000,
-      "statPoint": 117
+      "statPoint": 2
     }
   ]
 }

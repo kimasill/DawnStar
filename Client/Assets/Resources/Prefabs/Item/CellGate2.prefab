@@ -71,7 +71,7 @@ PrefabInstance:
     - target: {fileID: 8883116067448282445, guid: 72c9c8a1ece714e499bd85043fddf43f,
         type: 3}
       propertyPath: m_Name
-      value: CellGate Variant
+      value: CellGate2
       objectReference: {fileID: 0}
     - target: {fileID: 8883116067448282447, guid: 72c9c8a1ece714e499bd85043fddf43f,
         type: 3}
