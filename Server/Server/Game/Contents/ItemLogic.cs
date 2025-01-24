@@ -14,13 +14,14 @@ namespace Server.Game
     {
         public static List<ItemRewardData> GetRandomReward(List<ItemRewardData> rewards)
         {
-            int rand = new Random().Next(0, 101);
+            double rand = 0f; 
 
             List<ItemRewardData> itemsToAdd = new List<ItemRewardData>();
 
             foreach (ItemRewardData rewardData in rewards)
             {
-                if (rand <= rewardData.probability)
+                rand = new Random().NextDouble();
+                if (rand * 100 <= rewardData.probability)
                 {
                     itemsToAdd.Add(rewardData);
                 }

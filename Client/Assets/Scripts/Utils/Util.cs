@@ -52,6 +52,7 @@ public class Util
     }
     public static IEnumerator WaitForAnimation(Animator animator, string clipName)
     {
+        yield return new WaitForSeconds(0.1f);
         // 애니메이션 상태가 전환 중인지 확인
         while (animator.IsInTransition(0))
         {

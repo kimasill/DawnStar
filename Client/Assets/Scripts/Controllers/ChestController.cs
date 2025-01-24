@@ -77,15 +77,14 @@ public class ChestController : BaseController
             _routine = null;
         }
         if (_headUpIcon != null)
-            _headUpIcon.SetActive(false);
+            _headUpIcon?.SetActive(false);
     }
 
     public void OpenChest()
     {
         if (_isOpened)
             return;
-        _isOpened = true;
-        Animator.speed = 1;
+        
 
         DeactivateNotification();
         C_OpenChest packet = new C_OpenChest()
@@ -97,35 +96,36 @@ public class ChestController : BaseController
         };
         Managers.Network.Send(packet);
 
-        if(CheckAnimationClip("SHAKE"))
-            StartCoroutine(CoShakeChest());
-        else StartCoroutine(CoOpenChest());
-    }
-    private IEnumerator CoShakeChest()
-    {
-        Animator.Play("SHAKE");
-        yield return Util.WaitForAnimation(Animator, "SHAKE");
         StartCoroutine(CoOpenChest());
+        _isOpened = true;
     }
     private IEnumerator CoOpenChest()
     {
-        if (CheckAnimationClip("CLOSE"))
+        if (Animator == null)
         {
-            Animator.Play("OPEN"); // OPEN 애니메이션 재생
-            yield return Util.WaitForAnimation(Animator, "OPEN");
-            Animator.speed = 0;
-            Animator.Play("CLOSE", 0, 0); // CLOSE 애니메이션 첫 프레임으로 고정
+            gameObject.SetActive(false);
         }
         else
         {
-            Animator.Play("OPEN");
-            yield return Util.WaitForAnimation(Animator, "OPEN");
-            Animator.speed = 0;
-            Animator.Play("OPEN", 0, 1.0f);
-        }
+            Animator.speed = 1;
+            if (CheckAnimationClip("CLOSE"))
+            {
+                Animator.Play("OPEN"); // OPEN 애니메이션 재생
+                yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f);
+                Animator.speed = 0;
+                Animator.Play("CLOSE", 0, 0); // CLOSE 애니메이션 첫 프레임으로 고정
+            }
+            else
+            {
+                Animator.Play("OPEN");
+                yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f);
+                Animator.speed = 0;
+                Animator.Play("OPEN", 0, 1.0f);
+            }
 
-        yield return new WaitForSeconds(1.0f);
-        gameObject.SetActive(false);
+            yield return new WaitForSeconds(1.0f);
+            gameObject.SetActive(false);
+        }
     }
 
     private IEnumerator CoCloseChest()

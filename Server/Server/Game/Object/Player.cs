@@ -291,7 +291,7 @@ namespace Server.Game
             Hp = Stat.MaxHp;
             Stat.Attack += stat.Attack;
             Stat.Speed += stat.Speed;
-            Stat.StatPoint += stat.StatPoint;
+             Stat.StatPoint += stat.StatPoint;
             DbTransaction.SavePlayerStatus_All(this, Room);
             Room.Push(Room.HandleStatChange, this);
         }
