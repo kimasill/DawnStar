@@ -390,9 +390,10 @@ namespace Server.Game
 
                     // 클라이언트에게 알림
                     S_EquipItem equipOkItem = new S_EquipItem();
+                    equipOkItem.ObjectId = Id;
                     equipOkItem.ItemDbId = unequipItem.ItemDbId;
                     equipOkItem.Equipped = unequipItem.Equipped;
-                    Session.Send(equipOkItem);
+                    Room.Push(()=> Room.Broadcast(CellPos,equipOkItem));
                 }
             }
 
@@ -407,7 +408,7 @@ namespace Server.Game
             equipNoti.ObjectId = Id;
             equipNoti.ItemDbId = equipPacket.ItemDbId;
             equipNoti.Equipped = equipPacket.Equipped;
-            Room.Broadcast(CellPos, equipNoti);
+            Room.Push(() => Room.Broadcast(CellPos, equipNoti));
 
             RefreshAdditionalStat();
             SendAdditionalStat();
