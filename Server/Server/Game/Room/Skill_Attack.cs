@@ -240,6 +240,8 @@ namespace Server.Game
             float angleIncrement = 360f / (duration / data.tickInterval);
             while (duration > 0)
             {
+                if (Owner == null || Owner.Room == null)
+                    return;
                 List<Vector2Int> skillPos = new List<Vector2Int>();
 
                 if (data.shape.shapeType == ShapeType.ShapeLine)

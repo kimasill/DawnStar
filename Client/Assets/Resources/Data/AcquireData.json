@@ -290,6 +290,12 @@
         },
         {
           "probability": "100",
+          "itemId": "7",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "probability": "100",
           "itemId": "1114",
           "minCount": "1",
           "maxCount": "1"

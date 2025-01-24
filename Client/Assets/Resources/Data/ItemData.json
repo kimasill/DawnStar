@@ -333,7 +333,7 @@
       "name": "주시자의 눈",
       "jewelryType": "Necklace",
       "price": 25000,
-      "iconPath": "Textures/Item/Jewelry/Icon/Necklace_Beholder",
+      "iconPath": "Textures/Item/Jewelry/Necklace_Beholder",
       "description": "예언자의 눈. 미래를 예측하는 능력을 부여한다.",
       "options": {
         "Up": 100,
