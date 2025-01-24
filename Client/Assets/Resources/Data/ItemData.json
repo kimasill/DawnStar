@@ -94,7 +94,7 @@
       "description": "대괴수용으로 제작된 특수검.",
       "options": {
         "CriticalChance": "10",
-        "Skill": "8"
+        "Skill": "7"
       },
       "grade": "Elite"
     },

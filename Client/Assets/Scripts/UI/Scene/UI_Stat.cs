@@ -132,11 +132,6 @@ public class UI_Stat : UI_Base
         selectStat.TemplateId = index;
         Managers.Network.Send(selectStat);
         StartCoroutine(ChangeAndResetCardSize(CardObjects[index-1]));
-        _statPoint--;
-        if (_statPoint <= 0)
-        {
-            OnClickStatPointButton();
-        }
     }
     private void OnClickStatPointButton()
     {
@@ -324,22 +319,23 @@ public class UI_Stat : UI_Base
 
             if (_isSpecialStatPanelActive == true)
                 OnClickInfoButton();
-
+            _statPoint = player.Stat.StatPoint;
             if (player.Stat.StatPoint > 0 && _isCardPanelActive == false)
             {
-                _statPoint = player.Stat.StatPoint;
                 ShowImage((int)Images.Card_Panel, true);
                 _isCardPanelActive = true;
+            }
+            else if(player.Stat.StatPoint <= 0 && _isCardPanelActive == true)
+            {
+                ShowImage((int)Images.Card_Panel, false);
+                _isCardPanelActive = false;
             }
         }
     }
     private IEnumerator ChangeAndResetCardSize(GameObject obj)
     {
         yield return StartCoroutine(ChangeCardSize(obj));
-        if (_statPoint > 0)
-        {
-            yield return StartCoroutine(ResetCardSize(obj));
-        }
+        yield return StartCoroutine(ResetCardSize(obj));
     }
     private IEnumerator ChangeCardSize(GameObject obj)
     {
