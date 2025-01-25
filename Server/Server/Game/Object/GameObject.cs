@@ -22,6 +22,8 @@ namespace Server.Game
         public GameObjectType ObjectType { get; protected set; } = GameObjectType.None;
         private readonly object _debuffsLock = new object();
         private readonly object _buffsLock = new object();
+        public Action DamageAction;
+        public Dictionary<string, Action> DamageEffects { get; private set; } = new Dictionary<string, Action>();
         public bool IsDead { get; set; }
         public int Id 
         { 
@@ -255,12 +257,17 @@ namespace Server.Game
         }
         public virtual int OnDamaged(GameObject attacker, int damage)
         {
+            return OnDamaged(attacker, damage, true);
+        }
+        public virtual int OnDamaged(GameObject attacker, int damage, bool action = true)
+        {
             if (Room == null)
                 return 0;
             damage = Room.CalculateDamage(attacker,Id,damage,this);      
             int hp = Math.Max(Stat.Hp - damage, 0);
-            ChangeHp(hp); 
-
+            ChangeHp(hp);
+            if (action)
+                DamageAction?.Invoke();
             if (hp <= 0)
             {
                 if(ObjectType == GameObjectType.Monster)
@@ -325,17 +332,17 @@ namespace Server.Game
             changePacket.Hp = Stat.Hp;
             Room.Broadcast(CellPos, changePacket);
         }
-        public async void EffectSkill(GameObject target, SkillData skill, int count, float delay)
-        {
+        public async void Effect(GameObject target, string prefab, int skillId = 0, int count = 1, float delay = 0)
+         {
             if (target == null)
                 return;
 
             for (int i = 0; i < count; i++)
             {
                 S_Effect effectPacket = new S_Effect();
-                effectPacket.SkillId = skill.id;
+                effectPacket.SkillId = skillId;
                 effectPacket.ObjectId = target.Id;
-                effectPacket.Prefab = skill.prefab;
+                effectPacket.Prefab = prefab;
                 Room.Broadcast(target.CellPos, effectPacket);
 
                 await Task.Delay((int)(delay * 1000));
@@ -349,7 +356,7 @@ namespace Server.Game
             for (int i = 0; i < count; i++)
             {
                 float afterValue = 0;
-                afterValue = ApplyEffect(buff.name, buff.value, true);
+                afterValue = ApplyEffect(true, buff.value, buff: buff);
 
                 lock (_buffsLock)
                 {
@@ -397,7 +404,7 @@ namespace Server.Game
                 float tValue = 0;
                 Buffs.TryGetValue(buff.id, out tValue);
                 tValue -= value;
-                ApplyEffect(buff.name, value, false);
+                ApplyEffect(false, value, buff: buff);
 
                 if(tValue <= 0)
                     Buffs.Remove(buff.id);
@@ -426,7 +433,7 @@ namespace Server.Game
                 {
                     value = suspect.TotalAttack * debuff.value;
                 }
-                else value = ApplyEffect(debuff.name, debuff.value, true);
+                else value = ApplyEffect(true, value, debuff:debuff);
 
                 lock (_debuffsLock)
                 {
@@ -471,7 +478,7 @@ namespace Server.Game
             {
                 float tValue = 0;
                 Debuffs.TryGetValue(debuff.id, out tValue);
-                ApplyEffect(debuff.name, value, false);
+                ApplyEffect(false, value, debuff: debuff);
 
                 if (tValue <= 0)
                     Debuffs.Remove(debuff.id);
@@ -486,15 +493,17 @@ namespace Server.Game
                 Console.WriteLine($"Debuff {debuff.id} removed");
             }
         }
-        private float ApplyEffect(string buff, float value, bool isApplying)
+        private float ApplyEffect(bool isApplying, float value, BuffInfo buff = null, DebuffInfo debuff = null)
         {
             int multiplier = isApplying ? 1 : -1;
             float applyValue = 0;
-            if(buff == "부패")
+            string buffName = buff != null ? buff.name : debuff.name;
+            
+            if (buffName == "부패")
             {
-                buff = "방어력";
+                buffName = "방어력";
             }
-            switch (buff)
+            switch (buffName)
             {
                 case "공격력":
                     applyValue = isApplying ? TotalAttack * value * multiplier : value * multiplier;
@@ -539,6 +548,36 @@ namespace Server.Game
                 case "데미지 감소":
                     applyValue = isApplying ? value * multiplier : value * multiplier;
                     TotalDamageReduce += applyValue;
+                    break;
+                case "주시":
+                    if (isApplying)
+                    {
+                        Action action = () =>
+                        {
+                            if (Room == null)
+                                return;
+                            Effect(this, debuff.damagePrefab);
+                            Room.PushAfter((int)(debuff.damageTerms[0] * 1000), () =>
+                            {
+                                if (Room == null)
+                                    return;
+                                int damage = (int)(TotalAttack * debuff.additionalDamage);
+                                OnDamaged(this, damage, false);
+                            });
+                        };
+                        if (DamageEffects.ContainsKey(buffName) == false)
+                            DamageEffects[buffName] = action;
+                        DamageAction += action;
+                    }
+                    else
+                    {
+                        if (DamageEffects.ContainsKey(buffName))
+                        {
+                            DamageAction -= DamageEffects[buffName];
+                            DamageEffects.Remove(buffName);
+                        }
+                    }
+                    applyValue = debuff.value;
                     break;
                 default:
                     applyValue = value;

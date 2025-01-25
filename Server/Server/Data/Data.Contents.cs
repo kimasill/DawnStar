@@ -208,6 +208,9 @@ namespace Server.Data
         public float value;
         public bool isPercent;
         public bool isTarget;
+        public float additionalDamage;
+        public string damagePrefab;
+        public List<float> damageTerms;
 
         public DebuffInfo(DebuffInfo other)
         {
@@ -221,6 +224,9 @@ namespace Server.Data
             value = other.value;
             isPercent = other.isPercent;
             isTarget = other.isTarget;
+            additionalDamage = other.additionalDamage;
+            damagePrefab = other.damagePrefab;
+            damageTerms = other.damageTerms != null ? new List<float>(other.damageTerms) : null;
         }
     }
 

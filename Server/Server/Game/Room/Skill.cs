@@ -264,31 +264,35 @@ namespace Server.Game
                     DOT(skillData, target);
                     break;
                 case SkillLogicType.Mark:
-                    ApplyDeBuff(skillData, target);
+                    Marking(skillData, target);
                     break;
                 default:
+                    ApplyDeBuff(skillData, target);
                     break;
             }
 
-            DebuffData debuff = null;
-            DataManager.DebuffDict.TryGetValue(skillData.debuff.id, out debuff);
-            if (debuff == null)
-                return;
-
-            DebuffType debuffType = 0;
-            if (debuff.debuffType != 0)
-                debuffType = debuff.debuffType;
-            else debuffType = DebuffType.Stat;
-
-            switch (debuff.debuffType)
+            if(skillData.debuff != null)
             {
-                case DebuffType.Dot:
-                    DOT(skillData, target);
-                    target.ApplyDebuff(skillData.debuff, suspect:Owner);
-                    break;
-                case DebuffType.Stat:
-                    ApplyDeBuff(skillData, target);
-                    break;
+                DebuffData debuff = null;
+                DataManager.DebuffDict.TryGetValue(skillData.debuff.id, out debuff);
+                if (debuff == null)
+                    return;
+
+                DebuffType debuffType = 0;
+                if (debuff.debuffType != 0)
+                    debuffType = debuff.debuffType;
+                else debuffType = DebuffType.Stat;
+
+                switch (debuff.debuffType)
+                {
+                    case DebuffType.Dot:
+                        DOT(skillData, target);
+                        target.ApplyDebuff(skillData.debuff, suspect: Owner);
+                        break;
+                    case DebuffType.Stat:
+                        ApplyDeBuff(skillData, target);
+                        break;
+                }
             }
         }
         public void HandleMoveSkill(SkillData skillData, GameObject target = null)

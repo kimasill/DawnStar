@@ -44,6 +44,7 @@ namespace Server.Game
             if (chance <= enhanceData.percent)
             {
                 ItemDb itemDb = new ItemDb();
+                itemDb.Options = new Dictionary<string, string>();
                 ItemData itemData = null;
                 DataManager.ItemDict.TryGetValue(item.TemplateId, out itemData);
 
@@ -63,39 +64,41 @@ namespace Server.Game
                 }
                 else if (item.ItemType == ItemType.Jewelry)
                 {
+                    Dictionary<string, string> options = new Dictionary<string, string>();
                     foreach (KeyValuePair<string, string> option in item.Options)
                     {
                         string value = option.Value;
                         if (option.Key == ItemOptionType.CriticalChance.ToString())
                         {
-                            value = (float.Parse(option.Value) * (1 + enhanceData.value * 2)).ToString();
+                            value = ((int)(int.Parse(option.Value) * (1 + enhanceData.value * 2))).ToString();
                         }
                         else if (option.Key == ItemOptionType.CriticalDamage.ToString())
                         {
-                            value = (int.Parse(option.Value) * (1 + enhanceData.value)).ToString();
+                            value = ((int)(int.Parse(option.Value) * (1 + enhanceData.value))).ToString();
                         }
                         else if (option.Key == ItemOptionType.Avoid.ToString())
                         {
-                            value = (int.Parse(option.Value) * (1 + enhanceData.value)).ToString();
+                            value = ((int)(int.Parse(option.Value) * (1 + enhanceData.value))).ToString();
                         }
                         else if (option.Key == ItemOptionType.Accuracy.ToString())
                         {
-                            value = (int.Parse(option.Value) * (1 + enhanceData.value)).ToString();
+                            value = ((int)(int.Parse(option.Value) * (1 + enhanceData.value))).ToString();
                         }
                         else if (option.Key == ItemOptionType.Hp.ToString())
                         {
-                            value = (int.Parse(option.Value) * (1 + enhanceData.value * 2)).ToString();
+                            value = ((int)(int.Parse(option.Value) * (1 + enhanceData.value * 2))).ToString();
                         }
                         else if (option.Key == ItemOptionType.Up.ToString())
                         {
-                            value = (int.Parse(option.Value) * (1 + enhanceData.value)).ToString();
+                            value = ((int)(int.Parse(option.Value) * (1 + enhanceData.value))).ToString();
                         }
                         else if (option.Key == ItemOptionType.UpRegen.ToString())
                         {
-                            value = (int.Parse(option.Value) * (1 + enhanceData.value)).ToString();
+                            value = ((int)(int.Parse(option.Value) * (1 + enhanceData.value))).ToString();
                         }
-                        itemDb.Options.Add(option.Key, value);
+                        options.Add(option.Key, value);
                     }
+                    itemDb.Options = options;
                 }
 
                 itemDb.ItemDbId = item.ItemDbId;

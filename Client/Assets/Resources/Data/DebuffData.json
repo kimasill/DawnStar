@@ -70,7 +70,7 @@
       "id": 14,
       "name": "주시",
       "icon": "Textures/Images/Icons/Buff/Debuff_Observe",
-      "prefab": "Prefabs/Effects/Debuffs/Debuff_Observe"
+      "prefab": "Effect/Marking"
     }
   ]
 } 
