@@ -42,23 +42,8 @@ namespace Server.Game
             {
                 targetPositions.Add(destPos);
             }
+            Owner.Skill.DamageOnTargetPositions(targetPositions, Data.damage + Owner.TotalAttack);            
 
-            foreach (var pos in targetPositions)
-            {
-                List<GameObject> targets = new List<GameObject>(Room.Map.Find(pos));
-                if(targets.Count > 0)
-                {
-                    foreach (GameObject target in targets)
-                    {
-                        if (target == Owner)
-                            continue;
-                        if (target != null && target != Owner)
-                        {
-                            target.OnDamaged(this, Data.damage + Owner.TotalAttack); //피격판정                    
-                        }
-                    }
-                }
-            }
             Room.PushAfter(1000, Room.LeaveGame, Id);
         }
     }

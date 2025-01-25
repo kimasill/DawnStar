@@ -63,6 +63,16 @@ namespace Server.Game
             }
         }
 
+        public void UpdateItemInfo(Item item)
+        {
+            Item existingItem = Get(item.ItemDbId);
+            if (existingItem != null)
+            {
+                Remove(existingItem.ItemDbId);
+                Add(item);
+            }
+        }
+
         public Item Get(int itemId)
         {
             Item item = null;

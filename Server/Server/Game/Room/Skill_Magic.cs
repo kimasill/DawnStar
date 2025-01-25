@@ -14,8 +14,28 @@ namespace Server.Game
         private async void SpotAttack(SkillData data, List<Vector2Int> skillPos)
         {
             await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
+            List<Vector2Int> targetPositions = new List<Vector2Int>();
+            if (data.spot.isHoming)
+            {
+                int maxCount = data.spot.maxCount;
+                int posCount = 0;
+                foreach (var pos in skillPos)
+                {
+                    if (posCount >= maxCount)
+                        break;
+                    List<GameObject> targets = Owner.Room.Map.Find(pos);
+                    if (targets.Count > 0)
+                    {
+                        targetPositions.Add(pos);
+                        posCount++;
+                    }
+                }
+            }
+            else
+                targetPositions = skillPos;
+
             int count = 0;
-            foreach (Vector2Int pos in skillPos)
+            foreach (Vector2Int pos in targetPositions)
             {
                 if (Owner == null || Owner.Room == null || count > data.spot.maxCount)
                     return;

@@ -11,6 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Server.Game.Item;
 
 namespace Server.DB
 {
@@ -428,16 +429,11 @@ namespace Server.DB
             {
                 using (AppDbContext db = new AppDbContext())
                 {
-                    ItemDb existingItemDb = db.Items
-                        .FirstOrDefault(i => i.OwnerDbId == itemDb.OwnerDbId && i.ItemDbId == itemDb.ItemDbId);
-                    if (existingItemDb != null)
-                    {                        
-                        existingItemDb.Enhance = itemDb.Enhance;
-                        existingItemDb.Damage = itemDb.Damage;
-                        existingItemDb.Defense = itemDb.Defense;
-                        existingItemDb.Options = itemDb.Options;
-                    }
-                    else return;
+                    db.Entry(itemDb).State = EntityState.Unchanged;
+                    db.Entry(itemDb).Property(nameof(itemDb.Enhance)).IsModified = true;
+                    db.Entry(itemDb).Property(nameof(itemDb.Damage)).IsModified = true;
+                    db.Entry(itemDb).Property(nameof(itemDb.Defense)).IsModified = true;
+                    db.Entry(itemDb).Property(nameof(itemDb.OptionsJson)).IsModified = true;                   
 
                     bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
                     if (success)
@@ -448,7 +444,7 @@ namespace Server.DB
                             Item iItem = player.Inven.Find(i => i.ItemDbId == itemDb.ItemDbId);
                             if (iItem != null)
                             {
-                                iItem = newItem;
+                                player.Inven.UpdateItemInfo(newItem);
 
                                 S_Enhance itemPacket = new S_Enhance();
                                 ItemInfo info = new ItemInfo();
