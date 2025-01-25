@@ -34,9 +34,9 @@ public class UI_UpBar : UI_Base
         if (maxUp > 500)
         {
             float xScale = _originalSize.x * maxUp / 500;
-            _upGroup.localScale = new Vector3(xScale, 1, 1);
+            _upGroup.localScale = new Vector3(xScale, _originalSize.y, _originalSize.z);
 
-            _upGroup.anchoredPosition = new Vector2(_upGroup.rect.size.x, _upGroup.anchoredPosition.y);
+            _upGroup.anchoredPosition = new Vector2(_upGroup.rect.size.x / 2, _upGroup.anchoredPosition.y);
         }
     }
 

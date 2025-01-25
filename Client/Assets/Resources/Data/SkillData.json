@@ -796,8 +796,12 @@
       "name": "주시",
       "coolTime": 15,
       "skillType": "SkillDebuff",
+      "skillLogicType": "Mark",
+      "range": 6,
       "duration": 8,
-      "term": 1,
+      "terms": [
+        1.5
+      ],
       "debuffList": [
         {
           "id": 14,
@@ -805,7 +809,12 @@
           "duration": 8,
           "value": 1,
           "isPercent": false,
-          "isTarget": true
+          "isTarget": true,
+          "additionalDamage": 0.2,
+          "damagePrefabs": "Effect/Devour",
+          "damageTerms": [
+            0.3
+          ]
         },
         {
           "id": 13,
@@ -825,9 +834,9 @@
         }
       ],
       "isObject": false,
-      "prefab": "Effect/Mark",
+      "prefab": "Effect/Observation",
       "icon": "Textures/Images/Icons/Skill/Observation",
-      "unchartedPoint": 70,
+      "unchartedPoint": 150,
       "description": "적을 지정하여 일정시간동안 추가피해를 준다.",
       "fix": true
     },

@@ -424,7 +424,11 @@ namespace Server.Game
             {
                 Item item = player.Inven.FindByTemplateId(piece.templateId);
                 if (item == null || item.Count < piece.count * makeItemPacket.Count)
-                    return; // 재료가 부족하면 종료
+                {
+                    S_SystemNotice systemNotice = new S_SystemNotice();
+                    systemNotice.Message = "재료가 부족합니다.";
+                    return;
+                }
 
                 ItemDb itemDb = new ItemDb()
                 {

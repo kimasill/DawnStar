@@ -116,7 +116,7 @@ namespace Server.Game
                 SkillData skillData = null;
                 DataManager.SkillDict.TryGetValue(14, out skillData);
                 Skill.StartSkill(this, skillData, _target);
-                EffectSkill(this, skillData, 2, skillData.duration);
+                Effect(this, skillData.prefab, skillData.id, 2, skillData.duration);
             }
         }
 

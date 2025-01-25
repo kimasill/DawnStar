@@ -15,6 +15,8 @@ public static class Content
                     return "공격력";
                 case ItemOptionType.Defense:
                     return "방어력";
+                case ItemOptionType.DefenseMulti:
+                    return "방어력";
                 case ItemOptionType.CriticalChance:
                     return "치명타 확률";
                 case ItemOptionType.CriticalDamage:
@@ -25,15 +27,19 @@ public static class Content
                     return "이동 속도";
                 case ItemOptionType.Hp:
                     return "체력";
+                case ItemOptionType.HpMulti:
+                    return "체력";
                 case ItemOptionType.Avoid:
                     return "회피";
                 case ItemOptionType.Accuracy:
                     return "적중";
                 case ItemOptionType.HpRegen:
-                    return "체력 회복";
+                    return "체력 회복";                
                 case ItemOptionType.Heal:
                     return "회복량";
                 case ItemOptionType.Up:
+                    return "미지력";
+                case ItemOptionType.UpMulti:
                     return "미지력";
                 case ItemOptionType.UpRegen:
                     return "미지력 회복";

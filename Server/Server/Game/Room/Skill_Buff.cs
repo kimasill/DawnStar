@@ -51,38 +51,58 @@ namespace Server.Game
                 }
             }
         }
-        private async void ApplyMarkDebuff(SkillData skillData, GameObject target)
+        private async void Marking(SkillData skillData, GameObject target)
         {
             if (target == null)
-                return;
+            {
+                SkillLogic.GetAllTargetsInRange(Owner.CellPos, skillData.range);
+                foreach (var pos in SkillLogic.GetAllTargetsInRange(Owner.CellPos, skillData.range))
+                {
+                    if (Owner.Room.Map.Find(pos).Count > 0)
+                    {
+                        List<GameObject> targets = new List<GameObject>(Owner.Room.Map.Find(pos));
+                        foreach (var obj in targets)
+                        {
+                            if (obj == Owner)
+                                continue;
+                            target = obj;
+                            break;
+                        }
+                    }
+                }
+                if (target == null)
+                {
+                    S_SystemNotice systemNotice = new S_SystemNotice();
+                    systemNotice.Message = "범위내 타겟이 없습니다.";
+                    return;
+                }
+            }
 
-            await Task.Delay((int)(1000 * skillData.term));
             S_Effect effectPacket = new S_Effect();
             effectPacket.ObjectId = target.Id;
             effectPacket.SkillId = skillData.id;
 
             DataManager.DebuffDict.TryGetValue(skillData.debuffList[0].id, out DebuffData debuffData);
-
             if (debuffData == null)
                 return;
+            effectPacket.Prefab = debuffData.prefab; // effect for marking
+            Owner.Room.Broadcast(target.CellPos, effectPacket);
 
-            effectPacket.Prefab = debuffData.prefab;
-
-            Owner.Room.Broadcast(target.CellPos, effectPacket);    
-            
+            await Task.Delay((int)(1000 * skillData.terms[0]));//effect duration
 
             if (skillData.debuff != null)
             {
-                target.ApplyDebuff(skillData.debuff);
+            target.ApplyDebuff(skillData.debuff);
             }
             else if (skillData.debuffList != null)
             {
                 foreach (var debuff in skillData.debuffList)
                 {
-                    target.ApplyDebuff(debuff);
+                target.ApplyDebuff(debuff);
                 }
             }
         }
+
         private void ApplyAfterEffect(SkillData skill, GameObject target)
         {
             if (skill == null)

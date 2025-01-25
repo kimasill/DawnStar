@@ -209,7 +209,7 @@ public class UI_Map : UI_Base
         OnScroll(zoomFactor);
     }
 
-    public void OnDrag(PointerEventData eventData)
+    public override void OnDrag(PointerEventData eventData)
     {
         Vector2 dragDelta = eventData.position - _dragStartPosition;
         Vector2 newContentPosition = _contentStartPosition - dragDelta;
@@ -220,7 +220,7 @@ public class UI_Map : UI_Base
         _scrollRect.verticalNormalizedPosition = newContentPosition.y / (_scrollRect.content.sizeDelta.y - _scrollRect.transform.localScale.y);
     }
 
-    public void OnEndDrag(PointerEventData eventData)
+    public override void OnEndDrag(PointerEventData eventData)
     {
         // 드래그 종료 시 추가 로직이 필요하면 여기에 작성
     }
