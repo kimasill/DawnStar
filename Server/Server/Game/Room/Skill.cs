@@ -214,6 +214,7 @@ namespace Server.Game
                     if (data.spot.isHoming)
                     {
                         skillPos = SkillLogic.GetAllTargetsInRange(Owner.CellPos, data.range);
+
                     }
                     else
                     {
@@ -375,7 +376,35 @@ namespace Server.Game
             }
             return dir;
         }
+
+        public void DamageOnTargetPositions(List<Vector2Int> targetPositions , int damage)
+        {
+            foreach (var pos in targetPositions)
+            {
+                List<GameObject> targets = new List<GameObject>(Owner.Room.Map.Find(pos));
+                if (targets.Count > 0)
+                {
+                    foreach (GameObject target in targets)
+                    {
+                        if (target == Owner)
+                            continue;
+                        if (target != null && target != Owner)
+                        {
+                            if (Owner is Player && target is Player)
+                            {
+                                continue;
+                            }
+                            else if (Owner is Monster && target is Monster)
+                            {
+                                continue;
+                            }
+                            target.OnDamaged(Owner, damage); //피격판정                    
+                        }
+                    }
+                }
+            }
+        }
         #endregion
-    
+
     }
 }

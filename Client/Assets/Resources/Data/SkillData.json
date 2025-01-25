@@ -104,15 +104,19 @@
       "coolTime": "20",
       "damage": "100",
       "term": "0.1",
-      "range": "5",
+      "range": "7",
       "skillType": "SkillSpot",
       "skillLogicType": "SpotAttack",
       "spot": {
         "speed": "5.0",
         "delay": "1.2",
-        "minCount": "8",
+        "minCount": "0",
         "maxCount": "8",
-        "isHoming": "true"
+        "isHoming": true
+      },
+      "shape": {
+        "shapeType": "ShapeCircle",
+        "range": "1.0"
       },
       "isObject": "true",
       "unchartedPoint": "125",
@@ -790,7 +794,7 @@
     {
       "id": 37,
       "name": "주시",
-      "coolTime": 10,
+      "coolTime": 15,
       "skillType": "SkillDebuff",
       "duration": 8,
       "term": 1,
@@ -822,7 +826,7 @@
       ],
       "isObject": false,
       "prefab": "Effect/Mark",
-      "icon": "Textures/Images/Icons/Skill/Mark",
+      "icon": "Textures/Images/Icons/Skill/Observation",
       "unchartedPoint": 70,
       "description": "적을 지정하여 일정시간동안 추가피해를 준다.",
       "fix": true
