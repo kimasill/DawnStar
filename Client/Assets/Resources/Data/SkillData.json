@@ -578,7 +578,8 @@
         "duration": 5,
         "value": 0.1,
         "isPercent": false,
-        "isTarget": true
+        "isTarget": true,
+        "damagePrefab": "Effect/Blood_m"
       },
       "isObject": false,
       "unchartedPoint": 25
@@ -811,7 +812,7 @@
           "isPercent": false,
           "isTarget": true,
           "additionalDamage": 0.2,
-          "damagePrefabs": "Effect/Devour",
+          "damagePrefab": "Effect/Devour",
           "damageTerms": [
             0.3
           ]
@@ -851,7 +852,7 @@
       "skillType": "SkillSpot",
       "skillLogicType": "Curve",
       "projectile": {
-        "speed": 2,
+        "speed": 1,
         "range": 10,
         "isHoming": false,
         "isRandom": true

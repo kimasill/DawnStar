@@ -46,6 +46,11 @@ namespace Server.Game
             }
             foreach (Vector2Int pos in skillPos)
             {
+                if(Owner == null || Owner.Room == null)
+                {
+                    isExecuting = false;
+                    return;
+                }
                 List<GameObject> targets = new List<GameObject>(Owner.Room.Map.Find(pos));
                 if (targets.Count > 0)
                 {

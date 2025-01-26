@@ -102,6 +102,9 @@ namespace Server.Game
                 case MonsterType.ToothKing:
                     monster = new ToothKing(monsterData);
                     break;
+                case MonsterType.Pot:
+                    monster = new Pot(monsterData);
+                    break;
                 default:
                     monster = new Monster(monsterData);
                     break;

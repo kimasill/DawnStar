@@ -103,8 +103,7 @@ namespace Server.Game
                 howitzer.Data = data;
                 howitzer.PosInfo.State = CreatureState.Moving;
                 howitzer.PosInfo.MoveDir = Owner.PosInfo.MoveDir;
-                howitzer.PosInfo.PosX = Owner.PosInfo.PosX;
-                howitzer.PosInfo.PosY = Owner.PosInfo.PosY;
+                howitzer.CellPos = Owner.CellPos;
                 howitzer.Speed = data.projectile.speed;
                 howitzer.DespawnAnim = true;
                 howitzer.TemplateId = data.id;
@@ -123,6 +122,20 @@ namespace Server.Game
                     howitzer.OnHit = (target) => { HandleDebuffSkill(data, target); };
                 }
                 Owner.Room.Push(Owner.Room.EnterGame, howitzer, false);
+
+                Owner.Room.PushAfter(100, () =>
+                {
+                    howitzer.State = CreatureState.Moving;
+                    if (Owner.Room.Map.ApplyMove(howitzer, howitzer.DestPos))
+                    {
+                        howitzer.CellPos = howitzer.DestPos;
+                        S_Move movePacket = new S_Move();
+                        movePacket.ObjectId = howitzer.Id;
+                        movePacket.Position = howitzer.PosInfo;
+                        Owner.Room.Broadcast(Owner.CellPos, movePacket);
+                    }
+                });
+                
                 await Task.Delay((int)(data.term * 1000));
             }
         }
