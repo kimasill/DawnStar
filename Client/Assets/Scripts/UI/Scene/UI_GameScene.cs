@@ -51,4 +51,20 @@ public class UI_GameScene : UI_Scene
     {
         ui.gameObject.SetActive(trigger);
     }
+
+    public override void Clear()
+    {
+        SetActive(GameWindow, false);
+        SetActive(StatUI, false);
+        SetActive(InvenUI, false);
+        SetActive(ShopUI, false);
+        SetActive(StoryScene, false);
+        SetActive(QuestUI, false);
+        SetActive(NotificationUI, false);
+        SetActive(MatchingUI, false);
+        SetActive(EnhanceUI, false);
+        if (MapUI != null)
+            SetActive(MapUI, false);        
+        SetActive(EnhanceUI, false);
+    }
 }

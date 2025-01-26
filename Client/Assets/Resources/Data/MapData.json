@@ -599,16 +599,16 @@
           "name": "미지 던전 입구",
           "mapId": "5",
           "destination": "506",
-          "posX": "-8",
-          "posY": "19"
+          "posX": "-9",
+          "posY": "23"
         },
         {
           "id": "902",
           "name": "미지 던전 출구",
           "mapId": "5",
           "destination": "506",
-          "posX": "-173",
-          "posY": "-46"
+          "posX": "-8",
+          "posY": "-85"
         }
       ],
       "spawns": [

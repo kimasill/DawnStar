@@ -46,7 +46,7 @@ public class UI_Stat_Item : UI_ItemIcon
         gameObject.BindEvent(OnDrag, Define.UIEvent.Drag);
         gameObject.BindEvent(OnEndDrag, Define.UIEvent.EndDrag);
     }
-    public override void SetItem(Item item)
+    public override void SetItem(Item item, bool countDisplay = true)
     {
         if(!_init)
             Init();

@@ -22,7 +22,6 @@ class PacketHandler
             SceneManager.sceneLoaded += (scene, mode) => OnSceneLoadedCallback(scene, mode, enterGamePacket.Player);
 
             Managers.Scene.LoadScene(enterGamePacket.Player.MapInfo.Scene);
-         
         }
 	}
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)

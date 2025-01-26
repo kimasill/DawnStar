@@ -157,7 +157,7 @@ public class UI_Matching : UI_Base
                     itemInfo.Options.AddRange(itemData.options);
 
                     Item item = Item.MakeItem(itemInfo);                    
-                    itemIcon.SetItem(item);                                                           
+                    itemIcon.SetItem(item, countDisplay: false);                                                           
                 }
             }
         }    

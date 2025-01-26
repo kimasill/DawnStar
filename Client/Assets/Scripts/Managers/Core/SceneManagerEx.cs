@@ -31,6 +31,7 @@ public class SceneManagerEx : MonoBehaviour
     }
     public void LoadScene(string name)
     {
+        Managers.UI.SceneUI.Clear();
         Managers.Clear();
 
         // SceneManagerEx 인스턴스가 제대로 초기화되었는지 확인
@@ -51,6 +52,7 @@ public class SceneManagerEx : MonoBehaviour
             Debug.LogError("UIManager is not initialized.");
             yield break;
         }
+        
         // 로딩창 표시
         Managers.UI.ShowLoadingUI();
 
