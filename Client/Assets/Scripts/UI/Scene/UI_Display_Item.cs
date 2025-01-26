@@ -20,7 +20,7 @@ public class UI_Display_Item : UI_ItemIcon
         gameObject.BindEvent(OnPointerEnter, Define.UIEvent.MouseOver);
         gameObject.BindEvent(OnPointerExit, Define.UIEvent.MouseOut);
     }
-    public override void SetItem(Item item)
+    public override void SetItem(Item item, bool countDisplay = true)
     {
         if (item == null)
         {
@@ -37,7 +37,11 @@ public class UI_Display_Item : UI_ItemIcon
         TemplateId = item.TemplateId;
         Count = item.Count;
 
-        if(_itemCount != null)
+        if(countDisplay ==false)
+        {
+            _itemCount.gameObject.SetActive(false);
+        }
+        else if (_itemCount != null)
         {
             Item invenItem = Managers.Inventory.GetItemById(TemplateId);
             int invenItemCount = 0;

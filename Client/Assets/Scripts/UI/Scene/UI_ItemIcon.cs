@@ -28,7 +28,7 @@ public abstract class UI_ItemIcon : UI_Base, IPointerEnterHandler, IPointerExitH
         _init = true;
     }
 
-    public virtual void SetItem(Item item)
+    public virtual void SetItem(Item item, bool countDisplay = true)
     {
         if(!_init)
             Init();

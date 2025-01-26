@@ -15,7 +15,7 @@ public class UI_Enhance_Item : UI_ItemIcon
         gameObject.BindEvent(OnPointerEnter, Define.UIEvent.MouseOver);
         gameObject.BindEvent(OnPointerExit, Define.UIEvent.MouseOut);
     }
-    public override void SetItem(Item item)
+    public override void SetItem(Item item, bool countDisplay = true)
     {
         if (item == null)
         {

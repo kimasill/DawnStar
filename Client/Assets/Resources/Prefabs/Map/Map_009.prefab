@@ -26277,7 +26277,7 @@ Tilemap:
   m_GameObject: {fileID: 5552690109993864837}
   m_Enabled: 1
   m_Tiles:
-  - first: {x: -8, y: -81, z: 0}
+  - first: {x: -8, y: -83, z: 0}
     second:
       serializedVersion: 2
       m_TileIndex: 0
@@ -26287,7 +26287,7 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
-  - first: {x: -7, y: -81, z: 0}
+  - first: {x: -7, y: -83, z: 0}
     second:
       serializedVersion: 2
       m_TileIndex: 0
@@ -26297,7 +26297,7 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
-  - first: {x: -6, y: -81, z: 0}
+  - first: {x: -6, y: -83, z: 0}
     second:
       serializedVersion: 2
       m_TileIndex: 0
@@ -26339,8 +26339,8 @@ Tilemap:
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Origin: {x: -9, y: -81, z: 0}
-  m_Size: {x: 9, y: 107, z: 1}
+  m_Origin: {x: -9, y: -83, z: 0}
+  m_Size: {x: 9, y: 109, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:
@@ -26367,7 +26367,7 @@ TilemapRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5552690109993864837}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -99562,7 +99562,7 @@ Tilemap:
   m_GameObject: {fileID: 7838017276036567891}
   m_Enabled: 1
   m_Tiles:
-  - first: {x: -9, y: 25, z: 0}
+  - first: {x: -9, y: 24, z: 0}
     second:
       serializedVersion: 2
       m_TileIndex: 0
@@ -99572,7 +99572,7 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
-  - first: {x: -8, y: 25, z: 0}
+  - first: {x: -8, y: 24, z: 0}
     second:
       serializedVersion: 2
       m_TileIndex: 0
@@ -99582,7 +99582,7 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
-  - first: {x: -7, y: 25, z: 0}
+  - first: {x: -7, y: 24, z: 0}
     second:
       serializedVersion: 2
       m_TileIndex: 0
@@ -99652,7 +99652,7 @@ TilemapRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7838017276036567891}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1

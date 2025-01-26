@@ -78,7 +78,7 @@ public class UI_Inventory_Item : UI_ItemIcon
         gameObject.BindEvent(OnEndDrag, Define.UIEvent.EndDrag);
     }
 
-    public override void SetItem(Item item)
+    public override void SetItem(Item item, bool countDisplay = true)
     {
         if (item == null)
         {
