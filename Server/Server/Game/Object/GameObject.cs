@@ -579,6 +579,30 @@ namespace Server.Game
                     }
                     applyValue = debuff.value;
                     break;
+                case "출혈":
+                    if (isApplying)
+                    {
+                        for(int i = 0; i < debuff.duration; i++)
+                        {
+                            Room.PushAfter(i * 1000, () =>
+                            {
+                                if (Room == null)
+                                    return;
+                                Effect(this, debuff.damagePrefab);
+                                int damage = (int)(TotalAttack * debuff.value);
+                                OnDamaged(this, damage, false);
+                            });
+                        }
+                    }
+                    else
+                    {
+                        if (DamageEffects.ContainsKey(buffName))
+                        {
+                            DamageEffects.Remove(buffName);
+                        }
+                    }
+                    applyValue = debuff.value;
+                    break;
                 default:
                     applyValue = value;
                     break;
@@ -597,7 +621,8 @@ namespace Server.Game
             Room.Broadcast(CellPos, diePacket);
 
             GameRoom room = Room;//Room이 null이 될 수 있으므로 미리 저장  
-            
+            if (room == null)
+                return;
             room.LeaveGame(Id);
             Stat.Hp = Stat.MaxHp;
             PosInfo.State = CreatureState.Idle;

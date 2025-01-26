@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CleanerController : MonsterController
 {
-    bool _isRevealed = false;
     private int _skillCount = 0;
     private const int ComboThreshold = 2; // 2회당 한번씩 콤보 사용
 
@@ -20,14 +19,7 @@ public class CleanerController : MonsterController
             return;
         }
 
-        if (State == CreatureState.Idle)
-        {
-            if (_isRevealed)
-            {
-                Animator.Play("IDLE");
-            }
-        }
-        else if (State == CreatureState.Skill)
+        if (State == CreatureState.Skill)
         {
             switch (LookDir)
             {
@@ -59,19 +51,6 @@ public class CleanerController : MonsterController
 
             }
             SkillId = 0;
-        }
-        else if (State == CreatureState.Moving)
-        {
-            switch (LookDir)
-            {
-                case LookDir.LookLeft:
-                    _sprite.flipX = true;
-                    break;
-                case LookDir.LookRight:
-                    _sprite.flipX = false;
-                    break;
-            }
-            Animator.Play("WALK");
         }
         else
         {

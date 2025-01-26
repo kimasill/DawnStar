@@ -14,16 +14,18 @@ namespace Server.Game.Object.Monsters
     {
         bool isRevealed = false;
         private float _revealingTime = 1.2f;
-        private const int CannonSkillId = 37;
+        private const int CannonSkillId = 38;
         private const int MeleeSkillId = 13;
         private int _cannonRange = 10; // Cannon 사거리
         private int _baseAttackRange = 2; // 기본 공격 사거리
         private float _cannonInvokeTime = 0.3f;
+        private float _idleTime = 0.5f;
         int skillId = 0;
 
         public Pot(MonsterData monsterData) : base(monsterData)
         {
             Initialize(monsterData);
+            SkillRange = _cannonRange;
         }
         protected override void UpdateMoving()
         {
@@ -68,15 +70,21 @@ namespace Server.Game.Object.Monsters
                 BroadcastMove();
                 return;
             }
+            SkillData skillData = null;
+            DataManager.SkillDict.TryGetValue(CannonSkillId, out skillData);
+            if (Skill.HandleSkillCool(skillData, peek:true))
+            {
+                SkillRange = _cannonRange;
+            }
 
             if(dist <= SkillRange)
             {
                 _coolTick = 0;
                 if (dist <= _cannonRange && dist > _baseAttackRange)
                     skillId = CannonSkillId;
-                else
+                else if (dist <= _baseAttackRange)
                 {
-                    SkillRange = _cannonRange;
+                    SkillRange = _baseAttackRange;
                     skillId = MeleeSkillId;
                 }
                     
@@ -101,10 +109,18 @@ namespace Server.Game.Object.Monsters
 
                 Vector2Int dir = _target.CellPos - CellPos;
                 int dist = dir.cellDistanceFromZero;
+
+                if (dist > SkillRange)
+                {
+                    _target = null;
+                    State = CreatureState.Moving;
+                    return;
+                }
+
                 SkillData skillData = null;
                 DataManager.SkillDict.TryGetValue(skillId, out skillData);
 
-                if (Skill.HandleSkillCool(skillData, peek: true))
+                if (Skill.HandleSkillCool(skillData))
                 {
                     UseSkill(skillId);
                 }
@@ -113,7 +129,12 @@ namespace Server.Game.Object.Monsters
                     SkillRange = _baseAttackRange;
                     State = CreatureState.Moving;
                 }
+
             }
+            if (_coolTick > Environment.TickCount64)
+                return;
+
+            _coolTick = 0;
         }
 
         private void UseSkill(int skillId)

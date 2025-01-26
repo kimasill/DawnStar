@@ -72,8 +72,14 @@ namespace Server.Game.Object.Monsters
                     _skillId = 0;
                 }
 
+                _coolTick = Environment.TickCount64 + coolTick;
+
                 UseSkill(skillData);
             }
+            if (_coolTick > Environment.TickCount64)
+                return;
+
+            _coolTick = 0;
         }
 
         private void UseSkill(SkillData skillData)

@@ -25,16 +25,6 @@ namespace Server.Game
             Vector2Int dir = DestPos - CellPos;
             int dist = dir.cellDistanceFromZero;
 
-            PosInfo.State = CreatureState.Moving;
-            if (Room.Map.ApplyMove(this, DestPos))
-            {
-                CellPos = DestPos;
-                S_Move movePacket = new S_Move();
-                movePacket.ObjectId = Id;
-                movePacket.Position = PosInfo;
-                Room.Broadcast(CellPos, movePacket);
-            }
-
             int tick = (int)(1000 / Data.projectile.speed);
             Room.PushAfter(tick * dist, Cast);
         }
@@ -52,7 +42,9 @@ namespace Server.Game
 
             foreach (Vector2Int pos in targetPositions)
             {
-                List<GameObject> targets = Room.Map.Find(pos);
+                if (Owner == null || Owner.Room == null || Room == null)
+                    return;
+                List<GameObject> targets = new List<GameObject>(Room.Map.Find(pos));
                 if (targets.Count > 0)
                 {
                     foreach (GameObject target in targets)
