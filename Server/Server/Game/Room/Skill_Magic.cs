@@ -97,6 +97,8 @@ namespace Server.Game
             await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
             for (int i = 0; i < data.count; i++)
             {
+                if (Owner == null || Owner.Room == null)
+                    return;
                 Howitzer howitzer = ObjectManager.Instance.Add<Howitzer>();
                 howitzer.Owner = Owner;
                 howitzer.Owner.Room = Owner.Room;
@@ -121,10 +123,13 @@ namespace Server.Game
                 {
                     howitzer.OnHit = (target) => { HandleDebuffSkill(data, target); };
                 }
+                
                 Owner.Room.Push(Owner.Room.EnterGame, howitzer, false);
 
-                Owner.Room.PushAfter(100, () =>
+                Owner.Room.PushAfter(100,() =>
                 {
+                if (Owner == null || Owner.Room == null)
+                        return;
                     howitzer.State = CreatureState.Moving;
                     if (Owner.Room.Map.ApplyMove(howitzer, howitzer.DestPos))
                     {

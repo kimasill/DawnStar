@@ -149,6 +149,7 @@ namespace Server.Game
                 {
                     Console.WriteLine("Error: player.Session is null");
                 }
+                player.Vision.Clear();
                 player.Vision.Update();
                 player.Update();
             }
@@ -181,7 +182,20 @@ namespace Server.Game
             else if (type == GameObjectType.Magic)
             {
                 Magic magic = gameObject as Magic;
-                _magics.Add(gameObject.Id, magic);
+                if(magic.IsComplete)
+                {
+                    LeaveGame(magic.Id);
+                    return;
+                }
+                if (!_magics.ContainsKey(gameObject.Id))
+                {
+                    _magics.Add(gameObject.Id, magic);
+                }
+                else
+                {
+                    // Handle the duplicate key scenario
+                    Console.WriteLine($"Magic with ID {gameObject.Id} already exists.");
+                }
                 magic.Room = this;
 
                 GetZone(magic.CellPos).Magics.Add(magic);

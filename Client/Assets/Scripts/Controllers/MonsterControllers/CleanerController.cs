@@ -40,7 +40,7 @@ public class CleanerController : MonsterController
                 }
                 else
                 {
-                    StartPsychicsCoroutine(PlayAnimationClip(Animator, "ATTACK", () => State = CreatureState.Idle));
+                    StartPsychicsCoroutine(PlayAnimationClip(Animator, "ATTACK"));
                 }
             }
             else if (SkillId == 28)
@@ -60,7 +60,7 @@ public class CleanerController : MonsterController
     private IEnumerator PlayComboAttack()
     {
         Animator.Play("ATTACK_COMBO");
+        Util.WaitForAnimation(Animator, "ATTACK_COMBO");
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed);
-        Animator.speed = 0f;
     }
 }

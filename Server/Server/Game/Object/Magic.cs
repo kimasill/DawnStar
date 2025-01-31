@@ -12,6 +12,7 @@ namespace Server.Game
         public Data.SkillData Data { get; set; }
 
         public Action<GameObject> OnHit { get; set; }
+        public bool IsComplete { get; set; }
         public Magic()
         {
             ObjectType = GameObjectType.Magic;

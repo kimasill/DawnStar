@@ -80,8 +80,8 @@ public class PotController : MonsterController
     {
         Animator.speed = 1;
         Animator.Play("REVEAL");
-        yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed);
 
+        yield return Util.WaitForAnimation(Animator, "REVEAL");
 
         Animator.Play("WALK");
     }

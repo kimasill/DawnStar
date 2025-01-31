@@ -29,6 +29,8 @@ namespace Server.Game
             // 데미지 판정
             foreach (Vector2Int pos in targetPos)
             {
+                if (Owner == null || Owner.Room == null)
+                    return;
                 List<GameObject> targets = new List<GameObject>(Owner.Room.Map.Find(pos));
                 if (targets.Count > 0)
                 {

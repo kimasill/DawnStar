@@ -152,7 +152,16 @@ namespace Server.Game
                 return;
 
             if (player.StatPoint <= 0)
+            {
+                S_SystemNotice systemNotice = new S_SystemNotice()
+                {
+                    Message = "스탯 포인트가 부족합니다."
+                };
+                player.Session.Send(systemNotice);
+
                 return;
+            }
+                
 
             
             RealizationData realization = null; 

@@ -360,6 +360,10 @@ class PacketHandler
             return;
         }
         CreatureController cc = go.GetComponent<CreatureController>();
+        if (cc == null)
+        {
+            return;
+        }
         cc.PosInfo = changePosPacket.Position;
         cc.SyncPos();
         
@@ -534,7 +538,9 @@ class PacketHandler
         {
             gameSceneUI.NotificationUI.ShowLevelNoti();
         }
-        Managers.Object.MyPlayer.Stat.MergeFrom(statPacket.StatInfo);
+        StatInfo statInfo = new StatInfo();
+        statInfo.MergeFrom(statPacket.StatInfo);
+        Managers.Object.MyPlayer.Stat = statInfo;
         gameSceneUI.GameWindow.StateUI.SetInfo();
         gameSceneUI.StatUI.RefreshUI();
     }
