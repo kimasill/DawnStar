@@ -1652,13 +1652,13 @@
       "rewards": [
         {
           "probability": 50,
-          "itemId": 1169,
+          "itemId": 1170,
           "minCount": 1,
           "maxCount": 4
         },
         {
           "probability": 30,
-          "itemId": 1169,
+          "itemId": 1170,
           "minCount": 1,
           "maxCount": 3
         },
@@ -1717,13 +1717,13 @@
       "rewards": [
         {
           "probability": 50,
-          "itemId": 1169,
+          "itemId": 1170,
           "minCount": 1,
           "maxCount": 4
         },
         {
           "probability": 30,
-          "itemId": 1169,
+          "itemId": 1170,
           "minCount": 1,
           "maxCount": 3
         },
@@ -1766,6 +1766,12 @@
         {
           "probability": 3,
           "itemId": 1140,
+          "minCount": 1,
+          "maxCount": 1
+        },
+        {
+          "probability": 100,
+          "itemId": 1174,
           "minCount": 1,
           "maxCount": 1
         },

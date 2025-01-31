@@ -72,7 +72,7 @@ public class BaseController : MonoBehaviour
             LookDir = value.LookDir;
         }
     }
-    public void SyncPos()
+    public virtual void SyncPos()
     {
         if (Managers.Map.CurrentGrid == null)
             return;
@@ -301,6 +301,7 @@ public class BaseController : MonoBehaviour
     protected virtual IEnumerator PlayAnimationClip(Animator animator, string clip, Action action = null)
     {
         Animator.Play(clip);
+        Util.WaitForAnimation(Animator, clip);
         float AnimationLength = Animator.GetCurrentAnimatorStateInfo(0).length / Animator.speed; // SKILL_PREP 애니메이션의 실제 재생 시간 계산
         yield return new WaitForSeconds(AnimationLength);
         if(action != null)
@@ -401,6 +402,8 @@ public class BaseController : MonoBehaviour
     protected virtual void MoveToNextPos(){}
     protected virtual void StartEffectCoroutine(IEnumerator coroutine)
     {
+        if (coroutine == null || gameObject.activeSelf == false)
+            return;
         Coroutine co = StartCoroutine(coroutine);
         _coEffects.Add(co);
     }

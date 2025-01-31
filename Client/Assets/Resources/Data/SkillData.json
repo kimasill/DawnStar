@@ -852,7 +852,7 @@
       "skillType": "SkillSpot",
       "skillLogicType": "Curve",
       "projectile": {
-        "speed": 1,
+        "speed": 2,
         "range": 10,
         "isHoming": false,
         "isRandom": true

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8725093853085449283}
   - component: {fileID: 5090122118602780}
   - component: {fileID: 4605466494254529786}
-  m_Layer: 5
+  m_Layer: 13
   m_Name: LoadingImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 6245733472270110019}
   - component: {fileID: 1086820363727379764}
   - component: {fileID: 7952243883784619120}
-  m_Layer: 5
+  m_Layer: 13
   m_Name: LoadingText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 8879287561389925707}
   - component: {fileID: 2169022724356662806}
   - component: {fileID: 3827731186012448600}
-  m_Layer: 5
+  m_Layer: 13
   m_Name: UI_Loading
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -273,7 +273,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_TargetDisplay: 0
 --- !u!114 &8879287561389925707
 MonoBehaviour:
@@ -327,6 +327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 055b3f77ecd37874c9404696e18ab85c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsMouseover: 0
 --- !u!1001 &8812340090571209842
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -339,6 +340,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: LoadingSpinner
+      objectReference: {fileID: 0}
+    - target: {fileID: 2914801968427867985, guid: 88d93d14297c0da439022f1b57abd5b1,
+        type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 8712909365290687210, guid: 88d93d14297c0da439022f1b57abd5b1,
         type: 3}

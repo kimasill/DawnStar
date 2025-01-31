@@ -11,25 +11,31 @@ namespace Server.Game
     public class Howitzer : Magic
     {
         public GameObject Owner { get; set; }
+        GameObject attacker = null;
         public Vector2Int DestPos { get; set; }
         int _moveRange = 0;
-        bool _isComplete = false;
-
+        GameRoom room = null;
         public override void Update()
         {
-            if (_isComplete)
+            if (IsComplete)
+            {
+                room.Push(room.LeaveGame, Id);
                 return;
+            }
+                
             if (Data == null || Data.spot == null || Data.projectile == null || Owner == null || Room == null)
                 return;
-
+            room = Room;
             Vector2Int dir = DestPos - CellPos;
             int dist = dir.cellDistanceFromZero;
 
             int tick = (int)(1000 / Data.projectile.speed);
-            Room.PushAfter(tick * dist, Cast);
+            attacker = Owner;
+            room.PushAfter(tick * dist, Cast);
         }
         public void Cast()
         {
+            
             List<Vector2Int> targetPositions = new List<Vector2Int>();
             if (Data.shape != null)
             {
@@ -42,26 +48,30 @@ namespace Server.Game
 
             foreach (Vector2Int pos in targetPositions)
             {
-                if (Owner == null || Owner.Room == null || Room == null)
+                if (room == null)
                     return;
-                List<GameObject> targets = new List<GameObject>(Room.Map.Find(pos));
+                List<GameObject> targets = new List<GameObject>(room.Map.Find(pos));
                 if (targets.Count > 0)
                 {
                     foreach (GameObject target in targets)
                     {
-                        if (target == Owner)
+                        if (target == attacker)
                             continue;
                         if (target != null)
                         {
-                            target.OnDamaged(this, Data.damage + Owner.TotalAttack); // 피격 판정
-                            OnHit?.Invoke(target);
+                            if (attacker != null) 
+                            {
+                                target.OnDamaged(this, Data.damage + attacker.TotalAttack); // 피격 판정
+                                OnHit?.Invoke(target);
+                            }                                
                         }
                     }
                 }
             }
             DespawnAnim = true;
-            Room.Push(Room.LeaveGame, Id);
-            _isComplete = true;
+            if (room != null)
+                room.Push(room.LeaveGame, Id);
+            IsComplete = true;
         }
 
         public override GameObject GetOwner()
