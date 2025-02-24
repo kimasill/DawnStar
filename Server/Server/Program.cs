@@ -90,7 +90,7 @@ namespace Server
             t.Start();
         }
 
-        public static string Name { get; } = "카단";
+        public static string Name { get; } = "에르도아";
         public static int Port { get; } = 7777;
         public static string IpAddress { get; set; }
 		static void Main(string[] args)

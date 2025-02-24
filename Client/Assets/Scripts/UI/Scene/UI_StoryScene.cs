@@ -18,6 +18,7 @@ public class UI_StoryScene : UI_Base
     public TMP_Text StoryScriptText;
     private List<Sprite> storyImages = new List<Sprite>();
     private List<List<string>> storyScripts = new List<List<string>>();
+    private List<string> storySounds = new List<string>(); // 사운드 파일 경로 리스트
     private int sceneIndex = 0;
     private int currentLineIndex = 0;
     private Coroutine typingCoroutine;
@@ -49,7 +50,7 @@ public class UI_StoryScene : UI_Base
         CharacterNameText = GetTextMeshPro((int)Texts.CharacterNameText);
         CharacterImage = GetImage((int)Images.CharacterProfileImage);
         CharacterNameFrame = GetImage((int)Images.UI_CharacterNameFrame);
-        Background = GetImage((int)Images.UI_Background);        
+        Background = GetImage((int)Images.UI_Background);
         SceneChangeImage = GetImage((int)Images.SceneChangeImage);
 
         GetImage((int)Images.UI_TextPanel).gameObject.SetActive(false);
@@ -67,7 +68,7 @@ public class UI_StoryScene : UI_Base
     private IEnumerator InitialFadeIn()
     {
         _isFading = true; // 페이드 인 시작
-        
+
         yield return StartCoroutine(FadeIn(SceneChangeImage, 1.0f));
 
         Background.gameObject.SetActive(true);
@@ -89,6 +90,7 @@ public class UI_StoryScene : UI_Base
     {
         storyImages.Clear();
         storyScripts.Clear();
+        storySounds.Clear(); // 사운드 파일 경로 리스트 초기화
 
         foreach (var script in scriptData.scripts)
         {
@@ -105,6 +107,15 @@ public class UI_StoryScene : UI_Base
             {
                 storyScripts.Add(new List<string>(script.script));
             }
+
+            if (!string.IsNullOrEmpty(script.sound))
+            {
+                storySounds.Add(script.sound);
+            }
+            else
+            {
+                storySounds.Add(null); // 사운드가 없는 경우 null 추가
+            }
         }
     }
 
@@ -113,8 +124,8 @@ public class UI_StoryScene : UI_Base
         _isFading = true; // 페이드 인/아웃 중에는 클릭 이벤트 무시
         yield return StartCoroutine(FadeIn(image, 1.0f));
 
-        onFaded?.Invoke();     
-        
+        onFaded?.Invoke();
+
         yield return new WaitForSeconds(waitTime);
 
         yield return StartCoroutine(FadeOut(image, 1.0f));
@@ -122,8 +133,6 @@ public class UI_StoryScene : UI_Base
 
         onComplete?.Invoke();
     }
-
-    
 
     private void ShowNextScene()
     {
@@ -147,12 +156,18 @@ public class UI_StoryScene : UI_Base
                     CharacterImage.color = new Color(CharacterImage.color.r, CharacterImage.color.g, CharacterImage.color.b, 0);
                     CharacterNameFrame.gameObject.SetActive(false);
                     StoryImage.sprite = storyImages[sceneIndex];
-                },                
-                ShowNextScript, 
+
+                    // 사운드 재생
+                    if (!string.IsNullOrEmpty(storySounds[sceneIndex]))
+                    {
+                        Managers.Sound.Play(storySounds[sceneIndex], Define.Sound.Bgm);
+                    }
+                },
+                ShowNextScript,
                 waitTime
                 )
             );
-             // 페이드 인/아웃 후에 스크립트 출력
+            // 페이드 인/아웃 후에 스크립트 출력
         }
     }
 
@@ -174,8 +189,8 @@ public class UI_StoryScene : UI_Base
         string sentence = textList[currentLineIndex];
         if (sentence.Contains(":"))
         {
-            string[] splitSentence = sentence.Split(':');            
-            return splitSentence[1];            
+            string[] splitSentence = sentence.Split(':');
+            return splitSentence[1];
         }
         return sentence;
     }
@@ -200,8 +215,8 @@ public class UI_StoryScene : UI_Base
             sentence = splitSentence[1];
 
             CharacterNameText.text = characterName;
-            if(characterImageName != "")
-            characterProfileImagePath = "Textures/Images/" + characterImageName;
+            if (characterImageName != "")
+                characterProfileImagePath = "Textures/Images/" + characterImageName;
             Sprite characterProfileImage = Managers.Resource.Load<Sprite>(characterProfileImagePath);
             if (characterProfileImage != null)
             {
@@ -211,10 +226,10 @@ public class UI_StoryScene : UI_Base
         }
         else
         {
-            if(CharacterImage.sprite != null)
+            if (CharacterImage.sprite != null)
             {
                 StartCoroutine(FadeOut(CharacterImage, 1.0f));
-            }            
+            }
             CharacterNameFrame.gameObject.SetActive(false);
         }
 
@@ -228,12 +243,12 @@ public class UI_StoryScene : UI_Base
         {
             string sentence = SplitSentenceAndAssign(textList);
             StoryScriptText.text = "";
-            
+
             foreach (char letter in sentence.ToCharArray())
             {
                 StoryScriptText.text += letter;
                 yield return new WaitForSeconds(0.05f);
-                if(letter == '\n')
+                if (letter == '\n')
                 {
                     yield return new WaitForSeconds(0.5f);
                 }
@@ -302,6 +317,7 @@ public class UI_StoryScene : UI_Base
     {
         storyImages.Clear();
         storyScripts.Clear();
+        storySounds.Clear(); // 사운드 파일 경로 리스트 초기화
         sceneIndex = 0;
         currentLineIndex = 0;
         isTyping = false;

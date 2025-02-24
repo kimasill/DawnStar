@@ -52,7 +52,7 @@ namespace Server
                 Party newParty = new Party(PartySystem.Instance.CreateParty().PartyId);
                 foreach (var session in matchedSessions)
                 {
-                    session.JoinParty(newParty);
+                    newParty.AddMember(session.MyPlayer);                    
                 }
                 Console.WriteLine($"Matching Success: {mapId}, Party Id: {newParty.PartyId}");
                 EnterMap(newParty, mapId);

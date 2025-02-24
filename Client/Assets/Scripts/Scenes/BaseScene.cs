@@ -1,6 +1,7 @@
 ﻿using Data;
 using Google.Protobuf.Protocol;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -21,7 +22,6 @@ public abstract class BaseScene : MonoBehaviour
         if (obj == null)
             Managers.Resource.Instantiate("UI/EventSystem").name = "@EventSystem";
 
-        
     }
     protected void RequestShop(int mapId)
     {
@@ -66,6 +66,7 @@ public abstract class BaseScene : MonoBehaviour
             AddNPC(npc.TemplateId, npc.gameObject);
         }
     }
+    
     public void AddNPC(int id, GameObject npc)
     {
         if (!_npcs.ContainsKey(id))
@@ -89,6 +90,12 @@ public abstract class BaseScene : MonoBehaviour
     public Dictionary<int, GameObject> GetNPCs()
     {
         return _npcs;
+    }
+
+    public void OnApplicationQuit()
+    {
+        Managers.Clear();
+        ClearNPCs();
     }
 
     public abstract void Clear();

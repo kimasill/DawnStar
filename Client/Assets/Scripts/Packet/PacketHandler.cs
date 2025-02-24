@@ -4,6 +4,7 @@ using Google.Protobuf.Protocol;
 using ServerCore;
 using System;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -29,6 +30,7 @@ class PacketHandler
         S_LeaveGame leaveGameHandler = packet as S_LeaveGame;
         ServerSession serverSession = session as ServerSession;
         Managers.Object.Clear();
+
     }
     public static void S_SpawnHandler(PacketSession session, IMessage packet)
     {
@@ -141,7 +143,7 @@ class PacketHandler
 
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
         if(buffPacket.BuffId > 0)
-        {
+        {            
             gameSceneUI.GameWindow.BuffPanel.AddBuff(buffPacket.BuffId, buffPacket.Value);
         }
         else if(buffPacket.DebuffId>0)
@@ -191,6 +193,7 @@ class PacketHandler
         }
         else if (cc.Hp + 50 < changePacket.Hp)
         {
+            Managers.Sound.Play("Effect/Heal", Define.Sound.Effect);
             cc.OnHealed();
         }
         cc.Hp = changePacket.Hp;
@@ -347,6 +350,8 @@ class PacketHandler
             Managers.Scene.CurrentScene.CheckOnSceneLoadedQuest();
             C_RequestStat request = new C_RequestStat();
             Managers.Network.Send(request);
+            C_Party partyPacket = new C_Party();
+            Managers.Network.Send(partyPacket);
         }
         Managers.Scene.IsSceneLoaded = true;
     }
@@ -454,7 +459,6 @@ class PacketHandler
         
         //아이템 획득시 자동 갱신
         gameSceneUI.InvenUI.RefreshUI();
-        gameSceneUI.StatUI.RefreshUI();
         gameSceneUI.EnhanceUI.RefreshUI();
         gameSceneUI.EnhanceUI.ItemProduction.RefreshUI();
 
@@ -536,11 +540,13 @@ class PacketHandler
         
         if (Managers.Object.MyPlayer.Stat.Level < statPacket.StatInfo.Level)
         {
+            Managers.Sound.Play("Effect/Level", Define.Sound.Effect);
             gameSceneUI.NotificationUI.ShowLevelNoti();
         }
         StatInfo statInfo = new StatInfo();
         statInfo.MergeFrom(statPacket.StatInfo);
         Managers.Object.MyPlayer.Stat = statInfo;
+        Managers.Object.MyPlayer.Stat.StatPoint = statPacket.StatInfo.StatPoint;
         gameSceneUI.GameWindow.StateUI.SetInfo();
         gameSceneUI.StatUI.RefreshUI();
     }
@@ -691,8 +697,7 @@ class PacketHandler
     public static void S_PartyInviteHandler(PacketSession session, IMessage packet)
     {
         S_PartyInvite partyInvitePacket = packet as S_PartyInvite;
-        //UI_Popup popup = Managers.UI.ShowPopupUI<UI_Popup>();
-        //popup.SetPopup(partyInvitePacket);
+
     }
 
     public static void S_InteractionHandler(PacketSession session, IMessage packet)
@@ -724,6 +729,7 @@ class PacketHandler
 
         if (Managers.Object.MyPlayer != null)
         {
+            Managers.Sound.Play("Effect/Craft", Define.Sound.Effect);
             Managers.Object.MyPlayer.RefreshAdditionalStat();
         }
         gameSceneUI.EnhanceUI.EnhanceResult(enhancePacket);
@@ -737,6 +743,7 @@ class PacketHandler
         {
             if (enchantPacket.Success)
             {
+                Managers.Sound.Play("Effect/Enchant", Define.Sound.Effect);
                 Item item = Item.MakeItem(enchantPacket.ItemInfo);
                 Managers.Inventory.AddOrUpdate(item);
 
@@ -761,5 +768,30 @@ class PacketHandler
         UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
         UI_GameWindow gameWindow = gameSceneUI.GameWindow;
         gameWindow.Chat.ApplyMessage(chatPacket.PlayerId, chatPacket.PlayerName, chatPacket.Message);
+    }
+
+    public static void S_PartyHandler(PacketSession session, IMessage packet)
+    {
+        S_Party partyPacket = packet as S_Party;
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        gameSceneUI.GameWindow.Party.ApplyParty(partyPacket);
+    }
+
+    public static void S_QuitHandler(PacketSession session, IMessage packet)
+    {
+        S_Quit quitPacket = packet as S_Quit;
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        if (quitPacket == null)
+        {
+            Debug.LogError("S_Exit packet is null");
+            return;
+        }
+
+        // 클라이언트 종료 처리
+#if UNITY_EDITOR
+        EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }

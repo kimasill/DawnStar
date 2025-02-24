@@ -17,15 +17,16 @@ namespace Server.Game
         GameRoom room = null;
         public override void Update()
         {
-            if (IsComplete)
+            if(room != null && IsComplete)
             {
                 room.Push(room.LeaveGame, Id);
                 return;
             }
-                
-            if (Data == null || Data.spot == null || Data.projectile == null || Owner == null || Room == null)
+            if (Data == null || Data.spot == null || Data.projectile == null || Room == null)
                 return;
-            room = Room;
+
+            room = Room;   
+            
             Vector2Int dir = DestPos - CellPos;
             int dist = dir.cellDistanceFromZero;
 
@@ -59,11 +60,8 @@ namespace Server.Game
                             continue;
                         if (target != null)
                         {
-                            if (attacker != null) 
-                            {
-                                target.OnDamaged(this, Data.damage + attacker.TotalAttack); // 피격 판정
-                                OnHit?.Invoke(target);
-                            }                                
+                            target.OnDamaged(this, Data.damage + attacker.TotalAttack); // 피격 판정
+                            OnHit?.Invoke(target);                  
                         }
                     }
                 }
@@ -72,6 +70,7 @@ namespace Server.Game
             if (room != null)
                 room.Push(room.LeaveGame, Id);
             IsComplete = true;
+            room.Push(Update);
         }
 
         public override GameObject GetOwner()

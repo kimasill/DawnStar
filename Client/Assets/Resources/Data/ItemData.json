@@ -1013,7 +1013,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "500",
-      "iconPath": "Textures/Item/Materials/Orb_Blue",
+      "iconPath": "Textures/Item/Materials/Drop/Orb_Blue",
       "description": "푸른 기운이 도는 오브"
     },
     {
@@ -1022,7 +1022,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "500",
-      "iconPath": "Textures/Item/Materials/Orb_Pink",
+      "iconPath": "Textures/Item/Materials/Drop/Orb_Pink",
       "description": "황혼의 기운이 도는 오브"
     },
     {
@@ -1031,7 +1031,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "500",
-      "iconPath": "Textures/Item/Materials/Orb_White",
+      "iconPath": "Textures/Item/Materials/Drop/Orb_White",
       "description": "미지의 기운이 도는 오브"
     },
     {

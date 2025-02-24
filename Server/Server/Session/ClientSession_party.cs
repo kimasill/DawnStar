@@ -54,11 +54,23 @@ namespace Server
         {
             if (_currentParty != null)
             {
-                _currentParty.RemoveMember(MyPlayer);
+                List<Player> members = new List<Player>(_currentParty.Members);
+
+                _currentParty.RemoveMember(MyPlayer);               
+                
                 if (_currentParty.Members.Count == 0)
                 {
                     PartySystem.Instance.RemoveParty(_currentParty.PartyId);
                 }
+                S_Party party = new S_Party();
+                party.PartyId = _currentParty.PartyId;
+                party.PartyMembers.AddRange(_currentParty.Members.Select(member => member.Info));
+
+                foreach (var member in members)
+                {
+                    member.Session.Send(party);
+                }
+
                 _currentParty = null;
             }
         }
@@ -72,6 +84,15 @@ namespace Server
 
             _currentParty = party;
             _currentParty.AddMember(MyPlayer);
+
+            S_Party joinParty = new S_Party();
+            joinParty.PartyId = _currentParty.PartyId;
+            joinParty.PartyMembers.AddRange(_currentParty.Members.Select(member => member.Info));
+
+            foreach (var member in _currentParty.Members)
+            {
+                member.Session.Send(joinParty);
+            }
         }
     }
 }

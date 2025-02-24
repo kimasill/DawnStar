@@ -32,6 +32,7 @@ public class ItemController : BaseController
 
     public void MoveToPlayer(Transform playerTransform)
     {
+        Managers.Sound.Play("Effect/Pickup", Define.Sound.Effect);
         StartCoroutine(MoveToPlayerCoroutine(playerTransform));
     }
 
@@ -67,6 +68,7 @@ public class ItemController : BaseController
         transform.position = Managers.Map.CurrentGrid.CellToWorld(new Vector3Int(position.PosX, position.PosY, 0)) + new Vector3(0.5f, 0.5f);
         Sprite = Resources.Load<Sprite>($"{ItemData.iconPath}");
         gameObject.SetActive(true);
+        Managers.Sound.Play("Effect/Drop", Define.Sound.Effect);
         BounceEffect();
     }
 

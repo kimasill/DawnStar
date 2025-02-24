@@ -141,6 +141,7 @@ public class UI_Inventory_Item : UI_ItemIcon
                         MaterialId = item.ItemDbId
                     };
                     Managers.Network.Send(enchant);
+                    Managers.Sound.Play("Effect/Book", Define.Sound.Effect);
                     break;
             }
         }

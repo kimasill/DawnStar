@@ -69,6 +69,7 @@ namespace Data
         public float tickInterval;
         public bool isObject;
         public bool fix;
+        public string sound;
     }
     public class ShapeInfo
     {
@@ -371,6 +372,7 @@ namespace Data
         public string name;
         public List<string> script;
         public string image;
+        public string sound;
     }
 
     [Serializable]

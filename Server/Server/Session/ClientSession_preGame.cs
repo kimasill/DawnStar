@@ -219,11 +219,19 @@ namespace Server
 
                     if (mapDb != null)
                     {
+                        MapData mapData = DataManager.MapDict.TryGetValue(mapDb.TemplateId, out mapData) ? mapData : null;
+                        if (mapData == null)
+                            return;
+                        if(mapData.type == MapType.Dungeon)
+                        {                          
+                            MyPlayer.PosInfo.PosX = (int)mapData.portals[0].posX;
+                            MyPlayer.PosInfo.PosY = (int)mapData.portals[0].posY;
+                        }
                         ChangeServerState(mapDb.TemplateId);
                         MyPlayer.MapInfo.TemplateId = mapDb.TemplateId;
                         MyPlayer.MapInfo.Scene = mapDb.Scene;
                         MyPlayer.MapInfo.MapName = mapDb.MapName;
-                        mapId = mapDb.TemplateId;
+                        mapId = mapDb.TemplateId;                    
                     }
                 }
             }

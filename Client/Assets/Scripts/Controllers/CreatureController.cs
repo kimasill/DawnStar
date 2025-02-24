@@ -219,14 +219,34 @@ public class CreatureController : BaseController
         {
             UseSkillEffect(skillData, skill.Phase);
         }
-
         State = CreatureState.Skill;                
+    }
+    protected IEnumerator DelayAndInstanciate(SkillData skillData)
+    {
+        GameObject skillObj = null;
+        yield return new WaitForSeconds(skillData.term);        
+        skillObj = Managers.Resource.Instantiate(skillData.prefab, transform);
+        SkillController skillController = skillObj.GetComponent<SkillController>();
+        if (skillController == null)
+            yield break;
+        skillController.Init(skillData, gameObject);
+        StartSkillCoroutine(skillController.ExecuteSkill());
+    }
+    protected IEnumerator DelayAndInstanciate(SkillData skillData, int phase)
+    {
+        GameObject skillObj = null;
+        yield return new WaitForSeconds(skillData.term);
+        skillObj = Managers.Resource.Instantiate(skillData.prefabs[phase], transform);
+        SkillController skillController = skillObj.GetComponent<SkillController>();
+        if (skillController == null)
+            yield break;
+        skillController.Init(null, gameObject);
+        StartSkillCoroutine(skillController.ExecuteSkill());
     }
     public void UseSkillEffect(SkillData skillData, int phase = 0)
     {
         if (gameObject == null)
             return;
-        GameObject skillObj = null;
         if (skillData.prefabs != null)
         {
             if (skillData.fix)
@@ -237,7 +257,7 @@ public class CreatureController : BaseController
             }
             else
             {
-                skillObj = Managers.Resource.Instantiate($"{skillData.prefabs[phase]}", transform);
+                StartCoroutine(DelayAndInstanciate(skillData , phase));
             }
         }
         else
@@ -250,16 +270,11 @@ public class CreatureController : BaseController
             }
             else
             {
-                skillObj = Managers.Resource.Instantiate($"{skillData.prefab}", transform);
+                StartCoroutine(DelayAndInstanciate(skillData));
             }
         }
-        SkillController skillController = skillObj.GetComponent<SkillController>();
-        if (skillController == null)
-            return;
-
-        skillController.Init(skillData, gameObject);
-        // 새로운 코루틴 실행
-        StartSkillCoroutine(skillController.ExecuteSkill());
+        if(skillData.sound != null)
+            Managers.Sound.Play($"{skillData.sound}", Sound.Effect);
     }
     public bool IsPlayingDieAnimation()
     {

@@ -161,6 +161,7 @@ class PacketHandler
         C_EnterDungeon enterDungeonPacket = packet as C_EnterDungeon;
         Player player = clientSession.MyPlayer;
         GameRoom room = player.Room;
+
         if (room == null)
             return;
         if (enterDungeonPacket.AdmitType == AdmitType.None)
@@ -410,5 +411,43 @@ class PacketHandler
         if (room == null)
             return;
         room.HandleChat(clientSession.MyPlayer, chatPacket.Message);
+    }
+
+    public static void C_PartyLeaveHandler(PacketSession session, IMessage packet)
+    {
+        C_PartyLeave leavePacket = packet as C_PartyLeave;
+        ClientSession clientSession = session as ClientSession;
+        if (clientSession == null || clientSession.MyPlayer == null)
+            return;
+        clientSession.LeaveParty();
+    }
+
+    public static void C_QuitHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        if (clientSession == null || clientSession.MyPlayer == null)
+            return;
+        S_Quit quitPacket = new S_Quit();
+        
+        clientSession.Send(quitPacket);
+
+        clientSession.Disconnect();
+    }
+
+    public static void C_PartyHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_Party partyPacket = packet as C_Party;
+
+        if (clientSession == null || clientSession.MyPlayer == null)
+            return;
+        if(clientSession.CurrentParty == null)
+        {
+            return;
+        }
+        S_Party party = new S_Party();
+        party.PartyId = clientSession.CurrentParty.PartyId;
+        party.PartyMembers.AddRange(clientSession.CurrentParty.Members.Select(member => member.Info));
+        clientSession.Send(party);       
     }
 }

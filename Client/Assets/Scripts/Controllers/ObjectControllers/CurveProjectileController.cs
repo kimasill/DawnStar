@@ -17,6 +17,8 @@ public class CurveProjectileController : BaseController
     private float _lifetimeElapsed = 0.0f; // 경과 시간
     public Action AfterAnimationAction { get; set; }
     Coroutine _coroutine;
+    Coroutine _lifetimeCoroutine;
+
     protected override void Init()
     {
         State = CreatureState.Idle;
@@ -40,6 +42,20 @@ public class CurveProjectileController : BaseController
         height = Mathf.Max(distance / 2.0f, height); // 최대 높이
         _maxLifetime = _duration + 2f;
         State = CreatureState.Moving;
+        // maxLifetime 타이머 시작
+        if (_lifetimeCoroutine != null)
+        {
+            StopCoroutine(_lifetimeCoroutine);
+        }
+        _lifetimeCoroutine = StartCoroutine(LifetimeCoroutine());
+    }
+    private IEnumerator LifetimeCoroutine()
+    {
+        yield return new WaitForSeconds(_maxLifetime);
+        if (gameObject != null)
+        {
+            StartCoroutine(DespawnAnim());
+        }
     }
     public override void SyncPos()
     {
@@ -91,12 +107,6 @@ public class CurveProjectileController : BaseController
             transform.position = currentPos;
             //transform.position = Vector3.Lerp(transform.position, currentPos, SkillData.projectile.speed * Time.deltaTime);
         }
-
-        if (_lifetimeElapsed >= _maxLifetime && gameObject != null)
-        {
-            StartCoroutine(DespawnAnim());
-        }
-        UpdateSortingLayer();
     }
 
     public override IEnumerator DespawnAnim()

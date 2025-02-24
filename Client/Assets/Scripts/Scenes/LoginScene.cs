@@ -12,7 +12,7 @@ public class LoginScene : BaseScene
         SceneType = Define.Scene.Login;
         Managers.Web.BaseUrl = "http://localhost:5273/api";
 
-        Screen.SetResolution(640, 480, false);
+        Screen.SetResolution(1280, 960, false);
         
         _sceneUi = Managers.UI.ShowSceneUI<UI_LoginScene>();
     }

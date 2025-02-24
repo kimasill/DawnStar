@@ -64,7 +64,8 @@ public abstract class UI_Base : MonoBehaviour
 			case Define.UIEvent.Click:
 				evt.OnClickHandler -= action;
 				evt.OnClickHandler += action;
-				break;
+                evt.OnClickHandler += PlayClickSound;
+                break;
 			case Define.UIEvent.RightClick:
                 evt.OnRightClickHandler -= action;
                 evt.OnRightClickHandler += action;
@@ -91,6 +92,10 @@ public abstract class UI_Base : MonoBehaviour
                 break;
         }
 	}
+    private static void PlayClickSound(PointerEventData evt)
+    {
+        Managers.Sound.Play("Effect/Click", Define.Sound.Effect);
+    }
     protected virtual IEnumerator FadeIn(Image image, float fadingTime)
     {
         _isFading = true; // 페이드 인 시작

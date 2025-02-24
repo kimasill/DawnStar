@@ -15,9 +15,16 @@ public class UI_GameScene : UI_Scene
     public UI_Notification NotificationUI { get; private set; }
     public UI_Matching MatchingUI { get; private set; }
     public UI_Enhance EnhanceUI { get; private set; }
-    
+    public UI_Menu MenuUI { get; private set; }
+    bool _isInit = false;
     public override void Init()
     {
+        if (Managers.UI == null)
+            return;
+
+        if (_isInit)
+            return;
+        _isInit = true;
         base.Init();
         Canvas = GetComponent<Canvas>();
         GameWindow = GetComponentInChildren<UI_GameWindow>();         
@@ -29,6 +36,7 @@ public class UI_GameScene : UI_Scene
         NotificationUI = GetComponentInChildren<UI_Notification>();
         MatchingUI = GetComponentInChildren<UI_Matching>();
         EnhanceUI = GetComponentInChildren<UI_Enhance>();
+        MenuUI = GetComponentInChildren<UI_Menu>();
 
         GameWindow.gameObject.SetActive(false);
         StatUI.gameObject.SetActive(false);
@@ -38,6 +46,7 @@ public class UI_GameScene : UI_Scene
         QuestUI.gameObject.SetActive(false);
         MatchingUI.gameObject.SetActive(false);
         EnhanceUI.gameObject.SetActive(false);
+        MenuUI.gameObject.SetActive(false);
     }
 
     public void GetMap(string id)
