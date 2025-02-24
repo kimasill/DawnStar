@@ -13,10 +13,11 @@ public class DawnTown_Home : DawnTown
 
         Managers.Map.LoadMap(3);
 
-        Screen.SetResolution(640, 480, false);
+
+        Screen.SetResolution(1280, 960, false);
         Camera.main.orthographicSize = ZoomLevel;
         _sceneUi = Managers.UI.ShowSceneUI<UI_GameScene>();
-        _sceneUi.SetActive(_sceneUi.GameWindow, true);
+        _sceneUi.SetActive(_sceneUi.GameWindow, false);
 
         // 추가적인 초기화 작업이 필요하면 여기에 작성        
         InitializeNPCs();
@@ -34,6 +35,7 @@ public class DawnTown_Home : DawnTown
         {
             DoorChangeAfterQuest06();
         }
+        Managers.Sound.PlayBGM();
     }
 
     private void CheckInventoryAndHandleQuest03()

@@ -250,16 +250,14 @@ namespace Server.Game
         public void HandleEnterDungeon(Player player, int mapId)
         {
             if (player == null)
-                return;
+                return;            
 
-            Party party = player.Session.CurrentParty;
-
-            if (party == null)
+            if (player.Session.CurrentParty == null)
             {
-                party = new Party(PartySystem.Instance.CreateParty().PartyId);
-                party.AddMember(player);                
+                player.Session.CreateParty();
             }
-            PartyMatchingSystem.Instance.EnterMap(party, mapId);     
+
+            PartyMatchingSystem.Instance.EnterMap(player.Session.CurrentParty, mapId);     
         }
 
         public void HandleMatching(Player player, int mapId, AdmitType admitType)

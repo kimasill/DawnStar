@@ -78,6 +78,11 @@ enum MsgId {
   C_CHAT = 70;
   S_CHAT = 71;
   S_UPDATE_ITEM_LIST = 73;
+  S_PARTY = 74;
+  C_PARTY_LEAVE = 75;
+  C_QUIT = 76;
+  C_PARTY = 77;
+  S_QUIT = 78;
 }
 enum CreatureState{
   IDLE = 0;
@@ -647,7 +652,12 @@ message S_PartyInvite{
 	int32 partyId = 1;
 	int32 inviterId = 2;
 }
-
+message S_Party{
+	int32 partyId = 1;
+	repeated ObjectInfo partyMembers = 2;
+}
+message C_PartyLeave{
+}
 message C_Interaction{
 	int32 objectId = 1;
 	InteractionType interactionType = 2;
@@ -660,6 +670,13 @@ message S_Interaction{
 	bool success = 4;
 	InteractionType interactionType =5;
 }
+
+message C_Quit{
+}
+
+message S_Quit{
+}
+
 message S_BossKill{
 	int32 templateId = 1;
 }
@@ -668,6 +685,9 @@ message S_Buff{
 	int32 debuffId = 3;
 	int32 objectId = 4;
 	float value = 5;
+}
+
+message C_Party{
 }
 
 message LobbyPlayerInfo{

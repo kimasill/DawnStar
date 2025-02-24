@@ -97,9 +97,15 @@ public class PlayerController : CreatureController
                 {
                     case SkillType.SkillAttack:
                         if(SkillData.realization)
+                        {
+                            Managers.Sound.Play("Effect/Skill_1", Sound.Effect);
                             Animator.Play("ATTACK_SKILL");
+                        }
                         else
-                            Animator.Play("ATTACK");                        
+                        {
+                            Managers.Sound.Play("Effect/Attack", Sound.Effect);
+                            Animator.Play("ATTACK");
+                        }
                         break;
                     case SkillType.SkillBuff:
                         Animator.Play("IDLE");
@@ -108,6 +114,7 @@ public class PlayerController : CreatureController
                         Animator.Play("ATTACK_MAGIC");
                         break;
                     default:
+                        Managers.Sound.Play("Effect/Attack", Sound.Effect);
                         Animator.Play("ATTACK");
                         break;
                 }
@@ -126,6 +133,7 @@ public class PlayerController : CreatureController
                     gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
                     break;
             }
+            Managers.Sound.Play("Effect/Hit", Sound.Effect);
         }
         else if (State == CreatureState.Dead)
         {

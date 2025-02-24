@@ -79,7 +79,13 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CEnchant, MakePacket<C_Enchant>);
 		_handler.Add((ushort)MsgId.CEnchant, PacketHandler.C_EnchantHandler);		
 		_onRecv.Add((ushort)MsgId.CChat, MakePacket<C_Chat>);
-		_handler.Add((ushort)MsgId.CChat, PacketHandler.C_ChatHandler);
+		_handler.Add((ushort)MsgId.CChat, PacketHandler.C_ChatHandler);		
+		_onRecv.Add((ushort)MsgId.CPartyLeave, MakePacket<C_PartyLeave>);
+		_handler.Add((ushort)MsgId.CPartyLeave, PacketHandler.C_PartyLeaveHandler);		
+		_onRecv.Add((ushort)MsgId.CQuit, MakePacket<C_Quit>);
+		_handler.Add((ushort)MsgId.CQuit, PacketHandler.C_QuitHandler);		
+		_onRecv.Add((ushort)MsgId.CParty, MakePacket<C_Party>);
+		_handler.Add((ushort)MsgId.CParty, PacketHandler.C_PartyHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

@@ -54,6 +54,8 @@ public class Util
     {
         yield return new WaitForSeconds(0.1f);
         // 애니메이션 상태가 전환 중인지 확인
+        if(animator == null)
+            yield break;
         while (animator.IsInTransition(0))
         {
             yield return null;
@@ -70,5 +72,4 @@ public class Util
             }
         }
     }
-
 }

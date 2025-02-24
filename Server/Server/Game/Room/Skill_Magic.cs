@@ -125,11 +125,13 @@ namespace Server.Game
                 }
                 
                 Owner.Room.Push(Owner.Room.EnterGame, howitzer, false);
-
-                Owner.Room.PushAfter(100,() =>
+                GameRoom room = Owner.Room;
+                room.PushAfter(100,() =>
                 {
-                if (Owner == null || Owner.Room == null)
+                    if (room == null)
+                    {
                         return;
+                    }                        
                     howitzer.State = CreatureState.Moving;
                     if (Owner.Room.Map.ApplyMove(howitzer, howitzer.DestPos))
                     {

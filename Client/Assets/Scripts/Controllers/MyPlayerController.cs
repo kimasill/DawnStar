@@ -14,6 +14,9 @@ public class MyPlayerController : PlayerController
 {
     bool _moveKeyPressed = false;
     bool _attackKeyPressed = false;
+    bool _isMovingSoundPlaying = false;
+    float footstepTimer = 0f; // 발자국 소리 재생 타이머
+    float footstepInterval = 0.5f; // 발자국 소리 재생 간격 (초)
 
     private NPCController _NPCController;
     private CameraController _cameraController;
@@ -63,7 +66,8 @@ public class MyPlayerController : PlayerController
 
         
         RefreshAdditionalStat();
-        GameScene.GameWindow.StateUI.SetInfo();
+        if(GameScene.GameWindow != null && GameScene.GameWindow.StateUI!=null)
+            GameScene.GameWindow.StateUI.SetInfo();
         _cameraController = Camera.main.GetComponent<CameraController>();
         if (_cameraController != null)
         {
@@ -97,13 +101,14 @@ public class MyPlayerController : PlayerController
 
     void GetUIKeyInput()
     {
+
         if (Input.GetKeyDown(KeyCode.I))
         {            
             UI_Inventory invenUI = GameScene.InvenUI;
 
             if (invenUI.gameObject.activeSelf)
             {
-                invenUI.gameObject.SetActive(false);
+                invenUI.gameObject.SetActive(false);                
                 Managers.UI.CloseAllPopupUI();
             }
             else
@@ -193,6 +198,10 @@ public class MyPlayerController : PlayerController
             GameScene.GameWindow.QuickSlot.UseItem(2);
         else if (Input.GetKeyDown(KeyCode.Alpha4))
             GameScene.GameWindow.QuickSlot.UseItem(3);
+        else if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            GameScene.MenuUI.ToggleMenu();
+        }
 
         if (Input.mouseScrollDelta.y != 0)
         {
@@ -358,6 +367,7 @@ public class MyPlayerController : PlayerController
         float dist = moveDir.magnitude;
         if (dist < Speed * Time.deltaTime)
         {
+            _isMovingSoundPlaying = false;
             transform.position = destPos;
             MoveToNextPos();
         }
@@ -365,6 +375,14 @@ public class MyPlayerController : PlayerController
         {
             transform.position += moveDir.normalized * Speed * Time.deltaTime;
             State = CreatureState.Moving;
+        }
+
+        // 이동 사운드 재생
+        footstepTimer += Time.deltaTime;
+        if (footstepTimer >= footstepInterval / Speed)
+        {
+            Managers.Sound.Play("Effect/Footsteps", Define.Sound.Effect);
+            footstepTimer = 0f;
         }
         UpdateSortingLayer();
     }

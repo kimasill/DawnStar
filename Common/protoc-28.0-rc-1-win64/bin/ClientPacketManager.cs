@@ -109,7 +109,11 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SChat, MakePacket<S_Chat>);
 		_handler.Add((ushort)MsgId.SChat, PacketHandler.S_ChatHandler);		
 		_onRecv.Add((ushort)MsgId.SUpdateItemList, MakePacket<S_UpdateItemList>);
-		_handler.Add((ushort)MsgId.SUpdateItemList, PacketHandler.S_UpdateItemListHandler);
+		_handler.Add((ushort)MsgId.SUpdateItemList, PacketHandler.S_UpdateItemListHandler);		
+		_onRecv.Add((ushort)MsgId.SParty, MakePacket<S_Party>);
+		_handler.Add((ushort)MsgId.SParty, PacketHandler.S_PartyHandler);		
+		_onRecv.Add((ushort)MsgId.SQuit, MakePacket<S_Quit>);
+		_handler.Add((ushort)MsgId.SQuit, PacketHandler.S_QuitHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

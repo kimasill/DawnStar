@@ -13,6 +13,7 @@ using System.Numerics;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
+using System.ComponentModel.Design;
 
 namespace Server.Game
 {
@@ -218,13 +219,13 @@ namespace Server.Game
                     }
                     else
                     {
-                        if (data.spot.maxCount - data.spot.minCount > 0)
-                        {
-                            skillPos = SkillLogic.GetRandomSpots(Owner, data, Owner.Room);
-                        }
-                        else if (data.spot.maxCount == 1)
+                        if (data.spot.maxCount == 1)
                         {
                             skillPos = [target.CellPos];
+                        }
+                        else
+                        {
+                            skillPos = SkillLogic.GetRandomSpots(Owner, data, Owner.Room);
                         }
                         if (skillPos.Count == 0)
                         {

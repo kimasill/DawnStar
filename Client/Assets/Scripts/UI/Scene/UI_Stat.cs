@@ -323,11 +323,13 @@ public class UI_Stat : UI_Base
             if (player.Stat.StatPoint > 0 && _isCardPanelActive == false)
             {
                 ShowImage((int)Images.Card_Panel, true);
+                ShowImage((int)Images.Card_DescriptionPanel, true);
                 _isCardPanelActive = true;
             }
             else if(player.Stat.StatPoint <= 0 && _isCardPanelActive == true)
             {
                 ShowImage((int)Images.Card_Panel, false);
+                ShowImage((int)Images.Card_DescriptionPanel, false);
                 _isCardPanelActive = false;
             }
         }

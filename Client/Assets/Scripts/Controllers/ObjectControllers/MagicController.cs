@@ -24,6 +24,8 @@ public class MagicController : BaseController
     {
         Animator.speed = 1;
         Animator.Play("START");
+        if(SkillData.sound != null)
+            Managers.Sound.Play($"{SkillData.sound}");
         yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
         gameObject.SetActive(false);
         AfterAnimationAction?.Invoke();

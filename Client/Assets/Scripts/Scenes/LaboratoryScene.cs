@@ -15,12 +15,15 @@ class LaboratoryScene : BaseScene
         base.Init();
         SceneType = Define.Scene.Laboratory;
         Managers.Map.LoadMap(8); // DawnTownDead ¸Ê ·Îµå
-        Screen.SetResolution(640, 480, false);
+
+        Screen.SetResolution(1280, 960, false);
         Camera.main.orthographicSize = ZoomLevel;
         _sceneUi = Managers.UI.ShowSceneUI<UI_GameScene>();
         _sceneUi.SetActive(_sceneUi.GameWindow, true);
         _description = Managers.UI.ShowPopupUI<UI_Description>();
         _description.gameObject.SetActive(false);
+
+        Managers.Sound.PlayBGM();
     }
 
     public override void Clear()

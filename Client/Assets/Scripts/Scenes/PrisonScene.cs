@@ -15,12 +15,14 @@ class PrisonScene : BaseScene
         base.Init();
         SceneType = Define.Scene.Prison;
         Managers.Map.LoadMap(6); // DawnTownDead ¸Ê ·Îµå
-        Screen.SetResolution(640, 480, false);
+        Screen.SetResolution(1920, 1080, false);
         Camera.main.orthographicSize = ZoomLevel;
         _sceneUi = Managers.UI.ShowSceneUI<UI_GameScene>();
         _sceneUi.SetActive(_sceneUi.GameWindow, true);
         _description = Managers.UI.ShowPopupUI<UI_Description>();
         _description.gameObject.SetActive(false);
+
+        Managers.Sound.PlayBGM();
     }
 
     public override void Clear()

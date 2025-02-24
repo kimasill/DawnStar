@@ -35,7 +35,17 @@ public class MonsterController : CreatureController
     {
         if(Grade == MonsterGrade.Boss)
         {
-            UI_GameWindow gameWindow = GameScene.GameWindow;
+            UI_GameWindow gameWindow = null;
+            if (GameScene == null)
+            {
+                UI_GameScene gameScene = Managers.UI.SceneUI as UI_GameScene;
+                gameWindow = gameScene.GameWindow;
+            }
+            else
+            {
+                gameWindow = GameScene.GameWindow;
+            }
+
             BossHpBar = gameWindow.BossHpBar;
             BossHpBar.gameObject.SetActive(true);
             BossHpBar.Name.text = name;
@@ -101,6 +111,21 @@ public class MonsterController : CreatureController
                 StartPsychicsCoroutine(AttackCoroutine());
 
             SkillId = 0;
+        }
+        else if (State == CreatureState.Stiff)
+        {
+            switch (LookDir)
+            {
+                case LookDir.LookLeft:
+                    StartPsychicsCoroutine(PlayAnimationClip(Animator, "HURT"));
+                    _sprite.flipX = true;
+                    break;
+                case LookDir.LookRight:
+                    StartPsychicsCoroutine(PlayAnimationClip(Animator, "HURT"));
+                    _sprite.flipX = false;
+                    break;
+            }
+            Managers.Sound.Play("Effect/Hit_Monster");
         }
         else
         {

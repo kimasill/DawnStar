@@ -38,7 +38,8 @@ public class UI_HpBar : UI_Base
         {
             float xScale = _originalSize.x * maxHp / 1000;
             _hpGroup.localScale = new Vector3(xScale, 1, 1);
-
+            //float width = _originalSize.x * maxHp / 1000;
+            //_hpGroup.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
             _hpGroup.anchoredPosition = new Vector2(_hpGroup.rect.size.x, _hpGroup.anchoredPosition.y);
         }
     }

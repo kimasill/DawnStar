@@ -15,7 +15,8 @@ class EastEnd : BaseScene
         base.Init();
         SceneType = Define.Scene.EastEnd;
         Managers.Map.LoadMap(5); // DawnTownDead 맵 로드
-        Screen.SetResolution(640, 480, false);
+
+        Screen.SetResolution(1280, 960, false);
 
         Camera.main.orthographicSize = ZoomLevel;
         _sceneUi = Managers.UI.ShowSceneUI<UI_GameScene>();
@@ -24,11 +25,11 @@ class EastEnd : BaseScene
         _description = Managers.UI.ShowPopupUI<UI_Description>();
         _description.gameObject.SetActive(false);
 
-
         // 추가 초기화 로직
         RequestShop(5);
         InitializeNPCs();
         InitializeShop();
+        Managers.Sound.PlayBGM();
     }
 
     public override void Clear()

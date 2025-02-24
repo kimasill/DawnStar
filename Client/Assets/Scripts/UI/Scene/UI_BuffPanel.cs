@@ -30,7 +30,7 @@ public class UI_BuffPanel : UI_Base
             RemoveBuff(buffId);
             return;
         }
-
+        Managers.Sound.Play("Effect/Buff", Define.Sound.Effect);
         Managers.Data.BuffDict.TryGetValue(buffId, out BuffData buffData);
         if (buffData == null)
             return;
@@ -59,7 +59,7 @@ public class UI_BuffPanel : UI_Base
             RemoveDebuff(buffId);
             return;
         }
-
+        Managers.Sound.Play("Effect/Debuff", Define.Sound.Effect);
         Managers.Data.DebuffDict.TryGetValue(buffId, out DebuffData debuffData);
         if (debuffData == null)
             return;

@@ -54,9 +54,15 @@ public class EquipmentController : MonoBehaviour
     public void EquipItem(Item item)
     {
         if (item.Equipped)
+        {
             SetItemInSlot(item);
+            Managers.Sound.Play("Effect/Equip", Define.Sound.Effect);
+        }
         else if (item.Equipped == false)
+        {
             RemoveItemFromSlot(item);
+            Managers.Sound.Play("Effect/Unequip", Define.Sound.Effect);
+        }
     }
     public void SetItemInSlot(Item item)
     {
