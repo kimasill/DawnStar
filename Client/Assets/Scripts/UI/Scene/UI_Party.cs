@@ -30,6 +30,8 @@ public class UI_Party : UI_Base
         }
         foreach (var member in partyPacket.PartyMembers)
         {
+            if (member == null)
+                continue;
             _members.Add(member);
         }
         RefreshUI();
@@ -44,11 +46,14 @@ public class UI_Party : UI_Base
         }
         foreach (var member in _partyMembers)
         {
-            Destroy(member.gameObject);
+            Destroy(member.gameObject);           
         }
+        _partyMembers.Clear();
         // Add new UI_PartyMember objects
         foreach (var member in _members)
         {
+            if (member == null)
+                continue;
             GameObject go = Managers.Resource.Instantiate("UI/Scene/UI_PartyMember", transform);
             UI_PartyMember partyMember = go.GetOrAddComponent<UI_PartyMember>();
             partyMember.SetInfo(member);
@@ -58,6 +63,11 @@ public class UI_Party : UI_Base
 
     public UI_PartyMember GetPartyMember(int memberId)
     {
-        return _partyMembers.FirstOrDefault(m => m.MemberId == memberId);
+        foreach(var partyMember in _partyMembers)
+        {
+            if (partyMember.MemberId == memberId)
+                return partyMember;
+        }
+        return null;
     }
 }

@@ -8,7 +8,7 @@ public class UI_PartyMember : UI_Base, IPointerClickHandler
 {
     private int _memberId;
     private TMP_Text _memberName;
-    public int MemberId => _memberId;
+    public int MemberId { get { return _memberId; } }
     public UI_HpBar HpBar { get; private set; }
     public UI_UpBar UpBar { get; private set; }
     private List<string> _selectElements = new List<string>();
@@ -22,8 +22,8 @@ public class UI_PartyMember : UI_Base, IPointerClickHandler
     public override void Init()
     {
         Bind<TMP_Text>(typeof(Texts));
-        HpBar = Get<UI_HpBar>(0);
-        UpBar = Get<UI_UpBar>(0);
+        HpBar = GetComponentInChildren<UI_HpBar>();
+        UpBar = GetComponentInChildren<UI_UpBar>();
         _memberName = GetTextMeshPro((int)Texts.PartyMember_NameText);
         gameObject.BindEvent(OnPointerClick);
         _selectElements.Add("ÆÄÆ¼ Å»Åð");

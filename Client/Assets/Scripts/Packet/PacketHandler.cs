@@ -200,7 +200,8 @@ class PacketHandler
             cc.OnHealed();
         }
         cc.Hp = changePacket.Hp;
-        if (Managers.UI.SceneUI is UI_GameScene gameSceneUI && gameSceneUI.GameWindow.Party.IsParty)
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        if (gameSceneUI.GameWindow.Party.IsParty)
         {
             UI_PartyMember partyMember = gameSceneUI.GameWindow.Party.GetPartyMember(changePacket.ObjectId);
             if (partyMember != null)
@@ -225,8 +226,8 @@ class PacketHandler
             return;
         }
         cc.Up = changePacket.Up;
-
-        if (Managers.UI.SceneUI is UI_GameScene gameSceneUI && gameSceneUI.GameWindow.Party.IsParty)
+        UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+        if (gameSceneUI.GameWindow.Party.IsParty)
         {
             UI_PartyMember partyMember = gameSceneUI.GameWindow.Party.GetPartyMember(changePacket.ObjectId);
             if (partyMember != null)
