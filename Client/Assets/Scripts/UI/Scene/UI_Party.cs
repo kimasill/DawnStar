@@ -55,4 +55,9 @@ public class UI_Party : UI_Base
             _partyMembers.Add(partyMember);
         }
     }
+
+    public UI_PartyMember GetPartyMember(int memberId)
+    {
+        return _partyMembers.FirstOrDefault(m => m.MemberId == memberId);
+    }
 }

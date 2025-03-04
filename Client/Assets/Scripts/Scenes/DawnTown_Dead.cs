@@ -11,9 +11,6 @@ public class DawnTownDead : DawnTown
         Camera.main.orthographicSize = ZoomLevel;
 
         Managers.Map.LoadMap(4); // DawnTownDead 맵 로드
-
-
-        Screen.SetResolution(1280, 960, false);
         _sceneUi.SetActive(_sceneUi.GameWindow, true);
         StartQuest07();
         Managers.Sound.PlayBGM();

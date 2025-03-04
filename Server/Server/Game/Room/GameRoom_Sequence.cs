@@ -4,6 +4,7 @@ using Server.DB;
 using Server.Game.Contents;
 using Server.Game.Job;
 using Server.Game.Room;
+using Server.Migrations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,53 +20,38 @@ namespace Server.Game
             if (player == null || player.Room == null)
                 return;
 
-            //// 클라이언트에 로딩 화면을 띄우라는 신호를 보냅니다.
-            //S_Loading loadingPacket = new S_Loading();
-            //loadingPacket.Loading = true;
-            //player.Session.Send(loadingPacket);
-
-            // LeaveGame을 호출하여 현재 게임에서 플레이어를 제거합니다.
+            // 플레이어를 게임에서 제거
             LeaveGame(player.Id);
 
-            // Respawn 위치를 결정합니다.
-            Vector2Int respawnPos;
+            // Respawn 위치를 결정
+            Vector2Int respawnPos = new Vector2Int();
             if (respawnType == RespawnType.Repeat)
             {
-                // Repeat 타입은 현재 위치에서 부활합니다.
+                // Repeat 타입은 현재 위치에서 부활
                 respawnPos = player.CellPos;
             }
             else if (respawnType == RespawnType.Spot)
             {
-                // Spot 타입은 가장 가까운 포탈 근처에서 부활합니다.
+                // Spot 타입은 가장 가까운 포탈 근처에서 부활
                 MapData mapData = DataManager.MapDict[player.MapInfo.TemplateId];
-                respawnPos = FindClosestPortal(mapData, player.CellPos);
-            }
-            else
-            {
-                // 기본적으로 현재 위치에서 부활합니다.
-                respawnPos = player.CellPos;
+                int portal = FindClosestPortalId(mapData, player.CellPos);
+                UpdatePlayerMapInfo(player, mapData, portal);
             }
 
-            // 플레이어의 상태를 초기화합니다.
+            // 플레이어의 상태를 초기화
             player.Stat.Hp = player.Stat.MaxHp;
             player.PosInfo.State = CreatureState.Idle;
             player.PosInfo.MoveDir = MoveDir.Down;
-            player.CellPos = respawnPos;
 
-            // EnterGame을 호출하여 플레이어를 다시 게임에 추가합니다.
+            // 플레이어를 게임에 다시 추가
             EnterGame(player, false);
-
-            //// 클라이언트에 로딩 화면을 종료하라는 신호를 보냅니다.
-            //loadingPacket.Loading = false;
-            //player.Session.Send(loadingPacket);
         }
 
-        private Vector2Int FindClosestPortal(MapData mapData, Vector2Int cellPos)
+        private int FindClosestPortalId(MapData mapData, Vector2Int cellPos)
         {
             // 가장 가까운 포탈의 위치를 저장할 변수
-            Vector2Int closestPortalPos = new Vector2Int(int.MaxValue, int.MaxValue);
             double closestDistance = double.MaxValue;
-
+            int closestPortalId = 0;
             foreach (var portal in mapData.portals)
             {
                 // 포탈의 위치를 가져옴
@@ -78,11 +64,11 @@ namespace Server.Game
                 if (distance < closestDistance)
                 {
                     closestDistance = distance;
-                    closestPortalPos = portalPos;
+                    closestPortalId = portal.id;
                 }
             }
 
-            return closestPortalPos;
+            return closestPortalId;
         }
 
         public async void HandleMapChanged(Player player, int portalId)
@@ -281,7 +267,10 @@ namespace Server.Game
             chatPacket.PlayerId = player.Info.ObjectId;
             chatPacket.PlayerName = player.Info.Name;
             chatPacket.Message = message;
-            Broadcast(player.CellPos, chatPacket);
+            foreach(var p in player.Room._players.Values)
+            {
+                p.Session.Send(chatPacket);
+            }                        
         }
     }
 }

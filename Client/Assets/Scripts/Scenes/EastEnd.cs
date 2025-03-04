@@ -16,8 +16,6 @@ class EastEnd : BaseScene
         SceneType = Define.Scene.EastEnd;
         Managers.Map.LoadMap(5); // DawnTownDead 맵 로드
 
-        Screen.SetResolution(1280, 960, false);
-
         Camera.main.orthographicSize = ZoomLevel;
         _sceneUi = Managers.UI.ShowSceneUI<UI_GameScene>();
         _sceneUi.SetActive(_sceneUi.GameWindow, true);

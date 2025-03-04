@@ -13,11 +13,9 @@ public class DawnTown_Store : DawnTown
 
         Managers.Map.LoadMap(2);
 
-
-        Screen.SetResolution(1280, 960, false);
         Camera.main.orthographicSize = ZoomLevel;
         _sceneUi = Managers.UI.ShowSceneUI<UI_GameScene>();
-        _sceneUi.SetActive(_sceneUi.GameWindow, false);
+        _sceneUi.SetActive(_sceneUi.GameWindow, true);
         // 추가적인 초기화 작업이 필요하면 여기에 작성        
         InitializeNPCs();
         RequestShop(2);

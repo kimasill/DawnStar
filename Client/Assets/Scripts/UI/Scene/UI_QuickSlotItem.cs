@@ -59,7 +59,10 @@ public class UI_QuickSlotItem : UI_Base, IPointerClickHandler
     {
         if (Item == null)
             return;
-
+        if(Item.ConsumableType == ConsumableType.Potion)
+        {
+            Managers.Sound.Play("Effect/Potion", Define.Sound.Effect);
+        }
         C_UseItem useItemPacket = new C_UseItem();
         useItemPacket.ItemDbId = Item.ItemDbId;
         useItemPacket.TemplateId = Item.TemplateId;

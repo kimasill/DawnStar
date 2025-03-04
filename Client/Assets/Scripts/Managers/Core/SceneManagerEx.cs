@@ -44,24 +44,15 @@
             }
         }
 
-        private IEnumerator LoadSceneCoroutine(string sceneName)
-        {
+    private IEnumerator LoadSceneCoroutine(string sceneName)
+    {
         if (Managers.UI == null)
         {
             Debug.LogError("UIManager is not initialized.");
             yield break;
         }
 
-        if (Managers.UI != null)
-        {
-            Managers.UI.ShowLoadingUI();
-            yield return new WaitForSeconds(0.1f);
-            // 추가 로직...
-        }
-        else
-        {
-            Debug.LogError("UIManager is not initialized.");
-        }
+        Managers.UI.ShowLoadingUI();
 
         if (CurrentScene != null)
         {
@@ -74,32 +65,47 @@
 
         Debug.Log($"Attempting to load scene: {sceneName}");
 
-        // 씬 이름이 올바른지 확인
         if (string.IsNullOrEmpty(sceneName))
         {
             Debug.LogError("Scene name is null or empty.");
             yield break;
         }
 
-        // 씬이 빌드 설정에 포함되어 있는지 확인
         if (!IsSceneInBuildSettings(sceneName))
         {
             Debug.LogError($"Scene '{sceneName}' is not included in the build settings.");
             yield break;
         }
+
+        // 같은 씬을 재로드하는 경우 언로드하지 않음
+        if (SceneManager.GetActiveScene().name != sceneName)
+        {
+            AsyncOperation unloadOperation = SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().name);
+            if (unloadOperation != null)
+            {
+                while (!unloadOperation.isDone)
+                {
+                    yield return null;
+                }
+            }
+        }
+
+        // 이미 로드된 씬인 경우 바로 활성화
         if (SceneManager.GetActiveScene().name == sceneName)
         {
-            Debug.LogWarning($"Scene '{sceneName}' is already loaded.");
+            Debug.LogWarning($"Scene '{sceneName}' is already loaded. Re-activating.");
+            Managers.UI.HideLoadingUI();
             yield break;
         }
 
         Debug.Log($"Attempting to load scene: {sceneName}");
-        // 씬 로드 시작        
+
         AsyncOperation asyncLoad = null;
         try
         {
             Debug.Log("Before LoadSceneAsync");
             asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+            asyncLoad.allowSceneActivation = false;
             Debug.Log("After LoadSceneAsync");
         }
         catch (System.Exception ex)
@@ -113,35 +119,28 @@
             Debug.LogError($"Failed to load scene: {sceneName}");
             yield break;
         }
-        if (asyncLoad == null)
+
+        float startTime = Time.time;
+        while (!asyncLoad.isDone)
+        {
+            float elapsedTime = Time.time - startTime;
+            float progress = Mathf.Clamp01(elapsedTime / 5.0f);
+
+            Managers.UI.SetLoadingText($"Loading... {(int)(progress * 100)}%");
+            Managers.UI.SetLoadingImage("Textures/Images/StoryScene009");
+
+            if (asyncLoad.progress >= 0.9f)
             {
-                Debug.LogError($"Failed to load scene: {sceneName}");
-                yield break;
+                Managers.UI.SetLoadingText("Loading... 100%");
+                asyncLoad.allowSceneActivation = true;
             }
 
-            float startTime = Time.time;
-            while (!asyncLoad.isDone)
-            {
-                // 로딩 진행 상황 업데이트
-                float elapsedTime = Time.time - startTime;
-                float progress = Mathf.Clamp01(elapsedTime / 5.0f); // 5초 동안 로딩 진행
-
-                Managers.UI.SetLoadingText($"Loading... {(int)(progress * 100)}%");
-                Managers.UI.SetLoadingImage("Textures/Images/StoryScene009");
-
-                if (asyncLoad.progress >= 1.0f || progress >= 1.0f)
-                {
-                    Managers.UI.SetLoadingText("Loading... 100%");
-                    asyncLoad.allowSceneActivation = true;
-                }
-
-                yield return null;
-            }
-
-            // 씬 로드 완료 후 로딩창 숨기기
-            Managers.UI.HideLoadingUI();
+            yield return null;
         }
-        private void EnsureSingleAudioListener()
+
+        Managers.UI.HideLoadingUI();
+    }
+    private void EnsureSingleAudioListener()
         {
             AudioListener[] listeners = GameObject.FindObjectsOfType<AudioListener>();
             if (listeners.Length > 1)

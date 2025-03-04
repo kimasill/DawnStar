@@ -356,13 +356,13 @@
       "rewards": [
         {
           "probability": "40",
-          "itemId": "1102",
+          "itemId": "1145",
           "minCount": "3",
           "maxCount": "10"
         },
         {
           "probability": "20",
-          "itemId": "1102",
+          "itemId": "1145",
           "minCount": "1",
           "maxCount": "5"
         },
@@ -398,13 +398,13 @@
       "rewards": [
         {
           "probability": "40",
-          "itemId": "1102",
+          "itemId": "1145",
           "minCount": "3",
           "maxCount": "10"
         },
         {
           "probability": "20",
-          "itemId": "1102",
+          "itemId": "1145",
           "minCount": "1",
           "maxCount": "5"
         },

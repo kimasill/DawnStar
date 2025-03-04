@@ -11,6 +11,8 @@ public abstract class BaseScene : MonoBehaviour
     Dictionary<int, GameObject> _npcs = new Dictionary<int, GameObject>();
     public Camera MainCamera { get { return Camera.main; }}
     public float ZoomLevel = 2f;
+
+    private Texture2D _customCursor;
     void Awake()
 	{
 		Init();
@@ -21,7 +23,18 @@ public abstract class BaseScene : MonoBehaviour
         Object obj = GameObject.FindObjectOfType(typeof(EventSystem));
         if (obj == null)
             Managers.Resource.Instantiate("UI/EventSystem").name = "@EventSystem";
+        _customCursor = Managers.Resource.Load<Texture2D>("Textures/Images/Icons/Cursor/Cursor_Basic");
+        if (_customCursor != null)
+        {
+            Vector2 hotspot = new Vector2(_customCursor.width * 6 / 64f, _customCursor.height * 19 / 64f);
+            Cursor.SetCursor(_customCursor, hotspot, CursorMode.Auto);
+        }
+        else
+        {
+            Debug.LogError("Failed to load cursor image.");
+        }
 
+        Screen.SetResolution(1920, 1080, false);
     }
     protected void RequestShop(int mapId)
     {

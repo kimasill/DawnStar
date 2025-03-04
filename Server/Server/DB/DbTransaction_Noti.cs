@@ -72,6 +72,13 @@ namespace Server.DB
                         S_ChangeHp changePacket = new S_ChangeHp();
                         changePacket.ObjectId = player.Id;
                         changePacket.Hp = player.Hp;
+                        if(player.Session.CurrentParty != null)
+                        {
+                            foreach (var member in player.Session.CurrentParty.Members)
+                            {
+                                member.Session.Send(changePacket);
+                            }
+                        }
                         room.Broadcast(player.CellPos, changePacket);
                     });
                 }
@@ -102,7 +109,14 @@ namespace Server.DB
                         S_ChangeUp changePacket = new S_ChangeUp();
                         changePacket.ObjectId = player.Id;
                         changePacket.Up = player.Up;
-                        room.Broadcast(player.CellPos, changePacket);
+                        if (player.Session.CurrentParty != null)
+                        {
+                            foreach (var member in player.Session.CurrentParty.Members)
+                            {
+                                member.Session.Send(changePacket);
+                            }
+                        }
+                        room.Broadcast(player.CellPos, changePacket);                      
                     });
                 }
             }

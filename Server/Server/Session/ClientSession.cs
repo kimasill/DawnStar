@@ -71,7 +71,8 @@ namespace Server
 
                 lock (_lock)
                 {
-                    _reserverQueue.Add(sendBuffer);
+                    //_reserverQueue.Add(sendBuffer);
+                    _reserverQueue.Add(new ArraySegment<byte>(sendBuffer, 0, size + 4));
                     _reservedSentByte += sendBuffer.Length; // 지금 까지 보낸 패킷의 크기
                 }
                 // Send(new ArraySegment<byte>(sendBuffer));

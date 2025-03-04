@@ -166,6 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 433afcae26a96ae42970ab910a573e86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ZoomLevel: 2
 --- !u!1001 &926484948
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -228,6 +229,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Main Camera
+      objectReference: {fileID: 0}
+    - target: {fileID: 3550248093065256142, guid: e636208cb0b74f94788bac39a74300f5,
+        type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3550248093065256142, guid: e636208cb0b74f94788bac39a74300f5,
+        type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3550248093065256142, guid: e636208cb0b74f94788bac39a74300f5,
+        type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

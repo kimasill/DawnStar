@@ -18,12 +18,9 @@ public class DawnTown : BaseScene
         SceneType = Define.Scene.DawnTown;
         base.Init();
         Managers.Map.LoadMap(1);
-
-
-        Screen.SetResolution(1280, 960, false);
         Camera.main.orthographicSize = ZoomLevel;
         _sceneUi = Managers.UI.ShowSceneUI<UI_GameScene>();
-        _sceneUi.SetActive(_sceneUi.GameWindow, false);
+        _sceneUi.SetActive(_sceneUi.GameWindow, true);
         _sceneUi.GetMap("001");
         _description = Managers.UI.ShowPopupUI<UI_Description>();
         _description.gameObject.SetActive(false);
