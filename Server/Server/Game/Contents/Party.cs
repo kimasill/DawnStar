@@ -19,7 +19,8 @@ namespace Server
         {
             if (Members.Count >= MaxMembers)
                 return false;
-
+            if (Members.Contains(player))
+                return false;
             Members.Add(player);
             return true;
         }
