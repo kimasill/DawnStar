@@ -73,7 +73,7 @@ public class UI_StateBar : UI_Base
     }
     public void UpdateHpBar()
     {
-        if (_hpBar == null)
+        if (_hpBar == null || _hpBar.isActiveAndEnabled == false)
             return;
         if (_myPlayer == null)
         {
@@ -88,7 +88,8 @@ public class UI_StateBar : UI_Base
     }
     public void UpdateUpBar()
     {
-        if (_upBar == null) return;
+        if (_upBar == null|| _upBar.isActiveAndEnabled == false) 
+            return;
         if (_myPlayer == null)
         {
             _myPlayer = Managers.Object.MyPlayer;

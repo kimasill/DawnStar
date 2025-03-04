@@ -307,7 +307,7 @@ namespace Server.Game
             Hp = hp;
             S_ChangeHp changePacket = new S_ChangeHp();
             changePacket.ObjectId = Id;
-            changePacket.Hp = Stat.Hp;
+            changePacket.Hp = Stat.Hp;            
             Room.Broadcast(CellPos, changePacket);
         }
         public virtual void ChangeUp(int up)

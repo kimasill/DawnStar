@@ -8,6 +8,7 @@ public class UI_PartyMember : UI_Base, IPointerClickHandler
 {
     private int _memberId;
     private TMP_Text _memberName;
+    public int MemberId => _memberId;
     public UI_HpBar HpBar { get; private set; }
     public UI_UpBar UpBar { get; private set; }
     private List<string> _selectElements = new List<string>();

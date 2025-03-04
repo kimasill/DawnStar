@@ -80,7 +80,8 @@
             "케일라드,Kailad:왔어?",
             "루시,Lucy:어휴, 몸좀움직이면 안돼?\n영감탱이처럼 있지말고."
           ],
-          "image": "Textures/Images/StoryScene001"
+          "image": "Textures/Images/StoryScene001",
+          "sound": "Bgm/Ethereal Journey"
         },
         {
           "id": "2",
@@ -148,7 +149,8 @@
             "루시!!",
             "케일라드가 박차고 일어나 달려간다.\n시간이 느리게 흐른다.\n케일라드가 팔을 붙잡았지만 이미 그녀는 발끝밖에는 보이지 않았고, 발을 잡으려하자 아귀는 의자와 발, 바닥까지 집어삼켜버린다.\n어디에도 그녀의 형상은 보이지 않았다."
           ],
-          "image": "Textures/Images/StoryScene007"
+          "image": "Textures/Images/StoryScene007",
+          "sound": "Bgm/LucyDeath"
         },
         {
           "id": "8",

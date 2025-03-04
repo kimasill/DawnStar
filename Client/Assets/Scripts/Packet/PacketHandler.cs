@@ -15,13 +15,16 @@ class PacketHandler
 	public static void S_EnterGameHandler(PacketSession session, IMessage packet)
 	{
 		S_EnterGame enterGamePacket = packet as S_EnterGame;
-
-        if (enterGamePacket.Player.MapInfo != null)
+        if (SceneManager.GetActiveScene().name == enterGamePacket.Player.MapInfo.Scene)
+        {
+            Managers.Object.Add(enterGamePacket.Player, myPlayer: true);
+            OnSceneLoaded(enterGamePacket.Player); 
+        }
+        else
         {
             Managers.Scene.IsSceneLoaded = false;
             SceneManager.sceneLoaded -= (scene, mode) => OnSceneLoadedCallback(scene, mode, enterGamePacket.Player);
             SceneManager.sceneLoaded += (scene, mode) => OnSceneLoadedCallback(scene, mode, enterGamePacket.Player);
-
             Managers.Scene.LoadScene(enterGamePacket.Player.MapInfo.Scene);
         }
 	}
@@ -30,7 +33,6 @@ class PacketHandler
         S_LeaveGame leaveGameHandler = packet as S_LeaveGame;
         ServerSession serverSession = session as ServerSession;
         Managers.Object.Clear();
-
     }
     public static void S_SpawnHandler(PacketSession session, IMessage packet)
     {
@@ -187,6 +189,7 @@ class PacketHandler
         {
             return;
         }
+        
         if(cc.Hp > changePacket.Hp)
         {
             cc.OnDamaged();
@@ -197,6 +200,14 @@ class PacketHandler
             cc.OnHealed();
         }
         cc.Hp = changePacket.Hp;
+        if (Managers.UI.SceneUI is UI_GameScene gameSceneUI && gameSceneUI.GameWindow.Party.IsParty)
+        {
+            UI_PartyMember partyMember = gameSceneUI.GameWindow.Party.GetPartyMember(changePacket.ObjectId);
+            if (partyMember != null)
+            {
+                partyMember.HpBar.UpdateHpBar((float)changePacket.Hp / cc.Stat.MaxHp, changePacket.Hp, cc.Stat.MaxHp);
+            }
+        }
     }
     public static void S_ChangeUpHandler(PacketSession session, IMessage packet)
     {
@@ -214,6 +225,15 @@ class PacketHandler
             return;
         }
         cc.Up = changePacket.Up;
+
+        if (Managers.UI.SceneUI is UI_GameScene gameSceneUI && gameSceneUI.GameWindow.Party.IsParty)
+        {
+            UI_PartyMember partyMember = gameSceneUI.GameWindow.Party.GetPartyMember(changePacket.ObjectId);
+            if (partyMember != null)
+            {
+                partyMember.UpBar.UpdateUpBar((float)changePacket.Up / cc.Stat.MaxUp, changePacket.Up, cc.Stat.MaxUp);
+            }
+        }
     }
     public static void S_DamageHandler(PacketSession session, IMessage packet)
     {

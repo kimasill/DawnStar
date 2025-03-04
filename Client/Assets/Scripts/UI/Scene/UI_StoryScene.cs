@@ -78,6 +78,8 @@ public class UI_StoryScene : UI_Base
         Managers.Map.CurrentGrid.gameObject.SetActive(false);
         Managers.Object.MyPlayer.gameObject.SetActive(false);
         StoryImage.sprite = storyImages[sceneIndex];
+        Managers.Sound.Play(storySounds[sceneIndex], Define.Sound.Bgm);
+
         yield return new WaitForSeconds(3.0f);
 
         yield return StartCoroutine(FadeOut(SceneChangeImage, 1.0f));
