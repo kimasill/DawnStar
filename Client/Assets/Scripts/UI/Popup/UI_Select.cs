@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class UI_Select : UI_Popup
 {
 
+    [SerializeField] private GameObject _selectPanel;
     private List<string> _elems = new List<string>();
     private List<Action> _actions = new List<Action>();
 
@@ -27,13 +28,13 @@ public class UI_Select : UI_Popup
     {    
         _elems = elems;
         _actions = actions;
-        UpdatePopupPosition(gameObject.transform, evt);
+        UpdatePopupPosition(_selectPanel.transform, evt);
         RefreshUI();
     }
 
     private void RefreshUI()
     {
-        GameObject container = GetObject((int)Images.FrontPanel);
+        GameObject container = GetImage((int)Images.FrontPanel).gameObject;
         foreach (Transform child in container.transform)
         {
             Destroy(child.gameObject);
@@ -41,17 +42,22 @@ public class UI_Select : UI_Popup
 
         for (int i = 0; i < _elems.Count; i++)
         {
-            AddSelectElem(_elems[i], _actions[i]);
+            AddSelectElem(_elems[i], _actions[i], container);
         }
     }
 
-    private void AddSelectElem(string text, Action action)
+    private void AddSelectElem(string text, Action action, GameObject container)
     {
-        GameObject elem = Managers.Resource.Instantiate("UI/Scene/UI_SelectElem", GetObject((int)Images.FrontPanel).transform);
+        GameObject elem = Managers.Resource.Instantiate("UI/UI_SelectElement", container.transform);
         UI_SelectElement selectElem = elem.GetOrAddComponent<UI_SelectElement>();
-        selectElem.SetInfo(text, action);
+        selectElem.SetInfo(text, action, this);
     }
     private void OnCloseButtonClick(PointerEventData evt)
+    {
+        ClosePopupUI();
+    }
+
+    public void CloseUI()
     {
         ClosePopupUI();
     }

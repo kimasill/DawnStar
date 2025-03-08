@@ -39,7 +39,7 @@ namespace Server.Game
             if (slot == null)
                 return;
             // 골드 확인 및 차감
-            if (player.Gold < itemData.price)
+            if (player.Gold < itemData.price * count)
             {
                 count = 0;
                 S_BuyItem refuseItemPacket = new S_BuyItem()
@@ -51,7 +51,7 @@ namespace Server.Game
                 return;
             }                
 
-            player.Gold -= itemData.price;
+            player.Gold -= itemData.price*count;
 
             ShopDb shopDb = new ShopDb()
             {

@@ -25,6 +25,11 @@ public class UI_Party : UI_Base
         }
         else
         {
+            foreach (var member in _partyMembers)
+            {
+                member.Clear();
+                Destroy(member.gameObject);
+            }
             gameObject.SetActive(false);
             return;
         }
@@ -46,6 +51,7 @@ public class UI_Party : UI_Base
         }
         foreach (var member in _partyMembers)
         {
+            member.Clear();
             Destroy(member.gameObject);           
         }
         _partyMembers.Clear();

@@ -15,6 +15,7 @@ public class UI_Chat : UI_Base
     private RectTransform _chatContentRect;
     private Queue<(GameObject, GameObject)> _chatMessages = new Queue<(GameObject, GameObject)>();
     private const int MaxChatMessages = 100;
+    private VerticalLayoutGroup _chatContentLayoutGroup;
     public Action CloseAction;
     public static bool IsChatting { get; private set; } = false;
     enum InputFields
@@ -47,13 +48,16 @@ public class UI_Chat : UI_Base
         GetImage((int)Images.Chat_EnterButton).gameObject.BindEvent(OnChatEnterButtonClicked);
         GetImage((int)Images.Chat_CloseButton).gameObject.BindEvent(OnChatCloseButtonClicked);
         _playerNameContent.gameObject.BindEvent(OnChatPlayerNamePanelClicked);
-        _chatContent.gameObject.BindEvent(OnChatDisplayPanelClicked);        
+        _chatContent.gameObject.BindEvent(OnChatDisplayPanelClicked);
+        _chatContentLayoutGroup = _chatContent.GetComponent<VerticalLayoutGroup>();
         gameObject.BindEvent(OnBeginDrag, Define.UIEvent.BeginDrag);
         gameObject.BindEvent(OnDrag, Define.UIEvent.Drag);
         gameObject.BindEvent(OnEndDrag, Define.UIEvent.EndDrag);
         _chatInputField.onEndEdit.AddListener(OnChatInputEndEdit);
         _chatInputField.onSelect.AddListener(OnChatInputSelected);
         _chatInputField.onDeselect.AddListener(OnChatInputDeselected);
+
+
     }
     private void OnChatInputEndEdit(string message)
     {
@@ -101,9 +105,12 @@ public class UI_Chat : UI_Base
     private void UpdateContentSize()
     {
         float totalHeight = 0f;
+        totalHeight += _chatContentLayoutGroup.padding.top;
+        totalHeight += _chatContentLayoutGroup.padding.bottom;
+
         foreach (var (playerNameObj, chatMessageObj) in _chatMessages)
         {
-            totalHeight += playerNameObj.GetComponent<RectTransform>().rect.height;
+            totalHeight += playerNameObj.GetComponent<RectTransform>().rect.height + _chatContentLayoutGroup.spacing;
         }
         _chatContentRect.sizeDelta = new Vector2(_chatContentRect.sizeDelta.x, totalHeight);
     }

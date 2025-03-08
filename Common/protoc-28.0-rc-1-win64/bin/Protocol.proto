@@ -83,6 +83,7 @@ enum MsgId {
   C_QUIT = 76;
   C_PARTY = 77;
   S_QUIT = 78;
+  C_REQUEST_VISION = 79;
 }
 enum CreatureState{
   IDLE = 0;
@@ -472,6 +473,9 @@ message S_Respawn{
 
 message C_Respawn{
 	RespawnType respawnType = 1;
+}
+
+message C_RequestVision{
 }
 
 message S_ItemList{

@@ -116,6 +116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsMouseover: 0
+  _selectPanel: {fileID: 8821556306983516090}
 --- !u!1 &2179106726895334841
 GameObject:
   m_ObjectHideFlags: 0

@@ -109,6 +109,8 @@ namespace Server.Game
                 }
             }
 
+            Map.ApplyEnter(gameObject);
+
             GameObjectType type = ObjectManager.GetObjectType(gameObject.Id);
             Player player = null;
             if (type == GameObjectType.Player)
@@ -149,8 +151,7 @@ namespace Server.Game
                 {
                     Console.WriteLine("Error: player.Session is null");
                 }
-                player.Vision.Clear();
-                player.Vision.Update();
+                player.Vision.Refresh();
                 player.Update();
             }
             else if (type == GameObjectType.Monster)
@@ -193,12 +194,17 @@ namespace Server.Game
                 }
                 else
                 {
-                    // Handle the duplicate key scenario
                     Console.WriteLine($"Magic with ID {gameObject.Id} already exists.");
                 }
                 magic.Room = this;
 
-                GetZone(magic.CellPos).Magics.Add(magic);
+                var zone = GetZone(magic.CellPos);
+                if (zone == null)
+                {
+                    // Handle the error, log it, or initialize the zone
+                    return;
+                }
+                zone.Magics.Add(magic);
                 magic.Update();
             }
             else
@@ -233,7 +239,6 @@ namespace Server.Game
 
                 player.OnLeaveGame(save);
                 Map.ApplyLeave(player);
-                player.Vision.Clear();
                 player.Room = null;
 
                 // 본인한테 정보 전송
@@ -265,6 +270,8 @@ namespace Server.Game
             {
                 Magic magic = null;
                 if (_magics.Remove(objectId, out magic) == false)
+                    return;
+                if (magic == null)
                     return;
                 cellPos = magic.CellPos;
                 despawnAnim = magic.DespawnAnim;

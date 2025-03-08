@@ -12,12 +12,14 @@ namespace Server.Game.Room
     {
         public Player Owner { get; private set; }
         public HashSet<GameObject> PreviousObjects { get; private set; } = new HashSet<GameObject>();
-
+        public void Refresh()
+        {
+            PreviousObjects.Clear();
+        }
         public VIsionCube(Player owner)
         {
             Owner = owner;            
         }
-        private bool _initialize = false;
         public HashSet<GameObject> GatherObjects()
         {
             if (Owner == null || Owner.Room == null)
@@ -97,13 +99,6 @@ namespace Server.Game.Room
                 return;
             }
 
-            if(_initialize == false)
-            {
-                Owner.Room.PushAfter(1000, Update);
-                _initialize = true;
-                return;
-            }
-                
             HashSet<GameObject> currentObjects = GatherObjects();
 
             // 기존에 없었는데 새로 생긴 애들 spawn
@@ -146,11 +141,6 @@ namespace Server.Game.Room
             }
             PreviousObjects = currentObjects;
             Owner.Room.PushAfter(500, Update);
-        }
-
-        public void Clear()
-        {
-            _initialize = false;
         }
     }
 }
