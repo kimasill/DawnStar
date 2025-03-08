@@ -74,7 +74,7 @@ namespace Server.Game
         public async void HandleMapChanged(Player player, int portalId)
         {
             MapData mapData = null;
-            DataManager.MapDict.TryGetValue(player.MapInfo.TemplateId, out  mapData);
+            DataManager.MapDict.TryGetValue(player.MapInfo.TemplateId, out mapData);
             if (mapData == null)
             {
                 return;
@@ -103,7 +103,7 @@ namespace Server.Game
                 add = false;
 
             GameRoom room = await GameLogic.Instance.GetRoom(mapId, add);
-            HandleMapChanged(player, nextMapData, destPortalId, room);            
+            HandleMapChanged(player, nextMapData, destPortalId, room);
         }
         public void HandleMapChanged(Player player, MapData map, int destPortalId, GameRoom pRoom)
         {

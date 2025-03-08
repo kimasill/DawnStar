@@ -160,6 +160,8 @@ namespace Server.Game.Room
                     return false;
 
                 // Zone
+                if (gameObject.Room == null)
+                    return false;
                 Zone zone = gameObject.Room.GetZone(gameObject.CellPos);
                 zone.Remove(gameObject);
 

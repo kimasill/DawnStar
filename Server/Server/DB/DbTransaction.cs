@@ -315,6 +315,13 @@ namespace Server.DB
                         }
                         if (tItemDb != null)
                         {
+                            if (tItemDb.Count < remainingCount)
+                            {   
+                                S_SystemNotice systemNotice = new S_SystemNotice();
+                                systemNotice.Message = "The item count to be removed exceeds the stored item count.";
+                                player.Session.Send(systemNotice);
+                                return;
+                            }
                             if (tItemDb.Count > remainingCount)
                             {
                                 // Count를 감소시킨다.

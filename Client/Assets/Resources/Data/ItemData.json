@@ -794,7 +794,7 @@
       "maxCount": "9999",
       "materialType": "Base",
       "price": "132",
-      "iconPath": "Textures/Item/Materials/Diamond_Dust",
+      "iconPath": "Textures/Item/Materials/Base/Diamond_Dust",
       "description": "다용도로 사용된다."
     },
     {

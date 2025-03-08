@@ -43,8 +43,8 @@ namespace Server.Game
                 targetPositions.Add(destPos);
             }
             Owner.Skill.DamageOnTargetPositions(targetPositions, Data.damage + Owner.TotalAttack);            
-
-            Room.PushAfter(1000, Room.LeaveGame, Id);
+            if(Room != null)
+                Room.Push(Room.LeaveGame, Id);
         }
     }
 }

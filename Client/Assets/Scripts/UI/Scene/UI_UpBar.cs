@@ -42,6 +42,10 @@ public class UI_UpBar : UI_Base
 
     public void UpdateUpBar(float targetRatio, int currentUp, int maxUp)
     {
+        if (gameObject.activeSelf == false || gameObject == null)
+        {
+            return;
+        }
         InitializeFrame(maxUp);
         if (_upBarCoroutine != null)
         {

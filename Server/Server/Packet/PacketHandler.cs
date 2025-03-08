@@ -450,4 +450,16 @@ class PacketHandler
         party.PartyMembers.AddRange(clientSession.CurrentParty.Members.Select(member => member.Info));
         clientSession.Send(party);       
     }
+
+    public static void C_RequestVisionHandler(PacketSession session, IMessage packet)
+    {
+        C_RequestVision requestVisionPacket = packet as C_RequestVision;
+        ClientSession clientSession = session as ClientSession;
+        if (clientSession == null || clientSession.MyPlayer == null)
+            return;
+        GameRoom room = clientSession.MyPlayer.Room;
+        if (room == null)
+            return;
+        clientSession.MyPlayer.Vision.Update();
+    }
 }

@@ -45,6 +45,10 @@ public class UI_HpBar : UI_Base
     }
     public void UpdateHpBar(float targetRatio, int currentHp, int maxHp, bool frameControl = false)
     {
+        if(gameObject.activeSelf == false || gameObject == null)
+        {
+            return;
+        }
         InitializeFrame(maxHp, frameControl);
         if (_hpBarCoroutine != null)
         {

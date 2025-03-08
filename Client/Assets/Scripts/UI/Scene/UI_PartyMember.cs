@@ -50,4 +50,12 @@ public class UI_PartyMember : UI_Base, IPointerClickHandler
         C_PartyLeave leavePartyPacket = new C_PartyLeave();
         Managers.Network.Send(leavePartyPacket);        
     }
+
+    public void Clear()
+    {
+        _memberId = 0;
+        _memberName.text = "";
+        Destroy(HpBar);
+        Destroy(UpBar);
+    }
 }

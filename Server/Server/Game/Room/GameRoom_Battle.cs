@@ -99,7 +99,7 @@ namespace Server.Game
                 // TODO: critical 확률 계산
                 if (player.TotalCriticalChance > 0)
                 {
-                    Random random = new Random();
+                     Random random = new Random();
                     int randomValue = random.Next(0, 100);
                     if (randomValue < player.TotalCriticalChance)
                     {

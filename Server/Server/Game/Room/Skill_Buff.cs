@@ -55,50 +55,50 @@ namespace Server.Game
         {
             if (target == null)
             {
-                SkillLogic.GetAllTargetsInRange(Owner.CellPos, skillData.range);
-                foreach (var pos in SkillLogic.GetAllTargetsInRange(Owner.CellPos, skillData.range))
+                List<Vector2Int> targetPositions = SkillLogic.GetAllTargetsInRange(Owner.CellPos, skillData.range);
+                List<GameObject> targets = new List<GameObject>();
+
+                foreach (var pos in targetPositions)
                 {
-                    if (Owner.Room.Map.Find(pos).Count > 0)
-                    {
-                        List<GameObject> targets = new List<GameObject>(Owner.Room.Map.Find(pos));
-                        foreach (var obj in targets)
-                        {
-                            if (obj == Owner)
-                                continue;
-                            target = obj;
-                            break;
-                        }
-                    }
+                    targets.AddRange(Owner.Room.Map.Find(pos).Where(obj => obj != Owner));
                 }
-                if (target == null)
+
+                if (targets.Count == 0)
                 {
-                    S_SystemNotice systemNotice = new S_SystemNotice();
-                    systemNotice.Message = "범위내 타겟이 없습니다.";
+                    if(Owner is Player)
+                    {
+                        S_SystemNotice systemNotice = new S_SystemNotice();
+                        systemNotice.Message = "범위내 타겟이 없습니다.";
+                        (Owner as Player).Session.Send(systemNotice);
+                    }
                     return;
                 }
-            }
 
-            S_Effect effectPacket = new S_Effect();
-            effectPacket.ObjectId = target.Id;
-            effectPacket.SkillId = skillData.id;
-
-            DataManager.DebuffDict.TryGetValue(skillData.debuffList[0].id, out DebuffData debuffData);
-            if (debuffData == null)
-                return;
-            effectPacket.Prefab = debuffData.prefab; // effect for marking
-            Owner.Room.Broadcast(target.CellPos, effectPacket);
-
-            await Task.Delay((int)(1000 * skillData.terms[0]));//effect duration
-
-            if (skillData.debuff != null)
-            {
-            target.ApplyDebuff(skillData.debuff);
-            }
-            else if (skillData.debuffList != null)
-            {
-                foreach (var debuff in skillData.debuffList)
+                await Task.Delay((int)(1000 * skillData.terms[0])); // effect duration
+                foreach (var obj in targets)
                 {
-                target.ApplyDebuff(debuff);
+                    S_Effect effectPacket = new S_Effect();
+                    effectPacket.ObjectId = obj.Id;
+                    effectPacket.SkillId = skillData.id;
+
+                    DataManager.DebuffDict.TryGetValue(skillData.debuffList[0].id, out DebuffData debuffData);
+                    if (debuffData == null)
+                        continue;
+                    effectPacket.Prefab = debuffData.prefab; // effect for marking
+                    Owner.Room.Broadcast(obj.CellPos, effectPacket);
+
+
+                    if (skillData.debuff != null)
+                    {
+                        obj.ApplyDebuff(skillData.debuff);
+                    }
+                    else if (skillData.debuffList != null)
+                    {
+                        foreach (var debuff in skillData.debuffList)
+                        {
+                            obj.ApplyDebuff(debuff);
+                        }
+                    }
                 }
             }
         }

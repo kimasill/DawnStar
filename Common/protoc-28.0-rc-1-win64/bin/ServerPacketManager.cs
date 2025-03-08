@@ -85,7 +85,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CQuit, MakePacket<C_Quit>);
 		_handler.Add((ushort)MsgId.CQuit, PacketHandler.C_QuitHandler);		
 		_onRecv.Add((ushort)MsgId.CParty, MakePacket<C_Party>);
-		_handler.Add((ushort)MsgId.CParty, PacketHandler.C_PartyHandler);
+		_handler.Add((ushort)MsgId.CParty, PacketHandler.C_PartyHandler);		
+		_onRecv.Add((ushort)MsgId.CRequestVision, MakePacket<C_RequestVision>);
+		_handler.Add((ushort)MsgId.CRequestVision, PacketHandler.C_RequestVisionHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

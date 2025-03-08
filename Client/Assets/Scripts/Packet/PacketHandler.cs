@@ -369,8 +369,10 @@ class PacketHandler
             Managers.Map.SetChests(objectInfo.MapInfo.ChestIds.ToList());
             Managers.Map.SetInteractions(objectInfo.MapInfo.InteractionIds.ToList());
             Managers.Scene.CurrentScene.CheckOnSceneLoadedQuest();
-            C_RequestStat request = new C_RequestStat();
-            Managers.Network.Send(request);
+            C_RequestVision viReq = new C_RequestVision();
+            Managers.Network.Send(viReq);
+            C_RequestStat statReq = new C_RequestStat();
+            Managers.Network.Send(statReq);
             C_Party partyPacket = new C_Party();
             Managers.Network.Send(partyPacket);
         }
