@@ -18,7 +18,7 @@ using Server.Game.Job;
 using Server.Game.Room;
 using Server.Utils;
 using ServerCore;
-using SharedDB;
+using CommonDB;
 
 namespace Server
 {
@@ -62,7 +62,7 @@ namespace Server
             t.AutoReset = true;
             t.Elapsed += new System.Timers.ElapsedEventHandler((s, e) =>
             { 
-                using(SharedDbContext shared = new SharedDbContext())
+                using(CommonDbContext shared = new CommonDbContext())
                 {
                     ServerDb serverDb = shared.Servers.Where(s => s.Name == Name).FirstOrDefault();
                     if(serverDb != null)
@@ -95,7 +95,7 @@ namespace Server
         public static string IpAddress { get; set; }
 		static void Main(string[] args)
 		{
-            using (SharedDbContext shared = new SharedDbContext())
+            using (CommonDbContext shared = new CommonDbContext())
             {
 
             }

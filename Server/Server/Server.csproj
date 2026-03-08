@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ServerCore\ServerCore.csproj" />
-    <ProjectReference Include="..\SharedDB\SharedDB.csproj" />
+    <ProjectReference Include="..\CommonDB\CommonDB.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace SharedDB.Migrations
+namespace CommonDB.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration

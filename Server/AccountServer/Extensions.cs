@@ -1,5 +1,5 @@
-﻿using AccountServer.DB;
-using SharedDB;
+using AccountServer.DB;
+using CommonDB;
 
 namespace AccountServer
 {
@@ -19,7 +19,7 @@ namespace AccountServer
             }
         }
 
-        public static bool SaveChangesEx(this SharedDbContext db)
+        public static bool SaveChangesEx(this CommonDbContext db)
         {
             try
             {

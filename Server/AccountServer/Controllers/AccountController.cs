@@ -1,8 +1,8 @@
-﻿using AccountServer.DB;
+using AccountServer.DB;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SharedDB;
+using CommonDB;
 
 namespace AccountServer.Controllers
 {
@@ -11,8 +11,8 @@ namespace AccountServer.Controllers
     public class AccountController : ControllerBase
     {
         AppDbContext _context;
-        SharedDbContext _shared;
-        public AccountController(AppDbContext db, SharedDbContext shared)
+        CommonDbContext _shared;
+        public AccountController(AppDbContext db, CommonDbContext shared)
         {
             _context = db;
             _shared = shared;

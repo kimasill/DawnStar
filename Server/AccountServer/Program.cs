@@ -1,7 +1,7 @@
 using AccountServer.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using SharedDB;
+using CommonDB;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +13,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 builder.Services.AddDbContext<AppDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddDbContext<SharedDbContext>(options =>
+builder.Services.AddDbContext<CommonDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SharedConnection")));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
