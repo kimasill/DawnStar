@@ -1,4 +1,4 @@
-﻿using Server.Game.Room;
+using Server.Game.Room;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +44,7 @@ namespace Server.Game
             }
             Owner.Skill.DamageOnTargetPositions(targetPositions, Data.damage + Owner.TotalAttack);            
             if(Room != null)
-                Room.Push(Room.LeaveGame, Id);
+                Room.Enqueue(Room.LeaveGame, Id);
         }
     }
 }

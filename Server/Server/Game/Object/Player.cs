@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Collections;
+using Google.Protobuf.Collections;
 using Google.Protobuf.Protocol;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -24,7 +24,7 @@ namespace Server.Game
         #region Properties
         public int PlayerDbId { get; set; }
         public ClientSession Session { get; set; }
-        public VIsionCube Vision { get; private set; }
+        public InterestManagement Vision { get; private set; }
         public Inventory Inven { get; private set; } = new Inventory();
         
         public QuestInventory Quest { get; set; } = new QuestInventory();
@@ -228,7 +228,7 @@ namespace Server.Game
         public Player()
         {
             ObjectType = GameObjectType.Player;
-            Vision = new VIsionCube(this);
+            Vision = new InterestManagement(this);
             IsDead = false;
         }
         public override void Update()
@@ -239,7 +239,7 @@ namespace Server.Game
         {
             if (IsDead) { return 0; }
             return base.OnDamaged(target, damage);
-            //TODO : 피해를 입었을 때 처리 -> 플레이어 스탯에 따라 딜레이 시간 변경
+            //TODO : ?쇳빐瑜??낆뿀????泥섎━ -> ?뚮젅?댁뼱 ?ㅽ꺈???곕씪 ?쒕젅???쒓컙 蹂寃?
         }
         public override void ChangeHp(int hp)
         {
@@ -267,9 +267,9 @@ namespace Server.Game
             diePacket.AttackerId = attacker.Id;
             Room.Broadcast(CellPos, diePacket);
 
-            GameRoom room = Room;//Room이 null이 될 수 있으므로 미리 저장  
+            GameRoom room = Room;//Room??null???????덉쑝誘濡?誘몃━ ??? 
 
-            Room.PushAfter(1000, () =>
+            Room.EnqueueAfter(1000, () =>
             {
                 if (Room != null)
                 {
@@ -293,19 +293,19 @@ namespace Server.Game
             Stat.Speed += stat.Speed;
              Stat.StatPoint += stat.StatPoint;
             DbTransaction.SavePlayerStatus_All(this, Room);
-            Room.Push(Room.HandleStatChange, this);
+            Room.Enqueue(Room.HandleStatChange, this);
         }
 
         public void OnLeaveGame(bool save)
         {            
-            //문제 : 플레이어가 게임을 나가면, 플레이어의 정보를 저장해야 한다.
-            // 코드흐름 막아버린다. 데이터 베이스 접근하는 부분이 Core한 부분에 있으면 안됨.
-            //해결 : 비동기 처리를 한다. 비동기 처리를 하면, 코드흐름이 막히지 않는다.
-            // 다른 쓰레드 하나를 만들어서, 데이터베이스에 저장하는 작업을 한다.
-            //TODO : 플레이어의 정보를 데이터베이스에 저장한다.
-            //위치정보, 레벨, 경험치, 아이템 정보, 퀘스트 정보 등등
+            //臾몄젣 : ?뚮젅?댁뼱媛 寃뚯엫???섍?硫? ?뚮젅?댁뼱???뺣낫瑜???ν빐???쒕떎.
+            // 肄붾뱶?먮쫫 留됱븘踰꾨┛?? ?곗씠??踰좎씠???묎렐?섎뒗 遺遺꾩씠 Core??遺遺꾩뿉 ?덉쑝硫??덈맖.
+            //?닿껐 : 鍮꾨룞湲?泥섎━瑜??쒕떎. 鍮꾨룞湲?泥섎━瑜??섎㈃, 肄붾뱶?먮쫫??留됲엳吏 ?딅뒗??
+            // ?ㅻⅨ ?곕젅???섎굹瑜?留뚮뱾?댁꽌, ?곗씠?곕쿋?댁뒪????ν븯???묒뾽???쒕떎.
+            //TODO : ?뚮젅?댁뼱???뺣낫瑜??곗씠?곕쿋?댁뒪????ν븳??
+            //?꾩튂?뺣낫, ?덈꺼, 寃쏀뿕移? ?꾩씠???뺣낫, ?섏뒪???뺣낫 ?깅벑
             if(Quest.CurrentQuest != null && Quest.CurrentQuest.Progress<50)
-                Room.Push(Room.HandleUpdateQuest,this, Quest.CurrentQuest.TemplateId, 0);
+                Room.Enqueue(Room.HandleUpdateQuest,this, Quest.CurrentQuest.TemplateId, 0);
             DbTransaction.SavePlayerStatus_All(this, Room);
             if (save)
             {
@@ -317,11 +317,11 @@ namespace Server.Game
                     Scene = MapInfo.Scene,
                     MapName = MapInfo.MapName
                 };
-                DbTransaction.Instance.Push(DbTransaction.SavePlayerMap, this, mapDb);
+                DbTransaction.Instance.Enqueue(DbTransaction.SavePlayerMap, this, mapDb);
             }
             if(Session.ServerState == PlayerServerState.ServerStateSingle)
             {
-                Room.Push(Room.ResetRoom);
+                Room.Enqueue(Room.ResetRoom);
             }
             GameLogic.Instance.UpdateRoom(Room);
         }
@@ -339,7 +339,7 @@ namespace Server.Game
             if (equipPacket.Equipped)
             {
                 Item unequipItem = null;
-                // 장비를 착용하려는데 이미 착용중인 아이템이 있다면
+                // ?λ퉬瑜?李⑹슜?섎젮?붾뜲 ?대? 李⑹슜以묒씤 ?꾩씠?쒖씠 ?덈떎硫?
                 if (item.ItemType == ItemType.Weapon)
                 {
                     WeaponType weaponType = ((Weapon)item).WeaponType;
@@ -358,7 +358,7 @@ namespace Server.Game
                 {
                     JewelryType jewelryType = ((Jewelry)item).JewelryType;
 
-                    // Ring 타입의 아이템은 최대 2개까지 장착 가능
+                    // Ring ??낆쓽 ?꾩씠?쒖? 理쒕? 2媛쒓퉴吏 ?μ갑 媛??
                     if (jewelryType == JewelryType.Ring)
                     {
                         List<Item> equippedRings = Inven.Items.Values
@@ -367,13 +367,13 @@ namespace Server.Game
 
                         if (equippedRings.Count >= 2)
                         {
-                            // 이미 2개의 반지가 장착되어 있으면 가장 오래된 반지 해제
+                            // ?대? 2媛쒖쓽 諛섏?媛 ?μ갑?섏뼱 ?덉쑝硫?媛???ㅻ옒??諛섏? ?댁젣
                             unequipItem = equippedRings.OrderBy(i => i.ItemDbId).First();
                         }
                     }
                     else
                     {
-                        // Ring 이외의 장신구는 기존 로직과 동일하게 처리
+                        // Ring ?댁쇅???μ떊援щ뒗 湲곗〈 濡쒖쭅怨??숈씪?섍쾶 泥섎━
                         unequipItem = Inven.Find(
                             i => i.Equipped && i.ItemType == ItemType.Jewelry
                             && ((Jewelry)i).JewelryType == jewelryType);
@@ -381,34 +381,34 @@ namespace Server.Game
                 }
                 if (unequipItem != null)
                 {
-                    // 해당 아이템을 해제
-                    // 메모리 선적용
+                    // ?대떦 ?꾩씠?쒖쓣 ?댁젣
+                    // 硫붾え由??좎쟻??
                     unequipItem.Equipped = false;
 
-                    // DB에 적용
+                    // DB???곸슜
                     DbTransaction.EquipItemNoti(this, unequipItem);
 
-                    // 클라이언트에게 알림
+                    // ?대씪?댁뼵?몄뿉寃??뚮┝
                     S_EquipItem equipOkItem = new S_EquipItem();
                     equipOkItem.ObjectId = Id;
                     equipOkItem.ItemDbId = unequipItem.ItemDbId;
                     equipOkItem.Equipped = unequipItem.Equipped;
-                    Room.Push(()=> Room.Broadcast(CellPos,equipOkItem));
+                    Room.Enqueue(()=> Room.Broadcast(CellPos,equipOkItem));
                 }
             }
 
-            // 메모리 선적용
+            // 硫붾え由??좎쟻??
             item.Equipped = equipPacket.Equipped;
 
-            // DB에 적용
+            // DB???곸슜
             DbTransaction.EquipItemNoti(this, item);
 
-            // 클라이언트에게 알림
+            // ?대씪?댁뼵?몄뿉寃??뚮┝
             S_EquipItem equipNoti = new S_EquipItem();     
             equipNoti.ObjectId = Id;
             equipNoti.ItemDbId = equipPacket.ItemDbId;
             equipNoti.Equipped = equipPacket.Equipped;
-            Room.Push(() => Room.Broadcast(CellPos, equipNoti));
+            Room.Enqueue(() => Room.Broadcast(CellPos, equipNoti));
 
             RefreshAdditionalStat();
             SendAdditionalStat();

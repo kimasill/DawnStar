@@ -1,4 +1,4 @@
-﻿using Google.Protobuf;
+using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.DB;
@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Server.Game
 {
-    public partial class GameRoom : JobSerializer
+    public partial class GameRoom : TaskQueue
     {
         public const int VisionCells = 20;
         public int RoomId { get; set; }
@@ -81,7 +81,7 @@ namespace Server.Game
         // 누군가 주기적으로 호출해줘야 한다
         public void Update()
         {
-            Flush();
+            ExecuteAll();
         }
 
         Random _rand = new Random();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -38,7 +38,7 @@ namespace Server
 		{
             while (true)
             {
-                DbTransaction.Instance.Flush();
+                DbTransaction.Instance.ExecuteAll();
 				Thread.Sleep(0); //cpu 낭비를 막기위해
             }
         }
@@ -102,7 +102,7 @@ namespace Server
 			ConfigManager.LoadConfig();
 			DataManager.LoadData();
 
-            GameLogic.Instance.Push(() =>
+            GameLogic.Instance.Enqueue(() =>
             {
                 GameLogic.Instance.Add(5);
             });
@@ -137,7 +137,7 @@ namespace Server
             GameLogicTask();
 
 			//FlushRoom();
-			//JobTimer.Instance.Push(FlushRoom);
+			//TaskTimer.Instance.Enqueue(FlushRoom);
 		}
 	}
 }

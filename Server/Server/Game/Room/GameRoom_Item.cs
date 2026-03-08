@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
 using Server.Data;
 using Server.DB;
@@ -12,7 +12,7 @@ using DbTransaction = Server.DB.DbTransaction;
 
 namespace Server.Game
 {
-    public partial class GameRoom : JobSerializer
+    public partial class GameRoom : TaskQueue
     {
         public void HandleEquipItem(Player player, C_EquipItem equipPacket)
         {

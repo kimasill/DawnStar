@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
@@ -30,7 +30,7 @@ namespace Server.Game
             }
             int tick = (int)(1000 / Data.projectile.speed);
             _moveRange += 1;
-            Room.PushAfter(tick, Update);            
+            Room.EnqueueAfter(tick, Update);            
             if (Data.projectile.isHoming && Target != null)
             {   
                 if (_moveRange >= Data.projectile.range)
@@ -62,7 +62,7 @@ namespace Server.Game
                 if (_moveRange >= Data.projectile.range)
                 {
                     DespawnAnim = true;
-                    Room.Push(Room.LeaveGame, Id);
+                    Room.Enqueue(Room.LeaveGame, Id);
                     _isComplete = true;
                     return;
                 }
@@ -134,7 +134,7 @@ namespace Server.Game
                 }
             }
             DespawnAnim = true;
-            Room.Push(Room.LeaveGame, Id);
+            Room.Enqueue(Room.LeaveGame, Id);
             _isComplete = true;
         }
         public override GameObject GetOwner()

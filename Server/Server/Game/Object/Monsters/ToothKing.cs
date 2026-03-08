@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game.Room;
 using System;
@@ -32,7 +32,7 @@ namespace Server.Game.Object.Monsters
             if (!_hasRevealed)
             {
                 _hasRevealed = true;
-                Room.PushAfter((int)(RevealTime * 1000), () =>
+                Room.EnqueueAfter((int)(RevealTime * 1000), () =>
                 {
                     if (State == CreatureState.Idle)
                     {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,7 +11,7 @@ namespace ServerCore
 		public int Count { get { return _heap.Count; } }
 
 		// O(logN)
-		public void Push(T data)
+		public void Enqueue(T data)
 		{
 			// 힙의 맨 끝에 새로운 데이터를 삽입한다
 			_heap.Add(data);
@@ -36,7 +36,7 @@ namespace ServerCore
 		}
 
 		// O(logN)
-		public T Pop()
+		public T Dequeue()
 		{
 			// 반환할 데이터를 따로 저장
 			T ret = _heap[0];

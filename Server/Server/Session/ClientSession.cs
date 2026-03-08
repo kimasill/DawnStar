@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Net.Sockets;
@@ -40,7 +40,7 @@ namespace Server
             S_Ping pingPacket = new S_Ping();
             Send(pingPacket);
 
-            GameLogic.Instance.PushAfter(5000, Ping);
+            GameLogic.Instance.EnqueueAfter(5000, Ping);
         }
         public void HandlePong()
         {
@@ -120,7 +120,7 @@ namespace Server
 				Send(connectedPacket);
 			}
 
-            GameLogic.Instance.PushAfter(5000, Ping);
+            GameLogic.Instance.EnqueueAfter(5000, Ping);
 		}
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)
@@ -130,12 +130,12 @@ namespace Server
 
 		public override void OnDisconnected(EndPoint endPoint)
 		{
-            GameLogic.Instance.Push(() =>
+            GameLogic.Instance.Enqueue(() =>
             {
                 if (MyPlayer == null)
                     return;
                 GameRoom room = GameLogic.Instance.Find(MyPlayer.Room.RoomId);
-                room.Push(room.LeaveGame, MyPlayer.Info.ObjectId);
+                room.Enqueue(room.LeaveGame, MyPlayer.Info.ObjectId);
             });
 
             SessionManager.Instance.Remove(this);			

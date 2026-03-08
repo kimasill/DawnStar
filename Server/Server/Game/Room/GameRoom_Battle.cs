@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game.Job;
 using Server.Game.Room;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Server.Game
 {
-    public partial class GameRoom : JobSerializer
+    public partial class GameRoom : TaskQueue
     {
         public void HandleMove(Player player, C_Move movePacket)
         {

@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ namespace Server.Game
         {
             if(room != null && IsComplete)
             {
-                room.Push(room.LeaveGame, Id);
+                room.Enqueue(room.LeaveGame, Id);
                 return;
             }
             if (Data == null || Data.spot == null || Data.projectile == null || Room == null)
@@ -32,7 +32,7 @@ namespace Server.Game
 
             int tick = (int)(1000 / Data.projectile.speed);
             attacker = Owner;
-            room.PushAfter(tick * dist, Cast);
+            room.EnqueueAfter(tick * dist, Cast);
         }
         public void Cast()
         {
@@ -68,9 +68,9 @@ namespace Server.Game
             }
             DespawnAnim = true;
             if (room != null)
-                room.Push(room.LeaveGame, Id);
+                room.Enqueue(room.LeaveGame, Id);
             IsComplete = true;
-            room.Push(Update);
+            room.Enqueue(Update);
         }
 
         public override GameObject GetOwner()

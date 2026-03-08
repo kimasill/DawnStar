@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.DB;
 using Server.Game.Job;
@@ -141,7 +141,7 @@ namespace Server.Game
             }
             if(Room != null)
             {
-                _job = Room.PushAfter(PushTime, Update);
+                _job = Room.EnqueueAfter(PushTime, Update);
             }
         }
         protected Player _target;
@@ -425,12 +425,12 @@ namespace Server.Game
                             Count = count,
                             Position = PosInfo
                         };
-                        room.Push(room.DropItem, player, dropItemPacket);
+                        room.Enqueue(room.DropItem, player, dropItemPacket);
                     }                                        
                 }                
             }
             
-            room.PushAfter(1100, () =>
+            room.EnqueueAfter(1100, () =>
             {
                 if (room != null)
                 {
@@ -453,7 +453,7 @@ namespace Server.Game
             Stat.Hp = Stat.MaxHp;
             PosInfo.State = CreatureState.Idle;
             PosInfo.MoveDir = MoveDir.Down;
-            room.PushAfter(_respawnTime, () =>
+            room.EnqueueAfter(_respawnTime, () =>
             {
                 if (room != null)
                 {

@@ -1,4 +1,4 @@
-﻿using Google.Protobuf;
+using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
@@ -15,7 +15,7 @@ using static Server.Game.Item;
 
 namespace Server.DB
 {
-    public partial class DbTransaction : JobSerializer
+    public partial class DbTransaction : TaskQueue
     {
         public static DbTransaction Instance { get; } = new DbTransaction();
 
@@ -37,7 +37,7 @@ namespace Server.DB
                 StatPoint = player.StatPoint,
             };
 
-            Instance.Push(() =>
+            Instance.Enqueue(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -79,7 +79,7 @@ namespace Server.DB
                 PosY = player.CellPos.y
             };
             
-            Instance.Push<PlayerDb, GameRoom>(SavePlayerStatus_Step2, playerDb, room);
+            Instance.Enqueue<PlayerDb, GameRoom>(SavePlayerStatus_Step2, playerDb, room);
         }
 
         public static void SavePlayerStatus_Step2(PlayerDb playerDb, GameRoom room)
@@ -88,10 +88,10 @@ namespace Server.DB
             {
                 db.Entry(playerDb).State = EntityState.Unchanged;
                 db.Entry(playerDb).Property(nameof(playerDb.Hp)).IsModified = true;
-                bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
                 if (success)
                 {
-                    room.Push(SavePlayerStatus_Step3, playerDb.Hp);
+                    room.Enqueue(SavePlayerStatus_Step3, playerDb.Hp);
                 }
             }
         }
@@ -121,7 +121,7 @@ namespace Server.DB
                     {
                         if (property.Name == "Realizations")
                         {
-                            // Realizations 속성 처리
+                            // Realizations ?띿꽦 泥섎━
                             if (playerDb.Realizations != null && playerDb.Realizations.Count > 0)
                             {
                                 db.Entry(playerDb).Property(nameof(playerDb.RealizationsJson)).IsModified = true;
@@ -129,7 +129,7 @@ namespace Server.DB
                         }
                         else if (value is IList list && list.Count > 0)
                         {
-                            // 일반 리스트 타입이고 요소가 있는 경우
+                            // ?쇰컲 由ъ뒪????낆씠怨??붿냼媛 ?덈뒗 寃쎌슦
                             db.Entry(playerDb).Property(property.Name).IsModified = true;
                         }
                         else if (property.Name == "StatPoint")
@@ -141,7 +141,7 @@ namespace Server.DB
                         }
                         else if (double.TryParse(value.ToString(), out doubleValue) && doubleValue != 0 && property.Name != "PosX" && property.Name != "PosY")
                         {
-                            // 리스트 타입이 아니고, double로 변환 가능한 경우
+                            // 由ъ뒪????낆씠 ?꾨땲怨? double濡?蹂??媛?ν븳 寃쎌슦
                             db.Entry(playerDb).Property(property.Name).IsModified = true;
                         }
                     }
@@ -149,7 +149,7 @@ namespace Server.DB
                 bool success = db.SaveChangesEx();
                 if (success)
                 {
-                    room.Push(() =>
+                    room.Enqueue(() =>
                     {
                         {
                             S_ChangeStat statPacket = new S_ChangeStat();
@@ -232,7 +232,7 @@ namespace Server.DB
                 bool success = db.SaveChangesEx();
                 if (success)
                 {
-                    room.Push(() =>
+                    room.Enqueue(() =>
                     {
                         Item iItem = player.Inven.Find(i => i.ItemDbId == itemDb.ItemDbId);
                         if (iItem != null)
@@ -255,7 +255,7 @@ namespace Server.DB
         }
         public static void SaveAddItemDB(Player player, ItemDb itemDb, GameRoom room)
         {
-            Instance.Push(() =>
+            Instance.Enqueue(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -269,12 +269,12 @@ namespace Server.DB
                     {
                         db.Items.Add(itemDb);
                     }                    
-                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                    bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
                     
                     if (success)
                     {                        
                         itemDb.ItemDbId = db.Items.FirstOrDefault(i => i.OwnerDbId == itemDb.OwnerDbId && i.Slot == itemDb.Slot).ItemDbId;
-                        room.Push(() =>
+                        room.Enqueue(() =>
                         {
                             Item newItem = Item.MakeItem(itemDb);
                             player.Inven.Add(newItem);
@@ -295,7 +295,7 @@ namespace Server.DB
         }
         public static void SaveRemovedItemDB(Player player, ItemDb itemDb, GameRoom room)
         {
-            Instance.Push(() =>
+            Instance.Enqueue(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -324,23 +324,23 @@ namespace Server.DB
                             }
                             if (tItemDb.Count > remainingCount)
                             {
-                                // Count를 감소시킨다.
+                                // Count瑜?媛먯냼?쒗궓??
                                 tItemDb.Count -= remainingCount;
                                 remainingCount = 0;
                             }
                             else
                             {
-                                // Count가 0 이하가 되면 아이템을 제거한다.
+                                // Count媛 0 ?댄븯媛 ?섎㈃ ?꾩씠?쒖쓣 ?쒓굅?쒕떎.
                                 remainingCount -= tItemDb.Count;
                                 tItemDb.Count = 0;
                                 db.Items.Remove(tItemDb);
                             }
                         }
 
-                        bool success = db.SaveChangesEx(); // 저장할 때 예외 처리를 해준다.
+                        bool success = db.SaveChangesEx(); // ??ν븷 ???덉쇅 泥섎━瑜??댁???
                         if (success)
                         {
-                            room.Push(() =>
+                            room.Enqueue(() =>
                             {
                                 Item iItem = player.Inven.Find(i => i.ItemDbId == tItemDb.ItemDbId);
                                 if (iItem != null)
@@ -367,7 +367,7 @@ namespace Server.DB
             if (player == null || itemDb == null || room == null)
                 return;
 
-            Instance.Push(() =>
+            Instance.Enqueue(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -378,10 +378,10 @@ namespace Server.DB
                         if (tItemDb != null)
                         {
                             db.Entry(tItemDb).State = EntityState.Deleted;
-                            bool success = db.SaveChangesEx(); // 저장할 때 예외 처리를 해준다.
+                            bool success = db.SaveChangesEx(); // ??ν븷 ???덉쇅 泥섎━瑜??댁???
                             if (success)
                             {
-                                room.Push(() =>
+                                room.Enqueue(() =>
                                 {
                                     player.Inven.Remove(itemDb.ItemDbId);
                                 });
@@ -390,7 +390,7 @@ namespace Server.DB
                     }
                     catch (Exception ex)
                     {
-                        // 예외 처리 로직 추가
+                        // ?덉쇅 泥섎━ 濡쒖쭅 異붽?
                         Console.WriteLine($"Error removing item: {ex.Message}");
                     }
                 }
@@ -401,7 +401,7 @@ namespace Server.DB
             if (player == null || itemDb == null || room == null)
                 return;
 
-            Instance.Push(() =>
+            Instance.Enqueue(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -415,7 +415,7 @@ namespace Server.DB
 
                     if (success)
                     {
-                        room.Push(() =>
+                        room.Enqueue(() =>
                         {
                             S_ItemList itemList = new S_ItemList();
                             foreach (Item item in player.Inven.Items.Values)
@@ -432,7 +432,7 @@ namespace Server.DB
         }
         public static void SaveEnhancedItemDB(Player player, ItemDb itemDb, GameRoom room)
         {
-            Instance.Push(() =>
+            Instance.Enqueue(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -442,10 +442,10 @@ namespace Server.DB
                     db.Entry(itemDb).Property(nameof(itemDb.Defense)).IsModified = true;
                     db.Entry(itemDb).Property(nameof(itemDb.OptionsJson)).IsModified = true;                   
 
-                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                    bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
                     if (success)
                     {
-                        room.Push(() =>
+                        room.Enqueue(() =>
                         {
                             Item newItem = Item.MakeItem(itemDb);
                             Item iItem = player.Inven.Find(i => i.ItemDbId == itemDb.ItemDbId);
@@ -471,18 +471,18 @@ namespace Server.DB
             if (player == null || questDb == null)
                 return;
 
-            // 퀘스트 데이터 읽기
+            // ?섏뒪???곗씠???쎄린
             Data.QuestData questData = DataManager.QuestDict.GetValueOrDefault(questDb.TemplateId);
             if (questData == null)
                 return;
 
-            // 연계 정보 가져오기
+            // ?곌퀎 ?뺣낫 媛?몄삤湲?
             int exp = questData.rewards.FirstOrDefault(r => r.rewardType == RewardType.Exp)?.amount ?? 0;
             int connection = questData.connection;
             int gold = questData.rewards.FirstOrDefault(r => r.rewardType == RewardType.Gold)?.amount ?? 0;
 
-            // 퀘스트 완료 처리
-            Instance.Push(() =>
+            // ?섏뒪???꾨즺 泥섎━
+            Instance.Enqueue(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -490,10 +490,10 @@ namespace Server.DB
                     db.Entry(questDb).Property(nameof(questDb.Progress)).IsModified = true;
                     db.Entry(questDb).Property(nameof(questDb.Completed)).IsModified = true;
                     
-                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                    bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
                     if (success)
                     {
-                        room.Push(() =>
+                        room.Enqueue(() =>
                         {
                             player.Gold += gold;
                             ExpNoti(player, exp);
@@ -524,7 +524,7 @@ namespace Server.DB
             if (player == null || questDb == null)
                 return;
 
-            Instance.Push(() =>
+            Instance.Enqueue(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -537,10 +537,10 @@ namespace Server.DB
                     {
                         db.Quests.Add(questDb);
                     }                    
-                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                    bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
                     if (success)
                     {
-                        room.Push(() =>
+                        room.Enqueue(() =>
                         {
                             Quest newQuest = Quest.MakeQuest(questDb);
                             player.Quest.Add(newQuest);
@@ -569,7 +569,7 @@ namespace Server.DB
             {
                 db.Entry(questDb).State = EntityState.Unchanged;
                 db.Entry(questDb).Property(nameof(questDb.Progress)).IsModified = true;
-                bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
                 if (success)
                 {                    
                 }
@@ -582,7 +582,7 @@ namespace Server.DB
             
             bool reward = false;
 
-            Instance.Push(() =>
+            Instance.Enqueue(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -601,14 +601,14 @@ namespace Server.DB
                         }
                         chest.Opened = chestDb.Opened;
                     }
-                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                    bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
                     if (success && reward)
                     {
                         AcquireData acquireData = DataManager.AcquireDict.GetValueOrDefault(chestDb.TemplateId);
                         if (acquireData == null)
                             return;
 
-                        room.Push(() =>
+                        room.Enqueue(() =>
                         {                            
                             {
                                 List<ItemRewardData> datas = ItemLogic.GetRandomReward(acquireData.rewards);
@@ -635,7 +635,7 @@ namespace Server.DB
             if (player == null || chestDb == null)
                 return;
 
-            Instance.Push(() =>
+            Instance.Enqueue(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -646,7 +646,7 @@ namespace Server.DB
                     {
                         db.Chests.Add(chestDb);
                     }
-                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.
+                    bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???
                     if (success)
                     {
                         //Console.WriteLine("success");
@@ -659,7 +659,7 @@ namespace Server.DB
             if (player == null || shopDb == null)
                 return;
 
-            Instance.Push(() =>
+            Instance.Enqueue(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -677,7 +677,7 @@ namespace Server.DB
                     {
                         if (db.ShopItems.Where(i => i.ItemId == shopItemDb.ItemId && i.ShopDbId == existingShopDb.ShopDbId).FirstOrDefault() == null)
                         {
-                            shopItemDb.ShopDbId = existingShopDb.ShopDbId; // ShopItemDb에 ShopDbId를 설정합니다.
+                            shopItemDb.ShopDbId = existingShopDb.ShopDbId; // ShopItemDb??ShopDbId瑜??ㅼ젙?⑸땲??
                             db.ShopItems.Add(shopItemDb);
                         }
                     }
@@ -689,7 +689,7 @@ namespace Server.DB
                        .Where(s => s.ShopDbId == existingShopDb.ShopDbId)
                        .ToList();
 
-                        room.Push(() =>
+                        room.Enqueue(() =>
                         {
                             {
                                 S_ShopList shopPacket = new S_ShopList();
@@ -715,7 +715,7 @@ namespace Server.DB
             if (player == null || shopDb == null)
                 return;
 
-            Instance.Push(() =>
+            Instance.Enqueue(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {                    
@@ -737,7 +737,7 @@ namespace Server.DB
                     {
                         db.ShopItems.Remove(exShopItemDb);
                     }
-                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                    bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
 
                     
 
@@ -746,7 +746,7 @@ namespace Server.DB
                         List<ShopItemDb> shopItemDbs = db.ShopItems
                             .Where(s => s.ShopDbId == existingShopDb.ShopDbId)
                             .ToList();
-                        room.Push(() =>
+                        room.Enqueue(() =>
                         {
                             {
                                 S_ShopList shopPacket = new S_ShopList();
@@ -773,7 +773,7 @@ namespace Server.DB
             if (player == null || interactionDb == null)
                 return;
 
-            Instance.Push(() =>
+            Instance.Enqueue(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -788,10 +788,10 @@ namespace Server.DB
                     {
                         existingInteractionDb.Completed = interactionDb.Completed;
                     }
-                    bool success = db.SaveChangesEx();//저장할때 예외처리를 해준다.   
+                    bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
                     if (success)
                     {
-                        room.Push(() =>
+                        room.Enqueue(() =>
                         {
                             {
                                 S_Interaction interactPacket = new S_Interaction();

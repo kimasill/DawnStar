@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
@@ -242,16 +242,16 @@ namespace Server
 
             if (ServerState == PlayerServerState.ServerStateSingle)
             {
-                GameLogic.Instance.Push(() =>
+                GameLogic.Instance.Enqueue(() =>
                 {
                     GameRoom room = GameLogic.Instance.Add(mapId);
-                    room.Push(room.EnterGame, MyPlayer, false);
+                    room.Enqueue(room.EnterGame, MyPlayer, false);
                 });
             }
             else
             {
                 ServerState = PlayerServerState.ServerStateGame;
-                GameLogic.Instance.Push(() =>
+                GameLogic.Instance.Enqueue(() =>
                 {
                     GameRoom room = GameLogic.Instance.FindByMapId(mapId); // 플레이어의 mapId로 룸을 찾음
                     if (room == null)
@@ -259,7 +259,7 @@ namespace Server
                         room = GameLogic.Instance.Add(mapId); // 룸이 없으면 새로 생성
                         Console.WriteLine($"Created new game room for mapId: {mapId}");
                     }
-                    room.Push(room.EnterGame, MyPlayer, false);
+                    room.Enqueue(room.EnterGame, MyPlayer, false);
                 });
             }
         }
