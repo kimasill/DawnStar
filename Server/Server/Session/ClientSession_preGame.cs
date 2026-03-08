@@ -8,7 +8,7 @@ using Server.Game.Room;
 using Server.Migrations;
 using Server.Utils;
 using ServerCore;
-using SharedDB;
+using CommonDB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Server
             LobbyPlayers.Clear();
 
             using (AppDbContext db = new AppDbContext())
-            using (SharedDbContext sharedDb = new SharedDbContext())            
+            using (CommonDbContext sharedDb = new CommonDbContext())            
             {
                 TokenDb token = sharedDb.Tokens
                    .Where(t => t.Token == int.Parse(loginPacket.UniqueId))

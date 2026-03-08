@@ -1,27 +1,27 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SharedDB
+namespace CommonDB
 {
-    public class SharedDbContext : DbContext
+    public class CommonDbContext : DbContext
     {
         public DbSet<TokenDb> Tokens { get; set; }
         public DbSet<ServerDb> Servers { get; set; }
         //GameServer
-        public SharedDbContext()
+        public CommonDbContext()
         {
 
         }
         //ASP .NET
-        public SharedDbContext(DbContextOptions<SharedDbContext> options) : base(options)
+        public CommonDbContext(DbContextOptions<CommonDbContext> options) : base(options)
         {
 
         }
-        public static string ConnectionString { get; set;} = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=SharedDB;Integrated Security=True";
+        public static string ConnectionString { get; set;} = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=CommonDB;Integrated Security=True";
         //GameServer
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {

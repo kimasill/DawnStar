@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Server.DB;
-using SharedDB;
+using CommonDB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace Server.Utils
             }
         }
 
-        public static bool SaveChangesEx(this SharedDbContext db)
+        public static bool SaveChangesEx(this CommonDbContext db)
         {
             try
             {
