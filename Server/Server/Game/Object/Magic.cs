@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace Server.Game
         }
         public override void Update()
         {
-            Room.PushAfter(200, Update);
+            Room.EnqueueAfter(200, Update);
         }
     }
 }

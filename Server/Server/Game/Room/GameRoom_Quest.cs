@@ -1,4 +1,4 @@
-﻿using Google.Protobuf;
+using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Microsoft.VisualBasic;
 using Server.Data;
@@ -15,7 +15,7 @@ using DbTransaction = Server.DB.DbTransaction;
 
 namespace Server.Game
 {
-    public partial class GameRoom : JobSerializer
+    public partial class GameRoom : TaskQueue
     {
         public void HandleStartQuest(Player player, int questId = 0)
         {

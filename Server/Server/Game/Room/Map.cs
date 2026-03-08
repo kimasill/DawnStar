@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.DB;
 using ServerCore;
@@ -206,7 +206,7 @@ namespace Server.Game.Room
 
         public void MoveZone(GameObject gameObject, Vector2Int dest)
         {
-            // Zone 이동
+            // Zone ?대룞
             GameObjectType type = ObjectManager.GetObjectType(gameObject.Id);
             if (type == GameObjectType.Player)
             {
@@ -361,7 +361,7 @@ namespace Server.Game.Room
                     {
                         if (int.TryParse(tokens[x], out int monsterId))
                         {
-                            _spawnPoints[y, x] = monsterId; // 몬스터 아이디 저장
+                            _spawnPoints[y, x] = monsterId; // 紐ъ뒪???꾩씠?????
                         }
                     }
                 }
@@ -446,75 +446,75 @@ namespace Server.Game.Room
         {
             List<Pos> path = new List<Pos>();
 
-            // 점수 매기기
+            // ?먯닔 留ㅺ린湲?
             // F = G + H
-            // F = 최종 점수 (작을 수록 좋음, 경로에 따라 달라짐)
-            // G = 시작점에서 해당 좌표까지 이동하는데 드는 비용 (작을 수록 좋음, 경로에 따라 달라짐)
-            // H = 목적지에서 얼마나 가까운지 (작을 수록 좋음, 고정)
+            // F = 理쒖쥌 ?먯닔 (?묒쓣 ?섎줉 醫뗭쓬, 寃쎈줈???곕씪 ?щ씪吏?
+            // G = ?쒖옉?먯뿉???대떦 醫뚰몴源뚯? ?대룞?섎뒗???쒕뒗 鍮꾩슜 (?묒쓣 ?섎줉 醫뗭쓬, 寃쎈줈???곕씪 ?щ씪吏?
+            // H = 紐⑹쟻吏?먯꽌 ?쇰쭏??媛源뚯슫吏 (?묒쓣 ?섎줉 醫뗭쓬, 怨좎젙)
 
-            // (y, x) 이미 방문했는지 여부 (방문 = closed 상태)            
+            // (y, x) ?대? 諛⑸Ц?덈뒗吏 ?щ? (諛⑸Ц = closed ?곹깭)            
             HashSet<Pos> closeList = new HashSet<Pos>(); // CloseList
-            // (y, x) 가는 길을 한 번이라도 발견했는지
-            // 발견X => MaxValue
-            // 발견O => F = G + H
+            // (y, x) 媛??湲몄쓣 ??踰덉씠?쇰룄 諛쒓껄?덈뒗吏
+            // 諛쒓껄X => MaxValue
+            // 諛쒓껄O => F = G + H
             //int[,] open = new int[SizeY, SizeX]; // OpenList
             Dictionary<Pos, int> openList = new Dictionary<Pos, int>();
 
             //Pos[,] parent = new Pos[SizeY, SizeX];
             Dictionary<Pos, Pos> parent = new Dictionary<Pos, Pos>();
 
-            // 오픈리스트에 있는 정보들 중에서, 가장 좋은 후보를 빠르게 뽑아오기 위한 도구
+            // ?ㅽ뵂由ъ뒪?몄뿉 ?덈뒗 ?뺣낫??以묒뿉?? 媛??醫뗭? ?꾨낫瑜?鍮좊Ⅴ寃?戮묒븘?ㅺ린 ?꾪븳 ?꾧뎄
             PriorityQueue<PQNode> pq = new PriorityQueue<PQNode>();
 
             // CellPos -> ArrayPos
             Pos pos = Cell2Pos(startCellPos);
             Pos dest = Cell2Pos(destCellPos);
 
-            // 시작점 발견 (예약 진행)
+            // ?쒖옉??諛쒓껄 (?덉빟 吏꾪뻾)
             
             openList.Add(pos, 10 * (Math.Abs(dest.Y - pos.Y) + Math.Abs(dest.X - pos.X)));
-            pq.Push(new PQNode() { F = 10 * (Math.Abs(dest.Y - pos.Y) + Math.Abs(dest.X - pos.X)), G = 0, Y = pos.Y, X = pos.X });            
+            pq.Enqueue(new PQNode() { F = 10 * (Math.Abs(dest.Y - pos.Y) + Math.Abs(dest.X - pos.X)), G = 0, Y = pos.Y, X = pos.X });            
             parent.Add(pos, pos);
 
             while (pq.Count > 0)
             {
-                // 제일 좋은 후보를 찾는다
-                PQNode pqNode = pq.Pop();
+                // ?쒖씪 醫뗭? ?꾨낫瑜?李얜뒗??
+                PQNode pqNode = pq.Dequeue();
                 Pos node = new Pos(pqNode.Y, pqNode.X);
-                // 동일한 좌표를 여러 경로로 찾아서, 더 빠른 경로로 인해서 이미 방문(closed)된 경우 스킵
+                // ?숈씪??醫뚰몴瑜??щ윭 寃쎈줈濡?李얠븘?? ??鍮좊Ⅸ 寃쎈줈濡??명빐???대? 諛⑸Ц(closed)??寃쎌슦 ?ㅽ궢
                 if (closeList.Contains(node))
                     continue;
 
-                // 방문한다
+                // 諛⑸Ц?쒕떎
                 closeList.Add(node);
-                // 목적지 도착했으면 바로 종료
+                // 紐⑹쟻吏 ?꾩갑?덉쑝硫?諛붾줈 醫낅즺
                 if (node.Y == dest.Y && node.X == dest.X)
                     break;
 
-                // 상하좌우 등 이동할 수 있는 좌표인지 확인해서 예약(open)한다
+                // ?곹븯醫뚯슦 ???대룞?????덈뒗 醫뚰몴?몄? ?뺤씤?댁꽌 ?덉빟(open)?쒕떎
                 for (int i = 0; i < _deltaY.Length; i++)
                 {
                     Pos next = new Pos(node.Y + _deltaY[i], node.X + _deltaX[i]);
 
-                    //너무 멀면 스킵
+                    //?덈Т 硫硫??ㅽ궢
                     if(Math.Abs(pos.Y - next.Y) + Math.Abs(pos.X - next.X) > maxDist)
                         continue;
-                    // 유효 범위를 벗어났으면 스킵
-                    // 벽으로 막혀서 갈 수 없으면 스킵
+                    // ?좏슚 踰붿쐞瑜?踰쀬뼱?ъ쑝硫??ㅽ궢
+                    // 踰쎌쑝濡?留됲???媛????놁쑝硫??ㅽ궢
                     if (next.Y != dest.Y || next.X != dest.X)
                     {
                         if (CanGo(Pos2Cell(next), checkObjects)==false) // CellPos
                             continue;
                     }
 
-                    // 이미 방문한 곳이면 스킵
+                    // ?대? 諛⑸Ц??怨녹씠硫??ㅽ궢
                     if (closeList.Contains(next))
                         continue;
 
-                    // 비용 계산
+                    // 鍮꾩슜 怨꾩궛
                     int g = 0;// node.G + _cost[i];
                     int h = 10 * ((dest.Y - next.Y) * (dest.Y - next.Y) + (dest.X - next.X) * (dest.X - next.X));
-                    // 다른 경로에서 더 빠른 길 이미 찾았으면 스킵
+                    // ?ㅻⅨ 寃쎈줈?먯꽌 ??鍮좊Ⅸ 湲??대? 李얠븯?쇰㈃ ?ㅽ궢
                     int value = 0;
                     if (openList.TryGetValue(next, out value) == false)
                         value = Int32.MaxValue;
@@ -522,12 +522,12 @@ namespace Server.Game.Room
                     if(value < g + h)
                         continue;
 
-                    // 예약 진행
+                    // ?덉빟 吏꾪뻾
                     if(openList.TryAdd(next, g + h) == false)
                     {
                         openList[next] = g + h;
                     }                    
-                    pq.Push(new PQNode() { F = g + h, G = g, Y = next.Y, X = next.X });
+                    pq.Enqueue(new PQNode() { F = g + h, G = g, Y = next.Y, X = next.X });
                     if(parent.TryAdd(next, node) == false)
                     {
                         parent[next] = node;
@@ -542,7 +542,7 @@ namespace Server.Game.Room
         List<Vector2Int> CalcCellPathFromParent(Dictionary<Pos, Pos> parent, Pos dest)
         {
             List<Vector2Int> cells = new List<Vector2Int>();
-            if(parent.ContainsKey(dest) == false)//길 없음
+            if(parent.ContainsKey(dest) == false)//湲??놁쓬
             {
                 Pos best = new Pos();
                 int bestDist = Int32.MaxValue;

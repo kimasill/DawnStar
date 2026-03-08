@@ -1,4 +1,4 @@
-﻿using Google.Protobuf;
+using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server;
 using Server.DB;
@@ -29,7 +29,7 @@ class PacketHandler
 		if(room == null)
 			return;
 
-		room.Push(room.HandleMove, player, movePacket);
+		room.Enqueue(room.HandleMove, player, movePacket);
 		//검증
 		//좌표이동
 		
@@ -48,7 +48,7 @@ class PacketHandler
         if (room == null)
             return;
 
-        room.Push(room.HandleSkill, player, skillPacket);
+        room.Enqueue(room.HandleSkill, player, skillPacket);
     }
 
     public static void C_LoginHandler(PacketSession session, IMessage packet)
@@ -77,7 +77,7 @@ class PacketHandler
         if (room == null)
             return;
         
-        room.Push(room.HandleRespawn, player, respawnPacket.RespawnType);
+        room.Enqueue(room.HandleRespawn, player, respawnPacket.RespawnType);
     }
 
     public static void C_CreatePlayerHandler(PacketSession session, IMessage packet)
@@ -100,7 +100,7 @@ class PacketHandler
         if (room == null)
             return;
 
-        room.Push(room.HandleEquipItem, player, equipPacket);
+        room.Enqueue(room.HandleEquipItem, player, equipPacket);
     }
 
     public static void C_QuestCompleteHandler(PacketSession session, IMessage packet)
@@ -116,7 +116,7 @@ class PacketHandler
         if (room == null)
             return;
 
-        room.Push(room.HandleQuestComplete, player, completeQuestPacket.TemplateId);
+        room.Enqueue(room.HandleQuestComplete, player, completeQuestPacket.TemplateId);
     }
 
     public static void C_StartQuestHandler(PacketSession session, IMessage packet)
@@ -132,7 +132,7 @@ class PacketHandler
         if (room == null)
             return;
 
-        room.Push(room.HandleStartQuest, player, startQuestPacket.TemplateId);
+        room.Enqueue(room.HandleStartQuest, player, startQuestPacket.TemplateId);
     }
 
     public static void C_PongHandler(PacketSession session, IMessage packet)
@@ -152,7 +152,7 @@ class PacketHandler
 
         if (player == null)
             return;
-        room.Push(room.HandleMapChanged, player, mapChangePacket.PortalId);
+        room.Enqueue(room.HandleMapChanged, player, mapChangePacket.PortalId);
     }
 
     public static void C_EnterDungeonHandler(PacketSession session, IMessage packet)
@@ -166,11 +166,11 @@ class PacketHandler
             return;
         if (enterDungeonPacket.AdmitType == AdmitType.None)
         {
-            room.Push(room.HandleEnterDungeon, player, enterDungeonPacket.MapId);
+            room.Enqueue(room.HandleEnterDungeon, player, enterDungeonPacket.MapId);
         }
         else if(enterDungeonPacket.AdmitType == AdmitType.Matching || enterDungeonPacket.AdmitType == AdmitType.Cancel)
         {
-            room.Push(room.HandleMatching, player, enterDungeonPacket.MapId, enterDungeonPacket.AdmitType);
+            room.Enqueue(room.HandleMatching, player, enterDungeonPacket.MapId, enterDungeonPacket.AdmitType);
         }
     }
 
@@ -184,7 +184,7 @@ class PacketHandler
         GameRoom room = player.Room;
         if (room == null)
             return;
-        room.Push(room.HandleChangePosition, player);
+        room.Enqueue(room.HandleChangePosition, player);
     }
 
     public static void C_RequestShopHandler(PacketSession session, IMessage packet)
@@ -197,7 +197,7 @@ class PacketHandler
         GameRoom room = player.Room;
         if (room == null)
             return;        
-        room.Push(room.HandleRequestShop, player, requestShopPacket.ShopId);
+        room.Enqueue(room.HandleRequestShop, player, requestShopPacket.ShopId);
     }
 
     public static void C_BuyItemHandler(PacketSession session, IMessage packet)
@@ -210,7 +210,7 @@ class PacketHandler
         GameRoom room = player.Room;
         if (room == null)
             return;
-        room.Push(room.HandleBuyItem, player, buyItemPacket);
+        room.Enqueue(room.HandleBuyItem, player, buyItemPacket);
     }
     public static void C_SellItemHandler(PacketSession session, IMessage packet)
     {
@@ -222,7 +222,7 @@ class PacketHandler
         GameRoom room = player.Room;
         if (room == null)
             return;
-        room.Push(room.HandleSellItem, player, sellItemPacket);
+        room.Enqueue(room.HandleSellItem, player, sellItemPacket);
     }
     public static void C_LootItemHandler(PacketSession session, IMessage packet)
     {
@@ -234,7 +234,7 @@ class PacketHandler
         GameRoom room = player.Room;
         if (room == null)
             return;
-        room.Push(room.HandleLootItem, player, rootItemPacket);
+        room.Enqueue(room.HandleLootItem, player, rootItemPacket);
     }
 
     public static void C_RemoveItemHandler(PacketSession session, IMessage packet)
@@ -247,7 +247,7 @@ class PacketHandler
         GameRoom room = player.Room;
         if (room == null)
             return;
-        room.Push(room.HandleRemoveItem, player, removeItemPacket);
+        room.Enqueue(room.HandleRemoveItem, player, removeItemPacket);
     }
     public static void C_RequestMonsterHandler(PacketSession session, IMessage packet)
     {

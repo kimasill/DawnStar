@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game;
 using Server.Game.Contents;
@@ -71,7 +71,7 @@ namespace Server
             {
                 member.Session.ServerState = PlayerServerState.ServerStateGame;
                 GameLogic.Instance.UpdateRoom(member.Room);
-                room.Push(member.Room.HandleMapChanged, member, mapData, mapData.portals.First().id, room);
+                room.Enqueue(member.Room.HandleMapChanged, member, mapData, mapData.portals.First().id, room);
             }
         }
     }

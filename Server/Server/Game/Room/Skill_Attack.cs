@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game.Room;
 using System;
@@ -149,7 +149,7 @@ namespace Server.Game
                 summon.OnHit = (target) => { HandleDebuffSkill(data, target); };
             }
 
-            Owner.Room.Push(Owner.Room.EnterGame, summon, false);
+            Owner.Room.Enqueue(Owner.Room.EnterGame, summon, false);
         }
         private async void KineticAttack(SkillData data, GameObject target = null)
         {

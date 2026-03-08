@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Game;
@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Server.DB
 {
-    public partial class DbTransaction : JobSerializer
+    public partial class DbTransaction : TaskQueue
     {
         public static void EquipItemNoti(Player player, Item item)
         {
@@ -33,7 +33,7 @@ namespace Server.DB
                 Equipped = item.Equipped
             };
 
-            Instance.Push(() =>
+            Instance.Enqueue(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -66,7 +66,7 @@ namespace Server.DB
                 bool success = db.SaveChangesEx(); // 저장할 때 예외처리를 해준다.
                 if (success)
                 {
-                    room.Push(() =>
+                    room.Enqueue(() =>
                     {
                         player.Hp = playerDb.Hp;
                         S_ChangeHp changePacket = new S_ChangeHp();
@@ -103,7 +103,7 @@ namespace Server.DB
                 bool success = db.SaveChangesEx(); // 저장할 때 예외처리를 해준다.
                 if (success)
                 {
-                    room.Push(() =>
+                    room.Enqueue(() =>
                     {
                         player.Up = playerDb.Up;
                         S_ChangeUp changePacket = new S_ChangeUp();
@@ -126,7 +126,7 @@ namespace Server.DB
             if (player == null)
                 return;
 
-            Instance.Push(async () =>
+            Instance.Enqueue(async () =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -176,7 +176,7 @@ namespace Server.DB
                 Exp = player.Exp + Exp
             };
 
-            Instance.Push(() =>
+            Instance.Enqueue(() =>
             {
                 using (AppDbContext db = new AppDbContext())
                 {
@@ -186,7 +186,7 @@ namespace Server.DB
                     bool success = db.SaveChangesEx(); // 저장할 때 예외처리를 해준다.
                     if (success)
                     {
-                        player.Room.Push(() =>
+                        player.Room.Enqueue(() =>
                         {
                             player.Exp = playerDb.Exp;
                             S_ChangeExp expPacket = new S_ChangeExp();

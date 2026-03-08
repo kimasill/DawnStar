@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game.Room;
 using System;
@@ -50,7 +50,7 @@ namespace Server.Game
                 spot.PosInfo.State = CreatureState.Moving;
                 spot.Delay = data.spot.delay;
                 spot.TemplateId = data.id;
-                Owner.Room.Push(Owner.Room.EnterGame, spot, false);
+                Owner.Room.Enqueue(Owner.Room.EnterGame, spot, false);
 
                 if (data.term != 0)
                     await Task.Delay((int)(data.term * 1000));
@@ -88,7 +88,7 @@ namespace Server.Game
                 {
                     magicBall.OnHit = (target) => { HandleDebuffSkill(data, target); };
                 }
-                Owner.Room.Push(Owner.Room.EnterGame, magicBall, false);
+                Owner.Room.Enqueue(Owner.Room.EnterGame, magicBall, false);
                 await Task.Delay((int)(data.term * 1000));
             }
         }
@@ -124,9 +124,9 @@ namespace Server.Game
                     howitzer.OnHit = (target) => { HandleDebuffSkill(data, target); };
                 }
                 
-                Owner.Room.Push(Owner.Room.EnterGame, howitzer, false);
+                Owner.Room.Enqueue(Owner.Room.EnterGame, howitzer, false);
                 GameRoom room = Owner.Room;
-                room.PushAfter(100,() =>
+                room.EnqueueAfter(100,() =>
                 {
                     if (room == null)
                     {

@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game.Room;
 using System;
@@ -289,7 +289,7 @@ namespace Server.Game
                 return;
             int hp = Math.Min(Hp + HpRegen, MaxHp);
             ChangeHp(hp);
-            Room.PushAfter(1000, () => UpdateHp());
+            Room.EnqueueAfter(1000, () => UpdateHp());
         }
         public virtual void UpdateUp()
         {
@@ -297,7 +297,7 @@ namespace Server.Game
                 return;
             int up = Math.Min(Up + UpRegen, MaxUp);
             ChangeUp(up);
-            Room.PushAfter(1000, () => UpdateUp());
+            Room.EnqueueAfter(1000, () => UpdateUp());
         }
         public virtual void ChangeHp(int hp)
         {
@@ -385,7 +385,7 @@ namespace Server.Game
                 Console.WriteLine($"Buff {buff.name} applied with value {afterValue}");
                 if(Room != null)
                 {
-                    Room.PushAfter(buff.duration * 1000, () =>
+                    Room.EnqueueAfter(buff.duration * 1000, () =>
                     {
                         RemoveBuff(buff, afterValue, count);
                     });
@@ -460,7 +460,7 @@ namespace Server.Game
                 Console.WriteLine($"Debuff {debuff.name} applied with value {debuff.value}");
                 if(Room != null)
                 {
-                    Room.PushAfter(debuff.duration * 1000, () =>
+                    Room.EnqueueAfter(debuff.duration * 1000, () =>
                     {
                         RemoveDebuff(debuff, value, count);
                     });
@@ -557,7 +557,7 @@ namespace Server.Game
                             if (Room == null)
                                 return;
                             Effect(this, debuff.damagePrefab);
-                            Room.PushAfter((int)(debuff.damageTerms[0] * 1000), () =>
+                            Room.EnqueueAfter((int)(debuff.damageTerms[0] * 1000), () =>
                             {
                                 if (Room == null)
                                     return;
@@ -584,7 +584,7 @@ namespace Server.Game
                     {
                         for(int i = 0; i < debuff.duration; i++)
                         {
-                            Room.PushAfter(i * 1000, () =>
+                            Room.EnqueueAfter(i * 1000, () =>
                             {
                                 if (Room == null)
                                     return;

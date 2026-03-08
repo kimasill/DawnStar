@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Server.Game.Job;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Server.Game
 {
-    public class GameLogic : JobSerializer
+    public class GameLogic : TaskQueue
     {
         public static GameLogic Instance { get; } = new GameLogic();
 
@@ -17,7 +17,7 @@ namespace Server.Game
 
         public void Update()
         {
-            Flush();
+            ExecuteAll();
             var roomsCopy = _rooms.Values.ToList(); // Create a copy of the collection
             foreach (GameRoom room in roomsCopy)
                 room.Update();
@@ -26,7 +26,7 @@ namespace Server.Game
         public GameRoom Add(int mapId)
         {
             GameRoom gameRoom = new GameRoom();
-            gameRoom.Push(gameRoom.Init, mapId, 20);
+            gameRoom.Enqueue(gameRoom.Init, mapId, 20);
             
             gameRoom.RoomId = _roomId;
             _rooms.Add(gameRoom.RoomId, gameRoom);
@@ -60,7 +60,7 @@ namespace Server.Game
 
         public void UpdateRoom(GameRoom room)
         {
-            Instance.PushAfter(1000 * 60 * 5, () =>
+            Instance.EnqueueAfter(1000 * 60 * 5, () =>
             {
                 if (room.GetPlayerCount() == 0)
                 {

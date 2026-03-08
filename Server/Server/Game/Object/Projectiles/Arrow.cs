@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace Server.Game
                 return;
 
             int tick = (int)(1000 / Data.projectile.speed);
-            Room.PushAfter(tick, Update);
+            Room.EnqueueAfter(tick, Update);
 
             Vector2Int destPos = GetFrontCellPos();
             if (Room.Map.ApplyMove(this, destPos, collision:false) && _distance<Data.projectile.range)
@@ -43,7 +43,7 @@ namespace Server.Game
                         {
                             target.OnDamaged(this, Data.damage + Owner.TotalAttack); //피격판정                    
                         }
-                        Room.Push(Room.LeaveGame, Id);
+                        Room.Enqueue(Room.LeaveGame, Id);
                     }
                 }
             }

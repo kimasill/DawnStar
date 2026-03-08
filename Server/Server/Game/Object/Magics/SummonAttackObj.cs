@@ -1,4 +1,4 @@
-﻿using Azure;
+using Azure;
 using Server.Game.Room;
 using System;
 using System.Collections.Generic;
@@ -31,11 +31,11 @@ namespace Server.Game
                 _count = 1;
             }
             
-            Room.PushAfter(tick, Update);
+            Room.EnqueueAfter(tick, Update);
 
             if (_count == Data.count)
             {
-                Room.Push(Room.LeaveGame, Id);
+                Room.Enqueue(Room.LeaveGame, Id);
                 return;
             }
             
