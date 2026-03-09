@@ -111,7 +111,7 @@ namespace Server.Game
 
             Map.ApplyEnter(gameObject);
 
-            GameObjectType type = ObjectManager.GetObjectType(gameObject.Id);
+            GameObjectType type = EntityRegistry.GetObjectType(gameObject.Id);
             Player player = null;
             if (type == GameObjectType.Player)
             {
@@ -226,7 +226,7 @@ namespace Server.Game
         }
         public void LeaveGame(int objectId, bool save)
         {
-            GameObjectType type = ObjectManager.GetObjectType(objectId);
+            GameObjectType type = EntityRegistry.GetObjectType(objectId);
             Vector2Int cellPos;
             bool despawnAnim = false;
 

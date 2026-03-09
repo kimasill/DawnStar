@@ -123,7 +123,7 @@ namespace Server.Game
         private async void SummonAttack(SkillData data, int range, GameObject target = null)
         {
             await Task.Delay((int)(1000 * Owner.TotalInvokeSpeed));
-            SummonAttackObj summon = ObjectManager.Instance.Add<SummonAttackObj>();
+            SummonAttackObj summon = EntityRegistry.Instance.Add<SummonAttackObj>();
             summon.Owner = Owner;
             summon.Target = _target;
             summon.Owner.Room = Owner.Room;

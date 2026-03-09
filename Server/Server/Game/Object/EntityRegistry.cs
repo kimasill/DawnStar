@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Server.Game
 {
-    public class ObjectManager
+    public class EntityRegistry
     {
-        public static ObjectManager Instance { get; } = new ObjectManager();
+        public static EntityRegistry Instance { get; } = new EntityRegistry();
 
         object _lock = new object();
         Dictionary<int, Player> _players = new Dictionary<int, Player>();

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace LoadTestClient.Session
 {
-    public class SessionManager
+    public class ConnectionRegistry
     {
-        public static SessionManager Instance { get; } = new SessionManager();
+        public static ConnectionRegistry Instance { get; } = new ConnectionRegistry();
 
         HashSet<ServerSession> _sessions = new HashSet<ServerSession>();
         object _lock = new object();

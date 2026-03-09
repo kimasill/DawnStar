@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Server.Game
 
         public void Remove(GameObject gameObject)
         {
-            GameObjectType type = ObjectManager.GetObjectType(gameObject.Id);
+            GameObjectType type = EntityRegistry.GetObjectType(gameObject.Id);
 
             switch (type)
             {

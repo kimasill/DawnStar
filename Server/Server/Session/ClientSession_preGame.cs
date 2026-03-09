@@ -135,7 +135,7 @@ namespace Server
 
             int mapId = 1;
             bool isFirstLogin = false;
-            MyPlayer = ObjectManager.Instance.Add<Player>();
+            MyPlayer = EntityRegistry.Instance.Add<Player>();
             {
                 MyPlayer.PlayerDbId = playerInfo.PlayerDbId;
                 MyPlayer.Info.Name = playerInfo.Name;

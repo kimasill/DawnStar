@@ -207,7 +207,7 @@ namespace Server.Game.Room
         public void MoveZone(GameObject gameObject, Vector2Int dest)
         {
             // Zone ?대룞
-            GameObjectType type = ObjectManager.GetObjectType(gameObject.Id);
+            GameObjectType type = EntityRegistry.GetObjectType(gameObject.Id);
             if (type == GameObjectType.Player)
             {
                 Player player = (Player)gameObject;
