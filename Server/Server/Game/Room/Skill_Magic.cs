@@ -40,7 +40,7 @@ namespace Server.Game
                 if (Owner == null || Owner.Room == null || count > data.spot.maxCount)
                     return;
                 count++;
-                SpotAttack spot = ObjectManager.Instance.Add<SpotAttack>();
+                SpotAttack spot = EntityRegistry.Instance.Add<SpotAttack>();
                 spot.Owner = Owner;
                 spot.Owner.Room = Owner.Room;
                 spot.Data = data;
@@ -66,7 +66,7 @@ namespace Server.Game
                     return;
                 }
 
-                MagicBall magicBall = ObjectManager.Instance.Add<MagicBall>();
+                MagicBall magicBall = EntityRegistry.Instance.Add<MagicBall>();
                 magicBall.Owner = Owner;
                 magicBall.Target = _target;
                 magicBall.Owner.Room = Owner.Room;
@@ -99,7 +99,7 @@ namespace Server.Game
             {
                 if (Owner == null || Owner.Room == null)
                     return;
-                Howitzer howitzer = ObjectManager.Instance.Add<Howitzer>();
+                Howitzer howitzer = EntityRegistry.Instance.Add<Howitzer>();
                 howitzer.Owner = Owner;
                 howitzer.Owner.Room = Owner.Room;
                 howitzer.Data = data;

@@ -110,7 +110,7 @@ namespace Server.Game
                     break;
             }
             monster.ObjectType = GameObjectType.Monster;
-            monster.Id = ObjectManager.Instance.GenerateId(GameObjectType.Monster);
+            monster.Id = EntityRegistry.Instance.GenerateId(GameObjectType.Monster);
             return monster;
         }
         //FSM (Finite State Machine)

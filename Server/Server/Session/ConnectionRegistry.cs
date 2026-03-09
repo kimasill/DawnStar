@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace Server
 {
-	class SessionManager
+	class ConnectionRegistry
 	{
-		static SessionManager _session = new SessionManager();
-		public static SessionManager Instance { get { return _session; } }
+		static ConnectionRegistry _session = new ConnectionRegistry();
+		public static ConnectionRegistry Instance { get { return _session; } }
 
 		int _sessionId = 0;
 		Dictionary<int, ClientSession> _sessions = new Dictionary<int, ClientSession>();

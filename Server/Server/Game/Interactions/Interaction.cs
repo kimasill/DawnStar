@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game.Room;
 using System;
@@ -42,7 +42,7 @@ namespace Server.Game
                     return null;
             }
             interaction.ObjectType = GameObjectType.Interaction;
-            interaction.Id = ObjectManager.Instance.GenerateId(GameObjectType.Interaction);
+            interaction.Id = EntityRegistry.Instance.GenerateId(GameObjectType.Interaction);
             return interaction;
         }
         public override void Update()

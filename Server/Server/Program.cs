@@ -47,7 +47,7 @@ namespace Server
         {
             while (true)
             {
-                List<ClientSession> sessions = SessionManager.Instance.GetSessions();
+                List<ClientSession> sessions = ConnectionRegistry.Instance.GetSessions();
                 foreach (ClientSession session in sessions)
                 {
                     session.FlushSend();
@@ -69,7 +69,7 @@ namespace Server
                     {
                         serverDb.IpAdress = IpAddress;
                         serverDb.Port = Port;
-                        serverDb.BusyScore = SessionManager.Instance.GetBusyScore();
+                        serverDb.BusyScore = ConnectionRegistry.Instance.GetBusyScore();
                         shared.SaveChangesEx();
                     }
                     else
@@ -79,7 +79,7 @@ namespace Server
                             Name = Program.Name,
                             IpAdress = IpAddress,
                             Port = Program.Port,
-                            BusyScore = SessionManager.Instance.GetBusyScore()
+                            BusyScore = ConnectionRegistry.Instance.GetBusyScore()
                         };
                         shared.Servers.Add(serverDb);
                         shared.SaveChangesEx();
@@ -115,7 +115,7 @@ namespace Server
 
             IpAddress = ipAddr.ToString();
 
-			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
+			_listener.Init(endPoint, () => { return ConnectionRegistry.Instance.Generate(); });
 			Console.WriteLine("Listening...");
 
             StartServerInfoTask();

@@ -138,7 +138,7 @@ namespace Server
                 room.Enqueue(room.LeaveGame, MyPlayer.Info.ObjectId);
             });
 
-            SessionManager.Instance.Remove(this);			
+            ConnectionRegistry.Instance.Remove(this);			
 		}
 
 		public override void OnSend(int numOfBytes)

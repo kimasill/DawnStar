@@ -22,7 +22,7 @@ namespace LoadTestClient
             Connector connector = new Connector();
 
             connector.Connect(endPoint,
-                () => { return SessionManager.Instance.Generate(); },
+                () => { return ConnectionRegistry.Instance.Generate(); },
                 Program.LoadTestClientCount);
                 
             while(true)
