@@ -30,8 +30,7 @@ MMOProject/
 │   ├── AccountServer/   # 계정 인증, 서버 리스트 제공 (ASP.NET Core Web API)
 │   ├── Server/          # 메인 게임 서버 로직 (Game Instance, Entity, 로직 스레드 등)
 │   ├── ServerCore/      # 네트워크 베이스 엔진 (Listener, Session, Core System)
-│   ├── CommonDB/        # 계정, 공유 데이터 처리를 위한 EF Core 프로젝트
-│   ├── PacketGenerator/ # Protobuf 패킷 파서 및 자동 생성 파일 빌드 툴
+│   ├── CommonDB/        # 계정, 공유 데이터 처리를 위한 EF Core 프로젝트│   
 │   └── LoadTestClient/  # (구 DummyClient) 인프라 부하 테스트를 위한 봇 클라이언트
 ```
 
@@ -49,6 +48,3 @@ MMOProject/
 * **통신:** 전용 Socket Client, HTTP (로그인 및 서버 리스트용)
 **클라이언트 실행 (Client Execution)**
    - 계정 가입 및 인증을 확인한 이후, 서버의 IP와 웹 API 포트로 접속이 이루어집니다. `LoadTestClient`를 통해 대량의 봇(Bot)을 동시 접속시켜 서버 퍼포먼스를 점검해 볼 수 있습니다.
-
-## 📝 개발자 노트 (Developer Notes)
-본 프로젝트는 지속적인 아키텍처 개선(Refactoring) 작업을 통해 상용 서버급의 구조적 전문성을 확보해가고 있습니다. 최근의 튜토리얼 잔재 청산 및 네이밍 리팩토링(VisionCube → InterestManagement, ObjectManager → EntityRegistry 등)을 바탕으로 한층 더 직관적인 도메인 주도 설계 기반으로 발전하는 중입니다.
