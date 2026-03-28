@@ -34,6 +34,8 @@ namespace Server.Game
                 return;
             
             int count = buyPacket.Count;
+            if (count <= 0)
+                return;
 
             int? slot = player.Inven.GetSlot(buyPacket.TemplateId, count);
             if (slot == null)
@@ -74,6 +76,9 @@ namespace Server.Game
 
             Item item = player.Inven.Get(sellPacket.ItemDbId);
             if (item == null)
+                return;
+
+            if (sellPacket.Count <= 0 || sellPacket.Count > item.Count)
                 return;
 
             ItemData itemData = null;
@@ -237,7 +242,9 @@ namespace Server.Game
             {
                 if (option.Key == "Heal")
                 {
-                    int healAmount = int.Parse(option.Value) + int.Parse(option.Value) * player.PotionPerformance / 100;
+                    if (!int.TryParse(option.Value, out int baseHeal))
+                        continue;
+                    int healAmount = baseHeal + baseHeal * player.PotionPerformance / 100;
                     player.ChangeHp(player.Hp + healAmount);
                     player.Inven.Remove(item.ItemDbId, 1);
                     ItemDb itemDb = new ItemDb()
@@ -251,7 +258,9 @@ namespace Server.Game
                 }
                 if(option.Key == "UpRecovery")
                 {
-                    int healAmount = int.Parse(option.Value) + int.Parse(option.Value) * player.PotionPerformance / 100;
+                    if (!int.TryParse(option.Value, out int baseUp))
+                        continue;
+                    int healAmount = baseUp + baseUp * player.PotionPerformance / 100;
                     player.ChangeUp(player.Up + healAmount);
                     player.Inven.Remove(item.ItemDbId, 1);
                     ItemDb itemDb = new ItemDb()
@@ -264,7 +273,8 @@ namespace Server.Game
                 }
                 if (option.Key == "Skill")
                 {
-                    int skillId = int.Parse(option.Value);
+                    if (!int.TryParse(option.Value, out int skillId))
+                        continue;
                     SkillData skillData = null;
                     DataManager.SkillDict.TryGetValue(skillId, out skillData);
                     if (skillData == null)
@@ -298,11 +308,14 @@ namespace Server.Game
                 return;
             
             EnhanceData enhanceData = DataManager.EnhanceDict.Select(x => x.Value).Where(x => x.rank == item.Rank+1 && x.itemType == item.ItemType).FirstOrDefault();
+            if (enhanceData == null || enhanceData.costData == null)
+                return;
+
             List<ItemDb> costItems = new List<ItemDb>();
             foreach (CostData cost in enhanceData.costData)
             {
                 Item costItem = player.Inven.FindByTemplateId(cost.templateId);
-                if (costItem.Count < cost.count || costItem == null)
+                if (costItem == null || costItem.Count < cost.count)
                 {
                     S_SystemNotice systemNotice = new S_SystemNotice();
                     systemNotice.Message = "강화 재료가 부족합니다.";
@@ -368,8 +381,7 @@ namespace Server.Game
             if (materialItemData == null || materialItemData.itemType != ItemType.Consumable)
                 return;
 
-            EnchantData enchantData = DataManager.EnchantDict[targetItem.ItemType];
-            if (enchantData == null)
+            if (!DataManager.EnchantDict.TryGetValue(targetItem.ItemType, out EnchantData enchantData) || enchantData == null)
                 return;
 
             Dictionary<string, string> enchantedOptions = ItemLogic.Enchant(player, targetItem, enchantData);
@@ -418,6 +430,13 @@ namespace Server.Game
             if (itemData == null || itemData.pieces == null)
                 return;
 
+            if (makeItemPacket.Count <= 0)
+                return;
+
+            int? emptySlot = player.Inven.GetEmptySlot();
+            if (emptySlot == null)
+                return;
+
             // 필요한 재료가 인벤토리에 있는지 확인
             List<ItemDb> requiredItems = new List<ItemDb>();
             foreach (var piece in itemData.pieces)
@@ -427,6 +446,7 @@ namespace Server.Game
                 {
                     S_SystemNotice systemNotice = new S_SystemNotice();
                     systemNotice.Message = "재료가 부족합니다.";
+                    player.Session.Send(systemNotice);
                     return;
                 }
 
@@ -453,7 +473,7 @@ namespace Server.Game
                 Count = makeItemPacket.Count,
                 Grade = itemData.grade.ToString(),
                 OwnerDbId = player.PlayerDbId,
-                Slot = player.Inven.GetEmptySlot().Value
+                Slot = emptySlot.Value
             };
 
             DbTransaction.SaveAddItemDB(player, newItemDb, this);

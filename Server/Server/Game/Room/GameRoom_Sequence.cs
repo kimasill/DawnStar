@@ -32,10 +32,13 @@ namespace Server.Game
             }
             else if (respawnType == RespawnType.Spot)
             {
-                // Spot 타입은 가장 가까운 포탈 근처에서 부활
-                MapData mapData = DataManager.MapDict[player.MapInfo.TemplateId];
-                int portal = FindClosestPortalId(mapData, player.CellPos);
-                UpdatePlayerMapInfo(player, mapData, portal);
+                if (DataManager.MapDict.TryGetValue(player.MapInfo.TemplateId, out MapData mapData)
+                    && mapData.portals != null && mapData.portals.Count > 0)
+                {
+                    int portal = FindClosestPortalId(mapData, player.CellPos);
+                    if (portal != 0)
+                        UpdatePlayerMapInfo(player, mapData, portal);
+                }
             }
 
             // 플레이어의 상태를 초기화
@@ -49,7 +52,9 @@ namespace Server.Game
 
         private int FindClosestPortalId(MapData mapData, Vector2Int cellPos)
         {
-            // 가장 가까운 포탈의 위치를 저장할 변수
+            if (mapData?.portals == null || mapData.portals.Count == 0)
+                return 0;
+
             double closestDistance = double.MaxValue;
             int closestPortalId = 0;
             foreach (var portal in mapData.portals)
@@ -73,6 +78,9 @@ namespace Server.Game
 
         public async void HandleMapChanged(Player player, int portalId)
         {
+            if (player == null)
+                return;
+
             MapData mapData = null;
             DataManager.MapDict.TryGetValue(player.MapInfo.TemplateId, out mapData);
             if (mapData == null)
@@ -107,11 +115,8 @@ namespace Server.Game
         }
         public void HandleMapChanged(Player player, MapData map, int destPortalId, GameRoom pRoom)
         {
-            if(pRoom == null)
-            {
-                Console.WriteLine("There is not pRoom");
+            if (player == null || pRoom == null)
                 return;
-            }
             LeaveGame(player.Id, save:false);
             UpdatePlayerMapInfo(player, map, destPortalId);
 
@@ -123,11 +128,8 @@ namespace Server.Game
                 MapName = map.name
             };
             DbTransaction.SavePlayerMap(player, mapDb);
-            if (pRoom != null)
-            {
-                player.Room = pRoom;
-                pRoom.Enqueue(pRoom.EnterGame, player, false);
-            }
+            player.Room = pRoom;
+            pRoom.Enqueue(pRoom.EnterGame, player, false);
         }
 
         public void UpdatePlayerMapInfo(Player player, MapData map, int destPortalId)
@@ -135,20 +137,12 @@ namespace Server.Game
             if (player == null)
                 return;
 
-            if(map == null)
-            {
-                Console.WriteLine("맵 정보를 찾을 수 없습니다.");
+            if (map == null || map.portals == null)
                 return;
-            }
-            PortalData portalData = null;
 
-            foreach (var portal in map.portals)
-            {
-                if (portal.id == destPortalId)
-                {
-                    portalData = portal;
-                }
-            }           
+            PortalData portalData = map.portals.FirstOrDefault(p => p != null && p.id == destPortalId);
+            if (portalData == null)
+                return;
 
             // 플레이어의 위치를 포탈의 위치로 업데이트
             player.CellPos = new Vector2Int((int)portalData.posX, (int)portalData.posY);

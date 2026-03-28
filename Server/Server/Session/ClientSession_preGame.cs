@@ -20,18 +20,52 @@ namespace Server
     public partial class ClientSession : PacketSession
     {
         public int AccountDbId { get; private set; }
-        public List<LobbyPlayerInfo> LobbyPlayers { get; set; } = new List<LobbyPlayerInfo>();
+        public List<LobbyPlayerInfo> LobbyPlayers { get; } = new List<LobbyPlayerInfo>();
+
+        private static LobbyPlayerInfo BuildLobbyPlayerInfo(PlayerDb playerDb)
+        {
+            IReadOnlyList<int> realizations = (playerDb.Realizations != null && playerDb.Realizations.Count > 0)
+                ? playerDb.Realizations
+                : new List<int>() { 0, 0, 0, 0 };
+
+            LobbyPlayerInfo lobbyPlayer = new LobbyPlayerInfo()
+            {
+                PlayerDbId = playerDb.PlayerDbId,
+                Name = playerDb.PlayerName,
+                StatInfo = new StatInfo()
+                {
+                    Level = playerDb.Level,
+                    Hp = playerDb.Hp,
+                    Up = playerDb.Up,
+                    HpRegen = playerDb.HpRegen,
+                    UpRegen = playerDb.UpRegen,
+                    MaxHp = playerDb.MaxHp,
+                    MaxUp = playerDb.MaxUp,
+                    Attack = playerDb.Attack,
+                    Defense = playerDb.Defense,
+                    Accuracy = playerDb.Accuracy,
+                    Avoid = playerDb.Avoid,
+                    Speed = playerDb.Speed,
+                    TotalExp = playerDb.Exp,
+                    StatPoint = playerDb.StatPoint,
+                    CriticalChance = playerDb.CriticalChance,
+                    CriticalDamage = playerDb.CriticalDamage,
+                    PotionPerformance = playerDb.PotionPerformance,
+                    MaxPotion = playerDb.MaxPotion
+                }
+            };
+            lobbyPlayer.StatInfo.Realizations.Clear();
+            lobbyPlayer.StatInfo.Realizations.AddRange(realizations);
+            return lobbyPlayer;
+        }
 
         public void HandleLogin(C_Login loginPacket)
         {
-            // TODO : 이런 저런 보안 체크
             if (ServerState != PlayerServerState.ServerStateLogin)
                 return;
 
-            // TODO : 문제가 있긴 있다
-            // - 동시에 다른 사람이 같은 UniqueId을 보낸다면?
-            // - 악의적으로 여러번 보낸다면
-            // - 쌩뚱맞은 타이밍에 그냥 이 패킷을 보낸다면?
+            if (!int.TryParse(loginPacket.UniqueId, out int tokenValue))
+                return;
 
             LobbyPlayers.Clear();
 
@@ -39,12 +73,11 @@ namespace Server
             using (CommonDbContext sharedDb = new CommonDbContext())            
             {
                 TokenDb token = sharedDb.Tokens
-                   .Where(t => t.Token == int.Parse(loginPacket.UniqueId))
+                   .Where(t => t.Token == tokenValue)
                    .FirstOrDefault();
 
                 if (token == null)
                 {
-                    // 토큰이 유효하지 않음
                     return;
                 }
 
@@ -55,54 +88,17 @@ namespace Server
 
                 if (findAccount != null)
                 {
-                    // AccountDbId 메모리에 기억
                     AccountDbId = findAccount.AccountDbId;
 
                     S_Login loginOk = new S_Login() { LoginOk = 1 };
                     foreach (PlayerDb playerDb in findAccount.Players)
                     {
-                        LobbyPlayerInfo lobbyPlayer = new LobbyPlayerInfo()
-                        {
-                            PlayerDbId = playerDb.PlayerDbId,
-                            Name = playerDb.PlayerName,
-                            StatInfo = new StatInfo()
-                            {
-                                Level = playerDb.Level,
-                                Hp = playerDb.Hp,
-                                Up = playerDb.Up,
-                                HpRegen = playerDb.HpRegen,
-                                UpRegen = playerDb.UpRegen,
-                                MaxHp = playerDb.MaxHp,
-                                MaxUp = playerDb.MaxUp,
-                                Attack = playerDb.Attack,
-                                Defense = playerDb.Defense,
-                                Accuracy = playerDb.Accuracy,
-                                Avoid = playerDb.Avoid,
-                                Speed = playerDb.Speed,
-                                TotalExp = playerDb.Exp,
-                                StatPoint = playerDb.StatPoint,
-                                CriticalChance = playerDb.CriticalChance,
-                                CriticalDamage = playerDb.CriticalDamage,
-                                PotionPerformance = playerDb.PotionPerformance,
-                                MaxPotion = playerDb.MaxPotion
-                            }
-                        };
-                        if (playerDb.Realizations == null || playerDb.Realizations.Count == 0)
-                        {
-                            playerDb.Realizations = new List<int>() { 0, 0, 0, 0 };
-                        }
-                        lobbyPlayer.StatInfo.Realizations.Clear();
-                        lobbyPlayer.StatInfo.Realizations.AddRange(playerDb.Realizations);                    
-
-                        // 메모리에도 들고 있다
+                        LobbyPlayerInfo lobbyPlayer = BuildLobbyPlayerInfo(playerDb);
                         LobbyPlayers.Add(lobbyPlayer);
-
-                        // 패킷에 넣어준다
                         loginOk.Players.Add(lobbyPlayer);
                     }
 
                     Send(loginOk);
-                    // 로비로 이동
                     ServerState = PlayerServerState.ServerStateLobby;
                 }
                 else
@@ -253,12 +249,9 @@ namespace Server
                 ServerState = PlayerServerState.ServerStateGame;
                 GameLogic.Instance.Enqueue(() =>
                 {
-                    GameRoom room = GameLogic.Instance.FindByMapId(mapId); // 플레이어의 mapId로 룸을 찾음
+                    GameRoom room = GameLogic.Instance.FindByMapId(mapId);
                     if (room == null)
-                    {
-                        room = GameLogic.Instance.Add(mapId); // 룸이 없으면 새로 생성
-                        Console.WriteLine($"Created new game room for mapId: {mapId}");
-                    }
+                        room = GameLogic.Instance.Add(mapId);
                     room.Enqueue(room.EnterGame, MyPlayer, false);
                 });
             }
@@ -310,6 +303,9 @@ namespace Server
         }
         public void UpdateMapChests(Player player, int mapId)
         {
+            if (MyPlayer?.MapInfo == null)
+                return;
+
             List<int> chestIds = new List<int>();
             DataManager.MapDict.TryGetValue(mapId, out MapData mapData);
             if (mapData == null || mapData.chests == null)
@@ -348,6 +344,9 @@ namespace Server
         }
         public void UpdateMapInteractions(Player player, int mapId)
         {
+            if (MyPlayer?.MapInfo == null)
+                return;
+
             List<int> interactionIds = new List<int>();
 
             using (AppDbContext db = new AppDbContext())
@@ -382,9 +381,12 @@ namespace Server
                     }
                     else
                     {
-                        // 1레벨 스탯 정보 추출
                         StatData stat = null;
-                        DataManager.StatDict.TryGetValue(1, out stat);
+                        if (!DataManager.StatDict.TryGetValue(1, out stat) || stat == null)
+                        {
+                            Send(new S_CreatePlayer());
+                            return;
+                        }
 
                         PlayerDb newPlayerDb = new PlayerDb()
                         {

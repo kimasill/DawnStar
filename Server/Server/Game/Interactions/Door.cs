@@ -1,4 +1,4 @@
-﻿using Server.Data;
+using Server.Data;
 using Server.Game.Room;
 using System.Collections.Generic;
 
@@ -43,7 +43,7 @@ namespace Server.Game
             
             foreach (var cellPos in Cells)
             {
-                Room.Map.SetCollision(cellPos, false);
+                Room?.Map?.SetCollision(cellPos, false);
             }
             IsOpen = true;
         }
@@ -56,7 +56,7 @@ namespace Server.Game
             }
             foreach (var cellPos in Cells)
             {
-                Room.Map.SetCollision(cellPos, true);
+                Room?.Map?.SetCollision(cellPos, true);
             }
 
             IsOpen = false;
