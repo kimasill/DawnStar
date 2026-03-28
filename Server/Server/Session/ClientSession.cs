@@ -93,7 +93,7 @@ namespace Server
                 lock (_lock)
                 {
                     long delta = (System.Environment.TickCount64 - _lastSendTick);
-                    if (delta < 100 && _reservedSentByte < 10240) // 10KB
+                    if (delta < 20 && _reservedSentByte < 10240) // 10KB
                         return;
 
                     _reservedSentByte = 0;

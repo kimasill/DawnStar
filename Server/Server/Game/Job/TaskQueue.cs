@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,9 +10,7 @@ namespace Server.Game.Job
     public class TaskQueue
     {
         TaskTimer _timer = new TaskTimer();
-        Queue<IJob> _jobQueue = new Queue<IJob>();
-        object _lock = new object();
-        bool _flush = false;
+        ConcurrentQueue<IJob> _jobQueue = new ConcurrentQueue<IJob>();
 
         public IJob EnqueueAfter(int tickAfter, Action action) { return EnqueueAfter(tickAfter, new Job(action)); }
         public IJob EnqueueAfter<T1>(int tickAfter, Action<T1> action, T1 t1) {return EnqueueAfter(tickAfter, new Job<T1>(action, t1)); }
@@ -32,10 +31,7 @@ namespace Server.Game.Job
 
         public void Enqueue(IJob job)
         {
-            lock (_lock)
-            {
-                _jobQueue.Enqueue(job);               
-            }
+            _jobQueue.Enqueue(job);               
         }
         public void Enqueue(Func<Task> asyncAction)
         {
@@ -57,15 +53,9 @@ namespace Server.Game.Job
 
         private IJob Pop()
         {
-            lock (_lock)
-            {
-                if (_jobQueue.Count == 0)
-                {
-                    _flush = false;
-                    return null;
-                }
-                return _jobQueue.Dequeue();
-            }
+            if (_jobQueue.TryDequeue(out IJob job))
+                return job;
+            return null;
         }
     }
     public class AsyncJob : IJob

@@ -56,8 +56,7 @@ namespace Server.Game
                     }
                     else                                                                                                                                                                                                                                                                                                                                                          
                     {
-                        QuestData questData = DataManager.QuestDict.GetValueOrDefault(questId);
-                        if (questData == null)
+                        if (!DataManager.QuestDict.TryGetValue(questId, out QuestData questData) || questData == null)
                             return;
                         questDb = new QuestDb()
                         {
@@ -176,13 +175,16 @@ namespace Server.Game
             if (realization != null)
             {
                 int index = realization.id - 1;
+                if (index < 0 || index >= player.Stat.Realizations.Count)
+                    return;
+
                 int count = 0;
                 player.Stat.Realizations[index] += 1;
                 count = player.Stat.Realizations[index];
                 playerDb.Realizations = player.Stat.Realizations.ToList();
                 
                 // 소인수 분해를 통해 추가 스탯 적용
-                List<int> factors = GetFactors(count);
+                List<int> factors = GetDivisors(count);
                 foreach (int factor in factors)
                 {
                     foreach(var specialStat in realization.specialStatDatas)
@@ -199,17 +201,15 @@ namespace Server.Game
             playerDb.StatPoint = player.StatPoint;
             DbTransaction.SavePlayerStatDb(player, playerDb, player.Room);
         }
-        private List<int> GetFactors(int number)
+        private static List<int> GetDivisors(int number)
         {
-            List<int> factors = new List<int>();
+            List<int> divisors = new List<int>();
             for (int i = 1; i <= number; i++)
             {
                 if (number % i == 0)
-                {
-                    factors.Add(i);
-                }
+                    divisors.Add(i);
             }
-            return factors;
+            return divisors;
         }
 
         private PlayerDb ApplySpecialStat(Player player, PlayerDb playerDb, SpecialStatData specialStatData)
@@ -281,9 +281,10 @@ namespace Server.Game
                 return;
 
             Door door = Map.GetInteraction(doorId) as Door;
+            if (door == null)
+                return;
 
             bool success = true;
-            
 
             if(door.IsOpen == false)
             {
@@ -343,7 +344,6 @@ namespace Server.Game
             {
                 player.Session.Send(interactionPacket);
             }
-            Console.WriteLine($"Door Interaction - {interactionPacket.InteractionType}, ID:{doorId}, Success:{interactionPacket.Success}");
         }
 
         public void HandleTriggerInteraction(Player player, int triggerId)
@@ -374,7 +374,9 @@ namespace Server.Game
                 foreach (var targetInteraction in trigger.Conditions.Keys)
                 {
                     targetIds.Add(targetInteraction);
-                    Map.GetInteraction(targetInteraction).OnTriggerEnter(triggerId);                    
+                    Interaction target = Map.GetInteraction(targetInteraction);
+                    if (target != null)
+                        target.OnTriggerEnter(triggerId);
                 }
             }
 
@@ -395,7 +397,6 @@ namespace Server.Game
             {
                 player.Session.Send(interactionPacket);
             }
-            Console.WriteLine($"Trigger Interaction - {interactionPacket.InteractionType}, ID:{triggerId}, Success:{interactionPacket.Success}");
         }
 
         public void HandleItemTableInteraction(Player player, int itemTableId)

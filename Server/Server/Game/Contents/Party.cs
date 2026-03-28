@@ -1,4 +1,4 @@
-﻿using Server.Game;
+using Server.Game;
 using System;
 using System.Collections.Generic;
 
@@ -17,6 +17,8 @@ namespace Server
 
         public bool AddMember(Player player)
         {
+            if (player == null)
+                return false;
             if (Members.Count >= MaxMembers)
                 return false;
             if (Members.Contains(player))

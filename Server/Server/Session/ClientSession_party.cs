@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Server.Game;
 using Server.Game.Contents;
 using ServerCore;
@@ -52,38 +52,40 @@ namespace Server
 
         public void LeaveParty()
         {
-            if (_currentParty != null)
+            if (_currentParty == null)
+                return;
+
+            List<Player> membersSnapshot = new List<Player>(_currentParty.Members);
+            int partyId = _currentParty.PartyId;
+
+            _currentParty.RemoveMember(MyPlayer);
+
+            if (_currentParty.Members.Count == 0)
+                PartySystem.Instance.RemoveParty(partyId);
+
+            S_Party packet = new S_Party { PartyId = partyId };
+            if (_currentParty != null && _currentParty.Members.Count > 0)
+                packet.PartyMembers.AddRange(_currentParty.Members.Select(m => m.Info));
+
+            foreach (Player member in membersSnapshot)
             {
-                List<Player> members = new List<Player>(_currentParty.Members);
-
-                _currentParty.RemoveMember(MyPlayer);               
-                
-                if (_currentParty.Members.Count == 0)
-                {
-                    PartySystem.Instance.RemoveParty(_currentParty.PartyId);
-                }
-                S_Party party = new S_Party();
-                party.PartyId = _currentParty.PartyId;
-                party.PartyMembers.AddRange(_currentParty.Members.Select(member => member.Info));
-
-                foreach (var member in members)
-                {
-                    member.Session.Send(party);
-                }
-
-                _currentParty = null;
+                member.Session?.Send(packet);
             }
+
+            _currentParty = null;
         }
 
         public void JoinParty(Party party)
         {
+            if (party == null)
+                return;
+
             if (_currentParty != null)
-            {
                 LeaveParty();
-            }
 
             _currentParty = party;
-            _currentParty.AddMember(MyPlayer);
+            if (!_currentParty.AddMember(MyPlayer))
+                return;
 
             S_Party joinParty = new S_Party();
             joinParty.PartyId = _currentParty.PartyId;
@@ -91,7 +93,7 @@ namespace Server
 
             foreach (var member in _currentParty.Members)
             {
-                member.Session.Send(joinParty);
+                member.Session?.Send(joinParty);
             }
         }
     }
