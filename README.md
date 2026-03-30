@@ -1,5 +1,30 @@
 # DawnStar - 2D MMO Game Project
 
+<p align="center">
+  <a href="https://github.com/kimasill/DawnStar"><img alt="GitHub Repo" src="https://img.shields.io/badge/GitHub-DawnStar-181717?style=for-the-badge&logo=github&logoColor=white" /></a>
+  <img alt="C#" src="https://img.shields.io/badge/C%23-.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" />
+  <img alt="Unity" src="https://img.shields.io/badge/Unity-222222?style=for-the-badge&logo=unity&logoColor=white" />
+  <img alt="SQL Server" src="https://img.shields.io/badge/SQL%20Server-CC2927?style=for-the-badge&logo=microsoftsqlserver&logoColor=white" />
+  <img alt="Protobuf" src="https://img.shields.io/badge/Protobuf-4285F4?style=for-the-badge&logo=google&logoColor=white" />
+</p>
+
+> Unity 클라이언트 + C#(.NET) 전용 서버 기반 2D MMORPG.  
+> 로그인/캐릭터 라이프사이클, 맵/던전 시퀀스, 퀘스트/성장, 아이템 경제, 파티 매칭, Interest/TaskQueue 동기화까지 **플레이 루프 전체를 서버 흐름 안에서 완결**하는 것을 목표로 했습니다.
+
+## Links
+
+- **Portfolio (PDF/웹)**: `https://kimasill.github.io/`
+- **Project Page**: `https://kimasill.github.io/projects/dawnstar.html`
+
+## System Architecture (High-level)
+
+<p align="center">
+  <img src="https://kimasill.github.io/images/dawnstar/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png" alt="Network Architecture" width="820" />
+</p>
+<p align="center">
+  <img src="https://kimasill.github.io/images/dawnstar/%EA%B2%8C%EC%9E%84%EC%84%9C%EB%B2%84%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png" alt="Game Server Architecture" width="820" />
+</p>
+
 DawnStar는 유니티(Unity) 기반의 클라이언트와 C# (.NET Core) 기반의 전용 게임 서버로 구성된 2D MMORPG 프로젝트입니다. 안정적인 처리와 높은 동시 접속자 수용을 목표로 다중 스레드 기반 서버 아키텍처 및 게임 로직 최적화가 적용되어 있습니다.
 
 ## 주요 특징 (Key Features)
@@ -48,3 +73,58 @@ MMOProject/
 * **통신:** 전용 Socket Client, HTTP (로그인 및 서버 리스트용)
 **클라이언트 실행 (Client Execution)**
    - 계정 가입 및 인증을 확인한 이후, 서버의 IP와 웹 API 포트로 접속이 이루어집니다. `LoadTestClient`를 통해 대량의 봇(Bot)을 동시 접속시켜 서버 퍼포먼스를 점검해 볼 수 있습니다.
+
+---
+
+## 핵심 구현 & 트러블슈팅 (Portfolio Highlights)
+
+PDF에서 요약했던 핵심 이슈를, 여기서는 “왜 그 선택을 했는지 / 코드가 어디에 있는지”까지 연결합니다.
+
+### 1) 로그인 이후 상태를 한 축으로 묶기 (Login → Lobby → EnterGame)
+
+- **문제**: 로그인 직후 상태가 쪼개져 있으면(로비/캐릭터/세션), 입장/복원/인벤/퀘스트 흐름이 쉽게 꼬이고 디버깅 지점도 분산됨
+- **해결**: 토큰 검증 이후 `S_Login`에 로비 캐릭터 스냅샷을 담아 **패킷 1회 + 상태 전이 1회**로 고정
+- **코드**: `Server/Server/Session/ClientSession_preGame.cs`
+
+```csharp
+S_Login loginResponse = new S_Login { LoginOk = 1 };
+foreach (PlayerDb player in findAccount.Players)
+{
+    LobbyPlayerInfo summary = ToLobbyPlayerInfo(player);
+    LobbyPlayers.Add(summary);
+    loginResponse.Players.Add(summary);
+}
+Send(loginResponse);
+ServerState = PlayerServerState.ServerStateLobby;
+```
+
+### 2) 맵 전환/리스폰을 시퀀스로 고정하기 (Leave → Restore → Enter)
+
+- **문제**: 맵 ID만 바꾸는 식의 전환은 서버/클라 판정 불일치로 전투/파티/동기화가 연쇄 붕괴
+- **해결**: `LeaveGame`으로 정리 후 리스폰 상태를 복원하고, `EnterGame`으로 재진입하는 시퀀스를 고정
+- **코드**: `Server/Server/Game/Room/GameRoom_Sequence.cs`
+
+### 3) Interest Management 부하 완충 (장비 지연 + 시야 갱신 주기)
+
+- **문제**: 시야에 새 오브젝트가 잡힐 때마다 즉시 “풀 동기화”를 하면 틱당 작업이 폭증해 전체 체감이 악화
+- **해결**: 룸의 지연 큐(TaskQueue)에 **장비 동기화(예: 100ms)**, **시야 갱신(예: 500ms)** 을 넣어 스파이크를 완화
+- **코드**: `Server/Server/Game/Room/InterestManagement.cs`, `Server/Server/Game/Job/TaskQueue.cs`
+
+```csharp
+// 시야에 잡힌 타 플레이어 장비 정보를 룸 큐에서 지연 동기화
+Owner.Room.EnqueueAfter(100, Owner.Room.HandleEquippedItemList, Owner, player, true);
+// 시야 갱신 주기 예약
+Owner.Room.EnqueueAfter(500, Update);
+```
+
+---
+
+## Getting Started (Local)
+
+이 레포는 **클라이언트(Unity)** / **서버(.NET)** / **공용(Protobuf 등)** 프로젝트로 구성됩니다.
+
+- `Server/` 하위 솔루션을 열고 서버를 실행합니다.
+- 클라이언트는 Unity 프로젝트를 열어 서버 주소/포트 설정 후 실행합니다.
+- 대량 접속/부하 테스트는 `LoadTestClient`를 이용합니다.
+
+> 자세한 실행 절차는 환경별로 다르므로, 추후 `docs/`로 분리해 보강할 예정입니다.
