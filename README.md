@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://kimasill.github.io/projects/dawnstar.html" title="Dawnstar 프로젝트 페이지" target="_blank" rel="noopener noreferrer">
-    <img src="https://kimasill.github.io/images/dawnstar/DawnstarTitleImg.png" alt="Dawnstar 타이틀" width="640" />
+    <img src="https://raw.githubusercontent.com/kimasill/DawnStar/main/docs/readme/DawnstarTitleImg.png" alt="Dawnstar 타이틀" width="640" />
   </a>
 </p>
 
