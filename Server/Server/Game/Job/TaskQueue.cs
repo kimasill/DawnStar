@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Server.Game.Job
@@ -13,7 +10,7 @@ namespace Server.Game.Job
         ConcurrentQueue<IJob> _jobQueue = new ConcurrentQueue<IJob>();
 
         public IJob EnqueueAfter(int tickAfter, Action action) { return EnqueueAfter(tickAfter, new Job(action)); }
-        public IJob EnqueueAfter<T1>(int tickAfter, Action<T1> action, T1 t1) {return EnqueueAfter(tickAfter, new Job<T1>(action, t1)); }
+        public IJob EnqueueAfter<T1>(int tickAfter, Action<T1> action, T1 t1) { return EnqueueAfter(tickAfter, new Job<T1>(action, t1)); }
         public IJob EnqueueAfter<T1, T2>(int tickAfter, Action<T1, T2> action, T1 t1, T2 t2) { return EnqueueAfter(tickAfter, new Job<T1, T2>(action, t1, t2)); }
         public IJob EnqueueAfter<T1, T2, T3>(int tickAfter, Action<T1, T2, T3> action, T1 t1, T2 t2, T3 t3) { return EnqueueAfter(tickAfter, new Job<T1, T2, T3>(action, t1, t2, t3)); }
         public IJob EnqueueAfter<T1, T2, T3, T4>(int tickAfter, Action<T1, T2, T3, T4> action, T1 t1, T2 t2, T3 t3, T4 t4) { return EnqueueAfter(tickAfter, new Job<T1, T2, T3, T4>(action, t1, t2, t3, t4)); }
@@ -23,15 +20,15 @@ namespace Server.Game.Job
             _timer.Enqueue(job, tickAfter);
             return job;
         }
-        public void Enqueue(Action action){Enqueue(new Job(action));}
-        public void Enqueue<T1>(Action<T1> action, T1 t1){Enqueue(new Job<T1>(action, t1));}
-        public void Enqueue<T1, T2>(Action<T1, T2> action, T1 t1, T2 t2){Enqueue(new Job<T1, T2>(action, t1, t2));}
-        public void Enqueue<T1, T2, T3>(Action<T1, T2, T3> action, T1 t1, T2 t2, T3 t3){Enqueue(new Job<T1, T2, T3>(action, t1, t2, t3));}
+        public void Enqueue(Action action) { Enqueue(new Job(action)); }
+        public void Enqueue<T1>(Action<T1> action, T1 t1) { Enqueue(new Job<T1>(action, t1)); }
+        public void Enqueue<T1, T2>(Action<T1, T2> action, T1 t1, T2 t2) { Enqueue(new Job<T1, T2>(action, t1, t2)); }
+        public void Enqueue<T1, T2, T3>(Action<T1, T2, T3> action, T1 t1, T2 t2, T3 t3) { Enqueue(new Job<T1, T2, T3>(action, t1, t2, t3)); }
         public void Enqueue<T1, T2, T3, T4>(Action<T1, T2, T3, T4> action, T1 t1, T2 t2, T3 t3, T4 t4) { Enqueue(new Job<T1, T2, T3, T4>(action, t1, t2, t3, t4)); }
 
         public void Enqueue(IJob job)
         {
-            _jobQueue.Enqueue(job);               
+            _jobQueue.Enqueue(job);
         }
         public void Enqueue(Func<Task> asyncAction)
         {

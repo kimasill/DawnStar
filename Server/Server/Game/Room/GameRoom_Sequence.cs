@@ -20,60 +20,53 @@ namespace Server.Game
             if (player == null || player.Room == null)
                 return;
 
-            // 플레이어를 게임에서 제거
             LeaveGame(player.Id);
 
-            // Respawn 위치를 결정
-            Vector2Int respawnPos = new Vector2Int();
-            if (respawnType == RespawnType.Repeat)
-            {
-                // Repeat 타입은 현재 위치에서 부활
-                respawnPos = player.CellPos;
-            }
-            else if (respawnType == RespawnType.Spot)
-            {
-                if (DataManager.MapDict.TryGetValue(player.MapInfo.TemplateId, out MapData mapData)
-                    && mapData.portals != null && mapData.portals.Count > 0)
-                {
-                    int portal = FindClosestPortalId(mapData, player.CellPos);
-                    if (portal != 0)
-                        UpdatePlayerMapInfo(player, mapData, portal);
-                }
-            }
+            if (respawnType == RespawnType.Spot)
+                TryMoveToNearestPortal(player);
 
-            // 플레이어의 상태를 초기화
-            player.Stat.Hp = player.Stat.MaxHp;
-            player.PosInfo.State = CreatureState.Idle;
-            player.PosInfo.MoveDir = MoveDir.Down;
-
-            // 플레이어를 게임에 다시 추가
+            RestorePlayerStateAfterRespawn(player);
             EnterGame(player, false);
         }
 
-        private int FindClosestPortalId(MapData mapData, Vector2Int cellPos)
+        private void TryMoveToNearestPortal(Player player)
+        {
+            if (!DataManager.MapDict.TryGetValue(player.MapInfo.TemplateId, out MapData mapData)
+                || mapData.portals == null || mapData.portals.Count == 0)
+                return;
+
+            int portalId = GetNearestPortalId(mapData, player.CellPos);
+            if (portalId != 0)
+                UpdatePlayerMapInfo(player, mapData, portalId);
+        }
+
+        private void RestorePlayerStateAfterRespawn(Player player)
+        {
+            player.Stat.Hp = player.Stat.MaxHp;
+            player.PosInfo.State = CreatureState.Idle;
+            player.PosInfo.MoveDir = MoveDir.Down;
+        }
+
+        private int GetNearestPortalId(MapData mapData, Vector2Int cellPos)
         {
             if (mapData?.portals == null || mapData.portals.Count == 0)
                 return 0;
 
-            double closestDistance = double.MaxValue;
-            int closestPortalId = 0;
+            double bestDistance = double.MaxValue;
+            int bestPortalId = 0;
             foreach (var portal in mapData.portals)
             {
-                // 포탈의 위치를 가져옴
-                Vector2Int portalPos = new Vector2Int((int)portal.posX, (int)portal.posY);
+                Vector2Int portalCell = new Vector2Int((int)portal.posX, (int)portal.posY);
+                double distance = (cellPos - portalCell).magnitude;
 
-                // 현재 위치와 포탈 위치 간의 거리 계산
-                double distance = (cellPos - portalPos).magnitude;
-
-                // 가장 가까운 포탈을 업데이트
-                if (distance < closestDistance)
+                if (distance < bestDistance)
                 {
-                    closestDistance = distance;
-                    closestPortalId = portal.id;
+                    bestDistance = distance;
+                    bestPortalId = portal.id;
                 }
             }
 
-            return closestPortalId;
+            return bestPortalId;
         }
 
         public async void HandleMapChanged(Player player, int portalId)
@@ -81,55 +74,47 @@ namespace Server.Game
             if (player == null)
                 return;
 
-            MapData mapData = null;
-            DataManager.MapDict.TryGetValue(player.MapInfo.TemplateId, out mapData);
-            if (mapData == null)
-            {
+            if (!DataManager.MapDict.TryGetValue(player.MapInfo.TemplateId, out MapData currentMap))
                 return;
-            }
-            int mapId = 0;
-            int destPortalId = 0;
-            foreach (var portal in mapData.portals)
+
+            int destinationMapId = 0;
+            int destinationPortalId = 0;
+            foreach (var portal in currentMap.portals)
             {
                 if (portal.id == portalId)
                 {
-                    mapId = portal.mapId;
-                    destPortalId = portal.destination;
+                    destinationMapId = portal.mapId;
+                    destinationPortalId = portal.destination;
+                    break;
                 }
             }
-            MapData nextMapData = null;
-            DataManager.MapDict.TryGetValue(mapId, out nextMapData);
-            if (nextMapData == null)
-            {
+
+            if (!DataManager.MapDict.TryGetValue(destinationMapId, out MapData nextMap))
                 return;
-            }
 
-            bool add = false;
-            if (nextMapData.type == MapType.Dungeon)
-                add = true;
-            else if (nextMapData.type == MapType.Field)
-                add = false;
-
-            GameRoom room = await GameLogic.Instance.GetRoom(mapId, add);
-            HandleMapChanged(player, nextMapData, destPortalId, room);
+            bool createRoomIfMissing = nextMap.type == MapType.Dungeon;
+            GameRoom destinationRoom = await GameLogic.Instance.GetRoom(destinationMapId, createRoomIfMissing);
+            HandleMapChanged(player, nextMap, destinationPortalId, destinationRoom);
         }
-        public void HandleMapChanged(Player player, MapData map, int destPortalId, GameRoom pRoom)
+
+        public void HandleMapChanged(Player player, MapData map, int destPortalId, GameRoom destinationRoom)
         {
-            if (player == null || pRoom == null)
+            if (player == null || destinationRoom == null)
                 return;
-            LeaveGame(player.Id, save:false);
+
+            LeaveGame(player.Id, save: false);
             UpdatePlayerMapInfo(player, map, destPortalId);
 
             MapDb mapDb = new MapDb()
-            {                
+            {
                 PlayerDbId = player.PlayerDbId,
                 TemplateId = map.id,
                 Scene = map.name,
                 MapName = map.name
             };
             DbTransaction.SavePlayerMap(player, mapDb);
-            player.Room = pRoom;
-            pRoom.Enqueue(pRoom.EnterGame, player, false);
+            player.Room = destinationRoom;
+            destinationRoom.Enqueue(destinationRoom.EnterGame, player, false);
         }
 
         public void UpdatePlayerMapInfo(Player player, MapData map, int destPortalId)
