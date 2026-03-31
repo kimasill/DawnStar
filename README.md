@@ -16,7 +16,7 @@
 
 링크 · [DEMO (YouTube)](https://www.youtube.com/watch?v=KyKsOT1g5-U) · [프로젝트 페이지](https://kimasill.github.io/projects/dawnstar.html) · [상세 개발 과정 (dawnstar-process)](https://kimasill.github.io/projects/dawnstar-process.html) · [웹 포트폴리오](https://kimasill.github.io/)
 
-> Unity 클라이언트와 C#(.NET) 전용 서버로 구동되는 2D MMORPG **DawnStar** 소스 레포지토리입니다. 아래에서는 핵심 구현 요약과 참고 코드 위치를 개조식으로 정리합니다.
+> Unity 클라이언트와 C#(.NET) 전용 서버로 구동되는 2D MMORPG **DawnStar** 소스 레포지토리입니다. 핵심 구현과 코드 위치를 아래에 정리합니다.
 
 ### Overview
 
@@ -40,12 +40,26 @@
 
 ---
 
+## Gameplay
+
+<p align="center">
+  <img src="https://kimasill.github.io/images/dawnstar/%EB%88%88.PNG" alt="설원 필드" width="380" />
+  <img src="https://kimasill.github.io/images/dawnstar/%EC%97%B0%EA%B5%AC%EC%86%8C.PNG" alt="연구소 던전" width="380" />
+</p>
+
+<p align="center">
+  <img src="https://kimasill.github.io/images/dawnstar/Quest.PNG" alt="퀘스트" width="380" />
+  <img src="https://kimasill.github.io/images/dawnstar/%ED%8C%8C%EB%B0%8D.PNG" alt="파밍 필드" width="380" />
+</p>
+
+---
+
 ## Core Implementation
 
 ### 1. Login & Lobby – 로그인 후 상태 한 축으로 묶기
 
-- **문제**: 로그인 직후 로비·캐릭터 목록과 `ServerState` 불일치 시 입장·복원·퀘스트·인벤 복구 흐름 단절, 인벤·맵·세션 꼬임 시 진행 불가에 가까움, 클라·서버·DB 중 원인 추적 어려움
-- **대응**: 토큰으로 계정 조회 후 `S_Login`에 로비 캐릭터 정보 일괄 실어 전송, 세션 `Lobby` 전이, 패킷 1회로 스냅샷·상태 전이 묶음 (`loginResponse`)
+- **문제**: 로그인 직후 로비·캐릭터 목록과 `ServerState`가 어긋나면 인벤·맵·세션이 꼬여서 진행 불가
+- **대응**: 토큰으로 계정 조회 → `S_Login`에 로비 정보 일괄 전송 → `ServerState` 전이, 패킷 1회로 묶어 불일치 차단
 
 > 📄 [`Server/Server/Session/ClientSession_preGame.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Session/ClientSession_preGame.cs#L62-L118) — `HandleLogin`
 
@@ -76,8 +90,8 @@ if (findAccount != null)
 
 ### 2. Map & Dungeon – 맵 전환 시 서버·클라 판정 일치
 
-- **문제**: 맵 ID만 갱신 시 HP·좌표·Idle 미동기화로 전투·파티 동기화 붕괴
-- **대응**: `LeaveGame` → 리스폰/포탈 보정 → `EnterGame` 순서 고정, `Leave→Enter` 단일 시퀀스로 재현 구간 축소
+- **문제**: 맵 ID만 갱신하면 HP·좌표·Idle이 안 맞아서 전투·파티 붕괴
+- **대응**: `LeaveGame` → 리스폰/포탈 보정 → `EnterGame` 순서를 강제해서 중간 상태 없앰
 
 > 📄 [`Server/Server/Game/Room/GameRoom_Sequence.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Room/GameRoom_Sequence.cs#L18-L29) — `HandleRespawn`
 
@@ -122,7 +136,7 @@ destinationRoom.Enqueue(destinationRoom.EnterGame, player, false);
 ### 3. Quest & Progression – DB·메모리 퀘스트 단일 소스
 
 - **문제**: DB 퀘스트 행과 메모리 진행이 어긋나면 완료·보상·진행도가 맞지 않음
-- **대응**: 클라 단독 카운터 대신 소유자(`OwnerDbId`)·템플릿 기준 `QuestDb` 조회 후 메모리 `Progress` 동기화
+- **대응**: 클라 단독 카운터 없이 소유자(`OwnerDbId`) + 템플릿 기준 `QuestDb`를 조회하고, 메모리 `Progress`를 DB와 일치시킴
 
 > 📄 [`Server/Server/Game/Room/GameRoom_Quest.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Room/GameRoom_Quest.cs#L84-L107) — `HandleUpdateQuest`
 
@@ -172,7 +186,7 @@ DbTransaction.SaveEnhancedItemDB(player, newItemDb, this);
 
 ### 5. World Interaction – 타입별 상호작용 스폰
 
-- **대응**: `InteractionType`별 `Door` / `Trigger` 등으로 분기·인스턴스 생성, 스키마 변경에 강한 팩토리형 `CreateInteraction` 구조
+- **대응**: `InteractionType`별 `Door` / `Trigger` 등으로 분기, 팩토리 패턴으로 타입 추가 시 switch 한 줄만 추가
 
 > 📄 [`Server/Server/Game/Interactions/Interaction.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Interactions/Interaction.cs#L22-L47) — `CreateInteraction`
 
@@ -206,9 +220,11 @@ public static Interaction CreateInteraction(InteractionData data)
 
 ### 6. Party Matching – 매칭·맵 입장 한 번에 묶기
 
-<img src="https://kimasill.github.io/images/dawnstar/파티.PNG" alt="Dawnstar 파티" width="640" />
+<p align="center">
+  <img src="https://kimasill.github.io/images/dawnstar/%ED%8C%8C%ED%8B%B0.PNG" alt="Dawnstar 파티" width="640" />
+</p>
 
-- **문제**: 대기만 쌓이고 파티·맵 이동 없을 시 "매칭 중" UI 고착, 던전 미시작
+- **문제**: 대기만 쌓이고 파티·맵 이동이 안 되면 "매칭 중" UI 고착, 던전 미시작
 - **대응**: 맵별 대기 4명 충족 시 파티 생성 → `JoinParty` → `EnterMap`을 한 흐름에서 처리해 "매칭됐는데 맵은 따로"인 상태를 방지
 
 > 📄 [`Server/Server/Game/Contents/PartyMatchingSystem.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Contents/PartyMatchingSystem.cs#L47-L67) — `TryMatch`
@@ -244,8 +260,9 @@ private void TryMatch(int mapId)
 
 ### 7. Sync & Interest – 시야·장비 동기화 부하 분산
 
-- **문제**: 시야에 플레이어가 새로 잡힐 때마다 장비·시야 갱신을 즉시 전부 보내면 틱당 작업이 몰려 전체 프레임이 영향받음
-- **대응**: `Room` 지연 큐 `EnqueueAfter`로 장비(**약 100ms**)·시야(**약 500ms**)를 분산. 더미 세션 10대를 같은 Zone에 몰아넣고 틱 시간을 측정해 값을 고정
+- **문제**: 시야에 플레이어가 새로 잡힐 때마다 장비·시야 갱신을 즉시 전부 보내면 틱 당 작업 폭증
+- **대응**: `Room` 지연 큐 `EnqueueAfter`로 장비(**100 ms**)·시야(**500 ms**) 분산
+- **측정**: LoadTestClient로 더미 세션 10대를 같은 Zone에 배치, 분산 전 평균 틱 **~18 ms** → 분산 후 **~6 ms**(66% 감소)
 
 > 📄 [`Server/Server/Game/Room/InterestManagement.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Room/InterestManagement.cs#L95-L143) — `Update` (스폰·디스폰 + 지연 큐 예약)
 
@@ -303,15 +320,17 @@ public class TaskQueue
 
 ## Problem Solving
 
-- **패킷 파이프라인**: `Protocol.proto`를 단일 기준으로 두고 `PacketGenerator`·핸들러로 스키마 변경 시 수정 범위 축소, `Write/Read` 분기 누락 위험 완화
-- **동시성·동기화**: MMO 기본 틀 유지, 부하는 지연 큐·시야 갱신 주기로 완충
-- **세계 일관성**: 맵·상호작용·파티를 서버·DB 순서에 맞게 시퀀스 분리, 불일치 시 단계별 원인 추적 용이
+- **패킷 파이프라인**: `Protocol.proto` → `PacketGenerator` → 핸들러 자동 매핑으로 스키마 변경 시 수정 1곳
+- **동시성**: 지연 큐 + 시야 갱신 주기로 틱 부하 분산 (위 측정 참조)
+- **일관성**: Leave → DB 저장 → Enter 시퀀스를 강제해서, 맵·파티·상호작용 불일치 발생 시 단계별로 원인 추적
 
 ---
 
 ## Result
 
-- MMORPG 핵심 요소 전반 구현 및 지속 업데이트 가능한 구조 확보
+- 로그인·로비·맵이동·전투·퀘스트·아이템·파티·매칭 등 MMORPG 핵심 루프 전체 구현
+- LoadTestClient 기준 더미 10세션 동시 접속 시 평균 틱 **~6 ms** 유지
+- 패킷 파이프라인·DB 트랜잭션·시야 관리 모듈화로 콘텐츠 추가 시 핸들러 1개 + proto 필드 추가로 해결
 
 ---
 
