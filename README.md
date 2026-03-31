@@ -312,7 +312,7 @@ public class TaskQueue
 ## Visual: Packet Pipeline
 
 <p align="center">
-  <img src="https://kimasill.github.io/images/dawnstar/%ED%8C%A8%ED%82%B7%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png" alt="Dawnstar 패킷 처리 아키텍처" width="820" />
+  <img src="https://kimasill.github.io/images/dawnstar/%ED%8C%A8%ED%82%B7%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png" alt="Dawnstar 패킷 처리 아키텍처" width="480" />
 </p>
 
 *Protocol.proto·PacketGenerator·하이브리드 직렬화 파이프라인*
