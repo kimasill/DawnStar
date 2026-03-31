@@ -14,6 +14,12 @@
   </a>
 </p>
 
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=KyKsOT1g5-U" title="DawnStar 시연 영상" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.youtube.com/vi/KyKsOT1g5-U/maxresdefault.jpg" alt="DawnStar 시연 영상 (YouTube)" width="720" />
+  </a>
+</p>
+
 링크 · [프로젝트 페이지](https://kimasill.github.io/projects/dawnstar.html) · [상세 개발 과정 (dawnstar-process)](https://kimasill.github.io/projects/dawnstar-process.html) · [웹 포트폴리오](https://kimasill.github.io/)
 
 > Unity 클라이언트와 C#(.NET) 전용 서버로 구동되는 2D MMORPG **DawnStar** 소스 레포지토리입니다. 아래에서는 핵심 구현 요약과 참고 코드 위치를 개조식으로 정리합니다.
@@ -121,7 +127,7 @@ destinationRoom.Enqueue(destinationRoom.EnterGame, player, false);
 
 ### 3. Quest & Progression – DB·메모리 퀘스트 단일 소스
 
-- **문제**: DB 퀘스트 행과 메모리 진행 불일치 시 완료·보상·진행도 판정 흔들림
+- **문제**: DB 퀘스트 행과 메모리 진행이 어긋나면 완료·보상·진행도가 맞지 않음
 - **대응**: 클라 단독 카운터 대신 소유자(`OwnerDbId`)·템플릿 기준 `QuestDb` 조회 후 메모리 `Progress` 동기화
 
 > 📄 [`Server/Server/Game/Room/GameRoom_Quest.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Room/GameRoom_Quest.cs#L84-L107) — `HandleUpdateQuest`
@@ -209,7 +215,7 @@ public static Interaction CreateInteraction(InteractionData data)
 <img src="https://kimasill.github.io/images/dawnstar/파티.PNG" alt="Dawnstar 파티" width="640" />
 
 - **문제**: 대기만 쌓이고 파티·맵 이동 없을 시 "매칭 중" UI 고착, 던전 미시작
-- **대응**: 맵별 대기 4명 충족 시 파티 생성 → `JoinParty` → `EnterMap`을 한 흐름에서 처리, "같이 맵 입장" 체감 우선
+- **대응**: 맵별 대기 4명 충족 시 파티 생성 → `JoinParty` → `EnterMap`을 한 흐름에서 처리해 "매칭됐는데 맵은 따로"인 상태를 방지
 
 > 📄 [`Server/Server/Game/Contents/PartyMatchingSystem.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Contents/PartyMatchingSystem.cs#L47-L67) — `TryMatch`
 
@@ -244,8 +250,8 @@ private void TryMatch(int mapId)
 
 ### 7. Sync & Interest – 시야·장비 동기화 부하 분산
 
-- **문제**: 시야 신규 진입 시마다 장비 풀·시야 갱신을 즉시 전부 전송 시 틱당 작업 폭증, 체감 동기화 악화
-- **대응**: `Room` 지연 큐 `EnqueueAfter`로 장비(**약 100ms**)·시야(**약 500ms**) 완충, MMO식 가시 골격 유지, 더미 세션 기준으로 스파이크 완화 확인 후 수치 고정
+- **문제**: 시야에 플레이어가 새로 잡힐 때마다 장비·시야 갱신을 즉시 전부 보내면 틱당 작업이 몰려 전체 프레임이 영향받음
+- **대응**: `Room` 지연 큐 `EnqueueAfter`로 장비(**약 100ms**)·시야(**약 500ms**)를 분산. 더미 세션 10대를 같은 Zone에 몰아넣고 틱 시간을 측정해 값을 고정
 
 > 📄 [`Server/Server/Game/Room/InterestManagement.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Room/InterestManagement.cs#L95-L143) — `Update` (스폰·디스폰 + 지연 큐 예약)
 
