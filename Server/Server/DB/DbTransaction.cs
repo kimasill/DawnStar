@@ -88,7 +88,8 @@ namespace Server.DB
             {
                 db.Entry(playerDb).State = EntityState.Unchanged;
                 db.Entry(playerDb).Property(nameof(playerDb.Hp)).IsModified = true;
-                bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
+                // NOTE: Legacy comment was garbled due to encoding; keep intent concise.
+                bool success = db.SaveChangesEx(); // 예외 처리 포함
                 if (success)
                 {
                     room.Enqueue(SavePlayerStatus_Step3, playerDb.Hp);
@@ -129,7 +130,7 @@ namespace Server.DB
                         }
                         else if (value is IList list && list.Count > 0)
                         {
-                            // ?쇰컲 由ъ뒪????낆씠怨??붿냼媛 ?덈뒗 寃쎌슦
+                            // 일반 리스트 타입이고 요소가 있는 경우
                             db.Entry(playerDb).Property(property.Name).IsModified = true;
                         }
                         else if (property.Name == "StatPoint")
@@ -141,7 +142,7 @@ namespace Server.DB
                         }
                         else if (double.TryParse(value.ToString(), out doubleValue) && doubleValue != 0 && property.Name != "PosX" && property.Name != "PosY")
                         {
-                            // 由ъ뒪????낆씠 ?꾨땲怨? double濡?蹂??媛?ν븳 寃쎌슦
+                            // 리스트 타입이 아니고 double 변환 가능하며 0이 아닌 경우
                             db.Entry(playerDb).Property(property.Name).IsModified = true;
                         }
                     }
@@ -269,7 +270,7 @@ namespace Server.DB
                     {
                         db.Items.Add(itemDb);
                     }                    
-                    bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
+                    bool success = db.SaveChangesEx(); // 예외 처리 포함
                     
                     if (success)
                     {                        
@@ -337,7 +338,7 @@ namespace Server.DB
                             }
                         }
 
-                        bool success = db.SaveChangesEx(); // ??ν븷 ???덉쇅 泥섎━瑜??댁???
+                        bool success = db.SaveChangesEx(); // 예외 처리 포함
                         if (success)
                         {
                             room.Enqueue(() =>
@@ -378,7 +379,7 @@ namespace Server.DB
                         if (tItemDb != null)
                         {
                             db.Entry(tItemDb).State = EntityState.Deleted;
-                            bool success = db.SaveChangesEx(); // ??ν븷 ???덉쇅 泥섎━瑜??댁???
+                            bool success = db.SaveChangesEx(); // 예외 처리 포함
                             if (success)
                             {
                                 room.Enqueue(() =>
@@ -390,7 +391,7 @@ namespace Server.DB
                     }
                     catch (Exception ex)
                     {
-                        // ?덉쇅 泥섎━ 濡쒖쭅 異붽?
+                        // 예외 처리 로깅
                         Console.WriteLine($"Error removing item: {ex.Message}");
                     }
                 }
@@ -442,7 +443,7 @@ namespace Server.DB
                     db.Entry(itemDb).Property(nameof(itemDb.Defense)).IsModified = true;
                     db.Entry(itemDb).Property(nameof(itemDb.OptionsJson)).IsModified = true;                   
 
-                    bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
+                    bool success = db.SaveChangesEx(); // 예외 처리 포함
                     if (success)
                     {
                         room.Enqueue(() =>
@@ -471,17 +472,17 @@ namespace Server.DB
             if (player == null || questDb == null)
                 return;
 
-            // ?섏뒪???곗씠???쎄린
+            // 퀘스트 데이터 읽기
             Data.QuestData questData = DataManager.QuestDict.GetValueOrDefault(questDb.TemplateId);
             if (questData == null)
                 return;
 
-            // ?곌퀎 ?뺣낫 媛?몄삤湲?
+            // 퀘스트 정보 가져오기
             int exp = questData.rewards.FirstOrDefault(r => r.rewardType == RewardType.Exp)?.amount ?? 0;
             int connection = questData.connection;
             int gold = questData.rewards.FirstOrDefault(r => r.rewardType == RewardType.Gold)?.amount ?? 0;
 
-            // ?섏뒪???꾨즺 泥섎━
+            // 퀘스트 완료 처리
             Instance.Enqueue(() =>
             {
                 using (AppDbContext db = new AppDbContext())
@@ -490,7 +491,7 @@ namespace Server.DB
                     db.Entry(questDb).Property(nameof(questDb.Progress)).IsModified = true;
                     db.Entry(questDb).Property(nameof(questDb.Completed)).IsModified = true;
                     
-                    bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
+                    bool success = db.SaveChangesEx(); // 예외 처리 포함
                     if (success)
                     {
                         room.Enqueue(() =>
@@ -537,7 +538,7 @@ namespace Server.DB
                     {
                         db.Quests.Add(questDb);
                     }                    
-                    bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
+                    bool success = db.SaveChangesEx(); // 예외 처리 포함
                     if (success)
                     {
                         room.Enqueue(() =>
@@ -569,7 +570,7 @@ namespace Server.DB
             {
                 db.Entry(questDb).State = EntityState.Unchanged;
                 db.Entry(questDb).Property(nameof(questDb.Progress)).IsModified = true;
-                bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
+                bool success = db.SaveChangesEx(); // 예외 처리 포함
                 if (success)
                 {                    
                 }
@@ -601,7 +602,7 @@ namespace Server.DB
                         }
                         chest.Opened = chestDb.Opened;
                     }
-                    bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
+                    bool success = db.SaveChangesEx(); // 예외 처리 포함
                     if (success && reward)
                     {
                         AcquireData acquireData = DataManager.AcquireDict.GetValueOrDefault(chestDb.TemplateId);
@@ -646,7 +647,7 @@ namespace Server.DB
                     {
                         db.Chests.Add(chestDb);
                     }
-                    bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???
+                    bool success = db.SaveChangesEx(); // 예외 처리 포함
                     if (success)
                     {
                         //Console.WriteLine("success");
@@ -737,7 +738,7 @@ namespace Server.DB
                     {
                         db.ShopItems.Remove(exShopItemDb);
                     }
-                    bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
+                    bool success = db.SaveChangesEx(); // 예외 처리 포함
 
                     
 
@@ -788,7 +789,7 @@ namespace Server.DB
                     {
                         existingInteractionDb.Completed = interactionDb.Completed;
                     }
-                    bool success = db.SaveChangesEx();//??ν븷???덉쇅泥섎━瑜??댁???   
+                    bool success = db.SaveChangesEx(); // 예외 처리 포함
                     if (success)
                     {
                         room.Enqueue(() =>

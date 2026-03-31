@@ -64,13 +64,13 @@ class PacketHandler
     }
 
     // Step 2
-    //濡쒓렇??寃곌낵 + 罹먮┃??紐⑸줉
+    // 로그인 결과 + 캐릭터 목록
     public static void S_LoginHandler(PacketSession session, IMessage packet)
     {
         S_Login loginPacket = (S_Login)packet;
         ServerSession serverSession = (ServerSession)session;
 
-        //TODO: 濡쒕퉬 UI ?먯꽌 罹먮┃???좏깮?섎룄濡?留뚮뱾湲?
+        // TODO: 로비 UI에서 캐릭터 선택 가능하게 만들기
         if (loginPacket.Players == null || loginPacket.Players.Count == 0)
         {
             C_CreatePlayer createPlayerPacket = new C_CreatePlayer();
@@ -79,7 +79,7 @@ class PacketHandler
         }
         else
         {
-            //?쇰떒 泥ル쾲吏몃줈 濡쒓렇??
+            // 우선 첫 번째 캐릭터로 로그인
             LobbyPlayerInfo info = loginPacket.Players[0];
             C_EnterGame enterGamePacket = new C_EnterGame();
             enterGamePacket.Name = info.Name;

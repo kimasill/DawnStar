@@ -361,7 +361,7 @@ namespace Server.Game.Room
                     {
                         if (int.TryParse(tokens[x], out int monsterId))
                         {
-                            _spawnPoints[y, x] = monsterId; // 紐ъ뒪???꾩씠?????
+                            _spawnPoints[y, x] = monsterId; // 몬스터 스폰 ID
                         }
                     }
                 }
@@ -446,13 +446,13 @@ namespace Server.Game.Room
         {
             List<Pos> path = new List<Pos>();
 
-            // ?먯닔 留ㅺ린湲?
+            // 점수 계산
             // F = G + H
-            // F = 理쒖쥌 ?먯닔 (?묒쓣 ?섎줉 醫뗭쓬, 寃쎈줈???곕씪 ?щ씪吏?
-            // G = ?쒖옉?먯뿉???대떦 醫뚰몴源뚯? ?대룞?섎뒗???쒕뒗 鍮꾩슜 (?묒쓣 ?섎줉 醫뗭쓬, 寃쎈줈???곕씪 ?щ씪吏?
-            // H = 紐⑹쟻吏?먯꽌 ?쇰쭏??媛源뚯슫吏 (?묒쓣 ?섎줉 醫뗭쓬, 怨좎젙)
+            // F = 최종 점수(작을수록 좋음, 경로에 따라 달라짐)
+            // G = 시작 지점부터 해당 좌표까지 이동 비용(작을수록 좋음, 경로에 따라 달라짐)
+            // H = 목적지까지의 휴리스틱(작을수록 좋음, 고정)
 
-            // (y, x) ?대? 諛⑸Ц?덈뒗吏 ?щ? (諛⑸Ц = closed ?곹깭)            
+            // (y, x) 방문 여부(visited = closed)
             HashSet<Pos> closeList = new HashSet<Pos>(); // CloseList
             // (y, x) 媛??湲몄쓣 ??踰덉씠?쇰룄 諛쒓껄?덈뒗吏
             // 諛쒓껄X => MaxValue
@@ -463,14 +463,14 @@ namespace Server.Game.Room
             //Pos[,] parent = new Pos[SizeY, SizeX];
             Dictionary<Pos, Pos> parent = new Dictionary<Pos, Pos>();
 
-            // ?ㅽ뵂由ъ뒪?몄뿉 ?덈뒗 ?뺣낫??以묒뿉?? 媛??醫뗭? ?꾨낫瑜?鍮좊Ⅴ寃?戮묒븘?ㅺ린 ?꾪븳 ?꾧뎄
+            // open 목록 중 최솟값을 빠르게 선택하기 위한 우선순위 큐
             PriorityQueue<PQNode> pq = new PriorityQueue<PQNode>();
 
             // CellPos -> ArrayPos
             Pos pos = Cell2Pos(startCellPos);
             Pos dest = Cell2Pos(destCellPos);
 
-            // ?쒖옉??諛쒓껄 (?덉빟 吏꾪뻾)
+            // 시작점 등록(open)
             
             openList.Add(pos, 10 * (Math.Abs(dest.Y - pos.Y) + Math.Abs(dest.X - pos.X)));
             pq.Enqueue(new PQNode() { F = 10 * (Math.Abs(dest.Y - pos.Y) + Math.Abs(dest.X - pos.X)), G = 0, Y = pos.Y, X = pos.X });            
@@ -478,43 +478,43 @@ namespace Server.Game.Room
 
             while (pq.Count > 0)
             {
-                // ?쒖씪 醫뗭? ?꾨낫瑜?李얜뒗??
+                // 현재 가장 좋은 후보 노드 선택
                 PQNode pqNode = pq.Dequeue();
                 Pos node = new Pos(pqNode.Y, pqNode.X);
-                // ?숈씪??醫뚰몴瑜??щ윭 寃쎈줈濡?李얠븘?? ??鍮좊Ⅸ 寃쎈줈濡??명빐???대? 諛⑸Ц(closed)??寃쎌슦 ?ㅽ궢
+                // 같은 좌표가 더 나쁜 경로로 다시 나오면 스킵
                 if (closeList.Contains(node))
                     continue;
 
-                // 諛⑸Ц?쒕떎
+                // 방문 처리
                 closeList.Add(node);
-                // 紐⑹쟻吏 ?꾩갑?덉쑝硫?諛붾줈 醫낅즺
+                // 목적지에 도달하면 종료
                 if (node.Y == dest.Y && node.X == dest.X)
                     break;
 
-                // ?곹븯醫뚯슦 ???대룞?????덈뒗 醫뚰몴?몄? ?뺤씤?댁꽌 ?덉빟(open)?쒕떎
+                // 상하좌우 이동 가능한 좌표를 확인하고 open에 등록
                 for (int i = 0; i < _deltaY.Length; i++)
                 {
                     Pos next = new Pos(node.Y + _deltaY[i], node.X + _deltaX[i]);
 
-                    //?덈Т 硫硫??ㅽ궢
+                    // 최대 거리 제한
                     if(Math.Abs(pos.Y - next.Y) + Math.Abs(pos.X - next.X) > maxDist)
                         continue;
                     // ?좏슚 踰붿쐞瑜?踰쀬뼱?ъ쑝硫??ㅽ궢
-                    // 踰쎌쑝濡?留됲???媛????놁쑝硫??ㅽ궢
+                    // 벽으로 막혔으면 스킵
                     if (next.Y != dest.Y || next.X != dest.X)
                     {
                         if (CanGo(Pos2Cell(next), checkObjects)==false) // CellPos
                             continue;
                     }
 
-                    // ?대? 諛⑸Ц??怨녹씠硫??ㅽ궢
+                    // 이미 방문한 노드면 스킵
                     if (closeList.Contains(next))
                         continue;
 
                     // 鍮꾩슜 怨꾩궛
                     int g = 0;// node.G + _cost[i];
                     int h = 10 * ((dest.Y - next.Y) * (dest.Y - next.Y) + (dest.X - next.X) * (dest.X - next.X));
-                    // ?ㅻⅨ 寃쎈줈?먯꽌 ??鍮좊Ⅸ 湲??대? 李얠븯?쇰㈃ ?ㅽ궢
+                    // 더 나쁜 경로면 스킵
                     int value = 0;
                     if (openList.TryGetValue(next, out value) == false)
                         value = Int32.MaxValue;
@@ -522,7 +522,7 @@ namespace Server.Game.Room
                     if(value < g + h)
                         continue;
 
-                    // ?덉빟 吏꾪뻾
+                    // open 등록
                     if(openList.TryAdd(next, g + h) == false)
                     {
                         openList[next] = g + h;
