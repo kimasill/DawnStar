@@ -38,10 +38,6 @@
   <img src="https://kimasill.github.io/images/dawnstar/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png" alt="Dawnstar 네트워크 아키텍처" width="820" />
 </p>
 
-<p align="center">
-  <img src="https://kimasill.github.io/images/dawnstar/%EA%B2%8C%EC%9E%84%EC%84%9C%EB%B2%84%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png" alt="Dawnstar 게임 서버 아키텍처" width="820" />
-</p>
-
 ---
 
 ## Core Implementation
