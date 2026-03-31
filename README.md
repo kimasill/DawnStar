@@ -44,12 +44,12 @@
 
 <p align="center">
   <img src="https://kimasill.github.io/images/dawnstar/%EB%88%88.PNG" alt="설원 필드" width="380" />
-  <img src="https://kimasill.github.io/images/dawnstar/%EC%97%B0%EA%B5%AC%EC%86%8C.PNG" alt="연구소 던전" width="380" />
+  <img src="https://kimasill.github.io/images/dawnstar/%EA%B0%84%EC%88%98.PNG" alt="간수" width="380" />
 </p>
 
 <p align="center">
   <img src="https://kimasill.github.io/images/dawnstar/Quest.PNG" alt="퀘스트" width="380" />
-  <img src="https://kimasill.github.io/images/dawnstar/%ED%8C%8C%EB%B0%8D.PNG" alt="파밍 필드" width="380" />
+  <img src="https://kimasill.github.io/images/dawnstar/%EA%B9%A8%EB%8B%AC%EC%9D%8CUI.PNG" alt="깨달음 UI" width="380" />
 </p>
 
 ---

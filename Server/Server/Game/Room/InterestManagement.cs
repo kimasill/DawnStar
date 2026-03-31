@@ -2,9 +2,6 @@ using Google.Protobuf.Protocol;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Server.Game.Room
 {
@@ -12,14 +9,17 @@ namespace Server.Game.Room
     {
         public Player Owner { get; private set; }
         public HashSet<GameObject> PreviousObjects { get; private set; } = new HashSet<GameObject>();
+
+        public InterestManagement(Player owner)
+        {
+            Owner = owner;
+        }
+
         public void Refresh()
         {
             PreviousObjects.Clear();
         }
-        public InterestManagement(Player owner)
-        {
-            Owner = owner;            
-        }
+
         public HashSet<GameObject> GatherObjects()
         {
             if (Owner == null || Owner.Room == null)
@@ -50,7 +50,7 @@ namespace Server.Game.Room
                     objects.Add(player);
                 }
 
-                foreach(Monster monster in zone.Monsters)
+                foreach (Monster monster in zone.Monsters)
                 {
                     if (monster == null)
                         continue;
@@ -63,7 +63,7 @@ namespace Server.Game.Room
                     objects.Add(monster);
                 }
 
-                foreach(Projectile projectile in zone.Projectiles)
+                foreach (Projectile projectile in zone.Projectiles)
                 {
                     if (projectile == null)
                         continue;
@@ -91,7 +91,7 @@ namespace Server.Game.Room
             }
             return objects;
         }
-        
+
         public void Update()
         {
             if (Owner == null || Owner.Room == null)
@@ -101,14 +101,13 @@ namespace Server.Game.Room
 
             HashSet<GameObject> currentObjects = GatherObjects();
 
-            // 湲곗〈???놁뿀?붾뜲 ?덈줈 ?앷릿 ?좊뱾 spawn
             List<GameObject> added = currentObjects.Except(PreviousObjects).ToList();
             if (added.Count > 0)
             {
                 S_Spawn spawnPacket = new S_Spawn();
                 foreach (GameObject obj in added)
                 {
-                    if(obj == Owner)
+                    if (obj == Owner)
                     {
                         continue;
                     }
@@ -119,16 +118,16 @@ namespace Server.Game.Room
                         {
                             continue;
                         }
+                        // 프로젝트: 시야에 잡힌 타 플레이어 장비 정보를 룸 큐에서 지연 동기화
                         Owner.Room.EnqueueAfter(100, Owner.Room.HandleEquippedItemList, Owner, player, true);
                     }
                     ObjectInfo info = new ObjectInfo();
                     info.MergeFrom(obj.Info);
-                    spawnPacket.Objects.Add(info);  
+                    spawnPacket.Objects.Add(info);
                 }
                 Owner.Session.Send(spawnPacket);
             }
 
-            // 湲곗〈???덉뿀?붾뜲 ?щ씪吏??좊뱾 despawn
             List<GameObject> removed = PreviousObjects.Except(currentObjects).ToList();
             if (removed.Count > 0)
             {
@@ -140,6 +139,7 @@ namespace Server.Game.Room
                 Owner.Session.Send(despawnPacket);
             }
             PreviousObjects = currentObjects;
+            // 프로젝트: 시야 갱신 주기(틱) 예약 — 맵·부하에 맞게 조정 가능
             Owner.Room.EnqueueAfter(500, Update);
         }
     }

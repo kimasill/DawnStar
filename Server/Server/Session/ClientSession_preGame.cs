@@ -22,13 +22,13 @@ namespace Server
         public int AccountDbId { get; private set; }
         public List<LobbyPlayerInfo> LobbyPlayers { get; } = new List<LobbyPlayerInfo>();
 
-        private static LobbyPlayerInfo BuildLobbyPlayerInfo(PlayerDb playerDb)
+        private static LobbyPlayerInfo ToLobbyPlayerInfo(PlayerDb playerDb)
         {
             IReadOnlyList<int> realizations = (playerDb.Realizations != null && playerDb.Realizations.Count > 0)
                 ? playerDb.Realizations
                 : new List<int>() { 0, 0, 0, 0 };
 
-            LobbyPlayerInfo lobbyPlayer = new LobbyPlayerInfo()
+            LobbyPlayerInfo result = new LobbyPlayerInfo()
             {
                 PlayerDbId = playerDb.PlayerDbId,
                 Name = playerDb.PlayerName,
@@ -54,9 +54,9 @@ namespace Server
                     MaxPotion = playerDb.MaxPotion
                 }
             };
-            lobbyPlayer.StatInfo.Realizations.Clear();
-            lobbyPlayer.StatInfo.Realizations.AddRange(realizations);
-            return lobbyPlayer;
+            result.StatInfo.Realizations.Clear();
+            result.StatInfo.Realizations.AddRange(realizations);
+            return result;
         }
 
         public void HandleLogin(C_Login loginPacket)
@@ -90,15 +90,15 @@ namespace Server
                 {
                     AccountDbId = findAccount.AccountDbId;
 
-                    S_Login loginOk = new S_Login() { LoginOk = 1 };
-                    foreach (PlayerDb playerDb in findAccount.Players)
+                    S_Login loginResponse = new S_Login { LoginOk = 1 };
+                    foreach (PlayerDb player in findAccount.Players)
                     {
-                        LobbyPlayerInfo lobbyPlayer = BuildLobbyPlayerInfo(playerDb);
-                        LobbyPlayers.Add(lobbyPlayer);
-                        loginOk.Players.Add(lobbyPlayer);
+                        LobbyPlayerInfo summary = ToLobbyPlayerInfo(player);
+                        LobbyPlayers.Add(summary);
+                        loginResponse.Players.Add(summary);
                     }
 
-                    Send(loginOk);
+                    Send(loginResponse);
                     ServerState = PlayerServerState.ServerStateLobby;
                 }
                 else
@@ -112,8 +112,7 @@ namespace Server
                     // AccountDbId 메모리에 기억
                     AccountDbId = newAccount.AccountDbId;
 
-                    S_Login loginOk = new S_Login() { LoginOk = 1 };
-                    Send(loginOk);
+                    Send(new S_Login { LoginOk = 1 });
                     // 로비로 이동
                     ServerState = PlayerServerState.ServerStateLobby;
                 }

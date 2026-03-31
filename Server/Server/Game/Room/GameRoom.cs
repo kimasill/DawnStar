@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Numerics;
-using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 
 namespace Server.Game
@@ -59,11 +58,7 @@ namespace Server.Game
             Map.LoadSpawnPoints(mapId);
             Map.LoadInteractionPoints(mapId, this);
 
-            // Zone
-            ZoneCells = zoneCells; // 10
-                                   // 1~10 칸 = 1존
-                                   // 11~20칸 = 2존
-                                   // 21~30칸 = 3존
+            ZoneCells = zoneCells;
             int countY = (Map.SizeY + zoneCells - 1) / zoneCells;
             int countX = (Map.SizeX + zoneCells - 1) / zoneCells;
             Zones = new Zone[countY, countX];
@@ -78,17 +73,13 @@ namespace Server.Game
             _initializationTcs.SetResult(true);
         }
 
-        // 누군가 주기적으로 호출해줘야 한다
         public void Update()
         {
             ExecuteAll();
         }
 
         Random _rand = new Random();
-        // ...
 
-
-        
         public void EnterGame(GameObject gameObject, bool randPos=false)
         {
             if (gameObject == null)
@@ -136,11 +127,9 @@ namespace Server.Game
                 var zone = GetZone(player.CellPos);
                 if (zone == null)
                 {
-                    // Handle the error, log it, or initialize the zone
                     return;
                 }
                 zone.Players.Add(player);
-                // 본인한테 정보 전송
                 S_EnterGame enterPacket = new S_EnterGame();
                 enterPacket.Player = player.Info;
                 if (player.Session != null)
@@ -162,7 +151,6 @@ namespace Server.Game
                 var zone = GetZone(monster.CellPos);
                 if (zone == null)
                 {
-                    // Handle the error, log it, or initialize the zone
                     return;
                 }
                 zone.Monsters.Add(monster);
@@ -201,7 +189,6 @@ namespace Server.Game
                 var zone = GetZone(magic.CellPos);
                 if (zone == null)
                 {
-                    // Handle the error, log it, or initialize the zone
                     return;
                 }
                 zone.Magics.Add(magic);
@@ -212,8 +199,6 @@ namespace Server.Game
                 return;
             }
 
-            // 타인한테 정보 전송
-            // null 전달 변경
             S_Spawn spawnPacket = new S_Spawn();
             spawnPacket.Objects.Add(gameObject.Info);
             Broadcast(gameObject.CellPos, spawnPacket, player);
@@ -241,7 +226,6 @@ namespace Server.Game
                 Map.ApplyLeave(player);
                 player.Room = null;
 
-                // 본인한테 정보 전송
                 {
                     S_LeaveGame leavePacket = new S_LeaveGame();
                     player.Session.Send(leavePacket);
@@ -279,7 +263,6 @@ namespace Server.Game
                 magic.Room = null;
             }
             else return;
-            //타인한테 정보 전송
             {
                 S_Despawn despawnPacket = new S_Despawn();
                 despawnPacket.ObjectId.Add(objectId);
@@ -348,7 +331,6 @@ namespace Server.Game
             return zones.SelectMany(z => z.Players).ToList();
         }
 
-        // 시야 모서리 겹치는 Zone
         public List<Zone> GetAdjacentZone(Vector2Int cellPos, int range = GameRoom.VisionCells)
         {
             HashSet<Zone> zones = new HashSet<Zone>();
@@ -360,16 +342,13 @@ namespace Server.Game
 
             if (ZoneCells == 0)
             {
-                // Handle the case where ZoneCells is zero
-                throw new InvalidOperationException("ZoneCells cannot be zero.");   
+                throw new InvalidOperationException("ZoneCells cannot be zero.");
             }
-            //좌측 상단
             Vector2Int topLeft = new Vector2Int(minX, maxY);
 
             int minIndexY = (Map.MaxY - topLeft.y) / ZoneCells;
             int minIndexX = (topLeft.x - Map.MinX) / ZoneCells;
 
-            //우측 하단
             Vector2Int bottomRight = new Vector2Int(maxX, minY);
             int maxIndexY = (Map.MaxY - bottomRight.y) / ZoneCells;
             int maxIndexX = (bottomRight.x - Map.MinX) / ZoneCells;
