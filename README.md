@@ -14,13 +14,7 @@
   </a>
 </p>
 
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=KyKsOT1g5-U" title="DawnStar 시연 영상" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.youtube.com/vi/KyKsOT1g5-U/maxresdefault.jpg" alt="DawnStar 시연 영상 (YouTube)" width="720" />
-  </a>
-</p>
-
-링크 · [프로젝트 페이지](https://kimasill.github.io/projects/dawnstar.html) · [상세 개발 과정 (dawnstar-process)](https://kimasill.github.io/projects/dawnstar-process.html) · [웹 포트폴리오](https://kimasill.github.io/)
+링크 · [DEMO (YouTube)](https://www.youtube.com/watch?v=KyKsOT1g5-U) · [프로젝트 페이지](https://kimasill.github.io/projects/dawnstar.html) · [상세 개발 과정 (dawnstar-process)](https://kimasill.github.io/projects/dawnstar-process.html) · [웹 포트폴리오](https://kimasill.github.io/)
 
 > Unity 클라이언트와 C#(.NET) 전용 서버로 구동되는 2D MMORPG **DawnStar** 소스 레포지토리입니다. 아래에서는 핵심 구현 요약과 참고 코드 위치를 개조식으로 정리합니다.
 
