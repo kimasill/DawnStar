@@ -26,6 +26,16 @@
 | 엔진·스택 | Unity · C# · .NET · SQL Server |
 | 기간·규모 | 1인 · 2024.08 ~ 2025.02 |
 
+<p align = "center">
+<img src="https://kimasill.github.io/images/dawnstar/%EA%B0%84%EC%88%98.PNG" alt="DawnStar 간수" width="320" />
+<img src="https://kimasill.github.io/images/dawnstar/%EA%B9%A8%EB%8B%AC%EC%9D%8CUI.PNG" alt="DawnStar 깨달음 UI" width="320" />
+
+<img src="https://kimasill.github.io/images/dawnstar/%EB%88%88.PNG" alt="DawnStar 눈" width="320" />
+<img src="https://kimasill.github.io/images/dawnstar/%EC%9E%AC%EB%A0%A8.PNG" alt="DawnStar 재련 시스템" width="320" />
+
+<img src="https://kimasill.github.io/images/dawnstar/%EC%9D%B4%EC%8A%A4%ED%8A%B8%EC%97%94%EB%93%9C%20%EC%A7%80%EB%8F%84.png" alt="DawnStar 이스트엔드 월드 맵" width="820" />
+</p>
+
 ### Role
 
 - 클라이언트·서버·DB·콘텐츠(퀘스트·전투·경제·파티·월드 디자인) 설계·구현 담당
