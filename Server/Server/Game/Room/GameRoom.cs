@@ -102,106 +102,121 @@ namespace Server.Game
 
             Map.ApplyEnter(gameObject);
 
-            GameObjectType type = EntityRegistry.GetObjectType(gameObject.Id);
-            Player player = null;
-            if (type == GameObjectType.Player)
+            Player excludePlayer = null;
+            switch (gameObject)
             {
-                player = gameObject as Player;
-                if (player == null)
+                case Player player:
+                    excludePlayer = player;
+                    if (!EnterPlayer(player))
+                        return;
+                    break;
+                case Monster monster:
+                    if (!EnterMonster(monster))
+                        return;
+                    break;
+                case Projectile projectile:
+                    if (!EnterProjectile(projectile))
+                        return;
+                    break;
+                case Magic magic:
+                    if (!EnterMagic(magic))
+                        return;
+                    break;
+                default:
                     return;
-                if (_players.ContainsKey(player.Id))
-                {
-                    LeaveGame(player.Id);
-                }
-
-                player.Info.MapInfo = player.MapInfo;
-                _players.Add(gameObject.Id, player);
-                player.Room = this;
-                player.IsDead = false;
-
-                player.RefreshAdditionalStat();
-
-                Map.ApplyMove(player, new Vector2Int(player.CellPos.x, player.CellPos.y));
-                Console.WriteLine($"Player Room Id:{RoomId}");
-
-                var zone = GetZone(player.CellPos);
-                if (zone == null)
-                {
-                    return;
-                }
-                zone.Players.Add(player);
-                S_EnterGame enterPacket = new S_EnterGame();
-                enterPacket.Player = player.Info;
-                if (player.Session != null)
-                {
-                    player.Session.Send(enterPacket);
-                }
-                else
-                {
-                    Console.WriteLine("Error: player.Session is null");
-                }
-                player.Vision.Refresh();
-                player.Update();
-            }
-            else if (type == GameObjectType.Monster)
-            {
-                Monster monster = gameObject as Monster;
-                _monsters.Add(gameObject.Id, monster);
-                monster.Room = this;                
-                var zone = GetZone(monster.CellPos);
-                if (zone == null)
-                {
-                    return;
-                }
-                zone.Monsters.Add(monster);
-                Console.WriteLine($"Monster Id:{monster.Id} Type:{monster.MonsterType} Added");
-                Map.ApplyMove(monster, new Vector2Int(monster.CellPos.x, monster.CellPos.y));
-
-                monster.Update();
-            }
-            else if (type == GameObjectType.Projectile)
-            {
-                Projectile projectile = gameObject as Projectile;
-                _projectiles.Add(gameObject.Id, projectile);
-                projectile.Room = this;
-
-                GetZone(projectile.CellPos).Projectiles.Add(projectile);
-                projectile.Update();
-            }
-            else if (type == GameObjectType.Magic)
-            {
-                Magic magic = gameObject as Magic;
-                if(magic.IsComplete)
-                {
-                    LeaveGame(magic.Id);
-                    return;
-                }
-                if (!_magics.ContainsKey(gameObject.Id))
-                {
-                    _magics.Add(gameObject.Id, magic);
-                }
-                else
-                {
-                    Console.WriteLine($"Magic with ID {gameObject.Id} already exists.");
-                }
-                magic.Room = this;
-
-                var zone = GetZone(magic.CellPos);
-                if (zone == null)
-                {
-                    return;
-                }
-                zone.Magics.Add(magic);
-                magic.Update();
-            }
-            else
-            {
-                return;
             }
 
             S_Spawn spawnPacket = new S_Spawn();
             spawnPacket.Objects.Add(gameObject.Info);
-            Broadcast(gameObject.CellPos, spawnPacket, player);
+            Broadcast(gameObject.CellPos, spawnPacket, excludePlayer);
+        }
+
+        private bool EnterPlayer(Player player)
+        {
+            if (_players.ContainsKey(player.Id))
+                LeaveGame(player.Id);
+
+            player.Info.MapInfo = player.MapInfo;
+            _players.Add(player.Id, player);
+            player.Room = this;
+            player.IsDead = false;
+
+            player.RefreshAdditionalStat();
+
+            Map.ApplyMove(player, new Vector2Int(player.CellPos.x, player.CellPos.y));
+            Console.WriteLine($"Player Room Id:{RoomId}");
+
+            var zone = GetZone(player.CellPos);
+            if (zone == null)
+                return false;
+
+            zone.Players.Add(player);
+
+            S_EnterGame enterPacket = new S_EnterGame();
+            enterPacket.Player = player.Info;
+            if (player.Session != null)
+                player.Session.Send(enterPacket);
+            else
+                Console.WriteLine("Error: player.Session is null");
+
+            player.Vision.Refresh();
+            player.Update();
+            return true;
+        }
+
+        private bool EnterMonster(Monster monster)
+        {
+            _monsters.Add(monster.Id, monster);
+            monster.Room = this;
+
+            var zone = GetZone(monster.CellPos);
+            if (zone == null)
+                return false;
+
+            zone.Monsters.Add(monster);
+            Console.WriteLine($"Monster Id:{monster.Id} Type:{monster.MonsterType} Added");
+            Map.ApplyMove(monster, new Vector2Int(monster.CellPos.x, monster.CellPos.y));
+
+            monster.Update();
+            return true;
+        }
+
+        private bool EnterProjectile(Projectile projectile)
+        {
+            _projectiles.Add(projectile.Id, projectile);
+            projectile.Room = this;
+
+            var zone = GetZone(projectile.CellPos);
+            if (zone == null)
+                return false;
+
+            zone.Projectiles.Add(projectile);
+            projectile.Update();
+            return true;
+        }
+
+        private bool EnterMagic(Magic magic)
+        {
+            if (magic.IsComplete)
+            {
+                LeaveGame(magic.Id);
+                return false;
+            }
+
+            if (!_magics.ContainsKey(magic.Id))
+                _magics.Add(magic.Id, magic);
+            else
+                Console.WriteLine($"Magic with ID {magic.Id} already exists.");
+
+            magic.Room = this;
+
+            var zone = GetZone(magic.CellPos);
+            if (zone == null)
+                return false;
+
+            zone.Magics.Add(magic);
+            magic.Update();
+            return true;
         }
 
         
@@ -209,67 +224,80 @@ namespace Server.Game
         {
             LeaveGame(objectId, true);
         }
+
         public void LeaveGame(int objectId, bool save)
         {
             GameObjectType type = EntityRegistry.GetObjectType(objectId);
-            Vector2Int cellPos;
-            bool despawnAnim = false;
 
-            if (type == GameObjectType.Player)
+            var (cellPos, despawnAnim) = type switch
             {
-                Player player = null;
-                if (_players.Remove(objectId, out player) == false)
-                    return;
-                cellPos = player.CellPos;
+                GameObjectType.Player     => LeavePlayer(objectId, save),
+                GameObjectType.Monster    => LeaveMonster(objectId),
+                GameObjectType.Projectile => LeaveProjectile(objectId),
+                GameObjectType.Magic      => LeaveMagic(objectId),
+                _ => (default(Vector2Int?), false)
+            };
 
-                player.OnLeaveGame(save);
-                Map.ApplyLeave(player);
-                player.Room = null;
+            if (cellPos == null)
+                return;
 
-                {
-                    S_LeaveGame leavePacket = new S_LeaveGame();
-                    player.Session.Send(leavePacket);
-                }
-            }
-            else if (type == GameObjectType.Monster)
-            {
-                Monster monster = null;
-                if (_monsters.Remove(objectId, out monster) == false)
-                    return;
-                cellPos = monster.CellPos;
-                Map.ApplyLeave(monster);
-                monster.Room = null;
-            }
-            else if (type == GameObjectType.Projectile)
-            {
-                Projectile projectile = null;
-                if (_projectiles.Remove(objectId, out projectile) == false)
-                    return;
-                cellPos = projectile.CellPos;
-                despawnAnim = projectile.DespawnAnim;
-                Map.ApplyLeave(projectile);                
-                projectile.Room = null;
-            }
-            else if(type == GameObjectType.Magic)
-            {
-                Magic magic = null;
-                if (_magics.Remove(objectId, out magic) == false)
-                    return;
-                if (magic == null)
-                    return;
-                cellPos = magic.CellPos;
-                despawnAnim = magic.DespawnAnim;
-                Map.ApplyLeave(magic);
-                magic.Room = null;
-            }
-            else return;
-            {
-                S_Despawn despawnPacket = new S_Despawn();
-                despawnPacket.ObjectId.Add(objectId);
-                despawnPacket.DespawnAnim = despawnAnim;
-                Broadcast(cellPos, despawnPacket);
-            }
-        }        
+            S_Despawn despawnPacket = new S_Despawn();
+            despawnPacket.ObjectId.Add(objectId);
+            despawnPacket.DespawnAnim = despawnAnim;
+            Broadcast(cellPos.Value, despawnPacket);
+        }
+
+        private (Vector2Int?, bool) LeavePlayer(int objectId, bool save)
+        {
+            if (!_players.Remove(objectId, out Player player))
+                return (null, false);
+
+            Vector2Int cellPos = player.CellPos;
+            player.OnLeaveGame(save);
+            Map.ApplyLeave(player);
+            player.Room = null;
+
+            S_LeaveGame leavePacket = new S_LeaveGame();
+            player.Session.Send(leavePacket);
+            return (cellPos, false);
+        }
+
+        private (Vector2Int?, bool) LeaveMonster(int objectId)
+        {
+            if (!_monsters.Remove(objectId, out Monster monster))
+                return (null, false);
+
+            Vector2Int cellPos = monster.CellPos;
+            Map.ApplyLeave(monster);
+            monster.Room = null;
+            return (cellPos, false);
+        }
+
+        private (Vector2Int?, bool) LeaveProjectile(int objectId)
+        {
+            if (!_projectiles.Remove(objectId, out Projectile projectile))
+                return (null, false);
+
+            Vector2Int cellPos = projectile.CellPos;
+            bool despawnAnim = projectile.DespawnAnim;
+            Map.ApplyLeave(projectile);
+            projectile.Room = null;
+            return (cellPos, despawnAnim);
+        }
+
+        private (Vector2Int?, bool) LeaveMagic(int objectId)
+        {
+            if (!_magics.Remove(objectId, out Magic magic))
+                return (null, false);
+            if (magic == null)
+                return (null, false);
+
+            Vector2Int cellPos = magic.CellPos;
+            bool despawnAnim = magic.DespawnAnim;
+            Map.ApplyLeave(magic);
+            magic.Room = null;
+            return (cellPos, despawnAnim);
+        }
 
         Player FindPlayer(Func<GameObject, bool> condition)
         {

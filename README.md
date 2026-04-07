@@ -52,6 +52,8 @@
   <img src="https://kimasill.github.io/images/dawnstar/%EC%9E%AC%EB%A0%A8.PNG" alt="DawnStar 재련 시스템" width="320" />
   <img src="https://kimasill.github.io/images/dawnstar/%EA%B9%A8%EB%8B%AC%EC%9D%8CUI.PNG" alt="깨달음 UI" width="380" />
 </p>
+<p align = "center">
+<img src="https://raw.githubusercontent.com/kimasill/DawnStar/main/docs/readme/EastEndWorldMap.png" alt="DawnStar 이스트엔드 월드 맵" width="820" /></p>
 
 ---
 
@@ -312,7 +314,7 @@ public class TaskQueue
 ## Visual: Packet Pipeline
 
 <p align="center">
-  <img src="https://kimasill.github.io/images/dawnstar/%ED%8C%A8%ED%82%B7%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png" alt="Dawnstar 패킷 처리 아키텍처" width="480" />
+  <img src="https://kimasill.github.io/images/dawnstar/%ED%8C%A8%ED%82%B7%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png" alt="Dawnstar 패킷 처리 아키텍처" width="820" />
 </p>
 
 *Protocol.proto·PacketGenerator·하이브리드 직렬화 파이프라인*

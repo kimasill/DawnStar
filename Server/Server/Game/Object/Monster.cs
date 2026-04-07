@@ -4,21 +4,33 @@ using Server.DB;
 using Server.Game.Job;
 using Server.Game.Object.Monsters;
 using Server.Game.Room;
-using Server.Migrations;
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
 using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using DbTransaction = Server.DB.DbTransaction;
 
 namespace Server.Game
 {
     public class Monster : GameObject
     {
+        private static readonly Dictionary<MonsterType, Func<MonsterData, Monster>> _factory = new()
+        {
+            { MonsterType.Goblin,          d => new Goblin(d) },
+            { MonsterType.Orc,             d => new Orc(d) },
+            { MonsterType.Orcmage,         d => new OrcMage(d) },
+            { MonsterType.Satyr,           d => new Satyr(d) },
+            { MonsterType.SkeletonWarrior, d => new SkeletonWarrior(d) },
+            { MonsterType.SkeletonMage,    d => new SkeletonMage(d) },
+            { MonsterType.PrisonKeeper,    d => new PrisonKeeper(d) },
+            { MonsterType.Beholder,        d => new Beholder(d) },
+            { MonsterType.Bat,             d => new Bat(d) },
+            { MonsterType.Zombie,          d => new Zombie(d) },
+            { MonsterType.MutantRat,       d => new MutantRat(d) },
+            { MonsterType.Cleaner,         d => new Cleaner(d) },
+            { MonsterType.Slayer,          d => new Slayer(d) },
+            { MonsterType.ToothKing,       d => new ToothKing(d) },
+            { MonsterType.Pot,             d => new Pot(d) },
+        };
         public Vector2Int SpawnPosition { get; set; }
         public int SpawnId { get; set; }
         public MonsterType MonsterType { get; protected set; }
@@ -56,59 +68,12 @@ namespace Server.Game
         public static Monster CreateMonster(int templateId)
         {
             MonsterData monsterData = null;
-            Monster monster = null;
-            DataManager.MonsterDict.TryGetValue(templateId, out monsterData);            
-            switch (monsterData.type)
-            {
-                case MonsterType.Goblin:
-                    monster = new Goblin(monsterData);
-                    break;
-                case MonsterType.Orc:
-                    monster = new Orc(monsterData);
-                    break;
-                case MonsterType.Orcmage:
-                    monster = new OrcMage(monsterData);
-                    break;
-                case MonsterType.Satyr:
-                    monster = new Satyr(monsterData);
-                    break;
-                case MonsterType.SkeletonWarrior:
-                    monster = new SkeletonWarrior(monsterData);
-                    break;
-                case MonsterType.SkeletonMage:
-                    monster = new SkeletonMage(monsterData);
-                    break;
-                case MonsterType.PrisonKeeper:
-                    monster = new PrisonKeeper(monsterData);
-                    break;
-                case MonsterType.Beholder:
-                    monster = new Beholder(monsterData);
-                    break;
-                case MonsterType.Bat:
-                    monster = new Bat(monsterData);
-                    break;
-                case MonsterType.Zombie:
-                    monster = new Zombie(monsterData);
-                    break;
-                case MonsterType.MutantRat:
-                    monster = new MutantRat(monsterData);
-                    break;
-                case MonsterType.Cleaner:
-                    monster = new Cleaner(monsterData);
-                    break;
-                case MonsterType.Slayer:
-                    monster = new Slayer(monsterData);
-                    break;
-                case MonsterType.ToothKing:
-                    monster = new ToothKing(monsterData);
-                    break;
-                case MonsterType.Pot:
-                    monster = new Pot(monsterData);
-                    break;
-                default:
-                    monster = new Monster(monsterData);
-                    break;
-            }
+            DataManager.MonsterDict.TryGetValue(templateId, out monsterData);
+
+            Monster monster = _factory.TryGetValue(monsterData.type, out var creator)
+                ? creator(monsterData)
+                : new Monster(monsterData);
+
             monster.ObjectType = GameObjectType.Monster;
             monster.Id = EntityRegistry.Instance.GenerateId(GameObjectType.Monster);
             return monster;

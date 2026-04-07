@@ -239,7 +239,7 @@ namespace Server.Game
         {
             if (IsDead) { return 0; }
             return base.OnDamaged(target, damage);
-            // TODO: 피격 처리(예: 플레이어 스킬/상태에 따라 슬로우 시간 조정)
+            //TODO : ?쇳빐瑜??낆뿀????泥섎━ -> ?뚮젅?댁뼱 ?ㅽ꺈???곕씪 ?쒕젅???쒓컙 蹂寃?
         }
         public override void ChangeHp(int hp)
         {
@@ -267,7 +267,7 @@ namespace Server.Game
             diePacket.AttackerId = attacker.Id;
             Room.Broadcast(CellPos, diePacket);
 
-            GameRoom room = Room; // Room이 null이 아님이 보장되는 흐름에서 캐시
+            GameRoom room = Room;//Room??null???????덉쑝誘濡?誘몃━ ??? 
 
             Room.EnqueueAfter(1000, () =>
             {
@@ -298,10 +298,12 @@ namespace Server.Game
 
         public void OnLeaveGame(bool save)
         {            
-            // NOTE: 예전 주석이 인코딩 문제로 깨져 있어 의미를 간단히 복원.
-            // 문제: 플레이어가 게임을 나가면 플레이어 정보를 저장해야 함.
-            // 해결: 비동기 처리로 저장 작업을 수행하고, 데이터베이스 저장 단계를 분리.
-            // TODO: 저장 범위 명확화(위치/인벤토리/경험치/퀘스트/서버 상태 등)
+            //臾몄젣 : ?뚮젅?댁뼱媛 寃뚯엫???섍?硫? ?뚮젅?댁뼱???뺣낫瑜???ν빐???쒕떎.
+            // 肄붾뱶?먮쫫 留됱븘踰꾨┛?? ?곗씠??踰좎씠???묎렐?섎뒗 遺遺꾩씠 Core??遺遺꾩뿉 ?덉쑝硫??덈맖.
+            //?닿껐 : 鍮꾨룞湲?泥섎━瑜??쒕떎. 鍮꾨룞湲?泥섎━瑜??섎㈃, 肄붾뱶?먮쫫??留됲엳吏 ?딅뒗??
+            // ?ㅻⅨ ?곕젅???섎굹瑜?留뚮뱾?댁꽌, ?곗씠?곕쿋?댁뒪????ν븯???묒뾽???쒕떎.
+            //TODO : ?뚮젅?댁뼱???뺣낫瑜??곗씠?곕쿋?댁뒪????ν븳??
+            //?꾩튂?뺣낫, ?덈꺼, 寃쏀뿕移? ?꾩씠???뺣낫, ?섏뒪???뺣낫 ?깅벑
             if(Quest.CurrentQuest != null && Quest.CurrentQuest.Progress<50)
                 Room.Enqueue(Room.HandleUpdateQuest,this, Quest.CurrentQuest.TemplateId, 0);
             DbTransaction.SavePlayerStatus_All(this, Room);
@@ -356,7 +358,7 @@ namespace Server.Game
                 {
                     JewelryType jewelryType = ((Jewelry)item).JewelryType;
 
-                    // Ring 타입 아이템은 최대 2개까지 장착 가능
+                    // Ring ??낆쓽 ?꾩씠?쒖? 理쒕? 2媛쒓퉴吏 ?μ갑 媛??
                     if (jewelryType == JewelryType.Ring)
                     {
                         List<Item> equippedRings = Inven.Items.Values
@@ -365,13 +367,13 @@ namespace Server.Game
 
                         if (equippedRings.Count >= 2)
                         {
-                            // 기존 링이 2개 장착되어 있으면 가장 오래된 링 1개 해제
+                            // ?대? 2媛쒖쓽 諛섏?媛 ?μ갑?섏뼱 ?덉쑝硫?媛???ㅻ옒??諛섏? ?댁젣
                             unequipItem = equippedRings.OrderBy(i => i.ItemDbId).First();
                         }
                     }
                     else
                     {
-                        // Ring 외 장신구는 기존 로직과 동일하게 처리
+                        // Ring ?댁쇅???μ떊援щ뒗 湲곗〈 濡쒖쭅怨??숈씪?섍쾶 泥섎━
                         unequipItem = Inven.Find(
                             i => i.Equipped && i.ItemType == ItemType.Jewelry
                             && ((Jewelry)i).JewelryType == jewelryType);
@@ -379,13 +381,14 @@ namespace Server.Game
                 }
                 if (unequipItem != null)
                 {
-                    // 해당 아이템을 해제(메모리 반영)
+                    // ?대떦 ?꾩씠?쒖쓣 ?댁젣
+                    // 硫붾え由??좎쟻??
                     unequipItem.Equipped = false;
 
-                    // DB 반영
+                    // DB???곸슜
                     DbTransaction.EquipItemNoti(this, unequipItem);
 
-                    // 클라이언트에 알림
+                    // ?대씪?댁뼵?몄뿉寃??뚮┝
                     S_EquipItem equipOkItem = new S_EquipItem();
                     equipOkItem.ObjectId = Id;
                     equipOkItem.ItemDbId = unequipItem.ItemDbId;
@@ -394,13 +397,13 @@ namespace Server.Game
                 }
             }
 
-            // 메모리 반영
+            // 硫붾え由??좎쟻??
             item.Equipped = equipPacket.Equipped;
 
-            // DB 반영
+            // DB???곸슜
             DbTransaction.EquipItemNoti(this, item);
 
-            // 클라이언트에 알림
+            // ?대씪?댁뼵?몄뿉寃??뚮┝
             S_EquipItem equipNoti = new S_EquipItem();     
             equipNoti.ObjectId = Id;
             equipNoti.ItemDbId = equipPacket.ItemDbId;

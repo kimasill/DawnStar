@@ -1,14 +1,20 @@
 using Google.Protobuf.Protocol;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Server.Game.Room
 {
     public class InterestManagement
     {
+        private const int UpdateIntervalMs = 500;
+        private const int EquipSyncDelayMs = 100;
+
         public Player Owner { get; private set; }
-        public HashSet<GameObject> PreviousObjects { get; private set; } = new HashSet<GameObject>();
+
+        private HashSet<GameObject> _previousObjects = new HashSet<GameObject>();
+        private readonly HashSet<GameObject> _currentObjects = new HashSet<GameObject>();
+        private readonly List<GameObject> _spawnBuffer = new List<GameObject>();
+        private readonly List<int> _despawnBuffer = new List<int>();
 
         public InterestManagement(Player owner)
         {
@@ -17,130 +23,117 @@ namespace Server.Game.Room
 
         public void Refresh()
         {
-            PreviousObjects.Clear();
+            _previousObjects.Clear();
         }
 
-        public HashSet<GameObject> GatherObjects()
+        public void Update()
         {
             if (Owner == null || Owner.Room == null)
-            {
-                return null;
-            }
+                return;
 
-            HashSet<GameObject> objects = new HashSet<GameObject>();
+            GatherVisibleObjects();
+            ProcessSpawns();
+            ProcessDespawns();
 
-            Vector2Int cellPos = Owner.CellPos;
-            List<Zone> zones = Owner.Room.GetAdjacentZone(cellPos);
+            (_previousObjects, _) = (_currentObjects, _previousObjects);
+            // _previousObjects now points to the set we just built;
+            // we will clear _currentObjects at the start of next GatherVisibleObjects.
+
+            Owner.Room.EnqueueAfter(UpdateIntervalMs, Update);
+        }
+
+        private void GatherVisibleObjects()
+        {
+            _currentObjects.Clear();
+
+            Vector2Int ownerPos = Owner.CellPos;
+            List<Zone> zones = Owner.Room.GetAdjacentZone(ownerPos);
 
             foreach (Zone zone in zones)
             {
                 if (zone == null)
                     continue;
 
-                foreach (Player player in zone.Players)
-                {
-                    if (player == null)
-                        continue;
-                    int dx = player.CellPos.x - cellPos.x;
-                    int dy = player.CellPos.y - cellPos.y;
-                    if (Math.Abs(dx) > GameRoom.VisionCells || Math.Abs(dy) > GameRoom.VisionCells)
-                    {
-                        continue;
-                    }
-                    objects.Add(player);
-                }
-
-                foreach (Monster monster in zone.Monsters)
-                {
-                    if (monster == null)
-                        continue;
-                    int dx = monster.CellPos.x - cellPos.x;
-                    int dy = monster.CellPos.y - cellPos.y;
-                    if (Math.Abs(dx) > GameRoom.VisionCells || Math.Abs(dy) > GameRoom.VisionCells)
-                    {
-                        continue;
-                    }
-                    objects.Add(monster);
-                }
-
-                foreach (Projectile projectile in zone.Projectiles)
-                {
-                    if (projectile == null)
-                        continue;
-                    int dx = projectile.CellPos.x - cellPos.x;
-                    int dy = projectile.CellPos.y - cellPos.y;
-                    if (Math.Abs(dx) > GameRoom.VisionCells || Math.Abs(dy) > GameRoom.VisionCells)
-                    {
-                        continue;
-                    }
-                    objects.Add(projectile);
-                }
-
-                foreach (Magic magic in zone.Magics)
-                {
-                    if (magic == null)
-                        continue;
-                    int dx = magic.CellPos.x - cellPos.x;
-                    int dy = magic.CellPos.y - cellPos.y;
-                    if (Math.Abs(dx) > GameRoom.VisionCells || Math.Abs(dy) > GameRoom.VisionCells)
-                    {
-                        continue;
-                    }
-                    objects.Add(magic);
-                }
+                CollectFromZone(zone.Players, ownerPos);
+                CollectFromZone(zone.Monsters, ownerPos);
+                CollectFromZone(zone.Projectiles, ownerPos);
+                CollectFromZone(zone.Magics, ownerPos);
             }
-            return objects;
         }
 
-        public void Update()
+        private void CollectFromZone<T>(HashSet<T> objects, Vector2Int ownerPos) where T : GameObject
         {
-            if (Owner == null || Owner.Room == null)
+            foreach (T obj in objects)
             {
+                if (obj == null)
+                    continue;
+
+                int dx = obj.CellPos.x - ownerPos.x;
+                int dy = obj.CellPos.y - ownerPos.y;
+                if (Math.Abs(dx) > GameRoom.VisionCells || Math.Abs(dy) > GameRoom.VisionCells)
+                    continue;
+
+                _currentObjects.Add(obj);
+            }
+        }
+
+        private void ProcessSpawns()
+        {
+            _spawnBuffer.Clear();
+
+            foreach (GameObject obj in _currentObjects)
+            {
+                if (!_previousObjects.Contains(obj))
+                    _spawnBuffer.Add(obj);
+            }
+
+            if (_spawnBuffer.Count == 0)
                 return;
-            }
 
-            HashSet<GameObject> currentObjects = GatherObjects();
-
-            List<GameObject> added = currentObjects.Except(PreviousObjects).ToList();
-            if (added.Count > 0)
+            S_Spawn spawnPacket = new S_Spawn();
+            foreach (GameObject obj in _spawnBuffer)
             {
-                S_Spawn spawnPacket = new S_Spawn();
-                foreach (GameObject obj in added)
+                if (obj == Owner)
+                    continue;
+
+                if (obj.ObjectType == GameObjectType.Player)
                 {
-                    if (obj == Owner)
-                    {
+                    Player player = obj as Player;
+                    if (player == null || player.Session == null)
                         continue;
-                    }
-                    else if (obj.ObjectType == GameObjectType.Player)
-                    {
-                        Player player = obj as Player;
-                        if (player.Session == null)
-                        {
-                            continue;
-                        }
-                        // 프로젝트: 시야에 잡힌 타 플레이어 장비 정보를 룸 큐에서 지연 동기화
-                        Owner.Room.EnqueueAfter(100, Owner.Room.HandleEquippedItemList, Owner, player, true);
-                    }
-                    ObjectInfo info = new ObjectInfo();
-                    info.MergeFrom(obj.Info);
-                    spawnPacket.Objects.Add(info);
+
+                    Owner.Room.EnqueueAfter(EquipSyncDelayMs, Owner.Room.HandleEquippedItemList, Owner, player, true);
                 }
-                Owner.Session.Send(spawnPacket);
+
+                ObjectInfo info = new ObjectInfo();
+                info.MergeFrom(obj.Info);
+                spawnPacket.Objects.Add(info);
             }
 
-            List<GameObject> removed = PreviousObjects.Except(currentObjects).ToList();
-            if (removed.Count > 0)
+            if (spawnPacket.Objects.Count > 0)
+                Owner.Session.Send(spawnPacket);
+        }
+
+        private void ProcessDespawns()
+        {
+            _despawnBuffer.Clear();
+
+            foreach (GameObject obj in _previousObjects)
             {
-                S_Despawn despawnPacket = new S_Despawn();
-                foreach (GameObject obj in removed)
-                {
-                    despawnPacket.ObjectId.Add(obj.Id);
-                }
-                Owner.Session.Send(despawnPacket);
+                if (!_currentObjects.Contains(obj))
+                    _despawnBuffer.Add(obj.Id);
             }
-            PreviousObjects = currentObjects;
-            // 프로젝트: 시야 갱신 주기(틱) 예약 — 맵·부하에 맞게 조정 가능
-            Owner.Room.EnqueueAfter(500, Update);
+
+            if (_despawnBuffer.Count == 0)
+                return;
+
+            S_Despawn despawnPacket = new S_Despawn();
+            foreach (int objectId in _despawnBuffer)
+            {
+                despawnPacket.ObjectId.Add(objectId);
+            }
+
+            Owner.Session.Send(despawnPacket);
         }
     }
 }
