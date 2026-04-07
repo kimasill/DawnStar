@@ -451,6 +451,9 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("S_SYSTEM_NOTICE")] SSystemNotice = 69,
     [pbr::OriginalName("C_CHAT")] CChat = 70,
     [pbr::OriginalName("S_CHAT")] SChat = 71,
+    /// <summary>
+    /// 72 reserved
+    /// </summary>
     [pbr::OriginalName("S_UPDATE_ITEM_LIST")] SUpdateItemList = 73,
     [pbr::OriginalName("S_PARTY")] SParty = 74,
     [pbr::OriginalName("C_PARTY_LEAVE")] CPartyLeave = 75,
