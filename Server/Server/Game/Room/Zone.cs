@@ -1,13 +1,9 @@
-using Google.Protobuf.Protocol;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Server.Game
 {
-    public  class Zone
+    public class Zone
     {
         public int IndexY { get; private set; }
         public int IndexX { get; private set; }
@@ -16,30 +12,32 @@ namespace Server.Game
         public HashSet<Monster> Monsters { get; set; } = new HashSet<Monster>();
         public HashSet<Projectile> Projectiles { get; set; } = new HashSet<Projectile>();
         public HashSet<Magic> Magics { get; set; } = new HashSet<Magic>();
+
         public Zone(int y, int x)
         {
             IndexY = y;
             IndexX = x;
         }
 
+        public void Add(GameObject gameObject)
+        {
+            switch (gameObject)
+            {
+                case Player p:      Players.Add(p); break;
+                case Monster m:     Monsters.Add(m); break;
+                case Projectile pr: Projectiles.Add(pr); break;
+                case Magic mg:      Magics.Add(mg); break;
+            }
+        }
+
         public void Remove(GameObject gameObject)
         {
-            GameObjectType type = EntityRegistry.GetObjectType(gameObject.Id);
-
-            switch (type)
+            switch (gameObject)
             {
-                case GameObjectType.Player:
-                    Players.Remove((Player)gameObject);
-                    break;
-                case GameObjectType.Monster:
-                    Monsters.Remove((Monster)gameObject);
-                    break;
-                case GameObjectType.Projectile:
-                    Projectiles.Remove((Projectile)gameObject);
-                    break;
-                case GameObjectType.Magic:
-                    Magics.Remove((Magic)gameObject);
-                    break;
+                case Player p:      Players.Remove(p); break;
+                case Monster m:     Monsters.Remove(m); break;
+                case Projectile pr: Projectiles.Remove(pr); break;
+                case Magic mg:      Magics.Remove(mg); break;
             }
         }
 

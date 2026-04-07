@@ -206,42 +206,13 @@ namespace Server.Game.Room
 
         public void MoveZone(GameObject gameObject, Vector2Int dest)
         {
-            // Zone ?대룞
-            GameObjectType type = EntityRegistry.GetObjectType(gameObject.Id);
-            if (type == GameObjectType.Player)
-            {
-                Player player = (Player)gameObject;
+            Zone now = gameObject.Room.GetZone(gameObject.CellPos);
+            Zone next = gameObject.Room.GetZone(dest);
+            if (now == next)
+                return;
 
-                Zone now = gameObject.Room.GetZone(gameObject.CellPos);
-                Zone next = gameObject.Room.GetZone(dest);
-                if (now != next)
-                {
-                    now.Players.Remove(player);
-                    next.Players.Add(player);
-                }
-            }
-            else if (type == GameObjectType.Monster)
-            {
-                Monster monster = (Monster)gameObject;
-                Zone now = gameObject.Room.GetZone(gameObject.CellPos);
-                Zone next = gameObject.Room.GetZone(dest);
-                if (now != next)
-                {
-                    now.Monsters.Remove(monster);
-                    next.Monsters.Add(monster);
-                }
-            }
-            else if (type == GameObjectType.Projectile)
-            {
-                Projectile projectile = (Projectile)gameObject;
-                Zone now = gameObject.Room.GetZone(gameObject.CellPos);
-                Zone next = gameObject.Room.GetZone(dest);
-                if (now != next)
-                {
-                    now.Projectiles.Remove(projectile);
-                    next.Projectiles.Add(projectile);
-                }
-            }
+            now.Remove(gameObject);
+            next.Add(gameObject);
         }
 
         public List<Vector2Int> GetSpawnPoints(int id)
