@@ -1,8 +1,7 @@
 ﻿
 using System;
 using System.IO;
-using System.Reflection;
-using System.Xml;
+using System.Text.RegularExpressions;
 
 namespace PacketGenerator
 {
@@ -10,6 +9,7 @@ namespace PacketGenerator
 	{
 		static string clientRegister;
 		static string serverRegister;
+		static string msgIdCacheEntries;
 
 		static void Main(string[] args)
 		{
@@ -32,32 +32,29 @@ namespace PacketGenerator
 				if (line.Contains("}"))
 					break;
 
-				string[] names = line.Trim().Split(" =");
-				if (names.Length == 0)
+				string trimmed = line.Trim();
+				if (string.IsNullOrWhiteSpace(trimmed) || trimmed.StartsWith("//"))
 					continue;
 
-				string name = names[0];
+				Match match = Regex.Match(trimmed, @"^([A-Z_][A-Z_0-9]*)\s*=\s*(\d+)");
+				if (!match.Success)
+					continue;
+
+				string name = match.Groups[1].Value;
+
 				if (name.StartsWith("S_"))
 				{
-					string[] words = name.Split("_");
-
-					string msgName = "";
-					foreach (string word in words)
-						msgName += FirstCharToUpper(word);
-
-					string packetName = $"S_{msgName.Substring(1)}";
+					string msgName = ConvertToMsgName(name);
+					string packetName = ConvertToPacketName(name);
 					clientRegister += string.Format(PacketFormat.managerRegisterFormat, msgName, packetName);
+					msgIdCacheEntries += string.Format(PacketFormat.msgIdCacheEntryFormat, packetName, msgName);
 				}
 				else if (name.StartsWith("C_"))
 				{
-					string[] words = name.Split("_");
-
-					string msgName = "";
-					foreach (string word in words)
-						msgName += FirstCharToUpper(word);
-
-					string packetName = $"C_{msgName.Substring(1)}";
+					string msgName = ConvertToMsgName(name);
+					string packetName = ConvertToPacketName(name);
 					serverRegister += string.Format(PacketFormat.managerRegisterFormat, msgName, packetName);
+					msgIdCacheEntries += string.Format(PacketFormat.msgIdCacheEntryFormat, packetName, msgName);
 				}
 			}
 
@@ -65,6 +62,30 @@ namespace PacketGenerator
 			File.WriteAllText("ClientPacketManager.cs", clientManagerText);
 			string serverManagerText = string.Format(PacketFormat.managerFormat, serverRegister);
 			File.WriteAllText("ServerPacketManager.cs", serverManagerText);
+
+			string msgIdCacheText = string.Format(PacketFormat.msgIdCacheFormat, msgIdCacheEntries);
+			File.WriteAllText("MsgIdCache.cs", msgIdCacheText);
+
+			Console.WriteLine("Code generation complete.");
+			Console.WriteLine($"  ClientPacketManager.cs");
+			Console.WriteLine($"  ServerPacketManager.cs");
+			Console.WriteLine($"  MsgIdCache.cs");
+		}
+
+		static string ConvertToMsgName(string enumName)
+		{
+			string[] words = enumName.Split('_');
+			string msgName = "";
+			foreach (string word in words)
+				msgName += FirstCharToUpper(word);
+			return msgName;
+		}
+
+		static string ConvertToPacketName(string enumName)
+		{
+			string[] words = enumName.Split('_');
+			string msgName = ConvertToMsgName(enumName);
+			return $"{words[0]}_{msgName.Substring(1)}";
 		}
 
 		public static string FirstCharToUpper(string input)

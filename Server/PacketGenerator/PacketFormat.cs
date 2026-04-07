@@ -53,15 +53,15 @@ class PacketManager
 		T pkt = new T();
 		pkt.MergeFrom(buffer.Array, buffer.Offset + 4, buffer.Count - 4);
 
-        if (CustomHandler != null)
-        {{
-            CustomHandler.Invoke(session, pkt, id);
-        }}
+		if (CustomHandler != null)
+		{{
+			CustomHandler.Invoke(session, pkt, id);
+		}}
 		else
 		{{
-		Action<PacketSession, IMessage> action = null;
-		if (_handler.TryGetValue(id, out action))
-			action.Invoke(session, pkt);
+			Action<PacketSession, IMessage> action = null;
+			if (_handler.TryGetValue(id, out action))
+				action.Invoke(session, pkt);
 		}}
 	}}
 
@@ -80,6 +80,35 @@ class PacketManager
 @"		
 		_onRecv.Add((ushort)MsgId.{0}, MakePacket<{1}>);
 		_handler.Add((ushort)MsgId.{0}, PacketHandler.{1}Handler);";
+
+		// {0} 캐시 엔트리 목록
+		public static string msgIdCacheFormat =
+@"using Google.Protobuf;
+using Google.Protobuf.Protocol;
+using System.Collections.Generic;
+
+// Auto-generated: MsgId lookup cache to avoid runtime Enum.Parse
+public static class MsgIdCache
+{{
+	static readonly Dictionary<string, MsgId> _nameToId = new Dictionary<string, MsgId>()
+	{{{0}
+	}};
+
+	public static MsgId GetMsgId(IMessage packet)
+	{{
+		string name = packet.Descriptor.Name;
+		if (_nameToId.TryGetValue(name, out MsgId id))
+			return id;
+
+		throw new System.ArgumentException($""Unknown packet type: {{name}}"");
+	}}
+}}";
+
+		// {0} 패킷 이름 (ex: S_EnterGame)
+		// {1} MsgId 이름 (ex: SEnterGame)
+		public static string msgIdCacheEntryFormat =
+@"
+		{{ ""{0}"", MsgId.{1} }},";
 
 	}
 }

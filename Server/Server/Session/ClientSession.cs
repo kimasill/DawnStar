@@ -52,34 +52,24 @@ namespace Server
         {
             try
             {
-                string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
-                MsgId msgId = (MsgId)Enum.Parse(typeof(MsgId), msgName);
+                MsgId msgId = MsgIdCache.GetMsgId(packet);
 
                 ushort size = (ushort)packet.CalculateSize();
                 byte[] sendBuffer = new byte[size + 4];
 
-                // 버퍼 크기 확인
-                if (sendBuffer.Length < size + 4)
-                {
-                    throw new InvalidOperationException("Buffer size is smaller than expected.");
-                }
-
-                Array.Copy(BitConverter.GetBytes(size + 4), 0, sendBuffer, 0, sizeof(ushort));
+                Array.Copy(BitConverter.GetBytes((ushort)(size + 4)), 0, sendBuffer, 0, sizeof(ushort));
                 ushort protocolId = (ushort)msgId;
                 Array.Copy(BitConverter.GetBytes(protocolId), 0, sendBuffer, 2, sizeof(ushort));
-                Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
+                packet.WriteTo(new Google.Protobuf.CodedOutputStream(new System.IO.MemoryStream(sendBuffer, 4, size)));
 
                 lock (_lock)
                 {
-                    //_reserverQueue.Add(sendBuffer);
                     _reserverQueue.Add(new ArraySegment<byte>(sendBuffer, 0, size + 4));
-                    _reservedSentByte += sendBuffer.Length; // 지금 까지 보낸 패킷의 크기
+                    _reservedSentByte += size + 4;
                 }
-                // Send(new ArraySegment<byte>(sendBuffer));
             }
             catch (Exception ex)
             {
-                // 예외 로그 출력
                 Console.WriteLine($"Exception in Send method: {ex.Message}");
                 Console.WriteLine(ex.StackTrace);
             }
