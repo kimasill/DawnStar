@@ -64,7 +64,7 @@
 - **문제**: 로그인 직후 로비·캐릭터 목록과 `ServerState`가 어긋나면 인벤·맵·세션이 꼬여서 진행 불가
 - **대응**: 토큰으로 계정 조회 → `S_Login`에 로비 정보 일괄 전송 → `ServerState` 전이, 패킷 1회로 묶어 불일치 차단
 
-> 📄 [`Server/Server/Session/ClientSession_preGame.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Session/ClientSession_preGame.cs#L62-L118) — `HandleLogin`
+> 📄 [`Server/Server/Session/ClientSession_preGame.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Session/ClientSession_preGame.cs#L62-L120) — `HandleLogin` (토큰 검증·계정 조회 후 `S_Login` 일괄 전송)
 
 ```csharp
 AccountDb findAccount = db.Accounts
@@ -116,7 +116,7 @@ public void HandleRespawn(Player player, RespawnType respawnType)
 
 - **포탈 맵 이동**: Leave 후 DB에 맵 정보 저장, 목적지 룸 `EnterGame`으로 동일 원칙 적용
 
-> 📄 [`Server/Server/Game/Room/GameRoom_Sequence.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Room/GameRoom_Sequence.cs#L100-L118) — `HandleMapChanged`
+> 📄 [`Server/Server/Game/Room/GameRoom_Sequence.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Room/GameRoom_Sequence.cs#L100-L118) — `HandleMapChanged` (포탈 분기는 비동기 `GetRoom` 후 동기 본체로 위임)
 
 ```csharp
 LeaveGame(player.Id, save: false);
@@ -238,8 +238,7 @@ private void TryMatch(int mapId)
     if (!_waitingLists.TryGetValue(mapId, out List<ClientSession> queue))
         return;
 
-    queue.RemoveAll(s => s == null || s.MyPlayer == null
-        || s.ServerState != PlayerServerState.ServerStateGame || s.MyPlayer.Room == null);
+    queue.RemoveAll(s => s == null || s.MyPlayer == null || s.ServerState != PlayerServerState.ServerStateGame || s.MyPlayer.Room == null);
 
     if (queue.Count < 4)
         return;
@@ -257,34 +256,69 @@ private void TryMatch(int mapId)
 }
 ```
 
-> 📄 [`Server/Server/Game/Contents/PartyMatchingSystem.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Contents/PartyMatchingSystem.cs#L69-L91) — `EnterMap` (매칭 후 즉시 같은 룸으로 배치)
+> 📄 [`Server/Server/Game/Contents/PartyMatchingSystem.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Contents/PartyMatchingSystem.cs#L69-L91) — `EnterMap` (매칭 후 `HandleMapChanged`를 목적 룸 큐에 넣어 동일 시퀀스로 입장)
 
 ---
 
-### 7. Sync & Interest – 시야·장비 동기화 부하 분산
+### 7. Sync & Interest – 존 기반 AOI와 장비·시야 분산
 
-- **문제**: 시야에 플레이어가 새로 잡힐 때마다 장비·시야 갱신을 즉시 전부 보내면 틱 당 작업 폭증
-- **대응**: `Room` 지연 큐 `EnqueueAfter`로 장비(**100 ms**)·시야(**500 ms**) 분산
-- **측정**: LoadTestClient로 더미 세션 10대를 같은 Zone에 배치, 분산 전 평균 틱 **~18 ms** → 분산 후 **~6 ms**(66% 감소)
+- **문제**: 시야 밖 오브젝트까지 브로드캐스트하면 대역·CPU가 불필요하게 증가하고, 스폰 직후 장비 패킷을 같은 틱에 몰아내면 큐 폭주가 난다.
+- **대응**:
+  - **AOI**: 소유 플레이어 기준 인접 `Zone`에서 플레이어·몬스터·투사체·마법만 스캔하고, `GameRoom.VisionCells`를 넘는 셀 거리는 제외한다.
+  - **Diff**: `_previousObjects`와 `_currentObjects` 두 `HashSet`을 프레임마다 교체(swap)하고 `_spawnBuffer`·`_despawnBuffer`로 스폰/디스폰 목록만 만든다(매 틱 `new HashSet` 없이 diff).
+  - **분산**: 신규로 시야에 들어온 **타 플레이어**에 한해 `EnqueueAfter(EquipSyncDelayMs, …)`로 장비 동기화를 지연시키고, 다음 시야 패스는 `UpdateIntervalMs`마다 `EnqueueAfter`로 예약한다.
+- **측정**: LoadTestClient로 더미 세션 10대를 같은 Zone에 배치, 분산 전 평균 틱 **~18 ms** → 분산 후 **~6 ms**(약 66% 감소)
 
-> 📄 [`Server/Server/Game/Room/InterestManagement.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Room/InterestManagement.cs#L95-L143) — `Update` (스폰·디스폰 + 지연 큐 예약)
+> 📄 [`Server/Server/Game/Room/InterestManagement.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Room/InterestManagement.cs#L29-L43) — `Update` (수집 → 스폰 → 디스폰 → 세트 스왑 → 다음 주기 예약)  
+> 📄 동일 파일 [`#L45-L78`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Room/InterestManagement.cs#L45-L78) — `GatherVisibleObjects` / `CollectFromZone`  
+> 📄 동일 파일 [`#L80-L115`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Room/InterestManagement.cs#L80-L115) — `ProcessSpawns` (타 플레이어 스폰 시 장비 지연 큐)
+
+```csharp
+public void Update()
+{
+    if (Owner == null || Owner.Room == null)
+        return;
+
+    GatherVisibleObjects();
+    ProcessSpawns();
+    ProcessDespawns();
+
+    (_previousObjects, _) = (_currentObjects, _previousObjects);
+
+    Owner.Room.EnqueueAfter(UpdateIntervalMs, Update);
+}
+```
+
+```csharp
+private void CollectFromZone<T>(HashSet<T> objects, Vector2Int ownerPos) where T : GameObject
+{
+    foreach (T obj in objects)
+    {
+        if (obj == null)
+            continue;
+
+        int dx = obj.CellPos.x - ownerPos.x;
+        int dy = obj.CellPos.y - ownerPos.y;
+        if (Math.Abs(dx) > GameRoom.VisionCells || Math.Abs(dy) > GameRoom.VisionCells)
+            continue;
+
+        _currentObjects.Add(obj);
+    }
+}
+```
 
 ```csharp
 if (obj.ObjectType == GameObjectType.Player)
 {
     Player player = obj as Player;
-    if (player.Session == null)
+    if (player == null || player.Session == null)
         continue;
-    // 시야에 잡힌 타 플레이어 장비 정보를 룸 큐에서 지연 동기화
-    Owner.Room.EnqueueAfter(100, Owner.Room.HandleEquippedItemList, Owner, player, true);
+
+    Owner.Room.EnqueueAfter(EquipSyncDelayMs, Owner.Room.HandleEquippedItemList, Owner, player, true);
 }
 ```
-```csharp
-// 스폰·디스폰 반영 후 다음 시야 갱신을 주기적으로 예약
-Owner.Room.EnqueueAfter(500, Update);
-```
 
-> 📄 [`Server/Server/Game/Job/TaskQueue.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Job/TaskQueue.cs#L7-L57) — `TaskQueue` (지연 큐 + ConcurrentQueue 기반 잡 스케줄링)
+> 📄 [`Server/Server/Game/Job/TaskQueue.cs`](https://github.com/kimasill/DawnStar/blob/main/Server/Server/Game/Job/TaskQueue.cs#L7-L49) — `TaskQueue` (지연 타이머 + `ConcurrentQueue<IJob>`, `Action`~`Action<T1…T4>`·`IJob`·비동기 `Func<Task>` 인입)
 
 ```csharp
 public class TaskQueue
@@ -292,8 +326,20 @@ public class TaskQueue
     TaskTimer _timer = new TaskTimer();
     ConcurrentQueue<IJob> _jobQueue = new ConcurrentQueue<IJob>();
 
-    public IJob EnqueueAfter(int tickAfter, Action action) { ... }
-    public void Enqueue(IJob job) { _jobQueue.Enqueue(job); }
+    public IJob EnqueueAfter(int tickAfter, Action action) { return EnqueueAfter(tickAfter, new Job(action)); }
+    public IJob EnqueueAfter<T1>(int tickAfter, Action<T1> action, T1 t1) { return EnqueueAfter(tickAfter, new Job<T1>(action, t1)); }
+    public IJob EnqueueAfter<T1, T2>(int tickAfter, Action<T1, T2> action, T1 t1, T2 t2) { return EnqueueAfter(tickAfter, new Job<T1, T2>(action, t1, t2)); }
+    public IJob EnqueueAfter<T1, T2, T3>(int tickAfter, Action<T1, T2, T3> action, T1 t1, T2 t2, T3 t3) { return EnqueueAfter(tickAfter, new Job<T1, T2, T3>(action, t1, t2, t3)); }
+    public IJob EnqueueAfter<T1, T2, T3, T4>(int tickAfter, Action<T1, T2, T3, T4> action, T1 t1, T2 t2, T3 t3, T4 t4) { return EnqueueAfter(tickAfter, new Job<T1, T2, T3, T4>(action, t1, t2, t3, t4)); }
+
+    public void Enqueue(IJob job)
+    {
+        _jobQueue.Enqueue(job);
+    }
+    public void Enqueue(Func<Task> asyncAction)
+    {
+        Enqueue(new AsyncJob(asyncAction));
+    }
 
     public void ExecuteAll()
     {
@@ -303,6 +349,7 @@ public class TaskQueue
             IJob job = Pop();
             if (job == null)
                 return;
+
             job.Execute();
         }
     }
@@ -313,18 +360,19 @@ public class TaskQueue
 
 ## Visual: Packet Pipeline
 
-<p align="center">
-  <img src="https://kimasill.github.io/images/dawnstar/%ED%8C%A8%ED%82%B7%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png" alt="Dawnstar 패킷 처리 아키텍처" width="820" />
-</p>
+*Protocol.proto·PacketGenerator·하이브리드 직렬화 파이프라인 — 수신·라우팅·룸 큐·송신 흐름은 아래 다이어그램(`kimasill.github.io`의 `DawnstarpacketPipelines.svg`)을 참고하세요.*
 
-*Protocol.proto·PacketGenerator·하이브리드 직렬화 파이프라인*
+<p align="center">
+  <img src="https://kimasill.github.io/images/dawnstar/DawnstarpacketPipelines.svg" alt="DawnStar 패킷 파이프라인 아키텍처" width="820" />
+</p>
 
 ---
 
 ## Problem Solving
 
 - **패킷 파이프라인**: `Protocol.proto` → `PacketGenerator` → 핸들러 자동 매핑으로 스키마 변경 시 수정 1곳
-- **동시성**: 지연 큐 + 시야 갱신 주기로 틱 부하 분산 (위 측정 참조)
+- **동시성**: `TaskQueue` 지연 실행 + `InterestManagement`의 시야 주기(`UpdateIntervalMs`)·장비 동기화(`EquipSyncDelayMs`)로 틱 부하 분산 (위 측정 참조)
+- **AOI 메모리 패턴**: 시야 diff용 `HashSet` 교체·리스트 버퍼 재사용으로 갱신당 할당을 줄임
 - **일관성**: Leave → DB 저장 → Enter 시퀀스를 강제해서, 맵·파티·상호작용 불일치 발생 시 단계별로 원인 추적
 
 ---
@@ -333,15 +381,15 @@ public class TaskQueue
 
 - 로그인·로비·맵이동·전투·퀘스트·아이템·파티·매칭 등 MMORPG 핵심 루프 전체 구현
 - LoadTestClient 기준 더미 10세션 동시 접속 시 평균 틱 **~6 ms** 유지
-- 패킷 파이프라인·DB 트랜잭션·시야 관리 모듈화로 콘텐츠 추가 시 핸들러 1개 + proto 필드 추가로 해결
+- 패킷 파이프라인·DB 트랜잭션·존 기반 시야(`InterestManagement`) 모듈화로 콘텐츠 추가 시 핸들러 1개 + proto 필드 추가로 해결
 
 ---
 
 ## 주요 특징 (Key Features)
 
 - **비동기 네트워크 I/O** — 고성능 소켓 프로그래밍, Event-driven 방식 패킷 송수신
-- **관심사 관리 (Interest Management)** — 2D 존(그리드) 기반 시야 처리로 브로드캐스트 부하 최소화
-- **작업 대기열 (TaskQueue)** — Command Pattern 기반 메인 게임 스레드 안전 처리
+- **관심사 관리 (Interest Management)** — 인접 `Zone` 수집 + `VisionCells` 거리 필터, `HashSet` 스왑으로 스폰/디스폰 diff, 타 플레이어 장비는 지연 큐로 동기화
+- **작업 대기열 (TaskQueue)** — `IJob`·제네릭 `EnqueueAfter`·`AsyncJob`(`Func<Task>`)로 메인 게임 스레드에 안전하게 인입
 - **모듈화된 레지스트리** — `EntityRegistry`(오브젝트) + `ConnectionRegistry`(세션) 도메인 분리
 - **Entity Framework Core** — DB 처리는 비동기 분리(DB Task), 안정적 CRUD
 - **계정 인증 서버 분리** — ASP.NET Web API 기반 `AccountServer`로 트래픽 분리
@@ -359,7 +407,7 @@ MMOProject/
 │   ├── Server/          # 메인 게임 서버 로직
 │   │   ├── Session/     # 클라이언트 세션 관리 (Login, Lobby, InGame)
 │   │   ├── Game/
-│   │   │   ├── Room/    # GameRoom, Interest, Quest, Item 등 인게임 로직
+│   │   │   ├── Room/    # GameRoom, InterestManagement, Quest, Item 등 인게임 로직
 │   │   │   ├── Job/     # TaskQueue, TaskTimer
 │   │   │   ├── Contents/# Party, Quest, Matching 시스템
 │   │   │   └── Interactions/ # Door, Trigger 팩토리
