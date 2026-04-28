@@ -118,12 +118,16 @@ namespace Server.Game
             
             foreach (Vector2Int pos in targetPositions)
             {
-                List<GameObject> targets = new List<GameObject>(Owner.Room.Map.Find(pos));
+                List<GameObject> cellObjects = Owner.Room.Map.Find(pos);
+                if (cellObjects == null)
+                    continue;
+
+                List<GameObject> targets = new List<GameObject>(cellObjects);
                 if (targets.Count > 0)
                 {
                     foreach (GameObject target in targets)
                     {
-                        if (target != null && target != Owner)
+                        if (target != null && target != this && target != Owner)
                         {
                             if (!target.IsSkillTargetable)
                                 continue;

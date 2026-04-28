@@ -33,7 +33,7 @@ namespace Server.Game
             else
             {
                 List<GameObject> targets = Room.Map.Find(destPos);
-                if (targets.Count > 0)
+                if (targets != null && targets.Count > 0)
                 {
                     foreach (GameObject target in targets)
                     {

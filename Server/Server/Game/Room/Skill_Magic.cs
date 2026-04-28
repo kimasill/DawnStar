@@ -24,7 +24,7 @@ namespace Server.Game
                     if (posCount >= maxCount)
                         break;
                     List<GameObject> targets = Owner.Room.Map.Find(pos);
-                    if (targets.Count > 0)
+                    if (targets != null && targets.Any(target => target != null && target != Owner && target.IsSkillTargetable))
                     {
                         targetPositions.Add(pos);
                         posCount++;
@@ -99,6 +99,9 @@ namespace Server.Game
             {
                 if (Owner == null || Owner.Room == null)
                     return;
+                if (_target == null || _target.Room != Owner.Room)
+                    return;
+
                 Howitzer howitzer = EntityRegistry.Instance.Add<Howitzer>();
                 howitzer.Owner = Owner;
                 howitzer.Owner.Room = Owner.Room;
@@ -112,11 +115,12 @@ namespace Server.Game
 
                 if (data.projectile.isRandom)
                 {
-                    howitzer.DestPos = SkillLogic.GetRandomPos(_target.CellPos, (int)data.spot.range);
+                    Vector2Int randomPos = SkillLogic.GetRandomPos(_target.CellPos, (int)data.spot.range);
+                    howitzer.DestPos = GetValidCurveDestPos(randomPos, _target.CellPos);
                 }
                 else
                 {
-                    howitzer.DestPos = _target.CellPos;
+                    howitzer.DestPos = GetValidCurveDestPos(_target.CellPos, Owner.CellPos);
                 }
 
                 if (data.debuff != null)
@@ -125,11 +129,23 @@ namespace Server.Game
                 }
                 
                 Owner.Room.Enqueue(Owner.Room.EnterGame, howitzer, false);
-                GameRoom room = Owner.Room;
                 // Visual movement is handled inside Howitzer.Update with proper lifecycle guards.
                 
                 await Task.Delay((int)(data.term * 1000));
             }
+        }
+
+        private Vector2Int GetValidCurveDestPos(Vector2Int preferredPos, Vector2Int fallbackPos)
+        {
+            if (Owner?.Room?.Map == null)
+                return preferredPos;
+
+            if (Owner.Room.Map.CanGo(preferredPos, checkObjects: false))
+                return preferredPos;
+            if (Owner.Room.Map.CanGo(fallbackPos, checkObjects: false))
+                return fallbackPos;
+
+            return Owner.CellPos;
         }
     }
 }

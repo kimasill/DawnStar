@@ -265,6 +265,9 @@ namespace Server.Game
         {
             if (Room == null)
                 return 0;
+            if (!IsSkillTargetable)
+                return 0;
+
             damage = Room.CalculateDamage(attacker,Id,damage,this);      
             int hp = Math.Max(Stat.Hp - damage, 0);
             ChangeHp(hp);

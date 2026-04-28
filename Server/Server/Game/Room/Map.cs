@@ -127,9 +127,9 @@ namespace Server.Game.Room
         public List<GameObject> Find(Vector2Int cellPos)
         {
             if (cellPos.x < MinX || cellPos.x > MaxX)
-                return null;
+                return new List<GameObject>();
             if (cellPos.y < MinY || cellPos.y > MaxY)
-                return null;
+                return new List<GameObject>();
             int x = cellPos.x - MinX;
             int y = MaxY - cellPos.y;
             return _objects[y, x];

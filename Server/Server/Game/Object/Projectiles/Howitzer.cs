@@ -13,10 +13,11 @@ namespace Server.Game
         public GameObject Owner { get; set; }
         GameObject attacker = null;
         public Vector2Int DestPos { get; set; }
-        int _moveRange = 0;
         GameRoom room = null;
         private bool _scheduled = false;
         private int _travelMs = 0;
+        private const int MoveBroadcastDelayMs = 100;
+
         public override void Update()
         {
             if (room != null && IsComplete)
@@ -46,12 +47,13 @@ namespace Server.Game
                 travelMsLong = int.MaxValue;
             _travelMs = (int)travelMsLong;
 
-            // Land at DestPos exactly when Cast triggers to avoid "ghost" shells.
-            room.EnqueueAfter(_travelMs, MoveToDestIfAlive);
-            room.EnqueueAfter(_travelMs, Cast);
+            int castDelayMs = Math.Max(_travelMs, MoveBroadcastDelayMs + 1);
+
+            room.EnqueueAfter(MoveBroadcastDelayMs, MoveToDestIfAlive);
+            room.EnqueueAfter(castDelayMs, Cast);
 
             // Failsafe: if Cast never runs (queue hiccup), ensure cleanup.
-            room.EnqueueAfter(_travelMs + 3000, ForceDespawnIfStuck);
+            room.EnqueueAfter(castDelayMs + 3000, ForceDespawnIfStuck);
         }
 
         private void MoveToDestIfAlive()
@@ -64,7 +66,7 @@ namespace Server.Game
                 return;
 
             State = CreatureState.Moving;
-            if (room.Map.ApplyMove(this, DestPos))
+            if (room.Map.ApplyMove(this, DestPos, checkObjects: false))
             {
                 CellPos = DestPos;
                 S_Move movePacket = new S_Move();
@@ -100,41 +102,53 @@ namespace Server.Game
             attacker ??= Owner;
             attacker ??= this;
 
-            List<Vector2Int> targetPositions = new List<Vector2Int>();
-            if (Data.shape != null)
+            try
             {
-                targetPositions = SkillLogic.GetAllTargetsInRange(CellPos, (int)Data.shape.range);
-            }
-            else
-            {
-                targetPositions.Add(CellPos);
-            }
-
-            foreach (Vector2Int pos in targetPositions)
-            {
-                List<GameObject> targets = new List<GameObject>(activeRoom.Map.Find(pos));
-                if (targets.Count > 0)
+                List<Vector2Int> targetPositions = new List<Vector2Int>();
+                if (Data.shape != null)
                 {
+                    targetPositions = SkillLogic.GetAllTargetsInRange(CellPos, (int)Data.shape.range);
+                }
+                else
+                {
+                    targetPositions.Add(CellPos);
+                }
+
+                foreach (Vector2Int pos in targetPositions)
+                {
+                    List<GameObject> cellObjects = activeRoom.Map.Find(pos);
+                    if (cellObjects == null)
+                        continue;
+
+                    List<GameObject> targets = new List<GameObject>(cellObjects);
                     foreach (GameObject target in targets)
                     {
-                        if (target == attacker)
+                        if (target == null || target == this || target == attacker)
                             continue;
-                        if (target != null && target.IsSkillTargetable)
-                        {
-                            target.OnDamaged(this, Data.damage + attacker.TotalAttack); // 피격 판정
-                            OnHit?.Invoke(target);                  
-                        }
+                        if (!target.IsSkillTargetable)
+                            continue;
+                        if (attacker is Monster && target is Monster)
+                            continue;
+                        if (attacker is Player && target is Player)
+                            continue;
+
+                        target.OnDamaged(this, Data.damage + attacker.TotalAttack); // 피격 판정
+                        OnHit?.Invoke(target);
                     }
                 }
             }
-            DespawnAnim = true;
-            activeRoom.Enqueue(activeRoom.LeaveGame, Id);
-            IsComplete = true;
+            finally
+            {
+                DespawnAnim = true;
+                IsComplete = true;
+                if (Room != null)
+                    activeRoom.Enqueue(activeRoom.LeaveGame, Id);
+            }
         }
 
         public override GameObject GetOwner()
         {
-            return Owner;
+            return Owner ?? this;
         }
     }
 }

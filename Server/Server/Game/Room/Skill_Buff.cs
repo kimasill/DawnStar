@@ -60,7 +60,11 @@ namespace Server.Game
 
                 foreach (var pos in targetPositions)
                 {
-                    targets.AddRange(Owner.Room.Map.Find(pos).Where(obj => obj != Owner));
+                    List<GameObject> cellObjects = Owner.Room.Map.Find(pos);
+                    if (cellObjects == null)
+                        continue;
+
+                    targets.AddRange(cellObjects.Where(obj => obj != null && obj != Owner && obj.IsSkillTargetable));
                 }
 
                 if (targets.Count == 0)
