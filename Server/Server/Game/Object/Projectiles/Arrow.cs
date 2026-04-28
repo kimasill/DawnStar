@@ -41,6 +41,8 @@ namespace Server.Game
                             continue;
                         if (target != null)
                         {
+                            if (!target.IsSkillTargetable)
+                                continue;
                             target.OnDamaged(this, Data.damage + Owner.TotalAttack); //피격판정                    
                         }
                         Room.Enqueue(Room.LeaveGame, Id);

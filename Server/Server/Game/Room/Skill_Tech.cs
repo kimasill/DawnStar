@@ -42,6 +42,8 @@ namespace Server.Game
                             {
                                 continue;
                             }
+                            if (!target.IsSkillTargetable)
+                                continue;
                             CalculateDistance(target, () =>
                             {
                                 target.OnDamaged(Owner, Owner.TotalAttack + data.damage);
@@ -91,6 +93,8 @@ namespace Server.Game
                         {
                             continue;
                         }
+                        if (!target.IsSkillTargetable)
+                            continue;
                         Vector2Int direction = (Owner.CellPos - target.CellPos).normalized;
                         Vector2Int newPos = target.CellPos + direction;
                         if (Owner.Room.Map.ApplyMove(target, newPos))

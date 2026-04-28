@@ -60,6 +60,8 @@ namespace Server.Game
                         {
                             continue;
                         }
+                        if (target != null && !target.IsSkillTargetable)
+                            continue;
                         if (_target != null)
                         {
                             if (target != _target)
@@ -113,7 +115,9 @@ namespace Server.Game
                             {
                                 continue;
                             }
-                            if(target != null)
+                            if (target != null && !target.IsSkillTargetable)
+                                continue;
+                            if (target != null)
                                 target.OnDamaged(Owner, Owner.TotalAttack + data.damage);
                         }
                     }
@@ -214,6 +218,8 @@ namespace Server.Game
                             {
                                 continue;
                             }
+                            if (newTarget != null && !newTarget.IsSkillTargetable)
+                                continue;
                             newTarget.OnDamaged(Owner, Owner.TotalAttack + data.damage);
                         }
                     }
@@ -269,6 +275,8 @@ namespace Server.Game
                             {
                                 continue;
                             }
+                            if (newTarget != null && !newTarget.IsSkillTargetable)
+                                continue;
                             newTarget.OnDamaged(Owner, Owner.TotalAttack + data.damage);
                         }
                     }

@@ -125,6 +125,8 @@ namespace Server.Game
                     {
                         if (target != null && target != Owner)
                         {
+                            if (!target.IsSkillTargetable)
+                                continue;
                             if (Owner is Monster && target is Monster)
                                 continue;
                             target.OnDamaged(this, Data.damage + Owner.TotalAttack); // 피격 판정

@@ -20,6 +20,8 @@ namespace Server.Game
         public GameRoom Room { get; set; }
         public Skill Skill { get; set; }
         public GameObjectType ObjectType { get; protected set; } = GameObjectType.None;
+        public virtual bool IsSkillTargetable =>
+            ObjectType == GameObjectType.Player || ObjectType == GameObjectType.Monster;
         private readonly object _debuffsLock = new object();
         private readonly object _buffsLock = new object();
         public Action DamageAction;

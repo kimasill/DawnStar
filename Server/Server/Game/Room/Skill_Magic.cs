@@ -126,22 +126,7 @@ namespace Server.Game
                 
                 Owner.Room.Enqueue(Owner.Room.EnterGame, howitzer, false);
                 GameRoom room = Owner.Room;
-                room.EnqueueAfter(100,() =>
-                {
-                    if (room == null)
-                    {
-                        return;
-                    }                        
-                    howitzer.State = CreatureState.Moving;
-                    if (Owner.Room.Map.ApplyMove(howitzer, howitzer.DestPos))
-                    {
-                        howitzer.CellPos = howitzer.DestPos;
-                        S_Move movePacket = new S_Move();
-                        movePacket.ObjectId = howitzer.Id;
-                        movePacket.Position = howitzer.PosInfo;
-                        Owner.Room.Broadcast(Owner.CellPos, movePacket);
-                    }
-                });
+                // Visual movement is handled inside Howitzer.Update with proper lifecycle guards.
                 
                 await Task.Delay((int)(data.term * 1000));
             }

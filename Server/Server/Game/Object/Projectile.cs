@@ -13,6 +13,7 @@ namespace Server.Game
         public Data.SkillData Data { get; set; }
 
         public Action<GameObject> OnHit { get; set; }
+        public override bool IsSkillTargetable => false;
         public Projectile()
         {
             ObjectType = GameObjectType.Projectile;

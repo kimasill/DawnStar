@@ -393,6 +393,8 @@ namespace Server.Game
                     {
                         if (target == Owner)
                             continue;
+                        if (target != null && !target.IsSkillTargetable)
+                            continue;
                         if (target != null && target != Owner)
                         {
                             if (Owner is Player && target is Player)

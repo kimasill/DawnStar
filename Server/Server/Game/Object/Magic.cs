@@ -13,6 +13,7 @@ namespace Server.Game
 
         public Action<GameObject> OnHit { get; set; }
         public bool IsComplete { get; set; }
+        public override bool IsSkillTargetable => false;
         public Magic()
         {
             ObjectType = GameObjectType.Magic;
