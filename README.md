@@ -49,7 +49,7 @@
 </p>
 
 <p align="center">
-  <img src="https://kimasill.github.io/images/dawnstar/%EC%9E%AC%EB%A0%A8.PNG" alt="DawnStar 재련 시스템" width="320" />
+  <img src="https://kimasill.github.io/images/dawnstar/%EC%9E%AC%EB%A0%A8-%EC%9E%AC%EB%A3%8C%ED%95%A9%EC%84%B1.PNG" alt="DawnStar 재련 시스템" width="320" />
   <img src="https://kimasill.github.io/images/dawnstar/%EA%B9%A8%EB%8B%AC%EC%9D%8CUI.PNG" alt="깨달음 UI" width="380" />
 </p>
 <p align = "center">
@@ -172,7 +172,7 @@ public void HandleUpdateQuest(Player player, int questId, int progress)
 
 ### 4. Item Economy – 경제 경로 트랜잭션 통합
 
-<img src="https://kimasill.github.io/images/dawnstar/재련.PNG" alt="Dawnstar 재련" width="640" />
+<img src="https://kimasill.github.io/images/dawnstar/%EC%9E%AC%EB%A0%A8-%EC%9E%AC%EB%A3%8C%ED%95%A9%EC%84%B1.PNG" alt="Dawnstar 재련" width="640" />
 
 - **대응**: 골드·인벤·DB 갱신을 `DbTransaction`으로 통일, 상점·강화·제작 등 성공/실패 경로 단일화
 
